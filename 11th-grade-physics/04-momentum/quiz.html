@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Momentum Quiz — Most Missed Questions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 760px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; background:#f7f7f9; color:#1a1a1a; }
+  h1 { font-size: 1.4rem; }
+  .question { background:#fff; border:1px solid #ddd; border-radius:10px; padding:1rem 1.25rem; margin-bottom:1rem; box-shadow:0 1px 2px rgba(0,0,0,0.05); }
+  .question p.stem { font-weight:600; margin-top:0; }
+  label { display:block; padding:.5rem .6rem; margin:.35rem 0; border:1px solid #ccc; border-radius:8px; cursor:pointer; }
+  label:hover { background:#f0f4ff; }
+  label.correct { background:#d9f7e3; border-color:#4caf50; }
+  label.incorrect { background:#fddede; border-color:#e05555; }
+  .explain { display:none; margin-top:.6rem; padding:.6rem .8rem; background:#eef2ff; border-left:4px solid #5566ee; border-radius:4px; font-size:.95rem; }
+  .explain.show { display:block; }
+  #score-panel { position:sticky; top:0; background:#f7f7f9; padding:.75rem 0; border-bottom:1px solid #ddd; margin-bottom:1rem; }
+  #score { font-weight:700; }
+  #submit-all { padding:.6rem 1.2rem; border:none; border-radius:8px; background:#2e7d32; color:#fff; font-size:1rem; cursor:pointer; margin-top:1rem; }
+  #result { font-size:1.1rem; font-weight:700; margin-top:1rem; }
+  @media (prefers-color-scheme: dark) {
+    body { background:#111317; color:#eee; }
+    .question { background:#1b1e24; border-color:#333; }
+    label { border-color:#444; }
+    label:hover { background:#232840; }
+    .explain { background:#1d2440; }
+    #score-panel { background:#111317; border-color:#333; }
+  }
+</style>
+</head>
+<body>
+<div id="score-panel">
+  <h1>Momentum — Most Often Missed Questions</h1>
+  <div id="score">Answered: 0 / <span id="total">0</span></div>
+</div>
+<div id="quiz"></div>
+<button id="submit-all">Finish &amp; Show Result</button>
+<div id="result"></div>
+
+<script>
+const QUESTIONS = [
+  {
+    stem: "In a perfectly inelastic collision where two objects stick together, is kinetic energy conserved?",
+    choices: [
+      { text: "Yes — momentum and kinetic energy are always conserved together.", correct: false,
+        explain: "Momentum is always conserved in an isolated system, but kinetic energy is only conserved in ELASTIC collisions. Perfectly inelastic collisions lose the most KE of any collision type." },
+      { text: "No — kinetic energy is converted to heat, sound, and deformation; only momentum is conserved.", correct: true,
+        explain: "Correct. In a perfectly inelastic collision, objects stick together, and a significant portion of the initial kinetic energy converts to other forms (heat, sound, permanent deformation). Momentum, however, is always conserved regardless of collision type." },
+      { text: "No, because momentum isn't conserved either in this case.", correct: false,
+        explain: "Momentum IS conserved here — it's conserved in every isolated-system collision, elastic or not. It's specifically kinetic energy that isn't conserved in inelastic collisions." },
+      { text: "It depends on the objects' masses.", correct: false,
+        explain: "Whether KE is conserved depends on the TYPE of collision (elastic vs. inelastic), not on the specific masses involved." }
+    ]
+  },
+  {
+    stem: "A 2000 kg truck moving at 2 m/s and a 1000 kg car moving at 5 m/s — which has more momentum?",
+    choices: [
+      { text: "The truck, because it's heavier.", correct: false,
+        explain: "Momentum depends on BOTH mass and velocity (p = mv), not mass alone. You have to actually multiply them out before comparing." },
+      { text: "The car, because momentum only depends on speed.", correct: false,
+        explain: "Momentum isn't determined by speed alone either — mass matters too. You need to calculate p = mv for both to compare correctly." },
+      { text: "They're equal: truck p = 2000×2 = 4000 kg·m/s, car p = 1000×5 = 5000 kg·m/s — wait, compute both and compare.", correct: false,
+        explain: "Check the arithmetic: truck momentum = 2000×2 = 4000 kg·m/s; car momentum = 1000×5 = 5000 kg·m/s. These are NOT equal — the car actually has more momentum despite being lighter." },
+      { text: "The car has more momentum: 1000×5 = 5000 kg·m/s vs. the truck's 2000×2 = 4000 kg·m/s.", correct: true,
+        explain: "Correct. Momentum = mass × velocity. The car (5000 kg·m/s) actually has MORE momentum than the heavier truck (4000 kg·m/s) because its higher speed more than compensates for its lower mass. Never judge momentum by mass alone." }
+    ]
+  },
+  {
+    stem: "Why does 'following through' when swinging a bat or racket increase the ball's exit speed?",
+    choices: [
+      { text: "It doesn't actually matter — only the swing speed at contact matters.", correct: false,
+        explain: "Follow-through matters precisely because it affects how LONG the bat stays in contact with the ball, not just the instantaneous speed at first contact." },
+      { text: "It increases the contact time (Δt), which increases the impulse (J = FΔt) and therefore the change in the ball's momentum, for a similar applied force.", correct: true,
+        explain: "Correct. Impulse equals FΔt. By extending the time the bat stays in contact with the ball (following through instead of stopping the swing at contact), the same force is applied for longer, producing a greater change in the ball's momentum — and thus a faster exit speed." },
+      { text: "It reduces the mass of the bat effectively.", correct: false,
+        explain: "Follow-through has nothing to do with changing the bat's mass — the relevant physics is about extending contact TIME to increase impulse." },
+      { text: "It conserves kinetic energy that would otherwise be lost.", correct: false,
+        explain: "The mechanism isn't about energy conservation — it's specifically about the impulse-momentum theorem (J = FΔt = Δp): more contact time means more momentum transferred to the ball." }
+    ]
+  },
+  {
+    stem: "A 0.15 kg baseball moving at +40 m/s is caught and brought to rest in 0.02 s. What is the magnitude of the average force on the ball?",
+    choices: [
+      { text: "F = Δp/Δt = (0.15)(40−0)/0.02 = 300 N", correct: true,
+        explain: "Correct. Δp = m(v_f − v_i) = 0.15(0 − 40) = −6 kg·m/s. Magnitude of impulse = 6 kg·m/s. F = |Δp|/Δt = 6/0.02 = 300 N." },
+      { text: "F = mv = 0.15 × 40 = 6 N", correct: false,
+        explain: "This computes momentum (mv = 6 kg·m/s), not force. Force requires dividing the CHANGE in momentum by the time interval: F = Δp/Δt." },
+      { text: "F = m × g = 0.15 × 9.8 ≈ 1.47 N", correct: false,
+        explain: "This calculates the ball's weight, which is irrelevant here — the question is about the catching force from the impulse-momentum theorem, not gravity." },
+      { text: "Cannot be determined without knowing the catcher's mass.", correct: false,
+        explain: "The catcher's mass isn't needed — only the ball's mass, its change in velocity, and the time over which it stops are required to find the average force via F = Δp/Δt." }
+    ]
+  },
+  {
+    stem: "Two identical 1 kg carts move toward each other, each at 2 m/s, and collide head-on, sticking together. What is their velocity immediately after collision?",
+    choices: [
+      { text: "4 m/s, in the direction of the faster cart.", correct: false,
+        explain: "Speeds don't simply add here — this is a vector/direction problem, and both carts move at the same speed, just opposite directions." },
+      { text: "2 m/s, since the collision is symmetric.", correct: false,
+        explain: "This ignores that momentum is a signed (directional) vector quantity — you have to actually sum the SIGNED momenta, not just the speeds." },
+      { text: "0 m/s — the opposite-direction momenta (+2 and −2 kg·m/s) cancel to zero total momentum, so the stuck-together carts stay at rest.", correct: true,
+        explain: "Correct. Assign +2 m/s to one cart and −2 m/s to the other (equal mass, opposite directions): total momentum = (1)(2) + (1)(−2) = 0 kg·m/s. Since momentum is conserved and total mass is 2 kg, the combined final velocity is 0/2 = 0 m/s — they stop." },
+      { text: "It cannot be determined without knowing which cart was moving first.", correct: false,
+        explain: "Timing/order doesn't matter — this is a simultaneous head-on collision, and conservation of momentum with the correct signs gives a definite, unique answer of 0 m/s." }
+    ]
+  }
+];
+
+const quizDiv = document.getElementById('quiz');
+document.getElementById('total').textContent = QUESTIONS.length;
+let answeredCount = 0;
+
+QUESTIONS.forEach((q, qi) => {
+  const wrap = document.createElement('div');
+  wrap.className = 'question';
+  const stem = document.createElement('p');
+  stem.className = 'stem';
+  stem.textContent = (qi + 1) + ". " + q.stem;
+  wrap.appendChild(stem);
+
+  q.choices.forEach((c, ci) => {
+    const label = document.createElement('label');
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = 'q' + qi;
+    input.value = ci;
+    label.appendChild(input);
+    label.appendChild(document.createTextNode(' ' + c.text));
+
+    const explain = document.createElement('div');
+    explain.className = 'explain';
+    explain.textContent = c.explain;
+    label.appendChild(explain);
+
+    input.addEventListener('change', () => {
+      const allLabels = wrap.querySelectorAll('label');
+      allLabels.forEach(l => { l.classList.remove('correct','incorrect'); l.querySelector('.explain').classList.remove('show'); });
+      q.choices.forEach((cc, cci) => {
+        const lbl = allLabels[cci];
+        if (cc.correct) lbl.classList.add('correct');
+      });
+      if (!c.correct) label.classList.add('incorrect');
+      label.querySelector('.explain').classList.add('show');
+      if (!wrap.dataset.answered) {
+        wrap.dataset.answered = '1';
+        answeredCount++;
+        document.getElementById('score').innerHTML = 'Answered: ' + answeredCount + ' / <span id="total">' + QUESTIONS.length + '</span>';
+      }
+      wrap.dataset.correct = c.correct ? '1' : '0';
+    });
+
+    wrap.appendChild(label);
+  });
+
+  quizDiv.appendChild(wrap);
+});
+
+document.getElementById('submit-all').addEventListener('click', () => {
+  const questions = document.querySelectorAll('.question');
+  let correct = 0;
+  questions.forEach(w => { if (w.dataset.correct === '1') correct++; });
+  const pct = Math.round((correct / QUESTIONS.length) * 100);
+  const resultDiv = document.getElementById('result');
+  resultDiv.textContent = 'Score: ' + correct + ' / ' + QUESTIONS.length + ' (' + pct + '%)' +
+    (pct >= 80 ? ' — Proficient or better!' : ' — Review the explanations above and try again.');
+});
+</script>
+</body>
+</html>

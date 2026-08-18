@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Work & Energy Quiz — Most Missed Questions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 760px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; background:#f7f7f9; color:#1a1a1a; }
+  h1 { font-size: 1.4rem; }
+  .question { background:#fff; border:1px solid #ddd; border-radius:10px; padding:1rem 1.25rem; margin-bottom:1rem; box-shadow:0 1px 2px rgba(0,0,0,0.05); }
+  .question p.stem { font-weight:600; margin-top:0; }
+  label { display:block; padding:.5rem .6rem; margin:.35rem 0; border:1px solid #ccc; border-radius:8px; cursor:pointer; }
+  label:hover { background:#f0f4ff; }
+  label.correct { background:#d9f7e3; border-color:#4caf50; }
+  label.incorrect { background:#fddede; border-color:#e05555; }
+  .explain { display:none; margin-top:.6rem; padding:.6rem .8rem; background:#eef2ff; border-left:4px solid #5566ee; border-radius:4px; font-size:.95rem; }
+  .explain.show { display:block; }
+  #score-panel { position:sticky; top:0; background:#f7f7f9; padding:.75rem 0; border-bottom:1px solid #ddd; margin-bottom:1rem; }
+  #score { font-weight:700; }
+  #submit-all { padding:.6rem 1.2rem; border:none; border-radius:8px; background:#2e7d32; color:#fff; font-size:1rem; cursor:pointer; margin-top:1rem; }
+  #result { font-size:1.1rem; font-weight:700; margin-top:1rem; }
+  @media (prefers-color-scheme: dark) {
+    body { background:#111317; color:#eee; }
+    .question { background:#1b1e24; border-color:#333; }
+    label { border-color:#444; }
+    label:hover { background:#232840; }
+    .explain { background:#1d2440; }
+    #score-panel { background:#111317; border-color:#333; }
+  }
+</style>
+</head>
+<body>
+<div id="score-panel">
+  <h1>Work &amp; Energy — Most Often Missed Questions</h1>
+  <div id="score">Answered: 0 / <span id="total">0</span></div>
+</div>
+<div id="quiz"></div>
+<button id="submit-all">Finish &amp; Show Result</button>
+<div id="result"></div>
+
+<script>
+const QUESTIONS = [
+  {
+    stem: "A waiter holds a tray of food steady with 30 N of upward force while walking 10 m across a flat room at constant velocity. How much work does the waiter's supporting force do on the tray?",
+    choices: [
+      { text: "300 J, since W = F × d = 30 × 10.", correct: false,
+        explain: "This ignores the ANGLE between force and displacement. The supporting force is vertical (upward); the tray's motion is horizontal. You can't just multiply F and d without considering direction." },
+      { text: "0 J, because the supporting force (vertical) is perpendicular to the tray's displacement (horizontal), so cos(90°) = 0.", correct: true,
+        explain: "Correct. W = F·d·cos(θ). Here θ = 90° between the vertical supporting force and horizontal displacement, so cos(90°) = 0 and W = 0 J — despite a real force being applied the whole time." },
+      { text: "150 J, using half the force times distance.", correct: false,
+        explain: "There's no reason to take half — the correct approach uses the actual angle between force and displacement (90° here), which makes cos(θ) exactly 0, not 0.5." },
+      { text: "Cannot be determined without knowing the tray's mass.", correct: false,
+        explain: "Mass isn't needed to determine that work is zero — the geometry (perpendicular force and displacement) alone tells us cos(90°) = 0, regardless of how much force or mass is involved." }
+    ]
+  },
+  {
+    stem: "A car's speed doubles from 20 m/s to 40 m/s. How does its kinetic energy change?",
+    choices: [
+      { text: "It doubles too, since KE is proportional to speed.", correct: false,
+        explain: "KE = ½mv² depends on velocity SQUARED, not velocity directly — so KE does not simply double when speed doubles." },
+      { text: "It quadruples, since KE depends on v² and (2v)² = 4v².", correct: true,
+        explain: "Correct. KE = ½mv². Doubling v means the new KE is ½m(2v)² = 4 × (½mv²) — four times the original kinetic energy. This is why higher speeds are so disproportionately dangerous in crashes." },
+      { text: "It stays the same, since mass doesn't change.", correct: false,
+        explain: "Mass staying constant doesn't mean KE stays constant — KE also depends on velocity, which did change (doubled)." },
+      { text: "It increases by a factor of 8, matching a cube relationship.", correct: false,
+        explain: "KE depends on v² (a square), not v³ (a cube) — doubling speed gives 2² = 4 times the kinetic energy, not 2³ = 8 times." }
+    ]
+  },
+  {
+    stem: "A block slides down a ramp with friction. A student calculates the block's speed at the bottom using only KE_i + PE_i = KE_f + PE_f (ignoring friction). Will their answer be correct?",
+    choices: [
+      { text: "Yes, mechanical energy is always conserved regardless of friction.", correct: false,
+        explain: "This is false — mechanical (KE+PE) energy conservation specifically requires NO non-conservative forces like friction doing work. With friction present, some mechanical energy converts to heat and is lost from the KE+PE total." },
+      { text: "No — friction does negative work on the block, removing mechanical energy as heat, so the actual final speed will be LOWER than this calculation predicts.", correct: true,
+        explain: "Correct. The full accounting is KE_i + PE_i = KE_f + PE_f + Energy_lost_to_friction. Ignoring the friction term overestimates the final KE, so the calculated (frictionless) speed will be too high compared to reality." },
+      { text: "No — friction adds extra mechanical energy to the system, so the true final speed will be HIGHER.", correct: false,
+        explain: "Friction removes energy from the mechanical (KE+PE) system by converting it to heat — it never adds energy. So ignoring friction leads to an overestimate, not an underestimate, of final speed." },
+      { text: "It doesn't matter — total energy is always conserved, so the formula works regardless.", correct: false,
+        explain: "TOTAL energy (including heat) is indeed always conserved, but the formula in question only tracks MECHANICAL energy (KE+PE), which is not conserved when friction does work." }
+    ]
+  },
+  {
+    stem: "Two motors each lift an identical 100 kg crate 5 m straight up. Motor A takes 10 seconds; Motor B takes 2 seconds. Compare the work done and power output of each motor.",
+    choices: [
+      { text: "Motor B does more work since it's faster.", correct: false,
+        explain: "Both motors lift the SAME crate the SAME height, so they do the exact same amount of work (W = mgh is unaffected by time) — speed affects power, not work." },
+      { text: "Both motors do the same work, but Motor B has greater power output because it delivers that work in less time.", correct: true,
+        explain: "Correct. Work only depends on force and displacement (W = mgh = 100×9.8×5 = 4900 J for both). Power = W/t, so Motor B (4900J/2s = 2450 W) has 5× the power of Motor A (4900J/10s = 490 W) — same work, faster rate." },
+      { text: "Motor A has more power since it took longer, meaning it worked harder.", correct: false,
+        explain: "Taking longer means LESS power, not more — power is work divided by time, so a longer time for the same work gives a smaller (not larger) power value." },
+      { text: "Power can't be compared without knowing the motors' efficiency.", correct: false,
+        explain: "Efficiency isn't needed to compare the mechanical power output as defined by P = W/t — that's a direct calculation from the given work and time values." }
+    ]
+  },
+  {
+    stem: "A spring with spring constant k = 200 N/m is compressed by 0.1 m. How much elastic potential energy is stored?",
+    choices: [
+      { text: "PE = kx = 200 × 0.1 = 20 J", correct: false,
+        explain: "This uses the SPRING FORCE formula (F = kx), not the elastic potential energy formula. Elastic PE requires squaring x: PE = ½kx²." },
+      { text: "PE = ½kx² = ½(200)(0.1)² = 1 J", correct: true,
+        explain: "Correct. Elastic potential energy is PE = ½kx², where x is the displacement from the spring's natural (unstretched/uncompressed) length. ½(200)(0.01) = 1 J." },
+      { text: "PE = ½kx = ½(200)(0.1) = 10 J", correct: false,
+        explain: "This forgets to square x. The correct formula is ½kx², not ½kx — a common error that comes from confusing it with other ½(...) formulas." },
+      { text: "PE = kx² = 200(0.1)² = 2 J", correct: false,
+        explain: "This is close but missing the factor of ½ that belongs in the elastic potential energy formula: PE = ½kx², not kx²." }
+    ]
+  }
+];
+
+const quizDiv = document.getElementById('quiz');
+document.getElementById('total').textContent = QUESTIONS.length;
+let answeredCount = 0;
+
+QUESTIONS.forEach((q, qi) => {
+  const wrap = document.createElement('div');
+  wrap.className = 'question';
+  const stem = document.createElement('p');
+  stem.className = 'stem';
+  stem.textContent = (qi + 1) + ". " + q.stem;
+  wrap.appendChild(stem);
+
+  q.choices.forEach((c, ci) => {
+    const label = document.createElement('label');
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = 'q' + qi;
+    input.value = ci;
+    label.appendChild(input);
+    label.appendChild(document.createTextNode(' ' + c.text));
+
+    const explain = document.createElement('div');
+    explain.className = 'explain';
+    explain.textContent = c.explain;
+    label.appendChild(explain);
+
+    input.addEventListener('change', () => {
+      const allLabels = wrap.querySelectorAll('label');
+      allLabels.forEach(l => { l.classList.remove('correct','incorrect'); l.querySelector('.explain').classList.remove('show'); });
+      q.choices.forEach((cc, cci) => {
+        const lbl = allLabels[cci];
+        if (cc.correct) lbl.classList.add('correct');
+      });
+      if (!c.correct) label.classList.add('incorrect');
+      label.querySelector('.explain').classList.add('show');
+      if (!wrap.dataset.answered) {
+        wrap.dataset.answered = '1';
+        answeredCount++;
+        document.getElementById('score').innerHTML = 'Answered: ' + answeredCount + ' / <span id="total">' + QUESTIONS.length + '</span>';
+      }
+      wrap.dataset.correct = c.correct ? '1' : '0';
+    });
+
+    wrap.appendChild(label);
+  });
+
+  quizDiv.appendChild(wrap);
+});
+
+document.getElementById('submit-all').addEventListener('click', () => {
+  const questions = document.querySelectorAll('.question');
+  let correct = 0;
+  questions.forEach(w => { if (w.dataset.correct === '1') correct++; });
+  const pct = Math.round((correct / QUESTIONS.length) * 100);
+  const resultDiv = document.getElementById('result');
+  resultDiv.textContent = 'Score: ' + correct + ' / ' + QUESTIONS.length + ' (' + pct + '%)' +
+    (pct >= 80 ? ' — Proficient or better!' : ' — Review the explanations above and try again.');
+});
+</script>
+</body>
+</html>

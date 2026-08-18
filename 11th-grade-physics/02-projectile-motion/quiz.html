@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Projectile Motion Quiz — Most Missed Questions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 760px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; background:#f7f7f9; color:#1a1a1a; }
+  h1 { font-size: 1.4rem; }
+  .question { background:#fff; border:1px solid #ddd; border-radius:10px; padding:1rem 1.25rem; margin-bottom:1rem; box-shadow:0 1px 2px rgba(0,0,0,0.05); }
+  .question p.stem { font-weight:600; margin-top:0; }
+  label { display:block; padding:.5rem .6rem; margin:.35rem 0; border:1px solid #ccc; border-radius:8px; cursor:pointer; }
+  label:hover { background:#f0f4ff; }
+  label.correct { background:#d9f7e3; border-color:#4caf50; }
+  label.incorrect { background:#fddede; border-color:#e05555; }
+  .explain { display:none; margin-top:.6rem; padding:.6rem .8rem; background:#eef2ff; border-left:4px solid #5566ee; border-radius:4px; font-size:.95rem; }
+  .explain.show { display:block; }
+  #score-panel { position:sticky; top:0; background:#f7f7f9; padding:.75rem 0; border-bottom:1px solid #ddd; margin-bottom:1rem; }
+  #score { font-weight:700; }
+  #submit-all { padding:.6rem 1.2rem; border:none; border-radius:8px; background:#2e7d32; color:#fff; font-size:1rem; cursor:pointer; margin-top:1rem; }
+  #result { font-size:1.1rem; font-weight:700; margin-top:1rem; }
+  @media (prefers-color-scheme: dark) {
+    body { background:#111317; color:#eee; }
+    .question { background:#1b1e24; border-color:#333; }
+    label { border-color:#444; }
+    label:hover { background:#232840; }
+    .explain { background:#1d2440; }
+    #score-panel { background:#111317; border-color:#333; }
+  }
+</style>
+</head>
+<body>
+<div id="score-panel">
+  <h1>Projectile Motion — Most Often Missed Questions</h1>
+  <div id="score">Answered: 0 / <span id="total">0</span></div>
+</div>
+<div id="quiz"></div>
+<button id="submit-all">Finish &amp; Show Result</button>
+<div id="result"></div>
+
+<script>
+const QUESTIONS = [
+  {
+    stem: "A cannonball is launched at an angle. Compared to a cannonball simply dropped from the same height as the launch point, at the SAME moment, which hits the ground first (assuming flat, level ground below the launch point)?",
+    choices: [
+      { text: "The dropped ball, since the launched ball has extra horizontal distance to cover.", correct: false,
+        explain: "Horizontal distance doesn't affect fall TIME — only vertical motion determines how long something is in the air relative to a given vertical drop height." },
+      { text: "The launched ball, because forward motion helps it fall faster.", correct: false,
+        explain: "Horizontal velocity has zero effect on vertical acceleration. Forward motion cannot make something fall faster." },
+      { text: "This can't be compared without knowing the launch angle and speed.", correct: false,
+        explain: "It actually doesn't matter — but not for a trivial reason. Think about what determines fall time in the vertical direction only." },
+      { text: "Depends entirely on how much of the initial velocity is vertical — if launched purely horizontally (θ=0), they land at the exact same time as a dropped ball; if launched with any upward angle, the launched ball spends longer in the air.", correct: true,
+        explain: "Correct — the deciding factor is the vertical velocity component only. A horizontally-launched projectile (v_y0 = 0) falls exactly like a dropped object and lands simultaneously with it. Any upward angle adds vertical hang time." }
+    ]
+  },
+  {
+    stem: "At the peak (highest point) of a projectile's angled trajectory, which is true?",
+    choices: [
+      { text: "Both vₓ and v_y are zero.", correct: false,
+        explain: "Only v_y is zero at the peak. Horizontal velocity vₓ is unaffected by gravity and stays constant throughout the flight (unless launched straight up, where vₓ = 0 anyway)." },
+      { text: "vₓ is zero, but v_y is at its maximum.", correct: false,
+        explain: "This has it backwards — vₓ never changes during flight (no horizontal force), and v_y is what shrinks to zero at the peak." },
+      { text: "v_y is zero, but vₓ is unchanged from launch.", correct: true,
+        explain: "Correct. The vertical velocity component momentarily equals zero at the peak (that's the definition of 'peak'), while the horizontal component stays exactly what it was at launch — nothing acts to change it." },
+      { text: "The total speed is zero.", correct: false,
+        explain: "Total speed at the peak equals vₓ alone (since v_y = 0), which is generally not zero unless the object was launched straight up." }
+    ]
+  },
+  {
+    stem: "A projectile is launched at 30° and another at 60°, both at the same speed, on level ground. How do their ranges compare?",
+    choices: [
+      { text: "The 60° launch travels farther because it goes higher.", correct: false,
+        explain: "Going higher doesn't automatically mean going farther horizontally — range depends on the combination of height time and horizontal speed, not height alone." },
+      { text: "The 30° launch travels farther because it's closer to horizontal.", correct: false,
+        explain: "Being closer to horizontal isn't sufficient either — 0° (fully horizontal on level ground) would actually give zero range instantly since there's no hang time." },
+      { text: "They travel the same range, because 30° and 60° are complementary angles.", correct: true,
+        explain: "Correct. For equal launch speed on level ground, the range formula R = v²sin(2θ)/g gives identical results for complementary angles (30°+60°=90°), since sin(60°) = sin(120°)." },
+      { text: "It's impossible to know without the initial speed.", correct: false,
+        explain: "The initial speed being equal for both is enough information — the complementary-angle relationship holds regardless of what that shared speed actually is." }
+    ]
+  },
+  {
+    stem: "A ball is thrown horizontally off a cliff. Two students are asked how long it takes to land. Student A says 't = 2·v_y0 / g'. Is this correct?",
+    choices: [
+      { text: "Yes, that formula always works for time of flight.", correct: false,
+        explain: "That formula only applies when launch height equals landing height (a symmetric 'up-and-back-down-to-the-same-level' trajectory) — not for a cliff, where the object lands lower than it launched." },
+      { text: "No — since v_y0 = 0 for a horizontal launch, that formula gives t = 0, which is wrong; the correct approach is to solve the vertical position equation for the cliff height.", correct: true,
+        explain: "Correct. For a horizontal launch, v_y0 = 0, so Student A's formula gives a nonsensical t = 0. The right method: use h = ½gt² (solving for t from the vertical drop distance), since the object starts with no vertical velocity." },
+      { text: "No, because horizontal launches never land.", correct: false,
+        explain: "Horizontal launches absolutely land — gravity still acts vertically the whole time, pulling the object down until it reaches the ground." },
+      { text: "Yes, but only if you also know the horizontal speed.", correct: false,
+        explain: "Horizontal speed is irrelevant to vertical fall time — the formula's failure here is about v_y0 = 0, not about missing horizontal information." }
+    ]
+  },
+  {
+    stem: "A monkey hangs from a branch. A hunter aims a dart rifle directly at the monkey and fires at the same instant the monkey lets go and starts to fall. Ignoring air resistance, what happens?",
+    choices: [
+      { text: "The dart passes above the monkey because the monkey falls out of the way.", correct: false,
+        explain: "Both objects experience identical downward acceleration due to gravity after the shot, so they fall the same vertical distance in the same time." },
+      { text: "The dart hits the monkey — both fall the same vertical distance from where they'd otherwise be, in the same amount of time, because both are affected by gravity identically after release.", correct: true,
+        explain: "Correct — this is the classic 'monkey and hunter' problem. The dart's aimed (straight-line) path already accounted for zero gravity; since both dart and monkey drop by the same ½gt² below their 'no-gravity' positions at every instant, they meet at the same point the dart was originally aimed." },
+      { text: "The dart hits the ground before reaching the monkey's original position.", correct: false,
+        explain: "Whether the dart reaches the monkey depends on speed vs. distance — but the falling-together effect is what makes the aim work regardless of that; it's not the reason for a miss." },
+      { text: "It depends on the dart's speed — a slow dart will fall faster than the monkey.", correct: false,
+        explain: "All objects fall due to gravity at the same rate (9.8 m/s²) regardless of their horizontal speed — the dart's speed only affects how quickly it covers horizontal distance, not its rate of vertical fall." }
+    ]
+  }
+];
+
+const quizDiv = document.getElementById('quiz');
+document.getElementById('total').textContent = QUESTIONS.length;
+let answeredCount = 0;
+
+QUESTIONS.forEach((q, qi) => {
+  const wrap = document.createElement('div');
+  wrap.className = 'question';
+  const stem = document.createElement('p');
+  stem.className = 'stem';
+  stem.textContent = (qi + 1) + ". " + q.stem;
+  wrap.appendChild(stem);
+
+  q.choices.forEach((c, ci) => {
+    const label = document.createElement('label');
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = 'q' + qi;
+    input.value = ci;
+    label.appendChild(input);
+    label.appendChild(document.createTextNode(' ' + c.text));
+
+    const explain = document.createElement('div');
+    explain.className = 'explain';
+    explain.textContent = c.explain;
+    label.appendChild(explain);
+
+    input.addEventListener('change', () => {
+      const allLabels = wrap.querySelectorAll('label');
+      allLabels.forEach(l => { l.classList.remove('correct','incorrect'); l.querySelector('.explain').classList.remove('show'); });
+      q.choices.forEach((cc, cci) => {
+        const lbl = allLabels[cci];
+        if (cc.correct) lbl.classList.add('correct');
+      });
+      if (!c.correct) label.classList.add('incorrect');
+      label.querySelector('.explain').classList.add('show');
+      if (!wrap.dataset.answered) {
+        wrap.dataset.answered = '1';
+        answeredCount++;
+        document.getElementById('score').innerHTML = 'Answered: ' + answeredCount + ' / <span id="total">' + QUESTIONS.length + '</span>';
+      }
+      wrap.dataset.correct = c.correct ? '1' : '0';
+    });
+
+    wrap.appendChild(label);
+  });
+
+  quizDiv.appendChild(wrap);
+});
+
+document.getElementById('submit-all').addEventListener('click', () => {
+  const questions = document.querySelectorAll('.question');
+  let correct = 0;
+  questions.forEach(w => { if (w.dataset.correct === '1') correct++; });
+  const pct = Math.round((correct / QUESTIONS.length) * 100);
+  const resultDiv = document.getElementById('result');
+  resultDiv.textContent = 'Score: ' + correct + ' / ' + QUESTIONS.length + ' (' + pct + '%)' +
+    (pct >= 80 ? ' — Proficient or better!' : ' — Review the explanations above and try again.');
+});
+</script>
+</body>
+</html>

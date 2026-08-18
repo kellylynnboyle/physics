@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kinematics Quiz — Most Missed Questions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 760px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; background:#f7f7f9; color:#1a1a1a; }
+  h1 { font-size: 1.4rem; }
+  .question { background:#fff; border:1px solid #ddd; border-radius:10px; padding:1rem 1.25rem; margin-bottom:1rem; box-shadow:0 1px 2px rgba(0,0,0,0.05); }
+  .question p.stem { font-weight:600; margin-top:0; }
+  label { display:block; padding:.5rem .6rem; margin:.35rem 0; border:1px solid #ccc; border-radius:8px; cursor:pointer; }
+  label:hover { background:#f0f4ff; }
+  label.correct { background:#d9f7e3; border-color:#4caf50; }
+  label.incorrect { background:#fddede; border-color:#e05555; }
+  .explain { display:none; margin-top:.6rem; padding:.6rem .8rem; background:#eef2ff; border-left:4px solid #5566ee; border-radius:4px; font-size:.95rem; }
+  .explain.show { display:block; }
+  button.check { margin-top:.5rem; padding:.4rem .9rem; border:none; border-radius:6px; background:#5566ee; color:#fff; cursor:pointer; font-size:.9rem; }
+  button.check:disabled { background:#aab; cursor:default; }
+  #score-panel { position:sticky; top:0; background:#f7f7f9; padding:.75rem 0; border-bottom:1px solid #ddd; margin-bottom:1rem; }
+  #score { font-weight:700; }
+  #submit-all { padding:.6rem 1.2rem; border:none; border-radius:8px; background:#2e7d32; color:#fff; font-size:1rem; cursor:pointer; margin-top:1rem; }
+  #result { font-size:1.1rem; font-weight:700; margin-top:1rem; }
+  @media (prefers-color-scheme: dark) {
+    body { background:#111317; color:#eee; }
+    .question { background:#1b1e24; border-color:#333; }
+    label { border-color:#444; }
+    label:hover { background:#232840; }
+    .explain { background:#1d2440; }
+    #score-panel { background:#111317; border-color:#333; }
+  }
+</style>
+</head>
+<body>
+<div id="score-panel">
+  <h1>Kinematics — Most Often Missed Questions</h1>
+  <div id="score">Answered: 0 / <span id="total">0</span></div>
+</div>
+<div id="quiz"></div>
+<button id="submit-all">Finish &amp; Show Result</button>
+<div id="result"></div>
+
+<script>
+const QUESTIONS = [
+  {
+    stem: "A car moving in the positive direction slams the brakes and slows down. What is the sign of its acceleration?",
+    choices: [
+      { text: "Positive, because acceleration and speeding up always match.", correct: false,
+        explain: "Speed and acceleration sign aren't automatically linked — direction of motion matters. Since the car moves in the positive direction and is slowing down, acceleration must point opposite to velocity: negative." },
+      { text: "Negative, because it points opposite the (positive) velocity to slow the car down.", correct: true,
+        explain: "Correct. Slowing down means acceleration opposes velocity. Velocity is positive, so acceleration is negative — even though the car is still moving forward." },
+      { text: "Zero, because deceleration isn't a real acceleration.", correct: false,
+        explain: "Deceleration IS acceleration — just directed opposite to velocity. It is never zero unless the change in speed is zero." },
+      { text: "Cannot be determined without knowing the car's mass.", correct: false,
+        explain: "Acceleration's sign depends only on the direction of velocity change, not mass. Mass would matter if we were solving for force (F = ma), not for the sign of a." }
+    ]
+  },
+  {
+    stem: "A ball is thrown straight up. At the very top of its path, which statement is true?",
+    choices: [
+      { text: "Both velocity and acceleration are zero.", correct: false,
+        explain: "This is the #1 kinematics misconception. Velocity is momentarily zero, but gravity never stops acting." },
+      { text: "Velocity is zero, but acceleration is still 9.8 m/s² downward.", correct: true,
+        explain: "Correct. The ball's velocity passes through zero as it changes direction, but the gravitational acceleration is constant throughout the entire flight." },
+      { text: "Velocity is at its maximum, and acceleration is zero.", correct: false,
+        explain: "Velocity is at a minimum (zero) at the top, not a maximum — the ball is momentarily at rest before falling back down." },
+      { text: "Acceleration reverses direction at the top.", correct: false,
+        explain: "Acceleration due to gravity stays constant and downward the entire time — it never reverses. Only the velocity's direction reverses (from up to down)." }
+    ]
+  },
+  {
+    stem: "A hiker walks 3 km east, then 3 km west back to the start. What are the total distance and total displacement?",
+    choices: [
+      { text: "Distance = 0 km, Displacement = 6 km", correct: false,
+        explain: "This has the definitions backwards. Distance is the total path walked (adds up), displacement is net change in position." },
+      { text: "Distance = 6 km, Displacement = 0 km", correct: true,
+        explain: "Correct. Distance is the total path length (3 + 3 = 6 km). Displacement is how far the hiker ended up from the start — back at the start means 0 km net displacement." },
+      { text: "Distance = 6 km, Displacement = 6 km", correct: false,
+        explain: "Distance is right, but displacement can't equal distance here since the hiker returned to the starting point." },
+      { text: "Distance = 3 km, Displacement = 3 km", correct: false,
+        explain: "This only accounts for one leg of the trip. Distance must include both legs (6 km); displacement is 0 km since start = end position." }
+    ]
+  },
+  {
+    stem: "On a velocity–time graph, what does the AREA under the curve represent?",
+    choices: [
+      { text: "Acceleration", correct: false,
+        explain: "Acceleration is the SLOPE of a velocity-time graph, not the area." },
+      { text: "Displacement", correct: true,
+        explain: "Correct. Area under a velocity-time graph = (velocity) × (time), which has units of distance — it represents displacement over that time interval." },
+      { text: "Speed", correct: false,
+        explain: "Speed (or velocity) is what's plotted on the y-axis itself, not the area." },
+      { text: "Jerk (rate of change of acceleration)", correct: false,
+        explain: "Jerk would relate to the curvature of an acceleration-time graph, not the area under a velocity-time graph." }
+    ]
+  },
+  {
+    stem: "Two identical balls are dropped from the same height — one on Earth, one in a vacuum chamber on Earth (no air resistance). Which hits the ground first?",
+    choices: [
+      { text: "The one in air, because air pressure pushes it down.", correct: false,
+        explain: "Air resistance opposes motion (acts upward on a falling object), it never speeds up a fall." },
+      { text: "They land at the same time — air resistance is negligible for identical dense balls over a short drop.", correct: true,
+        explain: "Correct for typical classroom drops with reasonably dense objects: air resistance is small enough to ignore, so both fall under ~9.8 m/s² and land together. (Air resistance only matters significantly for light/large-surface-area objects like paper or feathers.)" },
+      { text: "The one in the vacuum falls slower because there's no medium to push against.", correct: false,
+        explain: "This reverses the real effect — a vacuum removes drag, so if anything the vacuum ball would fall at least as fast, not slower." },
+      { text: "It depends on the balls' mass.", correct: false,
+        explain: "In the absence of significant air resistance, all objects fall with the same acceleration g regardless of mass (Galileo's famous result)." }
+    ]
+  },
+  {
+    stem: "A student uses x = x₀ + v₀t + ½at² for a problem that gives initial velocity, final velocity, and acceleration, and asks for displacement. Is this the best equation choice?",
+    choices: [
+      { text: "Yes, it's the only kinematic equation that solves for displacement.", correct: false,
+        explain: "It's not the only one — v² = v₀² + 2a(x−x₀) also solves for displacement, and doesn't require time at all." },
+      { text: "No — since time isn't given, v² = v₀² + 2a(x − x₀) is more direct since it skips time entirely.", correct: true,
+        explain: "Correct. When time is neither given nor asked for, choosing the equation that omits time avoids an unnecessary extra step (solving for t first)." },
+      { text: "No — displacement can only be found from a graph, not an equation.", correct: false,
+        explain: "Displacement can absolutely be calculated directly from kinematic equations without a graph." },
+      { text: "It doesn't matter, all four equations always give the same amount of work.", correct: false,
+        explain: "Using an equation that requires solving for an unknown (like time) first, when a more direct equation exists, is more work and more error-prone." }
+    ]
+  }
+];
+
+const quizDiv = document.getElementById('quiz');
+document.getElementById('total').textContent = QUESTIONS.length;
+let answeredCount = 0;
+
+QUESTIONS.forEach((q, qi) => {
+  const wrap = document.createElement('div');
+  wrap.className = 'question';
+  const stem = document.createElement('p');
+  stem.className = 'stem';
+  stem.textContent = (qi + 1) + ". " + q.stem;
+  wrap.appendChild(stem);
+
+  q.choices.forEach((c, ci) => {
+    const label = document.createElement('label');
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = 'q' + qi;
+    input.value = ci;
+    label.appendChild(input);
+    label.appendChild(document.createTextNode(' ' + c.text));
+
+    const explain = document.createElement('div');
+    explain.className = 'explain';
+    explain.textContent = c.explain;
+    label.appendChild(explain);
+
+    input.addEventListener('change', () => {
+      const allLabels = wrap.querySelectorAll('label');
+      allLabels.forEach(l => { l.classList.remove('correct','incorrect'); l.querySelector('.explain').classList.remove('show'); });
+      q.choices.forEach((cc, cci) => {
+        const lbl = allLabels[cci];
+        if (cc.correct) lbl.classList.add('correct');
+      });
+      if (!c.correct) label.classList.add('incorrect');
+      label.querySelector('.explain').classList.add('show');
+      if (!wrap.dataset.answered) {
+        wrap.dataset.answered = '1';
+        answeredCount++;
+        document.getElementById('score').innerHTML = 'Answered: ' + answeredCount + ' / <span id="total">' + QUESTIONS.length + '</span>';
+      }
+      wrap.dataset.correct = c.correct ? '1' : '0';
+    });
+
+    wrap.appendChild(label);
+  });
+
+  quizDiv.appendChild(wrap);
+});
+
+document.getElementById('submit-all').addEventListener('click', () => {
+  const questions = document.querySelectorAll('.question');
+  let correct = 0;
+  questions.forEach(w => { if (w.dataset.correct === '1') correct++; });
+  const pct = Math.round((correct / QUESTIONS.length) * 100);
+  const resultDiv = document.getElementById('result');
+  resultDiv.textContent = 'Score: ' + correct + ' / ' + QUESTIONS.length + ' (' + pct + '%)' +
+    (pct >= 80 ? ' — Proficient or better!' : ' — Review the explanations above and try again.');
+});
+</script>
+</body>
+</html>

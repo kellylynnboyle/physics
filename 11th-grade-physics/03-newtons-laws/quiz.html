@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Newton's Laws Quiz — Most Missed Questions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 760px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; background:#f7f7f9; color:#1a1a1a; }
+  h1 { font-size: 1.4rem; }
+  .question { background:#fff; border:1px solid #ddd; border-radius:10px; padding:1rem 1.25rem; margin-bottom:1rem; box-shadow:0 1px 2px rgba(0,0,0,0.05); }
+  .question p.stem { font-weight:600; margin-top:0; }
+  label { display:block; padding:.5rem .6rem; margin:.35rem 0; border:1px solid #ccc; border-radius:8px; cursor:pointer; }
+  label:hover { background:#f0f4ff; }
+  label.correct { background:#d9f7e3; border-color:#4caf50; }
+  label.incorrect { background:#fddede; border-color:#e05555; }
+  .explain { display:none; margin-top:.6rem; padding:.6rem .8rem; background:#eef2ff; border-left:4px solid #5566ee; border-radius:4px; font-size:.95rem; }
+  .explain.show { display:block; }
+  #score-panel { position:sticky; top:0; background:#f7f7f9; padding:.75rem 0; border-bottom:1px solid #ddd; margin-bottom:1rem; }
+  #score { font-weight:700; }
+  #submit-all { padding:.6rem 1.2rem; border:none; border-radius:8px; background:#2e7d32; color:#fff; font-size:1rem; cursor:pointer; margin-top:1rem; }
+  #result { font-size:1.1rem; font-weight:700; margin-top:1rem; }
+  @media (prefers-color-scheme: dark) {
+    body { background:#111317; color:#eee; }
+    .question { background:#1b1e24; border-color:#333; }
+    label { border-color:#444; }
+    label:hover { background:#232840; }
+    .explain { background:#1d2440; }
+    #score-panel { background:#111317; border-color:#333; }
+  }
+</style>
+</head>
+<body>
+<div id="score-panel">
+  <h1>Newton's Laws — Most Often Missed Questions</h1>
+  <div id="score">Answered: 0 / <span id="total">0</span></div>
+</div>
+<div id="quiz"></div>
+<button id="submit-all">Finish &amp; Show Result</button>
+<div id="result"></div>
+
+<script>
+const QUESTIONS = [
+  {
+    stem: "A hockey puck slides across frictionless ice at constant velocity. What net force acts on it?",
+    choices: [
+      { text: "A constant force in the direction of motion, or it would stop.", correct: false,
+        explain: "This is the classic Aristotelian misconception. On frictionless ice, nothing opposes the motion, so no force is needed to sustain it — Newton's 1st Law." },
+      { text: "Zero net force — constant velocity requires no net force at all.", correct: true,
+        explain: "Correct. Newton's 1st Law: an object in motion stays in motion at constant velocity unless acted on by a net force. No friction, no net force needed." },
+      { text: "A force equal to its weight, pushing it forward.", correct: false,
+        explain: "Weight acts downward (due to gravity), not forward, and has nothing to do with sustaining horizontal motion." },
+      { text: "A decreasing force that eventually reaches zero.", correct: false,
+        explain: "There's no force involved at all in maintaining the puck's velocity — the velocity is constant precisely because net force is already zero, not because a force is fading out." }
+    ]
+  },
+  {
+    stem: "According to Newton's 3rd Law, a book resting on a table experiences a reaction pair with the table's upward normal force. Why don't the book's weight and the table's normal force cancel out under the 3rd Law?",
+    choices: [
+      { text: "They do cancel out — that's exactly what the 3rd Law describes.", correct: false,
+        explain: "The book's weight and the normal force do balance to zero net force, but that's the 1st Law/equilibrium, NOT a 3rd Law pair. A 3rd law pair must act on two different objects." },
+      { text: "Weight and normal force both act on the book itself, so they aren't a 3rd Law pair — a 3rd Law pair requires the two forces to act on two different objects.", correct: true,
+        explain: "Correct. Weight (gravity on the book) and normal force (table pushing up on the book) both act ON THE BOOK — that makes them an equilibrium pair (1st Law), not a 3rd Law action-reaction pair. The true 3rd Law partner to 'table pushes up on book' is 'book pushes down on table.'" },
+      { text: "Normal force is always bigger than weight, so they can't be an action-reaction pair.", correct: false,
+        explain: "On a flat surface, normal force equals weight in magnitude — that's not the reason they aren't a 3rd law pair. The real reason is which objects the forces act on." },
+      { text: "3rd Law pairs only apply to collisions, not resting objects.", correct: false,
+        explain: "3rd Law pairs apply to ALL forces, all the time — not just collisions. Every push or pull has a reaction, whether things are moving or stationary." }
+    ]
+  },
+  {
+    stem: "A 2 kg block sits on a frictionless 30° incline. What is the normal force on the block?",
+    choices: [
+      { text: "N = mg = 19.6 N, same as on flat ground.", correct: false,
+        explain: "N = mg only applies on a FLAT, horizontal surface. On an incline, gravity has a component along the slope and a component into the slope — only the second part is balanced by N." },
+      { text: "N = mg·cos(30°) ≈ 17.0 N", correct: true,
+        explain: "Correct. On an incline, only the component of gravity perpendicular to the surface is balanced by the normal force: N = mg·cos(θ) = 2(9.8)cos(30°) ≈ 17.0 N." },
+      { text: "N = mg·sin(30°) ≈ 9.8 N", correct: false,
+        explain: "That's the component of gravity ALONG the incline (which causes the block to accelerate down the slope), not the component perpendicular to it that determines N." },
+      { text: "N = 0, since the incline provides no support.", correct: false,
+        explain: "The incline does support the block — just not against the FULL weight, only against the perpendicular component of it." }
+    ]
+  },
+  {
+    stem: "Two ice skaters push off each other. Skater A (50 kg) and Skater B (100 kg) start at rest. After the push, is the force Skater A exerts on Skater B bigger, smaller, or equal to the force B exerts on A?",
+    choices: [
+      { text: "Bigger, because A ends up moving faster.", correct: false,
+        explain: "The forces are always equal in magnitude per Newton's 3rd Law — the fact that A ends up moving faster is explained by A's smaller mass (a = F/m), not by a bigger force." },
+      { text: "Smaller, since A has less mass to push with.", correct: false,
+        explain: "Force isn't determined by 'how much mass you have to push with' in this way — the 3rd Law guarantees the forces are equal regardless of the masses involved." },
+      { text: "Exactly equal in magnitude (opposite in direction) — Newton's 3rd Law, regardless of the masses.", correct: true,
+        explain: "Correct. The push force is always equal and opposite between the two skaters, no matter their masses. What differs is their RESULTING ACCELERATION (a = F/m) — the lighter skater (A) accelerates more and ends up moving faster." },
+      { text: "It depends on who pushed first.", correct: false,
+        explain: "Timing of who initiates the push doesn't change the fact that at every instant during contact, the mutual forces are equal and opposite." }
+    ]
+  },
+  {
+    stem: "A crate sits still on a rough floor. A person pushes horizontally with 50 N, but the crate doesn't move. What can we conclude about static friction?",
+    choices: [
+      { text: "Static friction must be 0 N since the crate isn't sliding.", correct: false,
+        explain: "The crate not sliding means it's in equilibrium — but that requires a matching friction force, not zero friction." },
+      { text: "Static friction is exactly 50 N, opposing the push, keeping the crate in equilibrium.", correct: true,
+        explain: "Correct. Since the crate remains at rest, net force = 0, so static friction must exactly balance the 50 N applied force — static friction adjusts up to its maximum value as needed, not a single fixed number." },
+      { text: "Static friction must be greater than 50 N to keep it from moving.", correct: false,
+        explain: "If friction exceeded the applied force, the crate would accelerate backward — that doesn't happen. Static friction only matches the applied force, up to its maximum limit." },
+      { text: "We can't know anything about friction without the coefficient of friction.", correct: false,
+        explain: "We don't need μ_s to find the actual friction force here — since the object is in equilibrium, friction must equal 50 N by Newton's 1st Law/2nd Law regardless of what μ_s happens to be (μ_s only tells us the MAXIMUM possible static friction)." }
+    ]
+  }
+];
+
+const quizDiv = document.getElementById('quiz');
+document.getElementById('total').textContent = QUESTIONS.length;
+let answeredCount = 0;
+
+QUESTIONS.forEach((q, qi) => {
+  const wrap = document.createElement('div');
+  wrap.className = 'question';
+  const stem = document.createElement('p');
+  stem.className = 'stem';
+  stem.textContent = (qi + 1) + ". " + q.stem;
+  wrap.appendChild(stem);
+
+  q.choices.forEach((c, ci) => {
+    const label = document.createElement('label');
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = 'q' + qi;
+    input.value = ci;
+    label.appendChild(input);
+    label.appendChild(document.createTextNode(' ' + c.text));
+
+    const explain = document.createElement('div');
+    explain.className = 'explain';
+    explain.textContent = c.explain;
+    label.appendChild(explain);
+
+    input.addEventListener('change', () => {
+      const allLabels = wrap.querySelectorAll('label');
+      allLabels.forEach(l => { l.classList.remove('correct','incorrect'); l.querySelector('.explain').classList.remove('show'); });
+      q.choices.forEach((cc, cci) => {
+        const lbl = allLabels[cci];
+        if (cc.correct) lbl.classList.add('correct');
+      });
+      if (!c.correct) label.classList.add('incorrect');
+      label.querySelector('.explain').classList.add('show');
+      if (!wrap.dataset.answered) {
+        wrap.dataset.answered = '1';
+        answeredCount++;
+        document.getElementById('score').innerHTML = 'Answered: ' + answeredCount + ' / <span id="total">' + QUESTIONS.length + '</span>';
+      }
+      wrap.dataset.correct = c.correct ? '1' : '0';
+    });
+
+    wrap.appendChild(label);
+  });
+
+  quizDiv.appendChild(wrap);
+});
+
+document.getElementById('submit-all').addEventListener('click', () => {
+  const questions = document.querySelectorAll('.question');
+  let correct = 0;
+  questions.forEach(w => { if (w.dataset.correct === '1') correct++; });
+  const pct = Math.round((correct / QUESTIONS.length) * 100);
+  const resultDiv = document.getElementById('result');
+  resultDiv.textContent = 'Score: ' + correct + ' / ' + QUESTIONS.length + ' (' + pct + '%)' +
+    (pct >= 80 ? ' — Proficient or better!' : ' — Review the explanations above and try again.');
+});
+</script>
+</body>
+</html>
