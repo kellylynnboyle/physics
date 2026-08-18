@@ -1,15 +1,20 @@
 ---
 layout: default
-title: "11th Grade Physics — Core Mechanics Learning Project"
+title: "11th Grade Physics — Full Year Learning Project"
 ---
 
 [Project Home](../index.html)
 
-# 11th Grade Physics — Core Mechanics Learning Project
+# 11th Grade Physics — Full Year Learning Project
 
-A self-contained study project covering the five foundational mechanics topics
-of an 11th grade (Physics 1 / algebra-based) course: **Kinematics, Projectile
-Motion, Newton's Laws, Momentum, and Work & Energy**.
+A self-contained study project covering the full year of Physics 1A & 1B
+(Corona Del Mar High School, Mr. Selby): **Semester 1 — Kinematics,
+Projectile Motion, Newton's Laws, Momentum, and Work & Energy. Semester 2 —
+Electricity, Magnetism, Waves, Light, Plate Tectonics, Earthquakes, and
+Nuclear Physics.**
+
+See [Grading & Course Policies](GRADING-AND-POLICIES.html) for the real
+syllabus's grading weights, late-work policy, and classroom rules.
 
 Each unit folder contains the same structure so students and instructors
 always know where to find things:
@@ -30,15 +35,22 @@ always know where to find things:
 ```
 11th-grade-physics/
 ├── README.md                          (this file — project overview + master checklist)
-├── PROGRESS-TRACKER.md                (single sheet to log scores/mastery across all units)
-├── 01-kinematics/
+├── GRADING-AND-POLICIES.md            (real syllabus: grading weights, late work, attendance)
+├── PROGRESS-TRACKER.md                (single sheet to log scores/mastery across all 12 units)
+├── 01-kinematics/                     Semester 1
 ├── 02-projectile-motion/
 ├── 03-newtons-laws/
 ├── 04-momentum/
-└── 05-work-and-energy/
+├── 05-work-and-energy/
+├── 06-electricity/                    Semester 2
+├── 07-magnetism/
+├── 08-waves/
+├── 09-light/
+├── 10-plate-tectonics/
+└── 11-earthquakes/, 12-nuclear-physics/
 ```
 
-## Suggested Sequence & Pacing (10–12 class days)
+## Suggested Sequence & Pacing
 
 | Order | Unit | Suggested Days | Prerequisite |
 |---|---|---|---|
@@ -47,6 +59,13 @@ always know where to find things:
 | 3 | Newton's Laws | 2–3 | Kinematics |
 | 4 | Momentum | 2 | Newton's Laws |
 | 5 | Work & Energy | 2–3 | Newton's Laws (helpful, not required) |
+| 6 | Electricity | 2–3 | Algebra I |
+| 7 | Magnetism | 2 | Electricity |
+| 8 | Waves | 2 | — |
+| 9 | Light | 2–3 | Waves |
+| 10 | Plate Tectonics | 2 | — |
+| 11 | Earthquakes | 2 | Plate Tectonics, Waves (S/P wave properties) |
+| 12 | Nuclear Physics | 2–3 | — |
 
 ## How to Use This Project
 
@@ -68,71 +87,63 @@ always know where to find things:
   Developing / Proficient / Advanced) tied to observable, gradable evidence
   — usable as-is for a quiz rubric or conference checklist.
 - Quiz "most missed" questions are drawn from common documented student
-  misconceptions in mechanics (e.g., "force causes motion" vs. "force causes
-  *acceleration*", confusing speed with velocity, treating g as a force,
-  sign-error problems in 1D kinematics, etc.) — review these explicitly in
-  class, not just in review sessions.
+  misconceptions per topic (e.g., "force causes motion" vs. "force causes
+  *acceleration*", current being "used up" in a circuit, magnitude vs.
+  intensity in earthquakes, etc.) — review these explicitly in class, not
+  just in review sessions.
 
 ## Master Project Checklist
 
 ### Setup
 - [ ] Students have access to this project (shared folder / LMS)
-- [ ] Calculator and formula sheet policy communicated
+- [ ] Calculator and formula sheet policy communicated (see Grading & Policies)
 - [ ] `PROGRESS-TRACKER.md` copied per student (or set up as a shared gradebook)
 
-### Unit 1 — Kinematics
-- [ ] Key concepts reviewed
-- [ ] Cornell notes completed
-- [ ] Quiz taken (score ≥ 80% to advance, or review flagged misconceptions)
-- [ ] ≥3 practice problems solved and checked
-- [ ] Real-world application explained in writing or verbally
-- [ ] Self-assessment logged
+### Semester 1
+- [ ] Unit 1 — Kinematics complete (concepts, notes, quiz ≥80%, ≥3 problems, application, self-assessment)
+- [ ] Unit 2 — Projectile Motion complete
+- [ ] Unit 3 — Newton's Laws complete
+- [ ] Unit 4 — Momentum complete
+- [ ] Unit 5 — Work & Energy complete
+- [ ] Semester 1 cumulative review completed and logged
 
-### Unit 2 — Projectile Motion
-- [ ] Key concepts reviewed
-- [ ] Cornell notes completed
-- [ ] Quiz taken (score ≥ 80% to advance)
-- [ ] ≥3 practice problems solved and checked
-- [ ] Real-world application explained
-- [ ] Self-assessment logged
-
-### Unit 3 — Newton's Laws
-- [ ] Key concepts reviewed
-- [ ] Cornell notes completed
-- [ ] Quiz taken (score ≥ 80% to advance)
-- [ ] ≥3 practice problems solved and checked
-- [ ] Real-world application explained
-- [ ] Self-assessment logged
-
-### Unit 4 — Momentum
-- [ ] Key concepts reviewed
-- [ ] Cornell notes completed
-- [ ] Quiz taken (score ≥ 80% to advance)
-- [ ] ≥3 practice problems solved and checked
-- [ ] Real-world application explained
-- [ ] Self-assessment logged
-
-### Unit 5 — Work & Energy
-- [ ] Key concepts reviewed
-- [ ] Cornell notes completed
-- [ ] Quiz taken (score ≥ 80% to advance)
-- [ ] ≥3 practice problems solved and checked
-- [ ] Real-world application explained
-- [ ] Self-assessment logged
+### Semester 2
+- [ ] Unit 6 — Electricity complete
+- [ ] Unit 7 — Magnetism complete
+- [ ] Unit 8 — Waves complete
+- [ ] Unit 9 — Light complete
+- [ ] Unit 10 — Plate Tectonics complete
+- [ ] Unit 11 — Earthquakes complete
+- [ ] Unit 12 — Nuclear Physics complete
+- [ ] Full-year cumulative review completed and logged
 
 ### Wrap-up
-- [ ] Cumulative review quiz (mix of all 5 units) completed
 - [ ] `PROGRESS-TRACKER.md` reviewed with instructor
 - [ ] Areas below "Proficient" identified for re-teaching
+- [ ] One test score replaced by Final Exam % if it helps (per syllabus policy)
 
 ## Standards Alignment (reference)
 
-This project maps to typical NGSS High School Physical Science performance
-expectations for motion and forces:
+This project maps to typical NGSS High School Physical Science and Earth
+Science performance expectations, per the syllabus's "Physics & Earth
+Science course model":
+
+**Semester 1 (Mechanics):**
 - HS-PS2-1 (Newton's second law, net force and acceleration)
 - HS-PS2-2 (conservation of momentum)
 - HS-PS2-3 (momentum and forces in collisions — design/evaluate solutions)
 - HS-PS3-1 / HS-PS3-2 (conservation of energy, kinetic/potential energy)
+
+**Semester 2 (E&M, Waves, Earth Science):**
+- HS-PS2-5 (electric and magnetic fields, forces between objects)
+- HS-PS3-2 / HS-PS3-3 (energy transfer, electrical circuits)
+- HS-PS4-1 / HS-PS4-2 (wave properties, information transfer)
+- HS-PS4-3 (wave/particle nature of light)
+- HS-ESS2-1 / HS-ESS2-3 (plate tectonics, Earth's systems)
+- HS-ESS3-2 (natural hazards, including earthquakes)
+- HS-PS1-8 (nuclear processes, fission and fusion)
+
+Full standards reference: https://www.cde.ca.gov/pd/ca/sc/ngssstandards.asp
 
 Adjust unit order/pacing to match your local curriculum's scope and
 sequence — the content here is standards-aligned but framework-agnostic.
