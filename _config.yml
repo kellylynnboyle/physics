@@ -1,0 +1,5 @@
+theme: jekyll-theme-cayman
+title: "11th Grade Physics"
+description: "Kinematics, Projectile Motion, Newton's Laws, Momentum, and Work & Energy — Cornell notes, interactive quizzes, study guides, and SAT/ACT practice for 11th grade physics."
+baseurl: "/physics"
+markdown: kramdown

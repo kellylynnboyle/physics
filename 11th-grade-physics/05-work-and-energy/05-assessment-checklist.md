@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Unit 5: Work & Energy — Assessment & Mastery Checklist"
+---
+
+[Project Home](../../index.html) | [Unit Overview](README.html)
+
 # Unit 5: Work & Energy — Assessment & Mastery Checklist
 
 ## Student Self-Assessment

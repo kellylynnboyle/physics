@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Unit 2: Projectile Motion — Resources, Practice Problems & Applications"
+---
+
+[Project Home](../../index.html) | [Unit Overview](README.html)
+
 # Unit 2: Projectile Motion — Resources, Practice Problems & Applications
 
 ## Learning Resources

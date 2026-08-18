@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Unit 2: Projectile Motion — Key Concepts"
+---
+
+[Project Home](../../index.html) | [Unit Overview](README.html)
+
 # Unit 2: Projectile Motion — Key Concepts
 
 ## Learning Objectives

@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Unit 1: Kinematics — Key Concepts"
+---
+
+[Project Home](../../index.html) | [Unit Overview](README.html)
+
 # Unit 1: Kinematics — Key Concepts
 
 ## Learning Objectives

@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Projectile Motion — Quick-Reference Study Guide"
+---
+
+[Project Home](../../index.html) | [Unit Overview](README.html)
+
 # Projectile Motion — Quick-Reference Study Guide
 
 ## Definitions

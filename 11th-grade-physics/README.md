@@ -1,19 +1,29 @@
+---
+layout: default
+title: "11th Grade Physics — Core Mechanics Learning Project"
+---
+
+[Project Home](../index.html)
+
 # 11th Grade Physics — Core Mechanics Learning Project
 
 A self-contained study project covering the five foundational mechanics topics
 of an 11th grade (Physics 1 / algebra-based) course: **Kinematics, Projectile
 Motion, Newton's Laws, Momentum, and Work & Energy**.
 
-Each unit folder contains the same five-part structure so students and
-instructors always know where to find things:
+Each unit folder contains the same structure so students and instructors
+always know where to find things:
 
 | File | Purpose |
 |---|---|
+| `README.md` | Unit hub page — links to everything below |
 | `01-key-concepts.md` | What you need to know cold — vocabulary, formulas, learning objectives |
 | `02-cornell-notes.md` | Fill-in-and-review Cornell notes template pre-populated with cues |
 | `03-quiz.md` | Interactive quiz targeting the questions students miss most often, with full explanations |
 | `04-resources-and-problems.md` | Curated videos/readings, practice problems, and real-world applications |
 | `05-assessment-checklist.md` | Self-assessment rubric + instructor-facing mastery checklist |
+| `study-guide.md` | Single-page quick-reference: definitions, formulas, a quick-reference table, and 6 practice problems with answers |
+| `sat-act-practice.md` | Standardized-test-style practice — the physics-flavored question types most often missed on the SAT (Math) and ACT (Science Reasoning) |
 
 ## Project Structure
 

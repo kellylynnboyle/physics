@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Unit 1: Kinematics — Cornell Notes"
+---
+
+[Project Home](../../index.html) | [Unit Overview](README.html)
+
 # Unit 1: Kinematics — Cornell Notes
 
 **Topic:** Kinematics — Describing Motion in 1D

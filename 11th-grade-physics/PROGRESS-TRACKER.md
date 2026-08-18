@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Progress Tracker"
+---
+
+[Project Home](../index.html)
+
 # Progress Tracker
 
 Student name: ______________________   Course/Period: ______________________

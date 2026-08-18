@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Unit 2: Projectile Motion — Assessment & Mastery Checklist"
+---
+
+[Project Home](../../index.html) | [Unit Overview](README.html)
+
 # Unit 2: Projectile Motion — Assessment & Mastery Checklist
 
 ## Student Self-Assessment

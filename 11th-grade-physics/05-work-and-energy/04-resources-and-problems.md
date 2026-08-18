@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Unit 5: Work & Energy — Resources, Practice Problems & Applications"
+---
+
+[Project Home](../../index.html) | [Unit Overview](README.html)
+
 # Unit 5: Work & Energy — Resources, Practice Problems & Applications
 
 ## Learning Resources

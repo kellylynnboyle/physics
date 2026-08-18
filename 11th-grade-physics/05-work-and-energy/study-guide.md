@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Work & Energy — Quick-Reference Study Guide"
+---
+
+[Project Home](../../index.html) | [Unit Overview](README.html)
+
 # Work & Energy — Quick-Reference Study Guide
 
 ## Definitions

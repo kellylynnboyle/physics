@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Newton's Laws — Quick-Reference Study Guide"
+---
+
+[Project Home](../../index.html) | [Unit Overview](README.html)
+
 # Newton's Laws — Quick-Reference Study Guide
 
 ## Definitions

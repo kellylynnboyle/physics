@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Unit 1: Kinematics — Interactive Quiz (Most-Missed Questions)"
+---
+
+[Project Home](../../index.html) | [Unit Overview](README.html)
+
 # Unit 1: Kinematics — Interactive Quiz (Most-Missed Questions)
 
 Take this quiz **without your notes** after finishing the unit. Answer each

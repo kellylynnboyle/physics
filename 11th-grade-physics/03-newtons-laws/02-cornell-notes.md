@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Unit 3: Newton's Laws — Cornell Notes"
+---
+
+[Project Home](../../index.html) | [Unit Overview](README.html)
+
 # Unit 3: Newton's Laws — Cornell Notes
 
 **Topic:** Newton's Laws of Motion

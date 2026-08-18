@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Unit 3: Newton's Laws — Key Concepts"
+---
+
+[Project Home](../../index.html) | [Unit Overview](README.html)
+
 # Unit 3: Newton's Laws — Key Concepts
 
 ## Learning Objectives

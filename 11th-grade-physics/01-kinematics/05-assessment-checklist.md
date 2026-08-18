@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Unit 1: Kinematics — Assessment & Mastery Checklist"
+---
+
+[Project Home](../../index.html) | [Unit Overview](README.html)
+
 # Unit 1: Kinematics — Assessment & Mastery Checklist
 
 ## Student Self-Assessment
