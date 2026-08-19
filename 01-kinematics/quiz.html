@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kinematics Quiz — Most Missed Questions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #0f172a; --card: #1e293b; --text: #e2e8f0; --muted: #94a3b8;
+    --accent: #38bdf8; --good: #22c55e; --bad: #ef4444; --border: #334155;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 2rem 1rem 4rem; background: var(--bg); color: var(--text);
+    font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
+  .sub { color: var(--muted); margin-bottom: 2rem; }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
+  }
+  .qnum { color: var(--accent); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .qtext { font-size: 1.05rem; margin: 0.4rem 0 0.9rem; }
+  label.opt {
+    display: block; padding: 0.6rem 0.8rem; margin-bottom: 0.5rem; border-radius: 8px;
+    border: 1px solid var(--border); cursor: pointer; transition: background 0.15s;
+  }
+  label.opt:hover { background: #263449; }
+  label.opt input { margin-right: 0.6rem; }
+  .feedback { display: none; margin-top: 0.8rem; padding: 0.75rem 0.9rem; border-radius: 8px; font-size: 0.95rem; }
+  .feedback.correct { display: block; background: rgba(34,197,94,0.12); border: 1px solid var(--good); }
+  .feedback.incorrect { display: block; background: rgba(239,68,68,0.12); border: 1px solid var(--bad); }
+  label.opt.correct-answer { border-color: var(--good); background: rgba(34,197,94,0.08); }
+  label.opt.wrong-answer { border-color: var(--bad); background: rgba(239,68,68,0.08); }
+  button {
+    background: var(--accent); color: #04263b; border: none; font-weight: 700;
+    padding: 0.75rem 1.6rem; border-radius: 8px; font-size: 1rem; cursor: pointer;
+  }
+  button:hover { filter: brightness(1.08); }
+  button:disabled { opacity: 0.5; cursor: default; }
+  #results {
+    display: none; text-align: center; padding: 1.5rem; border-radius: 10px;
+    background: var(--card); border: 1px solid var(--accent); margin-top: 1rem; font-size: 1.15rem;
+  }
+  #results .score { font-size: 2.2rem; font-weight: 800; color: var(--accent); }
+  .retry { margin-top: 1rem; }
+  .missed-tag { display: inline-block; font-size: 0.72rem; color: var(--muted); border: 1px solid var(--border); padding: 0.1rem 0.5rem; border-radius: 999px; margin-bottom: 0.5rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Kinematics — Interactive Quiz</h1>
+  <p class="sub">These 8 questions target the mistakes students make most often on this unit. Answer everything, then click "Check My Answers" for instant explanations.</p>
+
+  <form id="quizForm"></form>
+  <button id="submitBtn" type="button" onclick="gradeQuiz()">Check My Answers</button>
+
+  <div id="results">
+    <div>Your score</div>
+    <div class="score" id="scoreText"></div>
+    <div id="scoreMsg"></div>
+    <div class="retry"><button type="button" onclick="location.reload()">Retake Quiz</button></div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    tag: "Distance vs. displacement",
+    q: "A student walks 8 m east, then 3 m west. What is the student's displacement?",
+    options: ["11 m east", "5 m east", "5 m west", "8 m east"],
+    correct: 1,
+    explain: "Displacement is the net change in position: 8 m east − 3 m east (since west is negative) = 5 m east. 11 m is the total distance traveled, not the displacement — this mix-up is the #1 kinematics mistake."
+  },
+  {
+    tag: "Sign of acceleration",
+    q: "A car moving in the +x direction has a negative acceleration. What is definitely true?",
+    options: [
+      "The car is slowing down",
+      "The car is speeding up",
+      "The car's velocity and acceleration point in opposite directions",
+      "The car is at rest"
+    ],
+    correct: 2,
+    explain: "Negative acceleration just means acceleration points in the −x direction. Since the car's velocity is +x, velocity and acceleration are opposite — the car is slowing down *in this specific case*, but the safe, always-true statement is that v and a point opposite ways. If the car were already moving in −x, the same negative acceleration would mean speeding up."
+  },
+  {
+    tag: "v-t graph: slope vs. area",
+    q: "On a velocity-time graph, the AREA under the curve between two times represents:",
+    options: ["Acceleration", "Displacement", "Speed", "Jerk"],
+    correct: 1,
+    explain: "Area under a v–t graph = displacement. Slope of a v–t graph is acceleration. Students frequently swap these two."
+  },
+  {
+    tag: "Free fall at the peak",
+    q: "A ball is thrown straight up. At the exact top of its path, what is true about its velocity and acceleration?",
+    options: [
+      "Both velocity and acceleration are zero",
+      "Velocity is zero; acceleration is still −g",
+      "Velocity is at its maximum; acceleration is zero",
+      "Velocity is zero; acceleration is also zero momentarily, then returns to −g"
+    ],
+    correct: 1,
+    explain: "Velocity is momentarily zero at the peak, but gravity never stops acting — acceleration is −g the entire flight, including at the top. This is the most commonly missed free-fall idea."
+  },
+  {
+    tag: "Choosing the right equation",
+    q: "You know initial velocity, final velocity, and displacement, but NOT time. Which kinematic equation solves directly for acceleration?",
+    options: [
+      "v_f = v_i + at",
+      "Δx = v_i t + ½at²",
+      "v_f² = v_i² + 2aΔx",
+      "Δx = ½(v_i + v_f)t"
+    ],
+    correct: 2,
+    explain: "v_f² = v_i² + 2aΔx is the only one of the four kinematic equations that doesn't contain time — exactly what's needed when t is unknown."
+  },
+  {
+    tag: "Object thrown upward — return speed",
+    q: "A ball is thrown upward at 12 m/s from ground level (ignore air resistance). What is its speed when it returns to the same height it was thrown from?",
+    options: ["0 m/s", "6 m/s", "12 m/s", "It depends on the mass of the ball"],
+    correct: 2,
+    explain: "By symmetry of free fall (and energy conservation), an object returns to its launch height with the same speed it left, just directed downward instead of upward. Mass does not affect free-fall motion."
+  },
+  {
+    tag: "Constant velocity ⇒ acceleration",
+    q: "An object moves with constant velocity. What is its acceleration?",
+    options: ["Cannot be determined", "Equal to g", "Zero", "Equal to the velocity"],
+    correct: 2,
+    explain: "If velocity isn't changing, Δv = 0 over any Δt, so a = Δv/Δt = 0. Constant velocity always means zero acceleration — a very common test question."
+  },
+  {
+    tag: "Average vs. instantaneous velocity",
+    q: "A car speeds up from 0 to 20 m/s in 4 s, with constant acceleration. What is the car's average velocity over that time?",
+    options: ["20 m/s", "10 m/s", "5 m/s", "0 m/s"],
+    correct: 1,
+    explain: "For constant acceleration, average velocity = (v_i + v_f)/2 = (0+20)/2 = 10 m/s. Students often mistakenly report the final velocity as the average."
+  }
+];
+
+const form = document.getElementById('quizForm');
+QUESTIONS.forEach((item, qi) => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="missed-tag">Often missed: ${item.tag}</div>
+    <div class="qnum">Question ${qi + 1}</div>
+    <div class="qtext">${item.q}</div>
+    <div class="opts">
+      ${item.options.map((opt, oi) => `
+        <label class="opt" id="q${qi}_opt${oi}">
+          <input type="radio" name="q${qi}" value="${oi}"> ${opt}
+        </label>
+      `).join('')}
+    </div>
+    <div class="feedback" id="q${qi}_feedback"></div>
+  `;
+  form.appendChild(card);
+});
+
+function gradeQuiz() {
+  let score = 0;
+  QUESTIONS.forEach((item, qi) => {
+    const selected = form.querySelector(`input[name="q${qi}"]:checked`);
+    const fb = document.getElementById(`q${qi}_feedback`);
+    const correctLabel = document.getElementById(`q${qi}_opt${item.correct}`);
+    correctLabel.classList.add('correct-answer');
+
+    if (!selected) {
+      fb.className = 'feedback incorrect';
+      fb.style.display = 'block';
+      fb.innerHTML = `<strong>Not answered.</strong> Correct answer: "${item.options[item.correct]}". ${item.explain}`;
+      return;
+    }
+    const chosen = parseInt(selected.value, 10);
+    if (chosen === item.correct) {
+      score++;
+      fb.className = 'feedback correct';
+      fb.innerHTML = `<strong>Correct!</strong> ${item.explain}`;
+    } else {
+      document.getElementById(`q${qi}_opt${chosen}`).classList.add('wrong-answer');
+      fb.className = 'feedback incorrect';
+      fb.innerHTML = `<strong>Not quite.</strong> Correct answer: "${item.options[item.correct]}". ${item.explain}`;
+    }
+    fb.style.display = 'block';
+  });
+
+  document.querySelectorAll('#quizForm input[type=radio]').forEach(r => r.disabled = true);
+  document.getElementById('submitBtn').disabled = true;
+
+  const pct = Math.round((score / QUESTIONS.length) * 100);
+  document.getElementById('scoreText').textContent = `${score} / ${QUESTIONS.length} (${pct}%)`;
+  const msg = pct >= 80
+    ? "Great work — you've met the 80% target for this unit."
+    : "Below the 80% target. Review the explanations above and the Cornell notes, then retake.";
+  document.getElementById('scoreMsg').textContent = msg;
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

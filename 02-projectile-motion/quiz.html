@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Projectile Motion Quiz — Most Missed Questions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #0f172a; --card: #1e293b; --text: #e2e8f0; --muted: #94a3b8;
+    --accent: #38bdf8; --good: #22c55e; --bad: #ef4444; --border: #334155;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 2rem 1rem 4rem; background: var(--bg); color: var(--text);
+    font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
+  .sub { color: var(--muted); margin-bottom: 2rem; }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
+  }
+  .qnum { color: var(--accent); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .qtext { font-size: 1.05rem; margin: 0.4rem 0 0.9rem; }
+  label.opt {
+    display: block; padding: 0.6rem 0.8rem; margin-bottom: 0.5rem; border-radius: 8px;
+    border: 1px solid var(--border); cursor: pointer; transition: background 0.15s;
+  }
+  label.opt:hover { background: #263449; }
+  label.opt input { margin-right: 0.6rem; }
+  .feedback { display: none; margin-top: 0.8rem; padding: 0.75rem 0.9rem; border-radius: 8px; font-size: 0.95rem; }
+  .feedback.correct { display: block; background: rgba(34,197,94,0.12); border: 1px solid var(--good); }
+  .feedback.incorrect { display: block; background: rgba(239,68,68,0.12); border: 1px solid var(--bad); }
+  label.opt.correct-answer { border-color: var(--good); background: rgba(34,197,94,0.08); }
+  label.opt.wrong-answer { border-color: var(--bad); background: rgba(239,68,68,0.08); }
+  button {
+    background: var(--accent); color: #04263b; border: none; font-weight: 700;
+    padding: 0.75rem 1.6rem; border-radius: 8px; font-size: 1rem; cursor: pointer;
+  }
+  button:hover { filter: brightness(1.08); }
+  button:disabled { opacity: 0.5; cursor: default; }
+  #results {
+    display: none; text-align: center; padding: 1.5rem; border-radius: 10px;
+    background: var(--card); border: 1px solid var(--accent); margin-top: 1rem; font-size: 1.15rem;
+  }
+  #results .score { font-size: 2.2rem; font-weight: 800; color: var(--accent); }
+  .retry { margin-top: 1rem; }
+  .missed-tag { display: inline-block; font-size: 0.72rem; color: var(--muted); border: 1px solid var(--border); padding: 0.1rem 0.5rem; border-radius: 999px; margin-bottom: 0.5rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Projectile Motion — Interactive Quiz</h1>
+  <p class="sub">These 8 questions target the mistakes students make most often on this unit. Answer everything, then click "Check My Answers" for instant explanations.</p>
+
+  <form id="quizForm"></form>
+  <button id="submitBtn" type="button" onclick="gradeQuiz()">Check My Answers</button>
+
+  <div id="results">
+    <div>Your score</div>
+    <div class="score" id="scoreText"></div>
+    <div id="scoreMsg"></div>
+    <div class="retry"><button type="button" onclick="location.reload()">Retake Quiz</button></div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    tag: "Independence of motion",
+    q: "A bullet is fired horizontally at the same instant an identical bullet is dropped from the same height. Which hits the ground first (ignore air resistance)?",
+    options: ["The fired bullet", "The dropped bullet", "They land at the same time", "Depends on the firing speed"],
+    correct: 2,
+    explain: "Vertical motion is independent of horizontal motion. Both bullets have the same initial vertical velocity (zero) and the same vertical acceleration (−g), so they hit the ground at the same time regardless of horizontal speed."
+  },
+  {
+    tag: "Velocity at max height",
+    q: "At the highest point of a projectile's trajectory (launched at an angle, not straight up), which is true?",
+    options: [
+      "Velocity is exactly zero",
+      "Vertical velocity is zero; horizontal velocity is unchanged and nonzero",
+      "Horizontal velocity is zero; vertical velocity is at a maximum",
+      "Both components are at their maximum"
+    ],
+    correct: 1,
+    explain: "Only the vertical component of velocity is zero at the peak. Horizontal velocity never changes during flight (a_x = 0), so it's still moving horizontally at the top — the overall velocity is not zero."
+  },
+  {
+    tag: "Decomposing velocity",
+    q: "A ball is launched at 10 m/s at 37° above horizontal. What is the correct vertical component of the initial velocity? (sin 37° ≈ 0.60, cos 37° ≈ 0.80)",
+    options: ["10 m/s", "8.0 m/s", "6.0 m/s", "0 m/s"],
+    correct: 2,
+    explain: "v_iy = v_i sin(θ) = 10 × 0.60 = 6.0 m/s. A common mistake is using cos instead of sin (that gives the horizontal component, 8.0 m/s) or forgetting to decompose at all."
+  },
+  {
+    tag: "Level-ground formulas don't always apply",
+    q: "A ball is thrown horizontally off a 30 m tall building. Which formula correctly gives the time until it lands?",
+    options: [
+      "t = (2 v_i sin θ) / g  (the standard range formula's time term)",
+      "Solve 30 = ½ g t² for t, since v_iy = 0 here",
+      "t = v_i / g",
+      "Time cannot be found without the horizontal speed"
+    ],
+    correct: 1,
+    explain: "This is a non-level launch, so the level-ground time-of-flight formula doesn't apply. Since the ball is thrown horizontally, v_iy = 0, and the fall distance is 30 m, so 30 = ½gt² solves directly for t. Horizontal speed has no effect on fall time."
+  },
+  {
+    tag: "Complementary angles",
+    q: "On level ground, a projectile launched at 25° has the same range as one launched at the same speed and:",
+    options: ["25° again only", "50°", "65°", "90°"],
+    correct: 2,
+    explain: "Complementary angles (summing to 90°) give equal range on level ground, because R ∝ sin(2θ) and sin(2×25°) = sin(50°) = sin(180°−50°) = sin(2×65°). So 25° and 65° match."
+  },
+  {
+    tag: "45° is not always optimal",
+    q: "A golfer wants maximum horizontal distance, but the ball will land in a sand trap that is LOWER than the tee. What launch angle gives maximum range in this case?",
+    options: ["Exactly 45°", "Less than 45°", "Greater than 45°", "90°"],
+    correct: 1,
+    explain: "45° only maximizes range when launch and landing heights are equal. When landing is lower than launch, the optimal angle is slightly less than 45° — extra time in the air from a higher angle matters less when you're already falling further."
+  },
+  {
+    tag: "Acceleration direction",
+    q: "During the entire flight of a projectile (no air resistance), the acceleration is:",
+    options: [
+      "Zero at the top, −g elsewhere",
+      "Always −g (downward), constant throughout the flight",
+      "Changes direction to match velocity",
+      "Equal to g upward on the way up, −g on the way down"
+    ],
+    correct: 1,
+    explain: "Gravity acts continuously and only vertically. Acceleration is a constant −g (downward) for the entire flight — it never changes, not even at the peak, and there is zero horizontal acceleration at any point."
+  },
+  {
+    tag: "Range formula variables",
+    q: "Doubling a projectile's initial speed (same angle, level ground) changes its range by a factor of:",
+    options: ["2", "4", "√2", "No change"],
+    correct: 1,
+    explain: "R = (v_i² sin2θ)/g — range depends on v_i squared. Doubling v_i multiplies range by 2² = 4, not 2. Forgetting the square on v_i is a common algebra slip."
+  }
+];
+
+const form = document.getElementById('quizForm');
+QUESTIONS.forEach((item, qi) => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="missed-tag">Often missed: ${item.tag}</div>
+    <div class="qnum">Question ${qi + 1}</div>
+    <div class="qtext">${item.q}</div>
+    <div class="opts">
+      ${item.options.map((opt, oi) => `
+        <label class="opt" id="q${qi}_opt${oi}">
+          <input type="radio" name="q${qi}" value="${oi}"> ${opt}
+        </label>
+      `).join('')}
+    </div>
+    <div class="feedback" id="q${qi}_feedback"></div>
+  `;
+  form.appendChild(card);
+});
+
+function gradeQuiz() {
+  let score = 0;
+  QUESTIONS.forEach((item, qi) => {
+    const selected = form.querySelector(`input[name="q${qi}"]:checked`);
+    const fb = document.getElementById(`q${qi}_feedback`);
+    const correctLabel = document.getElementById(`q${qi}_opt${item.correct}`);
+    correctLabel.classList.add('correct-answer');
+
+    if (!selected) {
+      fb.className = 'feedback incorrect';
+      fb.style.display = 'block';
+      fb.innerHTML = `<strong>Not answered.</strong> Correct answer: "${item.options[item.correct]}". ${item.explain}`;
+      return;
+    }
+    const chosen = parseInt(selected.value, 10);
+    if (chosen === item.correct) {
+      score++;
+      fb.className = 'feedback correct';
+      fb.innerHTML = `<strong>Correct!</strong> ${item.explain}`;
+    } else {
+      document.getElementById(`q${qi}_opt${chosen}`).classList.add('wrong-answer');
+      fb.className = 'feedback incorrect';
+      fb.innerHTML = `<strong>Not quite.</strong> Correct answer: "${item.options[item.correct]}". ${item.explain}`;
+    }
+    fb.style.display = 'block';
+  });
+
+  document.querySelectorAll('#quizForm input[type=radio]').forEach(r => r.disabled = true);
+  document.getElementById('submitBtn').disabled = true;
+
+  const pct = Math.round((score / QUESTIONS.length) * 100);
+  document.getElementById('scoreText').textContent = `${score} / ${QUESTIONS.length} (${pct}%)`;
+  const msg = pct >= 80
+    ? "Great work — you've met the 80% target for this unit."
+    : "Below the 80% target. Review the explanations above and the Cornell notes, then retake.";
+  document.getElementById('scoreMsg').textContent = msg;
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

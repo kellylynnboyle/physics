@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Momentum Quiz — Most Missed Questions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #0f172a; --card: #1e293b; --text: #e2e8f0; --muted: #94a3b8;
+    --accent: #38bdf8; --good: #22c55e; --bad: #ef4444; --border: #334155;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 2rem 1rem 4rem; background: var(--bg); color: var(--text);
+    font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
+  .sub { color: var(--muted); margin-bottom: 2rem; }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
+  }
+  .qnum { color: var(--accent); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .qtext { font-size: 1.05rem; margin: 0.4rem 0 0.9rem; }
+  label.opt {
+    display: block; padding: 0.6rem 0.8rem; margin-bottom: 0.5rem; border-radius: 8px;
+    border: 1px solid var(--border); cursor: pointer; transition: background 0.15s;
+  }
+  label.opt:hover { background: #263449; }
+  label.opt input { margin-right: 0.6rem; }
+  .feedback { display: none; margin-top: 0.8rem; padding: 0.75rem 0.9rem; border-radius: 8px; font-size: 0.95rem; }
+  .feedback.correct { display: block; background: rgba(34,197,94,0.12); border: 1px solid var(--good); }
+  .feedback.incorrect { display: block; background: rgba(239,68,68,0.12); border: 1px solid var(--bad); }
+  label.opt.correct-answer { border-color: var(--good); background: rgba(34,197,94,0.08); }
+  label.opt.wrong-answer { border-color: var(--bad); background: rgba(239,68,68,0.08); }
+  button {
+    background: var(--accent); color: #04263b; border: none; font-weight: 700;
+    padding: 0.75rem 1.6rem; border-radius: 8px; font-size: 1rem; cursor: pointer;
+  }
+  button:hover { filter: brightness(1.08); }
+  button:disabled { opacity: 0.5; cursor: default; }
+  #results {
+    display: none; text-align: center; padding: 1.5rem; border-radius: 10px;
+    background: var(--card); border: 1px solid var(--accent); margin-top: 1rem; font-size: 1.15rem;
+  }
+  #results .score { font-size: 2.2rem; font-weight: 800; color: var(--accent); }
+  .retry { margin-top: 1rem; }
+  .missed-tag { display: inline-block; font-size: 0.72rem; color: var(--muted); border: 1px solid var(--border); padding: 0.1rem 0.5rem; border-radius: 999px; margin-bottom: 0.5rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Momentum & Collisions — Interactive Quiz</h1>
+  <p class="sub">These 8 questions target the mistakes students make most often on this unit. Answer everything, then click "Check My Answers" for instant explanations.</p>
+
+  <form id="quizForm"></form>
+  <button id="submitBtn" type="button" onclick="gradeQuiz()">Check My Answers</button>
+
+  <div id="results">
+    <div>Your score</div>
+    <div class="score" id="scoreText"></div>
+    <div id="scoreMsg"></div>
+    <div class="retry"><button type="button" onclick="location.reload()">Retake Quiz</button></div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    tag: "Momentum is a vector",
+    q: "A 2 kg ball moving at +5 m/s bounces off a wall and moves at −3 m/s. What is the change in momentum, Δp?",
+    options: ["4 kg·m/s", "−16 kg·m/s", "16 kg·m/s", "2 kg·m/s"],
+    correct: 1,
+    explain: "Δp = p_f − p_i = (2)(−3) − (2)(5) = −6 − 10 = −16 kg·m/s. Because momentum is a vector, you must subtract the signed values, not just the magnitudes (which would incorrectly give 4 kg·m/s)."
+  },
+  {
+    tag: "Momentum vs. kinetic energy conservation",
+    q: "In a perfectly inelastic collision between two carts, which quantity is conserved?",
+    options: ["Kinetic energy only", "Momentum only", "Both momentum and kinetic energy", "Neither"],
+    correct: 1,
+    explain: "Momentum is conserved in every collision within an isolated system. Kinetic energy is NOT conserved in inelastic collisions (including perfectly inelastic) — some KE converts to heat, sound, or deformation."
+  },
+  {
+    tag: "Impulse and contact time",
+    q: "Two identical balls hit a wall with the same speed and same momentum change. Ball A bounces off a rigid wall in 0.01 s; Ball B bounces off a padded wall in 0.1 s. Which experiences the larger average force?",
+    options: ["Ball A (shorter contact time)", "Ball B (longer contact time)", "Both experience the same force", "Cannot be determined"],
+    correct: 0,
+    explain: "J = FΔt = Δp. Since Δp is the same for both but Δt is 10× smaller for Ball A, its average force must be 10× larger. This is why padding (increasing Δt) reduces impact force — the basis of airbags and crash padding."
+  },
+  {
+    tag: "Isolated systems",
+    q: "A car crashes into a wall and stops. Is momentum conserved for the car alone during this event?",
+    options: [
+      "Yes, momentum is always conserved for any object",
+      "No — the car is not an isolated system; the wall exerts an external force on it",
+      "Yes, because the car's mass doesn't change",
+      "Only if the collision is elastic"
+    ],
+    correct: 1,
+    explain: "Conservation of momentum applies to an ISOLATED system (no net external force). The car alone is not isolated — the wall exerts an external force on it, so the car's momentum by itself is NOT conserved. (Car + wall + Earth, taken together, would be, but that's not a useful system here.)"
+  },
+  {
+    tag: "Elastic vs. inelastic identification",
+    q: "A 1 kg cart moving at 4 m/s collides with an identical stationary 1 kg cart. After the collision, the first cart is at rest and the second moves at 4 m/s. Is this collision elastic?",
+    options: [
+      "No — objects must stick together for momentum to be conserved",
+      "Yes — check: KE_before = ½(1)(4²) = 8 J, KE_after = ½(1)(4²) = 8 J, so KE is conserved too",
+      "Cannot be determined without knowing the masses",
+      "No — momentum is not conserved here"
+    ],
+    correct: 1,
+    explain: "Momentum before = (1)(4) = 4 kg·m/s; after = (1)(0)+(1)(4) = 4 kg·m/s — conserved. KE before = 8 J; after = 8 J — also conserved. Since both are conserved, this is elastic. (This is the classic equal-mass 'velocity exchange' elastic collision result.)"
+  },
+  {
+    tag: "Mass and post-collision speed",
+    q: "A heavy truck and a light car collide head-on and stick together (perfectly inelastic). Which statement about their common final velocity is correct?",
+    options: [
+      "It equals the average of their initial speeds",
+      "It is weighted toward the truck's original velocity, because the truck has more momentum for the same speed",
+      "It equals the car's original velocity, since the truck is much heavier",
+      "It is always zero"
+    ],
+    correct: 1,
+    explain: "The final velocity is a momentum-weighted average: v_f = (m₁v₁ + m₂v₂)/(m₁+m₂). Since the truck has much greater mass, its momentum dominates the total, so the final velocity is closer to the truck's original velocity — not a simple average of speeds."
+  },
+  {
+    tag: "Impulse direction",
+    q: "A soccer ball moving to the right is kicked and reverses direction. The impulse delivered by the kick points:",
+    options: [
+      "To the right (same as the ball's original motion)",
+      "To the left (the direction the ball ends up moving, and the direction of the net force)",
+      "Impulse has no direction, only magnitude",
+      "Upward, since kicks always add vertical impulse"
+    ],
+    correct: 1,
+    explain: "Impulse J = Δp points in the same direction as the change in momentum, which here is to the left (from rightward to leftward motion). Impulse is a vector, matching the direction of the net force applied during the kick."
+  },
+  {
+    tag: "Explosions conserve momentum too",
+    q: "A 4 kg object at rest explodes into two 2 kg pieces. One piece flies off at +6 m/s. What is the velocity of the other piece?",
+    options: ["+6 m/s", "0 m/s", "−6 m/s", "−3 m/s"],
+    correct: 2,
+    explain: "Total momentum before the explosion is 0 (object at rest). After: (2)(6) + (2)(v) = 0 → v = −6 m/s. Momentum conservation applies to explosions just as much as collisions — students often forget this."
+  }
+];
+
+const form = document.getElementById('quizForm');
+QUESTIONS.forEach((item, qi) => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="missed-tag">Often missed: ${item.tag}</div>
+    <div class="qnum">Question ${qi + 1}</div>
+    <div class="qtext">${item.q}</div>
+    <div class="opts">
+      ${item.options.map((opt, oi) => `
+        <label class="opt" id="q${qi}_opt${oi}">
+          <input type="radio" name="q${qi}" value="${oi}"> ${opt}
+        </label>
+      `).join('')}
+    </div>
+    <div class="feedback" id="q${qi}_feedback"></div>
+  `;
+  form.appendChild(card);
+});
+
+function gradeQuiz() {
+  let score = 0;
+  QUESTIONS.forEach((item, qi) => {
+    const selected = form.querySelector(`input[name="q${qi}"]:checked`);
+    const fb = document.getElementById(`q${qi}_feedback`);
+    const correctLabel = document.getElementById(`q${qi}_opt${item.correct}`);
+    correctLabel.classList.add('correct-answer');
+
+    if (!selected) {
+      fb.className = 'feedback incorrect';
+      fb.style.display = 'block';
+      fb.innerHTML = `<strong>Not answered.</strong> Correct answer: "${item.options[item.correct]}". ${item.explain}`;
+      return;
+    }
+    const chosen = parseInt(selected.value, 10);
+    if (chosen === item.correct) {
+      score++;
+      fb.className = 'feedback correct';
+      fb.innerHTML = `<strong>Correct!</strong> ${item.explain}`;
+    } else {
+      document.getElementById(`q${qi}_opt${chosen}`).classList.add('wrong-answer');
+      fb.className = 'feedback incorrect';
+      fb.innerHTML = `<strong>Not quite.</strong> Correct answer: "${item.options[item.correct]}". ${item.explain}`;
+    }
+    fb.style.display = 'block';
+  });
+
+  document.querySelectorAll('#quizForm input[type=radio]').forEach(r => r.disabled = true);
+  document.getElementById('submitBtn').disabled = true;
+
+  const pct = Math.round((score / QUESTIONS.length) * 100);
+  document.getElementById('scoreText').textContent = `${score} / ${QUESTIONS.length} (${pct}%)`;
+  const msg = pct >= 80
+    ? "Great work — you've met the 80% target for this unit."
+    : "Below the 80% target. Review the explanations above and the Cornell notes, then retake.";
+  document.getElementById('scoreMsg').textContent = msg;
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
