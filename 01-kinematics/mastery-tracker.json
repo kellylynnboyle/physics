@@ -1,0 +1,27 @@
+{
+  "unit": "01-kinematics",
+  "created": "2026-08-19",
+  "lastUpdated": "2026-08-19",
+  "leitnerIntervalsDays": {
+    "1": 0,
+    "2": 2,
+    "3": 4,
+    "4": 8,
+    "5": 16
+  },
+  "concepts": {
+    "distance_displacement": { "label": "Distance vs. displacement", "box": 1, "attempts": 0, "correct": 0, "lastSeen": null, "lastQuestionId": null },
+    "speed_velocity": { "label": "Speed vs. velocity (avg & instantaneous)", "box": 1, "attempts": 0, "correct": 0, "lastSeen": null, "lastQuestionId": null },
+    "acceleration_sign": { "label": "Sign of acceleration vs. speeding up/slowing down", "box": 1, "attempts": 0, "correct": 0, "lastSeen": null, "lastQuestionId": null },
+    "kinematic_equations": { "label": "Choosing the right kinematic equation", "box": 1, "attempts": 0, "correct": 0, "lastSeen": null, "lastQuestionId": null },
+    "graphs_slope_area": { "label": "Motion graphs: slope vs. area", "box": 1, "attempts": 0, "correct": 0, "lastSeen": null, "lastQuestionId": null },
+    "free_fall_general": { "label": "Free fall — constant g for all masses", "box": 1, "attempts": 0, "correct": 0, "lastSeen": null, "lastQuestionId": null },
+    "free_fall_peak": { "label": "Free fall at the top of a throw", "box": 1, "attempts": 0, "correct": 0, "lastSeen": null, "lastQuestionId": null },
+    "constant_velocity_accel": { "label": "Constant velocity implies zero acceleration", "box": 1, "attempts": 0, "correct": 0, "lastSeen": null, "lastQuestionId": null }
+  },
+  "pendingSession": {
+    "date": "2026-08-19",
+    "questionIds": ["distance_displacement_1", "acceleration_sign_1", "free_fall_peak_1"]
+  },
+  "sessionLog": []
+}

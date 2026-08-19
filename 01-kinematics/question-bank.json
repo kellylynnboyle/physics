@@ -1,0 +1,247 @@
+{
+  "unit": "01-kinematics",
+  "concepts": [
+    "distance_displacement",
+    "speed_velocity",
+    "acceleration_sign",
+    "kinematic_equations",
+    "graphs_slope_area",
+    "free_fall_general",
+    "free_fall_peak",
+    "constant_velocity_accel"
+  ],
+  "questions": [
+    {
+      "id": "distance_displacement_1",
+      "concept": "distance_displacement",
+      "q": "A student walks 8 m east, then 3 m west. What is the student's displacement?",
+      "options": ["11 m east", "5 m east", "5 m west", "8 m east"],
+      "correct": 1,
+      "explain": "Displacement is net change in position: 8 m east − 3 m east = 5 m east. 11 m is the total distance, not displacement."
+    },
+    {
+      "id": "distance_displacement_2",
+      "concept": "distance_displacement",
+      "q": "A runner completes exactly one lap of a 400 m track, ending back at the start. What are the distance traveled and the displacement?",
+      "options": ["400 m; 400 m", "0 m; 400 m", "400 m; 0 m", "200 m; 400 m"],
+      "correct": 2,
+      "explain": "Distance is the full path length (400 m). Displacement is net change in position — since the runner ends where they started, displacement is 0."
+    },
+    {
+      "id": "distance_displacement_3",
+      "concept": "distance_displacement",
+      "q": "A hiker walks 6 km north, then 8 km east. What is the magnitude of the displacement? (Total distance walked is 14 km.)",
+      "options": ["14 km", "10 km", "2 km", "48 km"],
+      "correct": 1,
+      "explain": "Displacement is a vector, so use the Pythagorean theorem on the two perpendicular legs: sqrt(6² + 8²) = sqrt(100) = 10 km. Distance (14 km) is not the same as displacement magnitude."
+    },
+    {
+      "id": "speed_velocity_1",
+      "concept": "speed_velocity",
+      "q": "A car speeds up from 0 to 20 m/s in 4 s, with constant acceleration. What is the car's average velocity over that time?",
+      "options": ["20 m/s", "10 m/s", "5 m/s", "0 m/s"],
+      "correct": 1,
+      "explain": "For constant acceleration, average velocity = (v_i + v_f)/2 = (0+20)/2 = 10 m/s — not the final velocity."
+    },
+    {
+      "id": "speed_velocity_2",
+      "concept": "speed_velocity",
+      "q": "A car travels 100 km east in 2 hours, then 100 km west in 2 hours, ending back where it started. What are its average speed and average velocity for the whole 4-hour trip?",
+      "options": ["50 km/h; 50 km/h", "50 km/h; 0 km/h", "0 km/h; 0 km/h", "100 km/h; 0 km/h"],
+      "correct": 1,
+      "explain": "Average speed = total distance/time = 200 km/4 h = 50 km/h. Average velocity = displacement/time = 0 km/4 h = 0, since the car ends up where it started."
+    },
+    {
+      "id": "speed_velocity_3",
+      "concept": "speed_velocity",
+      "q": "A car's speedometer reads 60 km/h at one specific moment while driving. This reading is measuring:",
+      "options": ["Average velocity over the whole trip", "Instantaneous speed", "Average speed over the last hour", "Displacement"],
+      "correct": 1,
+      "explain": "A speedometer shows the speed at that instant — instantaneous speed — not an average over any time interval, and not a vector (velocity)."
+    },
+    {
+      "id": "acceleration_sign_1",
+      "concept": "acceleration_sign",
+      "q": "A car moving in the +x direction has a negative acceleration. What is definitely true?",
+      "options": [
+        "The car is slowing down",
+        "The car is speeding up",
+        "The car's velocity and acceleration point in opposite directions",
+        "The car is at rest"
+      ],
+      "correct": 2,
+      "explain": "The only thing guaranteed is that acceleration (−x) is opposite the car's velocity (+x). Whether that means 'slowing down' depends on knowing velocity's direction, which we do here — but the general, always-true fact is about the signs being opposite."
+    },
+    {
+      "id": "acceleration_sign_2",
+      "concept": "acceleration_sign",
+      "q": "An object moving in the −x direction has acceleration also in the −x direction (same sign). What is happening to its speed?",
+      "options": ["Speeding up", "Slowing down", "Constant speed", "Reversing direction immediately"],
+      "correct": 0,
+      "explain": "When velocity and acceleration share the same sign (same direction), the object speeds up — regardless of whether that direction is positive or negative."
+    },
+    {
+      "id": "acceleration_sign_3",
+      "concept": "acceleration_sign",
+      "q": "Which statement about acceleration is always true?",
+      "options": [
+        "Positive acceleration always means speeding up",
+        "Negative acceleration always means slowing down",
+        "The sign of acceleration alone doesn't tell you if an object speeds up or slows down — you need to compare it to velocity's sign",
+        "Acceleration is always in the same direction as velocity"
+      ],
+      "correct": 2,
+      "explain": "Speeding up vs. slowing down depends on whether acceleration and velocity have the same or opposite signs — not on the sign of acceleration by itself."
+    },
+    {
+      "id": "kinematic_equations_1",
+      "concept": "kinematic_equations",
+      "q": "You know initial velocity, final velocity, and displacement, but NOT time. Which kinematic equation solves directly for acceleration?",
+      "options": [
+        "v_f = v_i + at",
+        "Δx = v_i t + ½at²",
+        "v_f² = v_i² + 2aΔx",
+        "Δx = ½(v_i + v_f)t"
+      ],
+      "correct": 2,
+      "explain": "v_f² = v_i² + 2aΔx is the only one of the four kinematic equations that doesn't contain time — exactly what's needed when t is unknown."
+    },
+    {
+      "id": "kinematic_equations_2",
+      "concept": "kinematic_equations",
+      "q": "You know initial velocity, acceleration, and time, but not final velocity. Which equation lets you find displacement directly, without first computing v_f?",
+      "options": [
+        "v_f = v_i + at",
+        "Δx = v_i t + ½at²",
+        "v_f² = v_i² + 2aΔx",
+        "Δx = ½(v_i + v_f)t"
+      ],
+      "correct": 1,
+      "explain": "Δx = v_i t + ½at² uses only v_i, a, and t — exactly the three knowns here — to solve for displacement in one step."
+    },
+    {
+      "id": "kinematic_equations_3",
+      "concept": "kinematic_equations",
+      "q": "A car starts at rest and accelerates at 4 m/s² for 5 s. How far does it travel?",
+      "options": ["20 m", "50 m", "100 m", "10 m"],
+      "correct": 1,
+      "explain": "Δx = v_i t + ½at² = 0 + ½(4)(5²) = ½(4)(25) = 50 m."
+    },
+    {
+      "id": "graphs_slope_area_1",
+      "concept": "graphs_slope_area",
+      "q": "On a velocity-time graph, the AREA under the curve between two times represents:",
+      "options": ["Acceleration", "Displacement", "Speed", "Jerk"],
+      "correct": 1,
+      "explain": "Area under a v–t graph = displacement. Slope of a v–t graph is acceleration — these two are frequently swapped by mistake."
+    },
+    {
+      "id": "graphs_slope_area_2",
+      "concept": "graphs_slope_area",
+      "q": "On a position-time graph, a straight line with a steep positive slope represents:",
+      "options": ["High constant velocity", "High constant acceleration", "The object is at rest", "The object is slowing down"],
+      "correct": 0,
+      "explain": "Slope of a position-time graph is velocity. A steep straight (constant-slope) line means a large, constant velocity — not acceleration, which would require a curved x-t line."
+    },
+    {
+      "id": "graphs_slope_area_3",
+      "concept": "graphs_slope_area",
+      "q": "A velocity-time graph is a horizontal line above the t-axis (not at zero). What does this tell you?",
+      "options": [
+        "Velocity is zero; acceleration is constant",
+        "Velocity is constant (nonzero); acceleration is zero",
+        "Velocity is increasing; acceleration is constant",
+        "Both velocity and acceleration are zero"
+      ],
+      "correct": 1,
+      "explain": "A flat, nonzero line on a v–t graph means velocity isn't changing — constant nonzero velocity, and therefore zero slope, i.e., zero acceleration."
+    },
+    {
+      "id": "free_fall_general_1",
+      "concept": "free_fall_general",
+      "q": "A ball is thrown upward at 12 m/s from ground level (ignore air resistance). What is its speed when it returns to the same height it was thrown from?",
+      "options": ["0 m/s", "6 m/s", "12 m/s", "It depends on the mass of the ball"],
+      "correct": 2,
+      "explain": "By symmetry of free fall, an object returns to its launch height with the same speed it left, just directed downward. Mass doesn't affect free-fall motion."
+    },
+    {
+      "id": "free_fall_general_2",
+      "concept": "free_fall_general",
+      "q": "A heavy bowling ball and a light tennis ball are dropped from the same height at the same time (ignore air resistance). Which hits the ground first?",
+      "options": ["The bowling ball", "The tennis ball", "They land at the same time", "Depends on which is denser"],
+      "correct": 2,
+      "explain": "In free fall (no air resistance), acceleration is g for every object regardless of mass, so both fall together and land at the same time."
+    },
+    {
+      "id": "free_fall_general_3",
+      "concept": "free_fall_general",
+      "q": "An object is dropped from rest and falls for 2.0 s. How far does it fall? (g = 9.8 m/s²)",
+      "options": ["9.8 m", "19.6 m", "39.2 m", "4.9 m"],
+      "correct": 1,
+      "explain": "Δx = ½gt² = ½(9.8)(2.0²) = ½(9.8)(4) = 19.6 m."
+    },
+    {
+      "id": "free_fall_peak_1",
+      "concept": "free_fall_peak",
+      "q": "A ball is thrown straight up. At the exact top of its path, what is true about its velocity and acceleration?",
+      "options": [
+        "Both velocity and acceleration are zero",
+        "Velocity is zero; acceleration is still −g",
+        "Velocity is at its maximum; acceleration is zero",
+        "Velocity is zero; acceleration is also zero momentarily, then returns to −g"
+      ],
+      "correct": 1,
+      "explain": "Velocity is momentarily zero at the peak, but gravity never stops acting — acceleration is −g for the entire flight, including at the top."
+    },
+    {
+      "id": "free_fall_peak_2",
+      "concept": "free_fall_peak",
+      "q": "A ball thrown straight up takes 1.5 s to reach its highest point. How long does the entire trip (up, then back down to launch height) take?",
+      "options": ["1.5 s", "2.25 s", "3.0 s", "Cannot be determined"],
+      "correct": 2,
+      "explain": "Free fall is symmetric: time up equals time down (when launch and landing heights match), so total time = 2 × 1.5 s = 3.0 s."
+    },
+    {
+      "id": "free_fall_peak_3",
+      "concept": "free_fall_peak",
+      "q": "At the instant a ball thrown upward reaches its peak height, which statement is correct?",
+      "options": [
+        "The net force on it is zero",
+        "Gravity is still pulling down on it with full force",
+        "It has stopped accelerating",
+        "It momentarily has no weight"
+      ],
+      "correct": 1,
+      "explain": "Gravity acts continuously on the ball throughout its flight, including at the peak — it does not switch off just because velocity is momentarily zero."
+    },
+    {
+      "id": "constant_velocity_accel_1",
+      "concept": "constant_velocity_accel",
+      "q": "An object moves with constant velocity. What is its acceleration?",
+      "options": ["Cannot be determined", "Equal to g", "Zero", "Equal to the velocity"],
+      "correct": 2,
+      "explain": "If velocity isn't changing, Δv = 0 over any Δt, so a = Δv/Δt = 0."
+    },
+    {
+      "id": "constant_velocity_accel_2",
+      "concept": "constant_velocity_accel",
+      "q": "An object's velocity-time graph is a horizontal line at −5 m/s (constant velocity in the negative direction). What is its acceleration?",
+      "options": ["−5 m/s²", "0 m/s²", "5 m/s²", "Cannot be determined without more info"],
+      "correct": 1,
+      "explain": "A constant velocity — even a negative constant — always means zero acceleration. The value of the velocity itself is irrelevant to whether it's changing."
+    },
+    {
+      "id": "constant_velocity_accel_3",
+      "concept": "constant_velocity_accel",
+      "q": "If an object's acceleration is zero at some instant, does that mean its velocity is also zero at that instant?",
+      "options": [
+        "Yes, always",
+        "No — zero acceleration only means velocity isn't changing at that instant; it can be any nonzero constant value",
+        "Only if it started at rest",
+        "Only during free fall"
+      ],
+      "correct": 1,
+      "explain": "Zero acceleration means velocity is momentarily constant — it says nothing about the value of that velocity, which can be large, small, positive, or negative, just not changing."
+    }
+  ]
+}

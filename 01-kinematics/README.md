@@ -80,3 +80,10 @@ By the end of this unit, students should be able to:
 - Dropping the sign on displacement/velocity in free-fall problems
 
 See `cornell-notes.md` for guided notes and `quiz.html` for the interactive quiz.
+
+## Self-improvement loop
+
+This unit also has a spaced-repetition loop that runs on a schedule and
+targets whichever concepts above are weakest — see `ADAPTIVE-LOOP.md` for
+how it works, `question-bank.json` for the question pool, and
+`mastery-tracker.json` for live per-concept progress.
