@@ -1,0 +1,1102 @@
+<title>Mechanics Diagnostics</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f6f5;
+    --surface: #ffffff;
+    --surface-raised: #ffffff;
+    --ink: #1e2a33;
+    --ink-soft: #51606b;
+    --ink-faint: #7c8992;
+    --accent: #2f5d8a;
+    --accent-ink: #ffffff;
+    --accent-soft: #dce8f2;
+    --accent-soft-ink: #1e4266;
+    --good: #2f7a4f;
+    --good-soft: #e2f2e7;
+    --good-ink: #1c5636;
+    --bad: #b23a3a;
+    --bad-soft: #f7e6e6;
+    --bad-ink: #7e2626;
+    --line: #d7dee1;
+    --line-soft: #e6ebed;
+    --shadow: 0 1px 2px rgba(30, 42, 51, 0.06), 0 8px 24px -12px rgba(30, 42, 51, 0.18);
+    --radius: 10px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #10161b;
+      --surface: #1a232b;
+      --surface-raised: #202b34;
+      --ink: #e7edf0;
+      --ink-soft: #9fb0ba;
+      --ink-faint: #6f818b;
+      --accent: #7eb0de;
+      --accent-ink: #0d1a24;
+      --accent-soft: #223244;
+      --accent-soft-ink: #bcdaf2;
+      --good: #5fbf83;
+      --good-soft: #16281d;
+      --good-ink: #8fe0ab;
+      --bad: #e08181;
+      --bad-soft: #2c1818;
+      --bad-ink: #f0aaaa;
+      --line: #2a353e;
+      --line-soft: #212b32;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #10161b;
+    --surface: #1a232b;
+    --surface-raised: #202b34;
+    --ink: #e7edf0;
+    --ink-soft: #9fb0ba;
+    --ink-faint: #6f818b;
+    --accent: #7eb0de;
+    --accent-ink: #0d1a24;
+    --accent-soft: #223244;
+    --accent-soft-ink: #bcdaf2;
+    --good: #5fbf83;
+    --good-soft: #16281d;
+    --good-ink: #8fe0ab;
+    --bad: #e08181;
+    --bad-soft: #2c1818;
+    --bad-ink: #f0aaaa;
+    --line: #2a353e;
+    --line-soft: #212b32;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+  }
+
+  body {
+    font-family: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 5rem;
+  }
+
+  header.masthead {
+    margin-bottom: 2rem;
+  }
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  h1 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    line-height: 1.1;
+    margin: 0.35rem 0 0.6rem;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+
+  .dek {
+    color: var(--ink-soft);
+    max-width: 62ch;
+    font-size: 1.02rem;
+    margin: 0;
+  }
+
+  nav.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 1.75rem 0 1.5rem;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 1rem;
+  }
+
+  .tab-btn {
+    font-family: "Source Sans 3", sans-serif;
+    font-weight: 600;
+    font-size: 0.88rem;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink-soft);
+    padding: 0.5rem 0.85rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .tab-btn .n {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    color: var(--ink-faint);
+  }
+
+  .tab-btn:hover {
+    border-color: var(--accent);
+    color: var(--ink);
+  }
+
+  .tab-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .tab-btn[aria-selected="true"] {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
+  }
+
+  .tab-btn[aria-selected="true"] .n {
+    color: var(--accent-ink);
+    opacity: 0.75;
+  }
+
+  .unit-panel { display: none; }
+  .unit-panel.active { display: block; }
+
+  .unit-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
+
+  .unit-head h2 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 600;
+    font-size: 1.35rem;
+    margin: 0;
+  }
+
+  .score-chip {
+    font-family: "IBM Plex Mono", monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.85rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.35rem 0.75rem;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+
+  .score-chip strong { color: var(--ink); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.25rem 1.35rem 1.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .q-index {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+  }
+
+  .q-stem {
+    font-size: 1.03rem;
+    font-weight: 600;
+    margin: 0.3rem 0 0.9rem;
+    line-height: 1.4;
+  }
+
+  .options {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    text-align: left;
+    width: 100%;
+    border: 1px solid var(--line);
+    background: var(--surface-raised);
+    color: var(--ink);
+    border-radius: 8px;
+    padding: 0.65rem 0.8rem;
+    font: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .opt:hover:not(:disabled) {
+    border-color: var(--accent);
+  }
+
+  .opt:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  .opt:disabled { cursor: default; }
+
+  .opt .letter {
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+
+  .opt.correct {
+    border-color: var(--good);
+    background: var(--good-soft);
+  }
+  .opt.correct .letter {
+    border-color: var(--good);
+    color: var(--good-ink);
+  }
+
+  .opt.incorrect {
+    border-color: var(--bad);
+    background: var(--bad-soft);
+  }
+  .opt.incorrect .letter {
+    border-color: var(--bad);
+    color: var(--bad-ink);
+  }
+
+  .explain {
+    margin-top: 0.85rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 8px;
+    background: var(--accent-soft);
+    color: var(--accent-soft-ink);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    display: none;
+  }
+
+  .explain.show { display: block; }
+
+  .explain .tag {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.3rem;
+    opacity: 0.85;
+  }
+
+  .unit-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .summary-line {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+
+  .summary-line strong {
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  button.reset {
+    font-family: "Source Sans 3", sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    background: var(--surface);
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.5rem 0.9rem;
+    cursor: pointer;
+  }
+
+  button.reset:hover { border-color: var(--accent); color: var(--ink); }
+  button.reset:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  footer.note {
+    margin-top: 2.5rem;
+    font-size: 0.82rem;
+    color: var(--ink-faint);
+    border-top: 1px solid var(--line-soft);
+    padding-top: 1.25rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+
+<div class="page">
+  <header class="masthead">
+    <div class="eyebrow">11th Grade Physics · Mechanics</div>
+    <h1>Most-Missed Question Diagnostics</h1>
+    <p class="dek">Seven questions per unit, drawn from the misconceptions students hit most often. Pick an answer to see whether it's right — every option gets an explanation, not just the correct one, so this doubles as review.</p>
+  </header>
+
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Units"></nav>
+
+  <div id="panels"></div>
+
+  <footer class="note">Scores reset on page reload — this is a practice tool, not a gradebook. Companion Cornell notes for each unit live in <code>topics/</code>.</footer>
+</div>
+
+<script>
+  const UNITS = [
+    {
+      id: "kinematics",
+      label: "Kinematics",
+      questions: [
+        {
+          stem: "A runner completes exactly one full lap of a 400 m track. What is their displacement?",
+          options: [
+            "400 m",
+            "0 m",
+            "Depends on their average speed",
+            "200 m"
+          ],
+          correct: 1,
+          explain: {
+            0: "That's the distance traveled (the full path length), not the displacement.",
+            1: "Correct — displacement is straight-line change in position. Start and end points are identical, so displacement is 0 m, even though distance traveled was 400 m.",
+            2: "Speed doesn't affect displacement — displacement depends only on start and end position.",
+            3: "200 m would be the displacement at the halfway point of the lap, not at the end."
+          }
+        },
+        {
+          stem: "On a velocity-time graph, what does the area under the curve represent?",
+          options: [
+            "Acceleration",
+            "Displacement",
+            "Average speed",
+            "Jerk"
+          ],
+          correct: 1,
+          explain: {
+            0: "Acceleration is the *slope* of a v-t graph, not the area.",
+            1: "Correct — area under a v-t graph (velocity × time, accounting for sign) equals displacement.",
+            2: "Average speed can be read off the graph in other ways, but the area itself gives displacement, a vector.",
+            3: "Jerk (rate of change of acceleration) isn't represented by area or slope on a v-t graph."
+          }
+        },
+        {
+          stem: "A ball is thrown straight up. Taking 'up' as positive, what is its acceleration at the exact top of its flight, the instant its velocity is zero?",
+          options: [
+            "0 m/s², since velocity is momentarily zero",
+            "+9.8 m/s²",
+            "−9.8 m/s²",
+            "Undefined at that instant"
+          ],
+          correct: 2,
+          explain: {
+            0: "This is the most common free-fall misconception: velocity being zero does NOT mean acceleration is zero. Gravity never switches off.",
+            1: "Gravity points downward throughout the flight, so with 'up' as positive it stays negative, even at the peak.",
+            2: "Correct — acceleration due to gravity is constant at −9.8 m/s² for the entire flight, including the instant velocity = 0.",
+            3: "Acceleration is well-defined and constant throughout projectile-style vertical motion."
+          }
+        },
+        {
+          stem: "Which kinematic equation should you use to relate v₀, v, a, and Δx directly, with no time variable at all?",
+          options: [
+            "v = v₀ + at",
+            "Δx = v₀t + ½at²",
+            "v² = v₀² + 2aΔx",
+            "Δx = ½(v₀ + v)t"
+          ],
+          correct: 2,
+          explain: {
+            0: "This equation still includes t.",
+            1: "This equation still includes t.",
+            2: "Correct — this is the only one of the four standard kinematic equations that omits time entirely.",
+            3: "This equation still includes t."
+          }
+        },
+        {
+          stem: "A velocity-time graph shows a perfectly horizontal line above the t-axis. What does this describe?",
+          options: [
+            "The object is at rest",
+            "The object moves at constant, nonzero velocity (zero acceleration)",
+            "The object is accelerating at a constant rate",
+            "The object is in free fall"
+          ],
+          correct: 1,
+          explain: {
+            0: "A horizontal line at v = 0 would mean rest; a horizontal line above the axis means constant nonzero speed.",
+            1: "Correct — a flat, nonzero line on a v-t graph means velocity isn't changing, so acceleration is exactly zero.",
+            2: "A constant slope (not a flat line) would indicate constant acceleration; a flat line means zero slope, i.e., zero acceleration.",
+            3: "Free fall produces a straight sloped line (constant nonzero acceleration), not a flat one."
+          }
+        },
+        {
+          stem: "A car's average velocity over a 10-second interval is 20 m/s. Which statement is necessarily true?",
+          options: [
+            "The car's velocity was exactly 20 m/s at every instant during those 10 s",
+            "The car traveled 200 m of displacement during those 10 s",
+            "The car was accelerating the whole time",
+            "The car never exceeded 20 m/s"
+          ],
+          correct: 1,
+          explain: {
+            0: "Average velocity doesn't require constant velocity — the car could speed up and slow down and still average 20 m/s.",
+            1: "Correct — by definition, average velocity = displacement / time, so displacement = 20 m/s × 10 s = 200 m.",
+            2: "Nothing about an average value tells you whether acceleration was present at every moment.",
+            3: "An average of 20 m/s is consistent with speeds both above and below 20 m/s during the interval."
+          }
+        },
+        {
+          stem: "Two identical balls are dropped from the same height, one on Earth and one on the Moon (no air resistance either place). Which falls with greater acceleration?",
+          options: [
+            "The one on Earth, because Earth's gravity is stronger",
+            "The one on the Moon, because there's no atmosphere",
+            "They fall with identical acceleration since mass is the same",
+            "It depends on each ball's mass"
+          ],
+          correct: 0,
+          explain: {
+            0: "Correct — free-fall acceleration depends on the local gravitational field (g ≈ 9.8 m/s² on Earth vs. ≈1.6 m/s² on the Moon), not on the object's mass.",
+            1: "Atmosphere (or lack of it) affects air resistance, not the underlying gravitational acceleration.",
+            2: "Mass being identical is irrelevant here — the two locations simply have different g values.",
+            3: "Free-fall acceleration (ignoring air resistance) does not depend on an object's own mass at all."
+          }
+        }
+      ]
+    },
+    {
+      id: "projectile",
+      label: "Projectile Motion",
+      questions: [
+        {
+          stem: "A projectile is launched at an angle above the horizontal. What happens to its horizontal velocity (vₓ) during flight, ignoring air resistance?",
+          options: [
+            "It decreases steadily due to gravity",
+            "It stays constant the entire flight",
+            "It increases as the projectile falls",
+            "It becomes zero at the peak of the trajectory"
+          ],
+          correct: 1,
+          explain: {
+            0: "Gravity acts only vertically — it has no horizontal component to slow vₓ down.",
+            1: "Correct — with no horizontal force, vₓ is constant for the entire flight. Only v_y changes, due to gravity.",
+            2: "There's no horizontal force to increase vₓ either; it simply stays the same.",
+            3: "vₓ is unaffected by the vertical motion; it's v_y, not vₓ, that equals zero at the peak."
+          }
+        },
+        {
+          stem: "A projectile is launched at 30° and another at 60°, both at the same speed, on level ground. How do their ranges compare?",
+          options: [
+            "The 60° launch goes twice as far",
+            "The 30° launch goes twice as far",
+            "They land at the same horizontal distance (equal range)",
+            "It's impossible to know without the launch speed"
+          ],
+          correct: 2,
+          explain: {
+            0: "Range depends on sin(2θ); sin(60°) and sin(120°) are equal, so ranges match — 60° doesn't go farther.",
+            1: "Same reasoning — 30° and 60° are complementary angles and produce equal range, not one twice the other.",
+            2: "Correct — 30° and 60° are complementary angles (they sum to 90°), and R = v₀²sin(2θ)/g gives the same range for complementary angle pairs, even though their flight time and max height differ.",
+            3: "You don't need the actual speed value to compare — complementary angles always give equal range at a given shared speed."
+          }
+        },
+        {
+          stem: "A ball is thrown purely horizontally off a cliff. What is its initial vertical velocity (v_y) at the moment of launch?",
+          options: [
+            "Equal to the horizontal launch speed",
+            "Zero",
+            "Equal to g",
+            "Cannot be determined without the cliff height"
+          ],
+          correct: 1,
+          explain: {
+            0: "A purely horizontal launch has no vertical component of initial velocity at all.",
+            1: "Correct — for a horizontal launch, all of the initial velocity is horizontal, so v_y₀ = 0. Vertical velocity only builds up afterward, due to gravity.",
+            2: "g is an acceleration, not a velocity — it's the rate v_y grows during the fall, not the starting value.",
+            3: "Cliff height affects total fall time, not the initial vertical velocity, which is 0 for any horizontal launch regardless of height."
+          }
+        },
+        {
+          stem: "For a projectile launched and landing at the same height, how does the time to reach maximum height compare to the total flight time?",
+          options: [
+            "They're equal",
+            "Time to max height is exactly half of the total flight time",
+            "Time to max height is always longer than the total flight time",
+            "There's no fixed relationship between them"
+          ],
+          correct: 1,
+          explain: {
+            0: "If they were equal, the projectile would land the instant it reached its peak, which isn't the case.",
+            1: "Correct — the trajectory is symmetric when launch and landing heights match, so rising and falling take equal time, making the rise exactly half of the total flight time.",
+            2: "Time to max height must be a *portion* of the total flight time, never longer than the whole.",
+            3: "For equal launch/landing height, the relationship is fixed: exactly half, due to the trajectory's symmetry."
+          }
+        },
+        {
+          stem: "A student sets up a problem for a ball launched at an angle and writes: 'y = v₀t − ½gt².' What is the error?",
+          options: [
+            "There is no error — this is correct",
+            "v₀ should be replaced with v₀ sin θ, the vertical component only",
+            "The ½ should not be there",
+            "g should be positive, not implicitly subtracted"
+          ],
+          correct: 1,
+          explain: {
+            0: "There is an error — the equation mixes the full launch speed into a purely vertical equation.",
+            1: "Correct — the vertical equation needs only the vertical component of initial velocity, v₀ sin θ, not the full speed v₀. Using the full v₀ is one of the most common projectile-motion mistakes.",
+            2: "The ½at² term is correct as part of the standard kinematic equation.",
+            3: "Subtracting g (as −½gt²) is correct when 'up' is defined as positive, since gravity acts downward."
+          }
+        },
+        {
+          stem: "A cannonball is launched at 25° above horizontal from the top of a hill and lands in a valley below the launch point. Which formula correctly gives its range?",
+          options: [
+            "R = v₀²sin(2θ)/g, since this always works for any projectile",
+            "The standard range formula, because only the angle matters",
+            "You need a full kinematic solution — the standard range formula doesn't apply since landing height ≠ launch height",
+            "Range can't be calculated unless velocity is purely horizontal"
+          ],
+          correct: 2,
+          explain: {
+            0: "That formula assumes equal launch and landing heights — it does not apply here, since the valley is lower than the hill.",
+            1: "The angle isn't the only relevant factor — the height difference invalidates the simplified formula.",
+            2: "Correct — the short range formula only applies to equal launch/landing heights. With different heights, you must find the actual flight time from the vertical motion equation, then use that in x = vₓt.",
+            3: "Range absolutely can be calculated for angled launches; it just requires the full kinematic approach here rather than the shortcut formula."
+          }
+        },
+        {
+          stem: "Why does a projectile launched at exactly 45° (on level ground) achieve the maximum possible range for a given launch speed?",
+          options: [
+            "Because it has the greatest possible initial speed",
+            "Because 45° maximizes the height reached",
+            "Because sin(2θ) is maximized when θ = 45°, since 2θ = 90°",
+            "Because at 45°, horizontal and vertical velocities are both zero"
+          ],
+          correct: 2,
+          explain: {
+            0: "Launch speed is given/fixed in this comparison — angle is what's varying, not speed.",
+            1: "45° does not maximize height — steeper angles (closer to 90°) reach greater maximum height, just with less range.",
+            2: "Correct — Range ∝ sin(2θ), and sin(2θ) peaks at 2θ = 90°, i.e., θ = 45°, which is why it gives maximum range for a fixed launch speed.",
+            3: "At 45°, vₓ and v_y are equal to each other (not zero) at launch — neither velocity component is zero."
+          }
+        }
+      ]
+    },
+    {
+      id: "newton",
+      label: "Newton's Laws",
+      questions: [
+        {
+          stem: "A puck slides across frictionless ice at a constant 5 m/s. What is the net force acting on it?",
+          options: [
+            "A constant force in the direction of motion, to keep it moving",
+            "Zero net force",
+            "A force opposing motion, gradually slowing it",
+            "Cannot be determined without the puck's mass"
+          ],
+          correct: 1,
+          explain: {
+            0: "This is the classic 'motion requires a sustaining force' misconception. Newton's First Law says constant velocity requires zero net force, not a maintaining force.",
+            1: "Correct — constant velocity (including this case) means zero acceleration, which by F_net = ma means zero net force.",
+            2: "There's no friction on frictionless ice, so nothing opposes the motion, and the puck does not slow down.",
+            3: "Since acceleration is zero, F_net = ma = 0 regardless of mass — mass isn't needed to answer this."
+          }
+        },
+        {
+          stem: "A box rests on a table. Which pair of forces is the true Newton's Third Law reaction pair for 'gravity pulling the box down'?",
+          options: [
+            "Gravity on the box, and the normal force from the table on the box",
+            "Gravity on the box, and the box's own gravitational pull on Earth",
+            "The normal force on the box, and the box pushing down on the table",
+            "There is no reaction pair for gravity"
+          ],
+          correct: 1,
+          explain: {
+            0: "This is a very common mix-up — gravity and the normal force are two *different* forces balancing on the *same* object (the box), not a third-law pair.",
+            1: "Correct — third-law pairs act on two different objects. Earth pulls the box down; the box pulls Earth up (toward it) with equal force. Tiny compared to Earth's mass, but real.",
+            2: "That pair IS a valid third-law pair — but it's the reaction pair for the *normal force*, not for gravity.",
+            3: "Every force has a third-law reaction pair, including gravity — it's just often overlooked because Earth's response is imperceptible."
+          }
+        },
+        {
+          stem: "A 4 kg box is pushed with 12 N horizontally on a rough floor, moving at constant velocity. What is the friction force acting on it?",
+          options: [
+            "0 N, since the box is not accelerating",
+            "12 N, opposing the push",
+            "Impossible to know without the coefficient of friction",
+            "48 N, from F = ma using m = 4 kg"
+          ],
+          correct: 1,
+          explain: {
+            0: "Constant velocity means net force is zero, but that doesn't mean *individual* forces like friction are zero — it means they balance the applied force.",
+            1: "Correct — for constant velocity, F_net = 0, so friction must exactly balance the 12 N applied force, meaning f = 12 N.",
+            2: "You don't need μ here — Newton's First Law (zero net force at constant velocity) is enough to find friction directly from force balance.",
+            3: "F = ma would give the net force if there were acceleration, but there is none here (constant velocity means a = 0)."
+          }
+        },
+        {
+          stem: "An astronaut has a mass of 80 kg on Earth. What is their mass on the Moon (g_moon ≈ 1.6 m/s²)?",
+          options: [
+            "About 13 kg",
+            "80 kg — mass doesn't change with location",
+            "784 N",
+            "128 kg"
+          ],
+          correct: 1,
+          explain: {
+            0: "That's roughly what their *weight in kilograms-equivalent* might look like using Moon gravity mixed with Earth weight — but mass itself does not scale with g.",
+            1: "Correct — mass is the amount of matter in an object and does not change with location. Only weight (the force of gravity on that mass) changes.",
+            2: "784 N would be close to the astronaut's *weight on Earth* (80 × 9.8), and it's also the wrong unit for mass (N is a force unit, not a mass unit).",
+            3: "There's no physical reason mass would increase on the Moon — mass is location-independent."
+          }
+        },
+        {
+          stem: "A block sits motionless on a 15° incline with visible friction. Which force is most commonly left off a student's free-body diagram in this situation?",
+          options: [
+            "Gravity",
+            "The normal force",
+            "Friction",
+            "Tension"
+          ],
+          correct: 2,
+          explain: {
+            0: "Gravity is rarely forgotten — it's the most intuitive force to include.",
+            1: "The normal force is usually included since it's the obvious 'the surface pushes back' force.",
+            2: "Correct — friction is the most frequently missing force on an incline FBD, especially when the object is at rest, since students often only draw forces for moving objects.",
+            3: "There's no string in this scenario, so tension shouldn't be on the diagram at all."
+          }
+        },
+        {
+          stem: "A box on a frictionless incline experiences a normal force. Which statement about that normal force is correct?",
+          options: [
+            "It always equals mg, regardless of the incline angle",
+            "It equals mg cos θ, where θ is the incline angle",
+            "It equals mg sin θ, where θ is the incline angle",
+            "It equals zero on a frictionless surface"
+          ],
+          correct: 1,
+          explain: {
+            0: "Normal force equals the full weight only on a flat, horizontal surface — it's reduced on an incline.",
+            1: "Correct — when axes are tilted along the incline, gravity splits into mg sin θ (along the slope) and mg cos θ (into the slope, balanced by the normal force).",
+            2: "mg sin θ is the component of gravity along the slope (what accelerates the block down the incline), not the normal force.",
+            3: "Normal force exists whenever surfaces are in contact and pressed together — friction being absent doesn't remove the normal force."
+          }
+        },
+        {
+          stem: "Two identical carts, one on Earth and one in a hypothetical zero-friction/zero-gravity environment, are each pushed with the same 10 N force. Compared to Earth (with friction), how does the cart's acceleration in the frictionless, gravity-free environment compare?",
+          options: [
+            "It's smaller, since gravity normally helps things move",
+            "It's the same, since gravity is irrelevant to horizontal acceleration either way",
+            "It's larger, because there's no friction opposing the applied force",
+            "It's undefined without friction to react against"
+          ],
+          correct: 2,
+          explain: {
+            0: "Gravity doesn't 'help' horizontal motion — it acts vertically and (on Earth) is balanced by the normal force, but it can still affect friction, indirectly slowing the cart.",
+            1: "On Earth, some of the 10 N is used to overcome friction, which lowers net force and thus acceleration compared to a frictionless case — so they are not equal.",
+            2: "Correct — with friction removed, the entire 10 N becomes net force (F_net = ma), producing a larger acceleration than on the frictional Earth surface, where friction opposes part of the push.",
+            3: "Motion (and Newton's Second Law) works fine without friction — an object doesn't need friction to accelerate; F = ma applies with any net force, frictional or not."
+          }
+        }
+      ]
+    },
+    {
+      id: "momentum",
+      label: "Momentum",
+      questions: [
+        {
+          stem: "In a perfectly inelastic collision between two objects, which quantity is conserved?",
+          options: [
+            "Both momentum and kinetic energy",
+            "Momentum only",
+            "Kinetic energy only",
+            "Neither"
+          ],
+          correct: 1,
+          explain: {
+            0: "Kinetic energy is NOT conserved in inelastic collisions — some always converts to heat, sound, or deformation.",
+            1: "Correct — momentum is conserved in any isolated collision, elastic or not. Kinetic energy is only conserved in elastic collisions.",
+            2: "It's the opposite: momentum, not kinetic energy, is what's guaranteed to be conserved here.",
+            3: "Momentum is always conserved in an isolated system, regardless of collision type."
+          }
+        },
+        {
+          stem: "A 2 kg cart moving at +3 m/s collides head-on with a 2 kg cart moving at −3 m/s (opposite direction). What is the total momentum of the system before the collision?",
+          options: [
+            "12 kg·m/s",
+            "6 kg·m/s",
+            "0 kg·m/s",
+            "−12 kg·m/s"
+          ],
+          correct: 2,
+          explain: {
+            0: "This would result from adding magnitudes and ignoring direction — momentum is a vector, so signs must be included.",
+            1: "This treats both velocities as positive, ignoring that one cart moves in the negative direction.",
+            2: "Correct — p₁ + p₂ = (2)(3) + (2)(−3) = 6 − 6 = 0 kg·m/s. The opposite-direction momenta cancel exactly.",
+            3: "This would result from a sign error in the opposite direction — the correct total is 0, not a negative value."
+          }
+        },
+        {
+          stem: "Two carts of mass m₁ = 3 kg and m₂ = 2 kg collide and stick together, moving off at a common final velocity of 4 m/s. What mass should be used in p_final = mv?",
+          options: [
+            "Just m₁ = 3 kg",
+            "Just m₂ = 2 kg",
+            "The combined mass, m₁ + m₂ = 5 kg",
+            "The average of the two masses, 2.5 kg"
+          ],
+          correct: 2,
+          explain: {
+            0: "Using only one cart's mass ignores that they're now moving together as a single combined object.",
+            1: "Same issue — after sticking together, both masses move as one unit and must both be counted.",
+            2: "Correct — in a perfectly inelastic collision, the objects move together afterward, so the final momentum is (m₁ + m₂) × v_common.",
+            3: "Averaging the masses is not physically meaningful here — the actual combined mass (sum, not average) determines final momentum."
+          }
+        },
+        {
+          stem: "A boxer's glove exerts the same average force on two different punches, but one punch has a much longer contact time with the target than the other. Which punch delivers greater impulse?",
+          options: [
+            "They deliver equal impulse, since the force is the same",
+            "The punch with the shorter contact time",
+            "The punch with the longer contact time",
+            "Impulse doesn't depend on contact time, only force"
+          ],
+          correct: 2,
+          explain: {
+            0: "Impulse = FΔt — with force held equal, differing contact time (Δt) means differing impulse, so they are not equal.",
+            1: "A shorter contact time, with force held equal, produces *less* impulse, not more.",
+            2: "Correct — since J = FΔt, and force is the same in both cases, the punch with the longer contact time transfers more impulse (and hence a bigger momentum change) to the target.",
+            3: "Impulse fundamentally depends on both force AND the time over which it acts — that's the entire content of the impulse-momentum theorem."
+          }
+        },
+        {
+          stem: "A moving billiard ball strikes a stationary one of equal mass. Should the stationary ball's momentum be included in the system's total momentum calculation before the collision?",
+          options: [
+            "No, since it isn't moving, it contributes nothing to consider",
+            "Yes — its momentum is 0, but it's still part of the system's total momentum",
+            "Only after the collision, not before",
+            "Only if it has more mass than the moving ball"
+          ],
+          correct: 1,
+          explain: {
+            0: "It should be included, even though its contribution happens to be zero — omitting an object from a system entirely (rather than including it with p = 0) is the actual error to avoid.",
+            1: "Correct — every object in the system counts. The stationary ball simply contributes p = mv = 0 before the collision, but it's still explicitly part of Σp_before.",
+            2: "It's part of the system both before and after — conservation of momentum requires tracking the full system consistently at each stage.",
+            3: "Mass comparison is irrelevant to whether an object should be included — every object in the system counts, regardless of relative mass."
+          }
+        },
+        {
+          stem: "In a 2-D collision on a frictionless table, how should momentum conservation be applied?",
+          options: [
+            "Conserve the total magnitude of momentum only",
+            "Conserve momentum separately along the x-axis and the y-axis",
+            "Only conserve momentum along the direction of the incoming object's motion",
+            "2-D momentum conservation isn't possible — only 1-D collisions conserve momentum"
+          ],
+          correct: 1,
+          explain: {
+            0: "Conserving only the magnitude loses directional information and generally gives an incorrect result — vector components must be tracked separately.",
+            1: "Correct — momentum is a vector, so it must be conserved component-by-component: Σp_x before = Σp_x after, and separately Σp_y before = Σp_y after.",
+            2: "Both axes must be handled, not just the initial direction of motion — the collision can send objects off at any angle.",
+            3: "Momentum conservation applies just as validly to 2-D (or 3-D) isolated systems as it does to 1-D ones."
+          }
+        },
+        {
+          stem: "Which best distinguishes 'momentum' from 'force' when describing a heavy truck rolling slowly versus a small pebble thrown fast?",
+          options: [
+            "Force and momentum are the same thing, just different units",
+            "Momentum (mv) captures both mass and velocity together; comparing which object 'has more force' is a category error unless a force is actually being applied over some interaction",
+            "Only the truck has momentum, since it has more mass",
+            "Only the pebble has momentum, since it's moving faster"
+          ],
+          correct: 1,
+          explain: {
+            0: "Force (N, related to mass × acceleration) and momentum (kg·m/s, mass × velocity) are distinct physical quantities with different units and meanings.",
+            1: "Correct — momentum depends on both mass and velocity together, so a heavy slow object and a light fast object can be compared meaningfully via momentum. 'Force' isn't a property an object 'has' in isolation — it only exists during an interaction.",
+            2: "Momentum requires only mass and velocity, both of which the pebble has too — it isn't exclusive to heavier objects.",
+            3: "Same issue — the truck also has momentum (it has both mass and velocity), just from different values than the pebble."
+          }
+        }
+      ]
+    },
+    {
+      id: "energy",
+      label: "Work & Energy",
+      questions: [
+        {
+          stem: "A person carries a box at constant height, walking horizontally. How much work does the upward force they exert on the box do, over the walk?",
+          options: [
+            "A large positive amount, since they're clearly exerting effort",
+            "Zero, since the force is perpendicular to the (horizontal) displacement",
+            "A large negative amount",
+            "It depends on how heavy the box is"
+          ],
+          correct: 1,
+          explain: {
+            0: "Physical effort and physics 'work' aren't the same thing — work depends on the geometry between force and displacement, not on perceived exertion.",
+            1: "Correct — W = Fd cos θ. Here the supporting force is vertical (upward) and displacement is horizontal, so θ = 90°, and cos(90°) = 0. No work is done by that force, regardless of how tiring it feels.",
+            2: "The force is doing no work at all — not negative, not positive — because it's perpendicular to the motion.",
+            3: "Box weight would affect the size of the force needed, but since cos(90°) = 0 regardless of force magnitude, the work is still exactly zero.",
+          }
+        },
+        {
+          stem: "A rope pulls a sled at a 30° angle above horizontal with 40 N of tension, moving the sled 8 m horizontally. What is the correct expression for the work the rope does?",
+          options: [
+            "W = 40 × 8",
+            "W = 40 × 8 × cos(30°)",
+            "W = 40 × 8 × sin(30°)",
+            "W = 40 + 8"
+          ],
+          correct: 1,
+          explain: {
+            0: "This omits the angle entirely, treating the rope as if it were perfectly horizontal — but it's angled, so only part of the force acts along the direction of motion.",
+            1: "Correct — W = Fd cos θ, where θ is the angle between the force and the displacement direction. Only the horizontal component of tension (F cos θ) does work over the horizontal displacement.",
+            2: "sin(30°) would give the vertical component of the force, which is perpendicular to this horizontal displacement and does no work on it.",
+            3: "Work is not force plus distance — it is force times distance (times the cosine of the angle between them)."
+          }
+        },
+        {
+          stem: "A cart's speed doubles. How does its kinetic energy change?",
+          options: [
+            "It doubles",
+            "It triples",
+            "It quadruples",
+            "It stays the same"
+          ],
+          correct: 2,
+          explain: {
+            0: "KE depends on v², not v — doubling speed does more than just double KE.",
+            1: "There's no tripling relationship in KE = ½mv² — the scaling follows the square of the velocity ratio.",
+            2: "Correct — KE = ½mv², so doubling v means v² increases by a factor of 2² = 4, quadrupling the kinetic energy.",
+            3: "KE definitely changes with speed — it does not stay constant when speed changes."
+          }
+        },
+        {
+          stem: "A skier slides down a real (frictional) slope from rest. Which equation correctly relates the energies involved?",
+          options: [
+            "KE_i + PE_i = KE_f + PE_f (mechanical energy conserved, as usual)",
+            "KE_i + PE_i = KE_f + PE_f + W_friction",
+            "PE_i = KE_f only, ignoring PE_f and friction",
+            "KE_f = PE_i, since kinetic and potential energy are always exactly equal at the bottom"
+          ],
+          correct: 1,
+          explain: {
+            0: "Pure mechanical energy conservation only applies with NO friction — using it here ignores energy lost to the slope, overestimating final speed.",
+            1: "Correct — when friction (a non-conservative force) is present, mechanical energy isn't conserved on its own; the extended equation accounts for energy converted to heat via W_friction.",
+            2: "This ignores whatever potential energy remains if the skier hasn't reached the very bottom (PE_f ≠ 0 unless h_f = 0), and it drops the friction term.",
+            3: "This special case only applies if PE_f = 0 (skier fully at the bottom) AND there's no friction — neither assumption is safe with 'a real, frictional slope.'"
+          }
+        },
+        {
+          stem: "Which correctly relates work and power?",
+          options: [
+            "A machine doing the same work in less time has done more total work",
+            "Power measures how quickly work is done or energy is transferred; doing the same work faster means more power, not more work",
+            "Power and work are the same physical quantity",
+            "A more powerful machine always does more total work over its lifetime"
+          ],
+          correct: 1,
+          explain: {
+            0: "Doing the same amount of work faster does not change the amount of work done — it changes only how quickly it was done, i.e., the power.",
+            1: "Correct — P = W/t. If W is fixed and t decreases, P increases — but W itself hasn't changed, only the rate at which it was delivered.",
+            2: "Work (joules) and power (watts) are related but distinct quantities — power is the *rate* of doing work.",
+            3: "A more powerful machine can do the same work faster, or more work in the same time — but 'more powerful' does not by itself guarantee more total work performed."
+          }
+        },
+        {
+          stem: "A spring with spring constant k is compressed a distance x from equilibrium. What is the correct expression for its elastic potential energy?",
+          options: [
+            "kx",
+            "½kx",
+            "½kx²",
+            "kx²"
+          ],
+          correct: 2,
+          explain: {
+            0: "This omits both the ½ factor and the squared term — it isn't a valid energy expression (wrong units for energy given typical k, x units).",
+            1: "This has the ½ factor but is missing the square on x — elastic PE scales with the square of displacement, not linearly.",
+            2: "Correct — PE_spring = ½kx², directly analogous in form to KE = ½mv², both being quadratic in the relevant variable.",
+            3: "This has the squared x term but is missing the required ½ factor."
+          }
+        },
+        {
+          stem: "A satellite moves in a perfectly circular orbit around Earth at constant speed. How much work does Earth's gravity do on it per full orbit?",
+          options: [
+            "A large positive amount, since gravity is a strong force acting the whole time",
+            "Zero, since gravity is always perpendicular to the satellite's velocity in a circular orbit",
+            "A large negative amount, since gravity pulls it inward, opposing outward motion",
+            "It depends on the satellite's mass"
+          ],
+          correct: 1,
+          explain: {
+            0: "Force magnitude alone doesn't determine work — geometry (the angle between force and displacement) matters, and here that angle is always 90°.",
+            1: "Correct — in a circular orbit, gravity (the centripetal force) always points toward the center, perpendicular to the satellite's velocity (which is tangential). Since cos(90°) = 0, gravity does zero work over any complete orbit, and the satellite's speed stays constant.",
+            2: "Gravity isn't opposing 'outward motion' here — the satellite isn't moving outward at all; it's moving tangentially, perpendicular to gravity's pull.",
+            3: "The zero-work result holds regardless of mass — it follows purely from the 90° angle between force and velocity in circular motion."
+          }
+        }
+      ]
+    }
+  ];
+
+  const tabsEl = document.getElementById("tabs");
+  const panelsEl = document.getElementById("panels");
+  const state = {};
+
+  UNITS.forEach((unit, idx) => {
+    state[unit.id] = { answered: new Array(unit.questions.length).fill(null) };
+
+    const btn = document.createElement("button");
+    btn.className = "tab-btn";
+    btn.type = "button";
+    btn.setAttribute("role", "tab");
+    btn.setAttribute("aria-selected", idx === 0 ? "true" : "false");
+    btn.dataset.unit = unit.id;
+    btn.innerHTML = `${unit.label} <span class="n">${unit.questions.length}q</span>`;
+    btn.addEventListener("click", () => selectUnit(unit.id));
+    tabsEl.appendChild(btn);
+
+    const panel = document.createElement("section");
+    panel.className = "unit-panel" + (idx === 0 ? " active" : "");
+    panel.id = `panel-${unit.id}`;
+    panel.setAttribute("role", "tabpanel");
+
+    const head = document.createElement("div");
+    head.className = "unit-head";
+    head.innerHTML = `<h2>${unit.label}</h2><span class="score-chip" id="score-${unit.id}"><strong>0</strong> / ${unit.questions.length} correct</span>`;
+    panel.appendChild(head);
+
+    unit.questions.forEach((q, qi) => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="q-index">Question ${qi + 1} of ${unit.questions.length}</div>
+        <p class="q-stem">${q.stem}</p>
+        <div class="options" data-unit="${unit.id}" data-qi="${qi}"></div>
+        <div class="explain" data-unit="${unit.id}" data-qi="${qi}"></div>
+      `;
+      const optWrap = card.querySelector(".options");
+      const letters = ["A", "B", "C", "D"];
+      q.options.forEach((optText, oi) => {
+        const b = document.createElement("button");
+        b.className = "opt";
+        b.type = "button";
+        b.innerHTML = `<span class="letter">${letters[oi]}</span><span>${optText}</span>`;
+        b.addEventListener("click", () => answer(unit.id, qi, oi));
+        optWrap.appendChild(b);
+      });
+      panel.appendChild(card);
+    });
+
+    const footer = document.createElement("div");
+    footer.className = "unit-footer";
+    footer.innerHTML = `<span class="summary-line" id="summary-${unit.id}">0 of ${unit.questions.length} answered</span>`;
+    const resetBtn = document.createElement("button");
+    resetBtn.className = "reset";
+    resetBtn.type = "button";
+    resetBtn.textContent = "Reset unit";
+    resetBtn.addEventListener("click", () => resetUnit(unit.id));
+    footer.appendChild(resetBtn);
+    panel.appendChild(footer);
+
+    panelsEl.appendChild(panel);
+  });
+
+  function selectUnit(unitId) {
+    document.querySelectorAll(".tab-btn").forEach(b => {
+      b.setAttribute("aria-selected", b.dataset.unit === unitId ? "true" : "false");
+    });
+    document.querySelectorAll(".unit-panel").forEach(p => {
+      p.classList.toggle("active", p.id === `panel-${unitId}`);
+    });
+  }
+
+  function answer(unitId, qi, oi) {
+    const unit = UNITS.find(u => u.id === unitId);
+    const q = unit.questions[qi];
+    if (state[unitId].answered[qi] !== null) return;
+    state[unitId].answered[qi] = oi;
+
+    const optWrap = document.querySelector(`.options[data-unit="${unitId}"][data-qi="${qi}"]`);
+    const buttons = optWrap.querySelectorAll(".opt");
+    buttons.forEach((b, i) => {
+      b.disabled = true;
+      if (i === q.correct) b.classList.add("correct");
+      else if (i === oi) b.classList.add("incorrect");
+    });
+
+    const explainEl = document.querySelector(`.explain[data-unit="${unitId}"][data-qi="${qi}"]`);
+    const isCorrect = oi === q.correct;
+    explainEl.classList.add("show");
+    explainEl.innerHTML = `<span class="tag">${isCorrect ? "Correct" : "Not quite"}</span>${q.explain[oi]}`;
+
+    updateScore(unitId);
+  }
+
+  function updateScore(unitId) {
+    const unit = UNITS.find(u => u.id === unitId);
+    const answered = state[unitId].answered;
+    const answeredCount = answered.filter(a => a !== null).length;
+    const correctCount = answered.reduce((sum, a, i) => sum + (a === unit.questions[i].correct ? 1 : 0), 0);
+    document.querySelector(`#score-${unitId} strong`).textContent = correctCount;
+    document.getElementById(`summary-${unitId}`).textContent = `${answeredCount} of ${unit.questions.length} answered`;
+  }
+
+  function resetUnit(unitId) {
+    const unit = UNITS.find(u => u.id === unitId);
+    state[unitId].answered = new Array(unit.questions.length).fill(null);
+    unit.questions.forEach((q, qi) => {
+      const optWrap = document.querySelector(`.options[data-unit="${unitId}"][data-qi="${qi}"]`);
+      optWrap.querySelectorAll(".opt").forEach(b => {
+        b.disabled = false;
+        b.classList.remove("correct", "incorrect");
+      });
+      const explainEl = document.querySelector(`.explain[data-unit="${unitId}"][data-qi="${qi}"]`);
+      explainEl.classList.remove("show");
+      explainEl.innerHTML = "";
+    });
+    updateScore(unitId);
+  }
+</script>
