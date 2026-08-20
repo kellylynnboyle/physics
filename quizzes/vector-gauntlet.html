@@ -1,0 +1,725 @@
+<title>Vector Gauntlet</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Karla:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #eef1f0;
+    --lane: #e4e9e6;
+    --surface: #ffffff;
+    --ink: #1c2321;
+    --ink-soft: #52605c;
+    --ink-faint: #839089;
+    --accent: #d9642c;
+    --accent-ink: #ffffff;
+    --accent-soft: #fbe4d4;
+    --accent-soft-ink: #8a3c14;
+    --vector: #2f6f8f;
+    --vector-soft: #dceaf0;
+    --good: #2f7a4f;
+    --good-soft: #e2f2e7;
+    --good-ink: #1c5636;
+    --bad: #b23a3a;
+    --bad-soft: #f7e6e6;
+    --bad-ink: #7e2626;
+    --line: #d7ded9;
+    --shadow: 0 1px 2px rgba(28, 35, 33, 0.06), 0 14px 32px -16px rgba(28, 35, 33, 0.28);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14201d;
+      --lane: #182521;
+      --surface: #1c2b27;
+      --ink: #eaf1ee;
+      --ink-soft: #9db3ac;
+      --ink-faint: #6c8079;
+      --accent: #f0904f;
+      --accent-ink: #23140a;
+      --accent-soft: #3a2617;
+      --accent-soft-ink: #f5bd8e;
+      --vector: #7ec1e0;
+      --vector-soft: #1c313b;
+      --good: #5fbf83;
+      --good-soft: #17281d;
+      --good-ink: #8fe0ab;
+      --bad: #e08181;
+      --bad-soft: #2c1818;
+      --bad-ink: #f0aaaa;
+      --line: #2b3d38;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 14px 32px -16px rgba(0, 0, 0, 0.6);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #14201d;
+    --lane: #182521;
+    --surface: #1c2b27;
+    --ink: #eaf1ee;
+    --ink-soft: #9db3ac;
+    --ink-faint: #6c8079;
+    --accent: #f0904f;
+    --accent-ink: #23140a;
+    --accent-soft: #3a2617;
+    --accent-soft-ink: #f5bd8e;
+    --vector: #7ec1e0;
+    --vector-soft: #1c313b;
+    --good: #5fbf83;
+    --good-soft: #17281d;
+    --good-ink: #8fe0ab;
+    --bad: #e08181;
+    --bad-soft: #2c1818;
+    --bad-ink: #f0aaaa;
+    --line: #2b3d38;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 14px 32px -16px rgba(0, 0, 0, 0.6);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+  }
+
+  body {
+    font-family: "Karla", ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      var(--lane) 0px,
+      var(--lane) 1px,
+      transparent 1px,
+      transparent 96px
+    );
+    min-height: 100vh;
+  }
+
+  .page {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header.bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .brand .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .brand h1 {
+    font-family: "Big Shoulders Display", ui-sans-serif, sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.9rem, 7vw, 2.6rem);
+    letter-spacing: 0.01em;
+    margin: 0.1rem 0 0;
+    line-height: 0.95;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
+  .scoreboard {
+    display: flex;
+    gap: 0.5rem;
+    flex: none;
+  }
+
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.4rem 0.65rem;
+    text-align: center;
+    min-width: 3.6rem;
+    box-shadow: var(--shadow);
+  }
+
+  .stat .num {
+    font-family: "IBM Plex Mono", monospace;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    font-size: 1.15rem;
+    line-height: 1;
+    display: block;
+  }
+
+  .stat .lbl {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    display: block;
+    margin-top: 0.2rem;
+  }
+
+  #streak-stat .num { color: var(--accent); }
+
+  .progress-dots {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .dot {
+    width: 1.6rem;
+    height: 0.35rem;
+    border-radius: 3px;
+    background: var(--line);
+    transition: background 0.2s ease;
+  }
+
+  .dot.done-correct { background: var(--good); }
+  .dot.done-wrong { background: var(--bad); }
+  .dot.current { background: var(--accent); }
+
+  main { flex: 1; }
+
+  .drill-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 1.5rem 1.5rem 1.65rem;
+  }
+
+  .cue {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--vector-soft);
+    color: var(--vector);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    padding: 0.4rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 1.1rem;
+  }
+
+  .stem {
+    font-family: "Big Shoulders Display", sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.35rem, 4.5vw, 1.65rem);
+    line-height: 1.18;
+    margin: 0 0 1.25rem;
+    text-wrap: balance;
+    text-transform: none;
+    letter-spacing: 0.002em;
+  }
+
+  .options {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    text-align: left;
+    width: 100%;
+    border: 1.5px solid var(--line);
+    background: var(--bg);
+    color: var(--ink);
+    border-radius: 10px;
+    padding: 0.75rem 0.9rem;
+    font: inherit;
+    font-weight: 500;
+    font-size: 0.98rem;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+  }
+
+  .opt:hover:not(:disabled) {
+    border-color: var(--accent);
+    transform: translateX(2px);
+  }
+
+  .opt:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .opt:disabled { cursor: default; }
+
+  .opt .letter {
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--ink-faint);
+    border: 1.5px solid var(--line);
+    border-radius: 6px;
+    width: 1.7rem;
+    height: 1.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+
+  .opt.correct {
+    border-color: var(--good);
+    background: var(--good-soft);
+  }
+  .opt.correct .letter { border-color: var(--good); color: var(--good-ink); }
+
+  .opt.incorrect {
+    border-color: var(--bad);
+    background: var(--bad-soft);
+  }
+  .opt.incorrect .letter { border-color: var(--bad); color: var(--bad-ink); }
+
+  .verdict {
+    display: none;
+    margin-top: 1.1rem;
+    padding-top: 1.1rem;
+    border-top: 1px dashed var(--line);
+  }
+  .verdict.show { display: block; }
+
+  .verdict .headline {
+    font-family: "Big Shoulders Display", sans-serif;
+    font-weight: 800;
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    margin: 0 0 0.5rem;
+  }
+  .verdict.right .headline { color: var(--good); }
+  .verdict.wrong .headline { color: var(--bad); }
+
+  .verdict p {
+    margin: 0 0 1rem;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+
+  button.next {
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 600;
+    font-size: 0.88rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: none;
+    border-radius: 8px;
+    padding: 0.65rem 1.1rem;
+    cursor: pointer;
+  }
+  button.next:hover { filter: brightness(1.06); }
+  button.next:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  .hint {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    color: var(--ink-faint);
+    margin-top: 1rem;
+    text-align: center;
+  }
+
+  .final-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 2rem 1.5rem;
+    text-align: center;
+  }
+
+  .final-card .tier {
+    font-family: "Big Shoulders Display", sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.8rem, 7vw, 2.3rem);
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0.3rem 0 0.5rem;
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+
+  .final-card .score-big {
+    font-family: "IBM Plex Mono", monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 1rem;
+    color: var(--ink-soft);
+    margin: 0 0 1.5rem;
+  }
+
+  .final-card .score-big strong {
+    font-size: 1.4rem;
+    color: var(--ink);
+  }
+
+  .final-card p.note {
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    max-width: 46ch;
+    margin: 0 auto 1.5rem;
+  }
+
+  button.replay {
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    cursor: pointer;
+  }
+  button.replay:hover { background: var(--accent-soft); }
+  button.replay:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  footer.note {
+    margin-top: 2rem;
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+    text-align: center;
+  }
+
+  .hidden { display: none !important; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+
+<div class="page">
+  <header class="bar">
+    <div class="brand">
+      <div class="eyebrow">Kinematics · Basics Drill</div>
+      <h1>Vector<br>Gauntlet</h1>
+    </div>
+    <div class="scoreboard">
+      <div class="stat"><span class="num" id="score-num">0</span><span class="lbl">Score</span></div>
+      <div class="stat" id="streak-stat"><span class="num" id="streak-num">0</span><span class="lbl">Streak</span></div>
+    </div>
+  </header>
+
+  <div class="progress-dots" id="dots"></div>
+
+  <main>
+    <div class="drill-card" id="quiz-view">
+      <div class="cue" id="q-cue"></div>
+      <p class="stem" id="q-stem"></p>
+      <div class="options" id="q-options"></div>
+      <div class="verdict" id="verdict">
+        <p class="headline" id="verdict-headline"></p>
+        <p id="verdict-text"></p>
+        <button class="next" id="next-btn" type="button">Next Drill →</button>
+      </div>
+    </div>
+
+    <div class="final-card hidden" id="final-view">
+      <div class="eyebrow" style="color:var(--ink-faint); font-family:'IBM Plex Mono',monospace; font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase;">Gauntlet Complete</div>
+      <p class="tier" id="final-tier"></p>
+      <p class="score-big"><strong id="final-score"></strong> / <span id="final-total"></span> correct · best streak <strong id="final-streak"></strong></p>
+      <p class="note" id="final-note"></p>
+      <button class="replay" id="replay-btn" type="button">Run It Back</button>
+    </div>
+  </main>
+
+  <p class="hint">Tap an answer to lock it in — no going back, no do-overs.</p>
+  <footer class="note">Covers: distance vs. displacement, speed vs. velocity, scalar vs. vector, and what acceleration actually means.</footer>
+</div>
+
+<script>
+  const QUESTIONS = [
+    {
+      cue: "🎯 Tests: scalar vs. vector — displacement can cancel, distance never does",
+      stem: "A drone flies a perfect square: 50 m north, 50 m east, 50 m south, 50 m west, landing exactly back at its launch pad. What are its total distance traveled and total displacement?",
+      options: [
+        "Distance = 0 m, Displacement = 0 m",
+        "Distance = 200 m, Displacement = 0 m",
+        "Distance = 200 m, Displacement = 200 m",
+        "Distance = 0 m, Displacement = 200 m"
+      ],
+      correct: 1,
+      explain: {
+        0: "Distance is the path length actually flown — the drone definitely covered ground, so distance can't be 0.",
+        1: "Exactly right. Distance just adds up every leg: 50+50+50+50 = 200 m. Displacement is net change in position — since it lands back on the pad, start and end points are identical, so displacement = 0 m.",
+        2: "Displacement isn't 200 m — that's the distance. The drone ends up exactly where it started, so its net position change is zero, no matter how far it flew to get there.",
+        3: "Distance can't be 0 — the drone physically traveled 200 m of path, even though its net displacement is 0."
+      }
+    },
+    {
+      cue: "🎯 Tests: average speed vs. average velocity on a round trip",
+      stem: "You drive 60 km to a store and 60 km straight back home, taking 2 hours total for the round trip. What's your average speed and your average velocity?",
+      options: [
+        "Average speed = 60 km/h, average velocity = 60 km/h",
+        "Average speed = 0 km/h, average velocity = 60 km/h",
+        "Average speed = 60 km/h, average velocity = 0 km/h",
+        "Average speed = 0 km/h, average velocity = 0 km/h"
+      ],
+      correct: 2,
+      explain: {
+        0: "Average velocity can't be 60 km/h — you ended up back at home, so your net displacement (and therefore average velocity) is zero.",
+        1: "Speed is never zero here — you covered real distance (120 km) over real time. It's velocity that comes out to zero, not speed.",
+        2: "Correct. Average speed = total distance/time = 120 km / 2 h = 60 km/h. Average velocity = displacement/time = 0 km / 2 h = 0 km/h, since you returned to your starting point.",
+        3: "Speed isn't zero — the odometer definitely moved. Only the vector quantity (velocity) zeroes out because start and end position match."
+      }
+    },
+    {
+      cue: "🎯 Tests: the #1 free-fall trap — zero velocity does NOT mean zero acceleration",
+      stem: "A ball thrown straight up leaves your hand at 20 m/s. At the exact top of its flight, its velocity is momentarily 0 m/s. What is its acceleration at that instant?",
+      options: [
+        "0 m/s², since acceleration follows velocity",
+        "9.8 m/s², directed upward",
+        "9.8 m/s², directed downward",
+        "It's undefined at that instant, since velocity is zero"
+      ],
+      correct: 2,
+      explain: {
+        0: "This is the classic trap. Acceleration doesn't 'follow' velocity's value — it's the rate velocity is changing, and gravity never switches off mid-flight.",
+        1: "Gravity always pulls toward Earth — downward — never upward, at any point in the ball's flight, including the peak.",
+        2: "Correct. Gravity is acting on the ball for the entire flight, constant at 9.8 m/s² downward — including the instant velocity happens to pass through zero. Velocity being momentarily zero just means the ball is changing direction, not that the force causing that change has stopped.",
+        3: "Acceleration is perfectly well-defined here — it's constant (9.8 m/s² down) throughout the whole flight, peak included."
+      }
+    },
+    {
+      cue: "🎯 Tests: acceleration means CHANGING velocity — speed alone isn't the whole story",
+      stem: "A car drives around a perfectly circular track at a constant speed of 25 m/s the entire lap. Is the car accelerating?",
+      options: [
+        "No — its speed never changes, so acceleration is zero",
+        "Yes — its direction is constantly changing, so its velocity (a vector) is constantly changing",
+        "No — acceleration only applies to speeding up or slowing down",
+        "Only at the exact moment it completes the lap"
+      ],
+      correct: 1,
+      explain: {
+        0: "This confuses speed (scalar, unchanging here) with velocity (vector, which includes direction). Constant speed doesn't guarantee constant velocity.",
+        1: "Correct — and this is the deeper meaning of acceleration. Velocity is a vector; even at perfectly constant speed, a car turning through a circle has its direction changing every instant, which means velocity is changing every instant, which means acceleration is present the whole time (this is centripetal acceleration).",
+        2: "Acceleration is any change in velocity — magnitude (speeding up/slowing down) OR direction. Turning while holding speed constant is still acceleration.",
+        3: "Acceleration here is continuous throughout the entire lap, not a one-time event at the finish line."
+      }
+    },
+    {
+      cue: "🎯 Tests: 'negative acceleration' doesn't always mean slowing down",
+      stem: "A car is moving in the negative direction (backing up) at −10 m/s, and its acceleration is also negative, at −2 m/s². What is actually happening to the car?",
+      options: [
+        "It's slowing down, because the acceleration is negative",
+        "It's speeding up, because velocity and acceleration point the same way",
+        "It's momentarily at rest",
+        "It's impossible for both velocity and acceleration to be negative at once"
+      ],
+      correct: 1,
+      explain: {
+        0: "A negative sign on acceleration doesn't automatically mean 'slowing down' — that's only true when velocity is positive. Here velocity is already negative.",
+        1: "Correct. When velocity and acceleration share the same sign, the object speeds up (in whatever direction that sign represents). Here both are negative, so the car is backing up faster and faster.",
+        2: "Nothing here indicates the car is at rest — it has a nonzero velocity (−10 m/s) right now.",
+        3: "Velocity and acceleration are independent quantities and can absolutely share the same sign — that's exactly what's happening in this question.",
+      }
+    },
+    {
+      cue: "🎯 Tests: reading real-world instruments — which one reports a vector?",
+      stem: "Your car's speedometer reads 55, and a GPS app separately reports your displacement from your starting address. Which of these two readings is a vector quantity?",
+      options: [
+        "The speedometer reading",
+        "The GPS displacement reading",
+        "Both are vectors",
+        "Neither is a vector — both are scalars"
+      ],
+      correct: 1,
+      explain: {
+        0: "A speedometer reports speed — magnitude only, no direction. That's the definition of a scalar.",
+        1: "Correct. GPS displacement includes both a distance from your start AND a direction (or, equivalently, a specific end coordinate) — that direction component is exactly what makes it a vector.",
+        2: "The speedometer is scalar — it never displays which way you're pointed, only how fast.",
+        3: "Displacement is a vector by definition — it encodes direction along with magnitude, unlike distance or speed."
+      }
+    },
+    {
+      cue: "🎯 Tests: acceleration's units and what they actually encode",
+      stem: "An object has an acceleration of 4 m/s². What does this number actually tell you?",
+      options: [
+        "The object is moving at 4 m/s",
+        "The object covers 4 meters every second",
+        "The object's velocity increases by 4 m/s during every second this acceleration acts",
+        "The object will stop after 4 seconds"
+      ],
+      correct: 2,
+      explain: {
+        0: "That would be a description of velocity (m/s), not acceleration (m/s²) — different quantity, different units, different meaning.",
+        1: "That describes speed too (distance per time), not acceleration, which is about how velocity itself is changing over time.",
+        2: "Correct. m/s² literally reads as '(meters per second) per second' — the velocity itself changes by 4 m/s for every second the acceleration is applied. That's the entire meaning packed into the unit.",
+        3: "Nothing about the acceleration's value alone tells you when (or whether) the object stops — that depends on the object's current velocity too, which isn't given here."
+      }
+    },
+    {
+      cue: "🎯 Tests: the trap of assuming 'more distance covered' means 'more displacement'",
+      stem: "Runner A jogs back and forth on a 10 m path six times (60 m of jogging) and ends up back at the start. Runner B walks in a single straight line 15 m from the same starting point and stops. Who has the larger displacement?",
+      options: [
+        "Runner A, since they covered more total distance (60 m > 15 m)",
+        "Runner B, since their net straight-line change in position (15 m) is greater than Runner A's (0 m)",
+        "They're equal, since both started at the same spot",
+        "Displacement can't be compared between two different paths"
+      ],
+      correct: 1,
+      explain: {
+        0: "Distance covered has no bearing on displacement — Runner A's 60 m of back-and-forth jogging cancels out entirely, since they return to the start.",
+        1: "Correct. Displacement only cares about net start-to-end position change. Runner A: 0 m (back at start). Runner B: 15 m in one direction. 15 m > 0 m, so Runner B's displacement wins, despite covering far less total distance.",
+        2: "Starting at the same spot doesn't make displacements equal — what matters is each runner's *ending* position relative to that shared start.",
+        3: "Displacement is perfectly comparable across different paths — it only depends on each object's start and end point, not the path shape."
+      }
+    }
+  ];
+
+  let idx = 0;
+  let score = 0;
+  let streak = 0;
+  let bestStreak = 0;
+  const results = new Array(QUESTIONS.length).fill(null);
+
+  const dotsEl = document.getElementById("dots");
+  const cueEl = document.getElementById("q-cue");
+  const stemEl = document.getElementById("q-stem");
+  const optsEl = document.getElementById("q-options");
+  const verdictEl = document.getElementById("verdict");
+  const verdictHeadline = document.getElementById("verdict-headline");
+  const verdictText = document.getElementById("verdict-text");
+  const nextBtn = document.getElementById("next-btn");
+  const quizView = document.getElementById("quiz-view");
+  const finalView = document.getElementById("final-view");
+  const scoreNum = document.getElementById("score-num");
+  const streakNum = document.getElementById("streak-num");
+
+  QUESTIONS.forEach((_, i) => {
+    const d = document.createElement("div");
+    d.className = "dot";
+    d.id = `dot-${i}`;
+    dotsEl.appendChild(d);
+  });
+
+  function renderQuestion() {
+    const q = QUESTIONS[idx];
+    cueEl.textContent = q.cue;
+    stemEl.textContent = q.stem;
+    optsEl.innerHTML = "";
+    verdictEl.classList.remove("show", "right", "wrong");
+
+    const letters = ["A", "B", "C", "D"];
+    q.options.forEach((text, oi) => {
+      const b = document.createElement("button");
+      b.className = "opt";
+      b.type = "button";
+      b.innerHTML = `<span class="letter">${letters[oi]}</span><span>${text}</span>`;
+      b.addEventListener("click", () => selectAnswer(oi));
+      optsEl.appendChild(b);
+    });
+
+    document.querySelectorAll(".dot").forEach((d, i) => {
+      d.classList.remove("current", "done-correct", "done-wrong");
+      if (results[i] === true) d.classList.add("done-correct");
+      else if (results[i] === false) d.classList.add("done-wrong");
+      else if (i === idx) d.classList.add("current");
+    });
+  }
+
+  function selectAnswer(oi) {
+    const q = QUESTIONS[idx];
+    const isCorrect = oi === q.correct;
+    results[idx] = isCorrect;
+
+    const buttons = optsEl.querySelectorAll(".opt");
+    buttons.forEach((b, i) => {
+      b.disabled = true;
+      if (i === q.correct) b.classList.add("correct");
+      else if (i === oi) b.classList.add("incorrect");
+    });
+
+    if (isCorrect) {
+      score++;
+      streak++;
+      bestStreak = Math.max(bestStreak, streak);
+      verdictEl.classList.add("show", "right");
+      verdictHeadline.textContent = pickPraise();
+    } else {
+      streak = 0;
+      verdictEl.classList.add("show", "wrong");
+      verdictHeadline.textContent = "Not quite.";
+    }
+    verdictText.textContent = q.explain[oi];
+
+    scoreNum.textContent = score;
+    streakNum.textContent = streak;
+    document.getElementById(`dot-${idx}`).classList.remove("current");
+    document.getElementById(`dot-${idx}`).classList.add(isCorrect ? "done-correct" : "done-wrong");
+
+    nextBtn.textContent = idx === QUESTIONS.length - 1 ? "See Results →" : "Next Drill →";
+  }
+
+  function pickPraise() {
+    const lines = ["Nailed it.", "Clean hit.", "That's the vector talking.", "Correct — no drift.", "Locked in."];
+    return lines[Math.floor((idx * 7 + score * 3) % lines.length)];
+  }
+
+  nextBtn.addEventListener("click", () => {
+    idx++;
+    if (idx >= QUESTIONS.length) {
+      showFinal();
+    } else {
+      renderQuestion();
+    }
+  });
+
+  function showFinal() {
+    quizView.classList.add("hidden");
+    finalView.classList.remove("hidden");
+    const total = QUESTIONS.length;
+    document.getElementById("final-score").textContent = score;
+    document.getElementById("final-total").textContent = total;
+    document.getElementById("final-streak").textContent = bestStreak;
+
+    let tier, note;
+    if (score === total) {
+      tier = "Basics: Locked In";
+      note = "Perfect run. Distance/displacement, speed/velocity, and acceleration's real meaning are solid — move on to the four kinematic equations next.";
+    } else if (score >= total - 2) {
+      tier = "Almost Airtight";
+      note = "Strong grasp overall. Re-read the explanations on any miss above — those are the exact traps that resurface in projectile motion and Newton's Laws.";
+    } else if (score >= total / 2) {
+      tier = "Foundation Cracking";
+      note = "You've got pieces of it, but the vector/scalar distinction isn't automatic yet. Reread the Cornell notes on distance vs. displacement, then run it back.";
+    } else {
+      tier = "Back to the Blocks";
+      note = "This is exactly what the drill is for — these are THE most commonly missed basics. Review the notes on scalar vs. vector and what acceleration means, then take another lap.";
+    }
+    document.getElementById("final-tier").textContent = tier;
+    document.getElementById("final-note").textContent = note;
+  }
+
+  document.getElementById("replay-btn").addEventListener("click", () => {
+    idx = 0; score = 0; streak = 0; bestStreak = 0;
+    results.fill(null);
+    scoreNum.textContent = "0";
+    streakNum.textContent = "0";
+    finalView.classList.add("hidden");
+    quizView.classList.remove("hidden");
+    renderQuestion();
+  });
+
+  renderQuestion();
+</script>
