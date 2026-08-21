@@ -10,6 +10,8 @@ A structured, self-contained unit covering five core mechanics topics. Each topi
 
 Open any `quiz.html` file directly in a browser — no install needed.
 
+**Before you start:** [How to Study Physics — A 6-Step Method](how-to-study-physics.md) — how to actually use everything below (understand derivations, ask edge-case questions, a 4-phase problem-solving method, and how to build physical intuition instead of just memorizing).
+
 ## Unit Sequence
 
 0. [**Distance vs. Displacement & Speed-Distance-Time**](00-speed-distance-time/cornell-notes.md) — foundational vocabulary and the speed formula, ahead of full kinematics (Apprentice/Master level notes)
