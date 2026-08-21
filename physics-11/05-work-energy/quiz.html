@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Work & Energy Quiz — Most Missed Questions</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 780px; margin: 2rem auto; padding: 0 1rem; background:#f7f7f9; color:#1a1a1a; }
+  h1 { font-size: 1.5rem; }
+  #score-bar { position: sticky; top:0; background:#f7f7f9; padding: .5rem 0; font-weight:600; border-bottom: 2px solid #ddd; margin-bottom: 1rem; }
+  .q { background:#fff; border:1px solid #ddd; border-radius:8px; padding: 1rem 1.25rem; margin-bottom: 1rem; }
+  .q h3 { margin-top:0; }
+  .why { font-size:.85rem; color:#555; margin: .25rem 0 .75rem; font-style: italic; }
+  label { display:block; padding:.4rem .5rem; border-radius:6px; cursor:pointer; margin-bottom:.25rem; }
+  label:hover { background:#f0f0f5; }
+  .correct { background:#d9f2df !important; }
+  .incorrect { background:#fbdcdc !important; }
+  button.check { margin-top:.5rem; background:#2557a7; color:#fff; border:none; padding:.5rem 1rem; border-radius:6px; cursor:pointer; }
+  button.check:disabled { background:#aaa; cursor: default; }
+  .explain { display:none; margin-top:.6rem; padding:.6rem .8rem; background:#eef3fb; border-left:4px solid #2557a7; border-radius:4px; }
+  .explain.show { display:block; }
+  #restart { display:none; background:#444; color:#fff; border:none; padding:.6rem 1.2rem; border-radius:6px; cursor:pointer; margin-top:1rem; }
+  #final { display:none; font-size:1.2rem; font-weight:700; margin-top:1rem; padding:1rem; background:#fff; border-radius:8px; text-align:center; }
+</style>
+</head>
+<body>
+<h1>Work & Energy — Most-Often-Missed Questions</h1>
+<p>These questions target the specific misconceptions students get wrong most often on work and energy. Answer, check, then read the explanation even if you got it right.</p>
+<div id="score-bar">Score: <span id="score">0</span> / <span id="total">0</span></div>
+<div id="quiz"></div>
+<div id="final"></div>
+<button id="restart">Retake Quiz</button>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A person carries a heavy bag at constant height while walking horizontally at constant velocity. How much work does gravity do on the bag?",
+    choices: [
+      "A large positive amount, since the bag is heavy",
+      "Zero, because gravity acts vertically and displacement is horizontal (perpendicular)",
+      "A large negative amount",
+      "It depends on how far they walk"
+    ],
+    correct: 1,
+    why: "The #1 work misconception: assuming any force present during motion does work.",
+    explain: "Work = F·d·cos(θ). Since gravity is vertical and the bag's displacement is horizontal, θ = 90°, and cos(90°) = 0. Gravity does ZERO work here, regardless of the bag's weight or how far it's carried."
+  },
+  {
+    q: "A ball rolls in a circle at constant speed, held by a string (centripetal force from tension). How much work does the tension do on the ball?",
+    choices: [
+      "Positive work, since tension keeps the ball moving",
+      "Zero work, because tension is always perpendicular to the velocity/displacement",
+      "Negative work, since tension pulls inward",
+      "Depends on the string's length"
+    ],
+    correct: 1,
+    why: "Centripetal force doing zero work is a very commonly missed idea, and it's why circular motion at constant speed has constant kinetic energy.",
+    explain: "Tension (centripetal force) always points toward the center, perpendicular to the ball's velocity (which is tangent to the circle). Since θ = 90°, work = 0 — this is exactly why the ball's speed (and kinetic energy) stays constant."
+  },
+  {
+    q: "A 2 kg object is 5 m above the ground. What is its gravitational potential energy?",
+    choices: [
+      "Always exactly 98 J — PE has one true, fixed value",
+      "98 J relative to the ground, but this depends on the chosen reference height — it could be a different number relative to a different reference point",
+      "Cannot be calculated without knowing velocity",
+      "0 J, since PE only matters when the object starts moving"
+    ],
+    correct: 1,
+    why: "Students often think PE is an absolute quantity rather than one measured relative to a chosen reference height.",
+    explain: "PE = mgh = (2)(9.8)(5) = 98 J relative to the ground. But if you chose a different reference height (e.g., a tabletop 1 m up), the PE value would be different. Only CHANGES in PE are physically meaningful, not any single 'absolute' value."
+  },
+  {
+    q: "A box slides across a rough floor and comes to rest. Which equation correctly applies conservation of energy to this situation?",
+    choices: [
+      "KE_i + PE_i = KE_f + PE_f (energy is always perfectly conserved)",
+      "KE_i + PE_i = KE_f + PE_f + W_friction (energy converted to heat must be included)",
+      "KE_i = KE_f (kinetic energy never changes)",
+      "PE_i = PE_f (only PE matters on a flat floor)"
+    ],
+    correct: 1,
+    why: "Common error: applying the simple mechanical energy conservation equation to a system where friction is present.",
+    explain: "Mechanical energy (KE + PE) is only conserved when no non-conservative forces (like friction) act. When friction is present, some mechanical energy converts to heat — you must add a W_friction term to balance the energy equation, not assume energy just disappears or stays constant."
+  },
+  {
+    q: "A spring with spring constant k is compressed a distance x. If you double the compression distance (2x), how does the elastic potential energy change?",
+    choices: [
+      "It doubles", "It quadruples (4×)", "It stays the same", "It's cut in half"
+    ],
+    correct: 1,
+    why: "Students often assume PE_spring scales linearly with x, forgetting the formula is quadratic.",
+    explain: "PE_spring = ½kx². Since x is squared, doubling x quadruples the potential energy: ½k(2x)² = ½k(4x²) = 4 × (½kx²)."
+  },
+  {
+    q: "Two students, A and B, each carry the same box up the same flight of stairs (same height gained). Student A does it in 5 seconds; Student B does it in 10 seconds. Compare their work and power.",
+    choices: [
+      "A does more work than B, but the same power",
+      "A and B do the same work, but A has greater power",
+      "A and B do the same work and the same power",
+      "A does less work than B, but more power"
+    ],
+    correct: 1,
+    why: "Tests the distinction between work/energy (amount) and power (rate) — a commonly confused pair.",
+    explain: "Work depends only on the force and displacement (same box, same height) — so A and B do the SAME work. Power = Work/time, so since A took less time, A had GREATER power (delivered the same energy faster)."
+  },
+  {
+    q: "A roller coaster car (ignore friction) starts from rest at the top of a 40 m hill. Later, it reaches the top of a second hill that is 15 m tall. Which statement correctly relates its speeds at each point?",
+    choices: [
+      "It has zero speed at both hilltops, since both are 'tops'",
+      "It's moving faster at the top of the second (shorter) hill, since some PE from the first hill converted to KE that remains at the second hill's height",
+      "It moves at the same speed at both hilltops",
+      "Speed cannot be determined without the track's shape"
+    ],
+    correct: 1,
+    why: "Conservation of energy with multiple height changes — a frequent multi-step energy problem.",
+    explain: "Using KE_i + PE_i = KE_f + PE_f with the ground as reference: 0 + mg(40) = ½mv² + mg(15). Since less height means less PE at the second hill, more of the original PE has converted to KE there, so the car IS moving at the top of the second (shorter) hill — track shape doesn't matter, only height, since friction is ignored."
+  }
+];
+
+const quizDiv = document.getElementById('quiz');
+document.getElementById('total').textContent = QUESTIONS.length;
+let score = 0;
+let answered = 0;
+
+QUESTIONS.forEach((item, qi) => {
+  const qDiv = document.createElement('div');
+  qDiv.className = 'q';
+  qDiv.innerHTML = `<h3>Q${qi+1}. ${item.q}</h3><div class="why">Why this is tricky: ${item.why}</div>`;
+
+  const form = document.createElement('div');
+  item.choices.forEach((choice, ci) => {
+    const label = document.createElement('label');
+    label.innerHTML = `<input type="radio" name="q${qi}" value="${ci}"> ${choice}`;
+    form.appendChild(label);
+  });
+  qDiv.appendChild(form);
+
+  const btn = document.createElement('button');
+  btn.className = 'check';
+  btn.textContent = 'Check Answer';
+  qDiv.appendChild(btn);
+
+  const explainDiv = document.createElement('div');
+  explainDiv.className = 'explain';
+  explainDiv.textContent = item.explain;
+  qDiv.appendChild(explainDiv);
+
+  btn.addEventListener('click', () => {
+    const selected = form.querySelector(`input[name="q${qi}"]:checked`);
+    if (!selected) { alert('Pick an answer first.'); return; }
+    const labels = form.querySelectorAll('label');
+    labels.forEach((lab, idx) => {
+      if (idx === item.correct) lab.classList.add('correct');
+      else if (idx === parseInt(selected.value)) lab.classList.add('incorrect');
+    });
+    explainDiv.classList.add('show');
+    btn.disabled = true;
+    form.querySelectorAll('input').forEach(i => i.disabled = true);
+
+    if (parseInt(selected.value) === item.correct) score++;
+    answered++;
+    document.getElementById('score').textContent = score;
+
+    if (answered === QUESTIONS.length) {
+      const finalDiv = document.getElementById('final');
+      const pct = Math.round((score / QUESTIONS.length) * 100);
+      finalDiv.style.display = 'block';
+      finalDiv.textContent = `Final Score: ${score} / ${QUESTIONS.length} (${pct}%)` +
+        (pct >= 80 ? ' — Mastery achieved! 🎉' : ' — Review the explanations above and retake.');
+      document.getElementById('restart').style.display = 'inline-block';
+    }
+  });
+
+  quizDiv.appendChild(qDiv);
+});
+
+document.getElementById('restart').addEventListener('click', () => location.reload());
+</script>
+</body>
+</html>

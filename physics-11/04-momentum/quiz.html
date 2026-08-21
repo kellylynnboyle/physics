@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Momentum Quiz — Most Missed Questions</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 780px; margin: 2rem auto; padding: 0 1rem; background:#f7f7f9; color:#1a1a1a; }
+  h1 { font-size: 1.5rem; }
+  #score-bar { position: sticky; top:0; background:#f7f7f9; padding: .5rem 0; font-weight:600; border-bottom: 2px solid #ddd; margin-bottom: 1rem; }
+  .q { background:#fff; border:1px solid #ddd; border-radius:8px; padding: 1rem 1.25rem; margin-bottom: 1rem; }
+  .q h3 { margin-top:0; }
+  .why { font-size:.85rem; color:#555; margin: .25rem 0 .75rem; font-style: italic; }
+  label { display:block; padding:.4rem .5rem; border-radius:6px; cursor:pointer; margin-bottom:.25rem; }
+  label:hover { background:#f0f0f5; }
+  .correct { background:#d9f2df !important; }
+  .incorrect { background:#fbdcdc !important; }
+  button.check { margin-top:.5rem; background:#2557a7; color:#fff; border:none; padding:.5rem 1rem; border-radius:6px; cursor:pointer; }
+  button.check:disabled { background:#aaa; cursor: default; }
+  .explain { display:none; margin-top:.6rem; padding:.6rem .8rem; background:#eef3fb; border-left:4px solid #2557a7; border-radius:4px; }
+  .explain.show { display:block; }
+  #restart { display:none; background:#444; color:#fff; border:none; padding:.6rem 1.2rem; border-radius:6px; cursor:pointer; margin-top:1rem; }
+  #final { display:none; font-size:1.2rem; font-weight:700; margin-top:1rem; padding:1rem; background:#fff; border-radius:8px; text-align:center; }
+</style>
+</head>
+<body>
+<h1>Momentum — Most-Often-Missed Questions</h1>
+<p>These questions target the specific misconceptions students get wrong most often on momentum. Answer, check, then read the explanation even if you got it right.</p>
+<div id="score-bar">Score: <span id="score">0</span> / <span id="total">0</span></div>
+<div id="quiz"></div>
+<div id="final"></div>
+<button id="restart">Retake Quiz</button>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A 2 kg ball moving at +5 m/s collides with a 2 kg ball moving at -5 m/s (opposite direction). What is the total momentum of the system before the collision?",
+    choices: ["20 kg·m/s", "10 kg·m/s", "0 kg·m/s", "-20 kg·m/s"],
+    correct: 2,
+    why: "Momentum is a vector — the #1 momentum mistake is adding magnitudes instead of signed values.",
+    explain: "Momentum must be added as a signed (vector) quantity: p = (2)(5) + (2)(-5) = 10 - 10 = 0 kg·m/s. Adding magnitudes (2×5 + 2×5 = 20) ignores direction and is incorrect."
+  },
+  {
+    q: "In a perfectly inelastic collision, is kinetic energy conserved?",
+    choices: [
+      "Yes, kinetic energy is always conserved in any collision",
+      "No — only momentum is conserved; kinetic energy is lost to heat/sound/deformation",
+      "Yes, but only momentum is not conserved",
+      "Neither momentum nor kinetic energy is conserved"
+    ],
+    correct: 1,
+    why: "Students often assume 'conservation of momentum' means 'conservation of everything,' including energy.",
+    explain: "Momentum is conserved in ANY isolated collision. Kinetic energy is only conserved in ELASTIC collisions. In perfectly inelastic collisions (objects stick together), kinetic energy is NOT conserved — it converts to heat, sound, and deformation, even though momentum still is."
+  },
+  {
+    q: "A 3 kg cart moving at 4 m/s collides with and sticks to a stationary 1 kg cart. After the collision, what is true?",
+    choices: [
+      "The 3 kg cart still moves at some velocity, and the 1 kg cart moves at a different velocity",
+      "Both carts share ONE common final velocity, since they're now one combined object",
+      "The 1 kg cart bounces back",
+      "Momentum is not conserved because one cart was at rest"
+    ],
+    correct: 1,
+    why: "A very common error: keeping two separate final velocities for objects that have physically stuck together.",
+    explain: "In a perfectly inelastic collision, the objects combine into a single object with ONE shared final velocity. Use conservation of momentum with the combined mass: m₁v₁ + m₂v₂ = (m₁+m₂)v_f to find that single velocity."
+  },
+  {
+    q: "A firework, initially at rest, explodes into two fragments of unequal mass. What must be true about their momenta after the explosion?",
+    choices: [
+      "The heavier fragment has more momentum than the lighter one",
+      "Both fragments have equal and opposite momentum (their magnitudes are equal, directions opposite)",
+      "Both fragments have equal velocity",
+      "Momentum isn't conserved in an explosion"
+    ],
+    correct: 1,
+    why: "Explosion problems often confuse velocity with momentum, and many students think momentum conservation doesn't apply when starting from rest.",
+    explain: "Momentum conservation still applies — total momentum before (zero, since it starts at rest) must equal total momentum after. So the two fragments' momenta must sum to zero: equal in magnitude, opposite in direction. This does NOT mean equal velocities (the lighter fragment moves faster)."
+  },
+  {
+    q: "A baseball is hit by a bat. Which time interval should you use in the impulse-momentum theorem (J = FΔt) to find the average force?",
+    choices: [
+      "The total time the ball is in the air",
+      "The time the bat is actually in contact with the ball",
+      "One full second, by convention",
+      "It doesn't matter which time interval you use"
+    ],
+    correct: 1,
+    why: "A common setup error: using the wrong Δt (confusing total trip time with contact time).",
+    explain: "The impulse-momentum theorem relates the force to the change in momentum over the time the FORCE is actually acting — i.e., the contact time between bat and ball, which is very short (often milliseconds), not the ball's total flight time."
+  },
+  {
+    q: "Two identical carts collide elastically: Cart A (moving) hits stationary Cart B. After an elastic collision between equal masses, what happens?",
+    choices: [
+      "They stick together and move at half the original speed",
+      "Cart A stops completely; Cart B moves off with Cart A's original velocity",
+      "Both carts move together at the same reduced speed",
+      "Cart A bounces backward; Cart B stays still"
+    ],
+    correct: 1,
+    why: "A classic elastic-collision result students often don't predict correctly (it's also a great symmetry check on your algebra).",
+    explain: "For an elastic, equal-mass, head-on collision where one object starts at rest, the incoming object stops completely and transfers all its velocity to the target — this is the same physics behind Newton's cradle."
+  },
+  {
+    q: "Airbags and crumple zones in cars are designed to increase the collision's Δt (contact/stopping time). Why does this reduce injury?",
+    choices: [
+      "It reduces the change in momentum, so less force is needed",
+      "The change in momentum stays the same, but spreading it over a longer Δt reduces the average force (F = Δp/Δt)",
+      "It increases the change in momentum, absorbing more energy",
+      "It has no effect on force, only on total energy"
+    ],
+    correct: 1,
+    why: "Tests whether students understand the impulse-momentum theorem conceptually, not just as a formula.",
+    explain: "The change in momentum (Δp) is fixed by the collision (mass and change in velocity). But since J = FΔt = Δp, increasing Δt (a longer, softer stop) for the SAME Δp means a smaller average force — that's why airbags/crumple zones reduce injury."
+  }
+];
+
+const quizDiv = document.getElementById('quiz');
+document.getElementById('total').textContent = QUESTIONS.length;
+let score = 0;
+let answered = 0;
+
+QUESTIONS.forEach((item, qi) => {
+  const qDiv = document.createElement('div');
+  qDiv.className = 'q';
+  qDiv.innerHTML = `<h3>Q${qi+1}. ${item.q}</h3><div class="why">Why this is tricky: ${item.why}</div>`;
+
+  const form = document.createElement('div');
+  item.choices.forEach((choice, ci) => {
+    const label = document.createElement('label');
+    label.innerHTML = `<input type="radio" name="q${qi}" value="${ci}"> ${choice}`;
+    form.appendChild(label);
+  });
+  qDiv.appendChild(form);
+
+  const btn = document.createElement('button');
+  btn.className = 'check';
+  btn.textContent = 'Check Answer';
+  qDiv.appendChild(btn);
+
+  const explainDiv = document.createElement('div');
+  explainDiv.className = 'explain';
+  explainDiv.textContent = item.explain;
+  qDiv.appendChild(explainDiv);
+
+  btn.addEventListener('click', () => {
+    const selected = form.querySelector(`input[name="q${qi}"]:checked`);
+    if (!selected) { alert('Pick an answer first.'); return; }
+    const labels = form.querySelectorAll('label');
+    labels.forEach((lab, idx) => {
+      if (idx === item.correct) lab.classList.add('correct');
+      else if (idx === parseInt(selected.value)) lab.classList.add('incorrect');
+    });
+    explainDiv.classList.add('show');
+    btn.disabled = true;
+    form.querySelectorAll('input').forEach(i => i.disabled = true);
+
+    if (parseInt(selected.value) === item.correct) score++;
+    answered++;
+    document.getElementById('score').textContent = score;
+
+    if (answered === QUESTIONS.length) {
+      const finalDiv = document.getElementById('final');
+      const pct = Math.round((score / QUESTIONS.length) * 100);
+      finalDiv.style.display = 'block';
+      finalDiv.textContent = `Final Score: ${score} / ${QUESTIONS.length} (${pct}%)` +
+        (pct >= 80 ? ' — Mastery achieved! 🎉' : ' — Review the explanations above and retake.');
+      document.getElementById('restart').style.display = 'inline-block';
+    }
+  });
+
+  quizDiv.appendChild(qDiv);
+});
+
+document.getElementById('restart').addEventListener('click', () => location.reload());
+</script>
+</body>
+</html>

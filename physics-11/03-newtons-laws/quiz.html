@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Newton's Laws Quiz — Most Missed Questions</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 780px; margin: 2rem auto; padding: 0 1rem; background:#f7f7f9; color:#1a1a1a; }
+  h1 { font-size: 1.5rem; }
+  #score-bar { position: sticky; top:0; background:#f7f7f9; padding: .5rem 0; font-weight:600; border-bottom: 2px solid #ddd; margin-bottom: 1rem; }
+  .q { background:#fff; border:1px solid #ddd; border-radius:8px; padding: 1rem 1.25rem; margin-bottom: 1rem; }
+  .q h3 { margin-top:0; }
+  .why { font-size:.85rem; color:#555; margin: .25rem 0 .75rem; font-style: italic; }
+  label { display:block; padding:.4rem .5rem; border-radius:6px; cursor:pointer; margin-bottom:.25rem; }
+  label:hover { background:#f0f0f5; }
+  .correct { background:#d9f2df !important; }
+  .incorrect { background:#fbdcdc !important; }
+  button.check { margin-top:.5rem; background:#2557a7; color:#fff; border:none; padding:.5rem 1rem; border-radius:6px; cursor:pointer; }
+  button.check:disabled { background:#aaa; cursor: default; }
+  .explain { display:none; margin-top:.6rem; padding:.6rem .8rem; background:#eef3fb; border-left:4px solid #2557a7; border-radius:4px; }
+  .explain.show { display:block; }
+  #restart { display:none; background:#444; color:#fff; border:none; padding:.6rem 1.2rem; border-radius:6px; cursor:pointer; margin-top:1rem; }
+  #final { display:none; font-size:1.2rem; font-weight:700; margin-top:1rem; padding:1rem; background:#fff; border-radius:8px; text-align:center; }
+</style>
+</head>
+<body>
+<h1>Newton's Laws — Most-Often-Missed Questions</h1>
+<p>These questions target the specific misconceptions students get wrong most often on Newton's Laws. Answer, check, then read the explanation even if you got it right.</p>
+<div id="score-bar">Score: <span id="score">0</span> / <span id="total">0</span></div>
+<div id="quiz"></div>
+<div id="final"></div>
+<button id="restart">Retake Quiz</button>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A book rests on a table. Gravity pulls down on the book with force mg. What is the Newton's Third Law reaction pair to this force?",
+    choices: [
+      "The normal force the table exerts on the book",
+      "The gravitational force the book exerts on the Earth, pulling it upward",
+      "The weight of the table",
+      "There is no reaction pair for gravity"
+    ],
+    correct: 1,
+    why: "The single most common Newton's Laws misconception: pairing normal force with gravity.",
+    explain: "Newton's 3rd Law pairs act on DIFFERENT objects and are the SAME type of force. Gravity's reaction pair is the book pulling the Earth upward (also gravitational). The normal force is a different (contact) force, acting on the same object (the book) as gravity — so normal force and gravity are NOT a 3rd law pair, even though they're often equal in magnitude in this simple case."
+  },
+  {
+    q: "A hockey puck slides across frictionless ice at constant velocity. What net force acts on it?",
+    choices: [
+      "A constant net force in the direction of motion, to keep it moving",
+      "Zero net force",
+      "A net force that decreases over time",
+      "It depends on the puck's mass"
+    ],
+    correct: 1,
+    why: "Tests Newton's First Law — the most persistent pre-Newtonian intuition (\"motion needs a force to continue\").",
+    explain: "Newton's First Law: an object in motion stays in motion at constant velocity unless acted on by a net force. Constant velocity means zero acceleration, which by ΣF = ma means zero NET force — even though the puck keeps moving."
+  },
+  {
+    q: "A 10 kg box sits still on a rough floor. A person pushes horizontally with 30 N, but the box doesn't move. If the maximum static friction force is 45 N, what is the actual friction force acting on the box?",
+    choices: ["45 N (the maximum possible)", "30 N", "0 N", "Cannot be determined"],
+    correct: 1,
+    why: "Students often assume friction is always at its maximum value.",
+    explain: "Static friction adjusts to match the applied force UP TO its maximum value, to keep the object at rest. Since the box isn't moving, net force = 0, so friction must equal the applied force: 30 N. It only equals the maximum (45 N) at the verge of slipping."
+  },
+  {
+    q: "Two blocks (2 kg and 4 kg) are connected by a string over a pulley. Which statement about their accelerations is correct?",
+    choices: [
+      "The 2 kg block accelerates faster because it's lighter",
+      "The 4 kg block accelerates faster because it has more force",
+      "Both blocks have the same magnitude of acceleration, linked by the string",
+      "Acceleration can't be determined without knowing the string's mass"
+    ],
+    correct: 2,
+    why: "Students often analyze connected objects as if they move independently.",
+    explain: "Since the string is inextensible, both blocks must move (and accelerate) together — same magnitude of acceleration for the whole system, even though the individual forces on each block differ."
+  },
+  {
+    q: "A person stands on a scale in an elevator accelerating UPWARD. What does the scale read compared to the person's true weight?",
+    choices: [
+      "Less than true weight",
+      "Exactly true weight",
+      "More than true weight",
+      "Zero"
+    ],
+    correct: 2,
+    why: "Apparent weight problems are one of the most commonly missed Newton's 2nd Law applications.",
+    explain: "ΣF = ma: Normal force − weight = ma (upward acceleration). So Normal force = mg + ma, which is MORE than true weight (mg). The scale reads the normal force, so it reads higher than normal during upward acceleration."
+  },
+  {
+    q: "A ball rolls off a table and undergoes projectile motion. While it's in the air, which force(s) act on it (ignoring air resistance)?",
+    choices: [
+      "Gravity and the force that launched it off the table",
+      "Only gravity",
+      "Gravity and a horizontal \"motion force\"",
+      "No forces — it's in free fall so there's no force"
+    ],
+    correct: 1,
+    why: "Common misconception: assuming a 'force of motion' continues to push a projectile horizontally.",
+    explain: "Once the ball leaves the table, only gravity acts on it (ignoring air resistance). There is no forward 'force of motion' — horizontal velocity simply remains constant because no horizontal force acts on it (Newton's 1st Law), not because a force maintains it."
+  },
+  {
+    q: "A 5 kg block sits on a 30° frictionless incline. Which component of gravity is responsible for the block's acceleration down the slope?",
+    choices: [
+      "The full weight, mg",
+      "The component of weight perpendicular to the incline, mg·cos(30°)",
+      "The component of weight parallel to the incline, mg·sin(30°)",
+      "The normal force"
+    ],
+    correct: 2,
+    why: "Common setup error: using the wrong trig function or the full weight instead of the parallel component.",
+    explain: "On an incline, weight must be decomposed into components parallel and perpendicular to the surface. Only the parallel component, mg·sin(θ), causes acceleration along the incline (assuming no friction); the perpendicular component, mg·cos(θ), is balanced by the normal force."
+  }
+];
+
+const quizDiv = document.getElementById('quiz');
+document.getElementById('total').textContent = QUESTIONS.length;
+let score = 0;
+let answered = 0;
+
+QUESTIONS.forEach((item, qi) => {
+  const qDiv = document.createElement('div');
+  qDiv.className = 'q';
+  qDiv.innerHTML = `<h3>Q${qi+1}. ${item.q}</h3><div class="why">Why this is tricky: ${item.why}</div>`;
+
+  const form = document.createElement('div');
+  item.choices.forEach((choice, ci) => {
+    const label = document.createElement('label');
+    label.innerHTML = `<input type="radio" name="q${qi}" value="${ci}"> ${choice}`;
+    form.appendChild(label);
+  });
+  qDiv.appendChild(form);
+
+  const btn = document.createElement('button');
+  btn.className = 'check';
+  btn.textContent = 'Check Answer';
+  qDiv.appendChild(btn);
+
+  const explainDiv = document.createElement('div');
+  explainDiv.className = 'explain';
+  explainDiv.textContent = item.explain;
+  qDiv.appendChild(explainDiv);
+
+  btn.addEventListener('click', () => {
+    const selected = form.querySelector(`input[name="q${qi}"]:checked`);
+    if (!selected) { alert('Pick an answer first.'); return; }
+    const labels = form.querySelectorAll('label');
+    labels.forEach((lab, idx) => {
+      if (idx === item.correct) lab.classList.add('correct');
+      else if (idx === parseInt(selected.value)) lab.classList.add('incorrect');
+    });
+    explainDiv.classList.add('show');
+    btn.disabled = true;
+    form.querySelectorAll('input').forEach(i => i.disabled = true);
+
+    if (parseInt(selected.value) === item.correct) score++;
+    answered++;
+    document.getElementById('score').textContent = score;
+
+    if (answered === QUESTIONS.length) {
+      const finalDiv = document.getElementById('final');
+      const pct = Math.round((score / QUESTIONS.length) * 100);
+      finalDiv.style.display = 'block';
+      finalDiv.textContent = `Final Score: ${score} / ${QUESTIONS.length} (${pct}%)` +
+        (pct >= 80 ? ' — Mastery achieved! 🎉' : ' — Review the explanations above and retake.');
+      document.getElementById('restart').style.display = 'inline-block';
+    }
+  });
+
+  quizDiv.appendChild(qDiv);
+});
+
+document.getElementById('restart').addEventListener('click', () => location.reload());
+</script>
+</body>
+</html>
