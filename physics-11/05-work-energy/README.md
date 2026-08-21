@@ -31,6 +31,8 @@ The energy approach is often the fastest way to solve problems that would be dif
 - Confusing energy (a scalar, in Joules) with momentum (a vector, in kg·m/s) — a common error is trying to conserve energy as if it had direction/sign the way momentum does.
 - Power vs. energy confusion — mixing up units (Watts vs. Joules) and what each measures (rate vs. total amount).
 
+See [Worked Examples](worked-examples.md) for fully solved problems using the 4-phase method before attempting these.
+
 ## Practice Problems
 
 1. A 60 kg skier starts from rest at the top of a frictionless 40 m tall hill. Find her speed at the bottom using energy conservation, then check your answer using kinematics.

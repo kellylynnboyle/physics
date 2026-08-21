@@ -29,6 +29,8 @@ Newton's Laws explain *why* the motion described by kinematics happens — conne
 - Using $mg$ for weight on an incline without decomposing it into components.
 - For connected objects, treating the two objects as having independent (rather than equal-magnitude, linked) accelerations.
 
+See [Worked Examples](worked-examples.md) for fully solved problems using the 4-phase method before attempting these.
+
 ## Practice Problems
 
 1. A 5 kg box sits on a table. Identify every force acting on it and state the Newton's Third Law reaction pair for each.

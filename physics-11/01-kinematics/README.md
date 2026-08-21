@@ -32,6 +32,8 @@ Kinematics is the description of motion — without asking what *causes* it. It'
 - Mixing up which kinematic equation to use, especially forgetting equation 3 doesn't involve time.
 - Reading position-time graph slope as if it were a velocity-time graph (or vice versa).
 
+See [Worked Examples](worked-examples.md) for fully solved problems using the 4-phase method before attempting these.
+
 ## Practice Problems
 
 1. A car accelerates from rest at $2.5\ \text{m/s}^2$ for 6 s. Find its final velocity and the distance traveled.

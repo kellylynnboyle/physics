@@ -27,6 +27,8 @@ Projectile motion is 2D kinematics: the key insight is that horizontal and verti
 - Sign errors when the landing point is below the launch point (negative $\Delta y$).
 - Using the symmetric range/height shortcut formulas when the launch and landing heights are *not* equal (they don't apply then — must go back to component kinematics).
 
+See [Worked Examples](worked-examples.md) for fully solved problems using the 4-phase method before attempting these.
+
 ## Practice Problems
 
 1. A ball is kicked horizontally off a 20 m cliff at $15\ \text{m/s}$. Find the time to land and the horizontal distance traveled.

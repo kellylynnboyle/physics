@@ -30,6 +30,8 @@ Momentum gives a second, often more powerful lens for analyzing interactions —
 - Applying impulse-momentum theorem with the wrong $\Delta t$ (confusing total trip time with contact/collision time).
 - In explosion problems, forgetting that initial momentum can be zero (system starts at rest), which still constrains the final momenta of the pieces to be equal and opposite.
 
+See [Worked Examples](worked-examples.md) for fully solved problems using the 4-phase method before attempting these.
+
 ## Practice Problems
 
 1. A 0.15 kg baseball traveling at 40 m/s is hit back at 50 m/s in the opposite direction. If the bat is in contact with the ball for 0.7 ms, find the average force exerted by the bat.
