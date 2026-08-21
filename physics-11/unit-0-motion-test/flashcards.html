@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Flashcards — Unit 0 Motion Test Prep</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 700px; margin: 2rem auto; padding: 0 1rem; background:#f7f7f9; color:#1a1a1a; }
+  h1 { font-size: 1.4rem; }
+  .controls { display:flex; flex-wrap:wrap; gap: .75rem; align-items:center; margin-bottom: 1rem; font-size:.9rem; }
+  .controls label { display:flex; align-items:center; gap:.3rem; background:#fff; border:1px solid #ddd; border-radius:6px; padding:.3rem .6rem; cursor:pointer; }
+  #progress { font-weight:600; margin-bottom: .75rem; }
+  #card { background:#fff; border:1px solid #ddd; border-radius:12px; padding: 2.5rem 2rem; min-height: 220px; display:flex; align-items:center; justify-content:center; text-align:center; font-size:1.15rem; cursor:pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+  #tags { text-align:center; font-size:.8rem; color:#888; margin-top:.5rem; }
+  .nav { display:flex; justify-content:space-between; gap:1rem; margin-top:1.25rem; }
+  button { background:#2557a7; color:#fff; border:none; padding:.6rem 1.1rem; border-radius:6px; cursor:pointer; font-size:.95rem; }
+  button.secondary { background:#555; }
+  #hint { text-align:center; color:#888; font-size:.85rem; margin-top:.5rem; }
+</style>
+</head>
+<body>
+<h1>Unit 0 Motion Test — Flashcards</h1>
+<p style="font-size:.9rem;color:#555;">Same deck as <code>flashcards.tsv</code> (for Anki), playable directly in the browser — no import needed.</p>
+
+<div class="controls">
+  <label><input type="checkbox" class="tagFilter" value="tf-distance-displacement" checked> T/F: Distance/Displacement</label>
+  <label><input type="checkbox" class="tagFilter" value="tf-velocity-accel" checked> T/F: Velocity/Accel</label>
+  <label><input type="checkbox" class="tagFilter" value="formulas" checked> Formulas</label>
+  <label><input type="checkbox" class="tagFilter" value="lab" checked> Lab</label>
+  <button id="shuffleBtn" class="secondary">Shuffle</button>
+</div>
+
+<div id="progress"></div>
+<div id="card"></div>
+<div id="tags"></div>
+<div id="hint">Click the card to flip it</div>
+<div class="nav">
+  <button id="prevBtn" class="secondary">&larr; Previous</button>
+  <button id="nextBtn">Next &rarr;</button>
+</div>
+
+<script>
+const CARDS = [
+  { front: "A person makes a round-trip journey, finishing where she started. What are the displacement and distance for the trip?", back: "Displacement = 0 (net position change is zero). Distance = some nonzero value (total path length still adds up).", tags: ["tf-distance-displacement"] },
+  { front: "True or False: \"20 m, west\" likely describes the displacement for a motion.", back: "True — it has both magnitude (20 m) and direction (west), matching a vector quantity like displacement.", tags: ["tf-distance-displacement"] },
+  { front: "A person walks A&rarr;B&rarr;C&rarr;D covering legs of 35 yds, 20 yds, and 35 yds. What is the TOTAL DISTANCE?", back: "90 yds (35 + 20 + 35). Distance sums every leg regardless of direction.", tags: ["tf-distance-displacement"] },
+  { front: "For the same A&rarr;B&rarr;C&rarr;D path, why is stating \"the displacement is 50 yds\" (with no direction given) incomplete?", back: "The magnitude (50 yds) may be right, but displacement is a vector — without a stated direction, the answer is incomplete/incorrect. (Actual: -50 yds, i.e. 50 yds backward.)", tags: ["tf-distance-displacement"] },
+  { front: "True or False: Velocity is a vector quantity and speed is a scalar quantity.", back: "True.", tags: ["tf-velocity-accel"] },
+  { front: "True or False: Both speed and velocity refer to how fast an object is moving.", back: "True — they both describe rate of motion; velocity additionally includes direction.", tags: ["tf-velocity-accel"] },
+  { front: "Person X travels A&rarr;B in 5 s. Person Y travels the same A&rarr;B in 10 s. Is Person Y moving at twice the speed of Person X?", back: "False — Person Y took LONGER to cover the same distance, so Y is moving at HALF the speed of Person X, not twice.", tags: ["tf-velocity-accel"] },
+  { front: "True or False: The velocity of an object refers to the rate at which the object's position changes.", back: "True.", tags: ["tf-velocity-accel"] },
+  { front: "True or False: The phrase \"30 mi/hr, west\" likely refers to a scalar quantity.", back: "False — it includes a direction (west), making it a VECTOR quantity (velocity), not a scalar.", tags: ["tf-velocity-accel"] },
+  { front: "True or False: An object which is slowing down has an acceleration.", back: "True — slowing down is still a change in velocity, and acceleration measures any change in velocity (not just speeding up).", tags: ["tf-velocity-accel"] },
+  { front: "True or False: An object moving at constant speed in a circle has an acceleration.", back: "True — its direction is constantly changing, so its velocity is changing even though its speed isn't. That's still acceleration (centripetal).", tags: ["tf-velocity-accel"] },
+  { front: "True or False: Acceleration is the rate at which the velocity changes.", back: "True.", tags: ["tf-velocity-accel"] },
+  { front: "True or False: An object that is accelerating is moving fast.", back: "False (not necessarily) — accelerating only means velocity is CHANGING. An object can accelerate while moving slowly, momentarily at rest, or even while slowing down.", tags: ["tf-velocity-accel"] },
+  { front: "What formula finds average velocity from displacement and time?", back: "v = d / t (or &Delta;x / t).", tags: ["formulas"] },
+  { front: "What formula finds acceleration from initial and final velocity over a time interval?", back: "a = (v<sub>f</sub> &minus; v<sub>i</sub>) / t", tags: ["formulas"] },
+  { front: "What formula finds final velocity from initial velocity, acceleration, and time (no displacement needed)?", back: "v<sub>f</sub> = v<sub>i</sub> + at", tags: ["formulas"] },
+  { front: "What formula finds displacement from initial velocity, time, and acceleration (no final velocity needed)?", back: "d = v<sub>i</sub>t + &frac12;at&sup2;", tags: ["formulas"] },
+  { front: "What formula relates final velocity, initial velocity, acceleration, and displacement WITHOUT time?", back: "v<sub>f</sub>&sup2; = v<sub>i</sub>&sup2; + 2ad", tags: ["formulas"] },
+  { front: "What formula finds displacement using the average of initial and final velocity times the time interval?", back: "d = &frac12;(v<sub>i</sub> + v<sub>f</sub>)t", tags: ["formulas"] },
+  { front: "A car drives 500 m in 30 s, then 200 m in 60 s, then 100 m in 120 s. Why is the average velocity NOT just the average of three separate speeds?", back: "Average velocity = TOTAL distance &divide; TOTAL time = (500+200+100)/(30+60+120) &asymp; 3.81 m/s — the segments have unequal time, so a simple average of speeds would be wrong.", tags: ["formulas"] },
+  { front: "A ball is thrown straight up at 30 m/s and returns to the same height it was thrown from. What are v<sub>i</sub> and v<sub>f</sub> for the whole flight, and why?", back: "v<sub>i</sub> = +30 m/s, v<sub>f</sub> = -30 m/s — same speed, opposite direction, by the symmetry of motion under constant gravity (a = -9.8 m/s&sup2; throughout).", tags: ["formulas"] },
+  { front: "Car &amp; Ramp Lab: How do you find instantaneous velocity at a gate, given the wing width and the time the wing blocked the gate's light beam?", back: "v = (wing width) / (time light was blocked) — e.g. 1 cm / 0.0148 s &asymp; 67.6 cm/s.", tags: ["lab"] },
+  { front: "Car &amp; Ramp Lab: Once you have instantaneous velocity at gate A and gate B, how do you find acceleration down the ramp?", back: "a = (v<sub>B</sub> &minus; v<sub>A</sub>) / (time from A to B).", tags: ["lab"] }
+];
+
+let deck = [...CARDS];
+let idx = 0;
+let flipped = false;
+
+const cardEl = document.getElementById('card');
+const tagsEl = document.getElementById('tags');
+const progressEl = document.getElementById('progress');
+
+function activeTags() {
+  return Array.from(document.querySelectorAll('.tagFilter:checked')).map(c => c.value);
+}
+
+function applyFilter() {
+  const tags = activeTags();
+  deck = CARDS.filter(c => c.tags.some(t => tags.includes(t)));
+  idx = 0;
+  flipped = false;
+  render();
+}
+
+function render() {
+  if (deck.length === 0) {
+    cardEl.innerHTML = "No cards match the selected filters.";
+    tagsEl.textContent = "";
+    progressEl.textContent = "";
+    return;
+  }
+  const c = deck[idx];
+  cardEl.innerHTML = flipped ? c.back : c.front;
+  tagsEl.textContent = c.tags.join(" · ");
+  progressEl.textContent = `Card ${idx + 1} / ${deck.length}` + (flipped ? "  (showing answer)" : "  (showing question)");
+}
+
+cardEl.addEventListener('click', () => { flipped = !flipped; render(); });
+
+document.getElementById('nextBtn').addEventListener('click', () => {
+  if (deck.length === 0) return;
+  idx = (idx + 1) % deck.length;
+  flipped = false;
+  render();
+});
+
+document.getElementById('prevBtn').addEventListener('click', () => {
+  if (deck.length === 0) return;
+  idx = (idx - 1 + deck.length) % deck.length;
+  flipped = false;
+  render();
+});
+
+document.getElementById('shuffleBtn').addEventListener('click', () => {
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  idx = 0;
+  flipped = false;
+  render();
+});
+
+document.querySelectorAll('.tagFilter').forEach(cb => cb.addEventListener('change', applyFilter));
+
+render();
+</script>
+</body>
+</html>

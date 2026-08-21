@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Flashcards — Distance vs. Displacement &amp; Speed-Distance-Time</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 700px; margin: 2rem auto; padding: 0 1rem; background:#f7f7f9; color:#1a1a1a; }
+  h1 { font-size: 1.4rem; }
+  .controls { display:flex; flex-wrap:wrap; gap: .75rem; align-items:center; margin-bottom: 1rem; font-size:.9rem; }
+  .controls label { display:flex; align-items:center; gap:.3rem; background:#fff; border:1px solid #ddd; border-radius:6px; padding:.3rem .6rem; cursor:pointer; }
+  #progress { font-weight:600; margin-bottom: .75rem; }
+  #card { background:#fff; border:1px solid #ddd; border-radius:12px; padding: 2.5rem 2rem; min-height: 220px; display:flex; align-items:center; justify-content:center; text-align:center; font-size:1.15rem; cursor:pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+  #card .side-label { position:absolute; top:1rem; left:1.25rem; font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#888; }
+  #card-wrap { position:relative; }
+  #tags { text-align:center; font-size:.8rem; color:#888; margin-top:.5rem; }
+  .nav { display:flex; justify-content:space-between; gap:1rem; margin-top:1.25rem; }
+  button { background:#2557a7; color:#fff; border:none; padding:.6rem 1.1rem; border-radius:6px; cursor:pointer; font-size:.95rem; }
+  button.secondary { background:#555; }
+  button:disabled { background:#aaa; cursor:default; }
+  #hint { text-align:center; color:#888; font-size:.85rem; margin-top:.5rem; }
+</style>
+</head>
+<body>
+<h1>Distance vs. Displacement &amp; Speed-Distance-Time — Flashcards</h1>
+<p style="font-size:.9rem;color:#555;">Same deck as <code>flashcards.tsv</code> (for Anki), playable directly in the browser — no import needed.</p>
+
+<div class="controls">
+  <label><input type="checkbox" class="tagFilter" value="apprentice" checked> Apprentice</label>
+  <label><input type="checkbox" class="tagFilter" value="master" checked> Master</label>
+  <label><input type="checkbox" class="tagFilter" value="distance-displacement" checked> Distance/Displacement</label>
+  <label><input type="checkbox" class="tagFilter" value="speed-distance-time" checked> Speed-Distance-Time</label>
+  <button id="shuffleBtn" class="secondary">Shuffle</button>
+</div>
+
+<div id="progress"></div>
+<div id="card-wrap">
+  <div id="card"></div>
+</div>
+<div id="tags"></div>
+<div id="hint">Click the card to flip it</div>
+<div class="nav">
+  <button id="prevBtn" class="secondary">&larr; Previous</button>
+  <button id="nextBtn">Next &rarr;</button>
+</div>
+
+<script>
+const CARDS = [
+  { front: "What is <b>distance</b>?", back: "The total length of the actual path traveled between two points (scalar — no direction).", tags: ["distance-displacement","apprentice"] },
+  { front: "What is <b>displacement</b>?", back: "The length of the straight line between the starting and ending points, including direction (vector).", tags: ["distance-displacement","apprentice"] },
+  { front: "Is distance dependent or independent of the path taken?", back: "Dependent — different paths between the same two points can have different distances.", tags: ["distance-displacement","apprentice"] },
+  { front: "Is displacement dependent or independent of the path taken?", back: "Independent — displacement only depends on the start and end points, not the path.", tags: ["distance-displacement","apprentice"] },
+  { front: "What does the symbol &Delta;x represent?", back: "Displacement: &Delta;x = x &minus; x&#8320; (final position minus initial position).", tags: ["distance-displacement","apprentice"] },
+  { front: "What does x&#8320; represent in class notation?", back: "Initial position.", tags: ["distance-displacement","apprentice"] },
+  { front: "What does x (without a subscript) represent in class notation?", back: "Final position.", tags: ["distance-displacement","apprentice"] },
+  { front: "Name the 5 vector quantities listed in class.", back: "Displacement, Velocity, Acceleration, Momentum, Force.", tags: ["distance-displacement","apprentice"] },
+  { front: "Name the 5 scalar quantities listed in class.", back: "Distance, Speed, Time, Mass, Energy.", tags: ["distance-displacement","apprentice"] },
+  { front: "Class example: a person starts at the 2 m mark, walks to the 8 m mark, then runs back to the -2 m mark. What is the TOTAL DISTANCE traveled?", back: "16 m (6 m walk + 10 m run).", tags: ["distance-displacement","master"] },
+  { front: "Same example — what is the TOTAL DISPLACEMENT?", back: "-4 m, i.e. 4 m backward (from +2 m to -2 m).", tags: ["distance-displacement","master"] },
+  { front: "Same example — what is the displacement of just the walk (2 m &rarr; 8 m)?", back: "+6 m forward.", tags: ["distance-displacement","master"] },
+  { front: "Same example — what is the displacement of just the run (8 m &rarr; -2 m)?", back: "-10 m (10 m backward).", tags: ["distance-displacement","master"] },
+  { front: "Why can total distance be much larger than the magnitude of total displacement?", back: "Because distance adds up every bit of path length including backtracking, while displacement only reflects the net straight-line change from start to end.", tags: ["distance-displacement","master"] },
+  { front: "What is the formula for average velocity?", back: "v = &Delta;x / t (displacement divided by the time interval).", tags: ["speed-distance-time","apprentice"] },
+  { front: "Is speed a scalar or a vector?", back: "Scalar — magnitude only, no direction.", tags: ["speed-distance-time","apprentice"] },
+  { front: "Is velocity a scalar or a vector?", back: "Vector — has both magnitude (speed) and direction.", tags: ["speed-distance-time","apprentice"] },
+  { front: "How is the symbol for velocity written differently from the symbol for speed?", back: "Speed = v (plain); Velocity = <b>v</b> (bold) or v with an arrow over it, since it's a vector.", tags: ["speed-distance-time","apprentice"] },
+  { front: "What are the standard units for speed/velocity used in this class?", back: "Meters per second (m/s).", tags: ["speed-distance-time","apprentice"] },
+  { front: "If you start at the zero mark and move in only one direction, how do distance and displacement compare?", back: "They are equal in magnitude — there's no backtracking to cause a difference.", tags: ["speed-distance-time","apprentice"] },
+  { front: "What's the difference between average velocity and instantaneous velocity?", back: "Average velocity = displacement over a longer time interval; instantaneous velocity = displacement during a tiny instant of time. Both include direction.", tags: ["speed-distance-time","master"] },
+  { front: "Does a speedometer measure average speed, instantaneous speed, or velocity?", back: "Instantaneous speed — it shows the current rate of motion with no direction.", tags: ["speed-distance-time","master"] },
+  { front: "LA driving scenario: speedometer reads 70 mph early, then 30 mph in traffic, never outside that range. Why isn't the trip's average velocity simply (70+30)/2?", back: "Average velocity = total displacement &divide; total time — it depends on how LONG you spent at each speed, not just the two extreme readings.", tags: ["speed-distance-time","master"] },
+  { front: "If a leopard veers left but keeps the same speed, does its velocity change? Why?", back: "Yes — velocity includes direction, and the direction changed even though the speed (magnitude) didn't.", tags: ["speed-distance-time","master"] },
+  { front: "Changes in velocity can come from what three things?", back: "A change in speed, a change in direction, or both.", tags: ["speed-distance-time","master"] }
+];
+
+let deck = [...CARDS];
+let idx = 0;
+let flipped = false;
+
+const cardEl = document.getElementById('card');
+const tagsEl = document.getElementById('tags');
+const progressEl = document.getElementById('progress');
+
+function activeTags() {
+  return Array.from(document.querySelectorAll('.tagFilter:checked')).map(c => c.value);
+}
+
+function applyFilter() {
+  const levels = ['apprentice','master'].filter(t => activeTags().includes(t));
+  const topics = ['distance-displacement','speed-distance-time'].filter(t => activeTags().includes(t));
+  deck = CARDS.filter(c => c.tags.some(t => levels.includes(t)) && c.tags.some(t => topics.includes(t)));
+  idx = 0;
+  flipped = false;
+  render();
+}
+
+function render() {
+  if (deck.length === 0) {
+    cardEl.innerHTML = "No cards match the selected filters.";
+    tagsEl.textContent = "";
+    progressEl.textContent = "";
+    return;
+  }
+  const c = deck[idx];
+  cardEl.innerHTML = flipped ? c.back : c.front;
+  tagsEl.textContent = c.tags.join(" · ");
+  progressEl.textContent = `Card ${idx + 1} / ${deck.length}` + (flipped ? "  (showing answer)" : "  (showing question)");
+}
+
+cardEl.addEventListener('click', () => { flipped = !flipped; render(); });
+
+document.getElementById('nextBtn').addEventListener('click', () => {
+  if (deck.length === 0) return;
+  idx = (idx + 1) % deck.length;
+  flipped = false;
+  render();
+});
+
+document.getElementById('prevBtn').addEventListener('click', () => {
+  if (deck.length === 0) return;
+  idx = (idx - 1 + deck.length) % deck.length;
+  flipped = false;
+  render();
+});
+
+document.getElementById('shuffleBtn').addEventListener('click', () => {
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  idx = 0;
+  flipped = false;
+  render();
+});
+
+document.querySelectorAll('.tagFilter').forEach(cb => cb.addEventListener('change', applyFilter));
+
+render();
+</script>
+</body>
+</html>
