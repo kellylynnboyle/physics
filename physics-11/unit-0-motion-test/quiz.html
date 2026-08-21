@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Unit 0 Motion Test — Practice Quiz</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 780px; margin: 2rem auto; padding: 0 1rem; background:#f7f7f9; color:#1a1a1a; }
+  h1 { font-size: 1.5rem; }
+  h2.section { margin-top: 2rem; padding: .4rem .8rem; border-radius: 6px; color: #fff; background:#2557a7; }
+  #score-bar { position: sticky; top:0; background:#f7f7f9; padding: .5rem 0; font-weight:600; border-bottom: 2px solid #ddd; margin-bottom: 1rem; }
+  .q { background:#fff; border:1px solid #ddd; border-radius:8px; padding: 1rem 1.25rem; margin-bottom: 1rem; }
+  .q h3 { margin-top:0; }
+  label { display:block; padding:.4rem .5rem; border-radius:6px; cursor:pointer; margin-bottom:.25rem; }
+  label:hover { background:#f0f0f5; }
+  .correct { background:#d9f2df !important; }
+  .incorrect { background:#fbdcdc !important; }
+  button.check { margin-top:.5rem; background:#2557a7; color:#fff; border:none; padding:.5rem 1rem; border-radius:6px; cursor:pointer; }
+  button.check:disabled { background:#aaa; cursor: default; }
+  .explain { display:none; margin-top:.6rem; padding:.6rem .8rem; background:#eef3fb; border-left:4px solid #2557a7; border-radius:4px; }
+  .explain.show { display:block; }
+  #restart { display:none; background:#444; color:#fff; border:none; padding:.6rem 1.2rem; border-radius:6px; cursor:pointer; margin-top:1rem; }
+  #final { display:none; font-size:1.2rem; font-weight:700; margin-top:1rem; padding:1rem; background:#fff; border-radius:8px; text-align:center; }
+  .note { font-size:.85rem; color:#555; margin: .5rem 0 1rem; }
+</style>
+</head>
+<body>
+<h1>Unit 0 Motion Test — Practice Quiz</h1>
+<p>Built directly from the class study guide: Car &amp; Ramp Lab, Mixed Problem Solving, the Position-vs-Time graph, and both True/False sections. The velocity-time graph matching task isn't included here — it's a drawing/matching task better done on paper (see the study guide).</p>
+<div id="score-bar">Score: <span id="score">0</span> / <span id="total">0</span></div>
+<div id="quiz"></div>
+<div id="final"></div>
+<button id="restart">Retake Quiz</button>
+
+<script>
+const SECTIONS = [
+  {
+    label: "Car &amp; Ramp Lab",
+    questions: [
+      { q: "Gate A is at position 20 cm, Gate B is at position 60 cm. Find the displacement A→B.", choices: ["40 cm", "67.6 cm/s", "114 cm/s", "172 cm/s"], correct: 0, explain: "Displacement A→B = 60 − 20 = 40 cm." },
+      { q: "Time from Gate A to Gate B is 0.3496 s. Find the average velocity A→B.", choices: ["40 cm/s", "67.6 cm/s", "114 cm/s", "299 cm/s"], correct: 2, explain: "v = d/t = 40 / 0.3496 ≈ 114 cm/s." },
+      { q: "The 1 cm wing blocks Gate A's light beam for 0.0148 s. Find the instantaneous velocity at A.", choices: ["40 cm/s", "67.6 cm/s", "114 cm/s", "172 cm/s"], correct: 1, explain: "v_A = (wing width)/(time blocked) = 1 cm / 0.0148 s ≈ 67.6 cm/s." },
+      { q: "The 1 cm wing blocks Gate B's light beam for 0.0058 s. Find the instantaneous velocity at B.", choices: ["67.6 cm/s", "114 cm/s", "172 cm/s", "299 cm/s"], correct: 2, explain: "v_B = 1 cm / 0.0058 s ≈ 172 cm/s." },
+      { q: "Using v_A ≈ 67.6 cm/s, v_B ≈ 172 cm/s, and t_AB = 0.3496 s, find the acceleration down the ramp.", choices: ["40 cm/s²", "114 cm/s²", "172 cm/s²", "299 cm/s²"], correct: 3, explain: "a = (v_B − v_A)/t = (172 − 67.6)/0.3496 ≈ 299 cm/s²." }
+    ]
+  },
+  {
+    label: "Mixed Problem Solving",
+    questions: [
+      { q: "A dancer moves from position 0 to position 8 m, then back to position 3 m, in 10 seconds. Find the total distance traveled.", choices: ["8 m", "11 m", "13 m", "16 m"], correct: 2, explain: "Distance = 8 m (out) + 5 m (back from 8 to 3) = 13 m." },
+      { q: "Same dancer (0 → 8 m → 3 m in 10 s). Find the displacement.", choices: ["3 m", "5 m", "8 m", "13 m"], correct: 0, explain: "Displacement = final − initial = 3 − 0 = 3 m." },
+      { q: "Same dancer. Find the average velocity (with direction).", choices: ["0.3 m/s forward", "0.8 m/s forward", "1.3 m/s forward", "3 m/s forward"], correct: 0, explain: "v = displacement/time = 3 m / 10 s = 0.3 m/s forward." },
+      { q: "A European swallow flies at 11 m/s. How long to travel 1600 m?", choices: ["72.7 s", "145 s", "176 s", "1600 s"], correct: 1, explain: "t = d/v = 1600/11 ≈ 145 s." },
+      { q: "A car drives 500 m in 30 s, then 200 m in 60 s, then 100 m in 120 s. Find its average velocity for the whole trip.", choices: ["3.81 m/s", "6.1 m/s", "8 m/s", "13 m/s"], correct: 0, explain: "v = total distance / total time = (500+200+100)/(30+60+120) = 800/210 ≈ 3.81 m/s — NOT an average of the three individual speeds." },
+      { q: "A ball rolls down a hill at a = 2.0 m/s², starting from rest. How far does it travel in 4 seconds?", choices: ["8 m", "13 m", "16 m", "31.4 m"], correct: 2, explain: "d = v_i t + ½at² = 0 + ½(2)(4)² = 16 m." },
+      { q: "Same ball (a = 2.0 m/s², from rest). What is its velocity at t = 4 s?", choices: ["3 m/s", "6.1 m/s", "8 m/s", "16 m/s"], correct: 2, explain: "v_f = v_i + at = 0 + (2)(4) = 8 m/s." },
+      { q: "A car at 25 m/s brakes at a constant −3 m/s² for 5 seconds. Find its displacement during braking.", choices: ["50.2 m", "62.5 m", "87.5 m", "125 m"], correct: 2, explain: "d = v_i t + ½at² = 25(5) + ½(−3)(5)² = 125 − 37.5 = 87.5 m." },
+      { q: "A rock falls from a cliff and takes 3.2 s to hit the ground (v_i = 0). How tall is the cliff?", choices: ["31.4 m", "50.2 m", "62.7 m", "87.5 m"], correct: 1, explain: "d = v_i t + ½at² = 0 + ½(9.8)(3.2)² ≈ 50.2 m." },
+      { q: "Same falling rock (v_i = 0, a = 9.8 m/s², t = 3.2 s). Find its speed just before impact.", choices: ["3.2 m/s", "9.8 m/s", "31.4 m/s", "50.2 m/s"], correct: 2, explain: "v_f = v_i + at = 0 + (9.8)(3.2) ≈ 31.4 m/s." },
+      { q: "A foul ball leaves the bat at 30 m/s straight up and returns to the same height. Find the total time in the air.", choices: ["3 s", "3.06 s", "6.1 s", "9.8 s"], correct: 2, explain: "v_f = v_i + at, with v_f = −30 (same speed, opposite direction): −30 = 30 + (−9.8)t → t ≈ 6.1 s." }
+    ]
+  },
+  {
+    label: "Position vs. Time Graph",
+    questions: [
+      { q: "On the class's position-vs-time graph, what is the initial position (at t=0)?", choices: ["-2 m", "0 m", "4 m", "6 m"], correct: 2, explain: "The graph starts at 4 m." },
+      { q: "What is the total distance traveled from 0 to 10 seconds?", choices: ["2 m", "8 m", "12 m", "16 m"], correct: 2, explain: "Adding up each leg's path length: 1 + 7 + 4 = 12 m." },
+      { q: "What is the displacement from 0 to 10 seconds?", choices: ["-2 m (2 m backward)", "0 m", "2 m (2 m forward)", "4 m"], correct: 0, explain: "Displacement only compares start and end position: net change = -2 m (backward)." },
+      { q: "Which time interval has the greatest speed?", choices: ["0-1 sec", "1-2 sec", "4-5 sec", "9-14 sec"], correct: 2, explain: "The steepest (most vertical) part of the position-time graph is 4-5 sec." },
+      { q: "During which time interval(s) is the object NOT moving?", choices: ["0-1 sec only", "1-2, 3-4, and 5-6 sec", "4-5 sec only", "9-14 sec only"], correct: 1, explain: "Flat (zero-slope) sections occur at 1-2, 3-4, and 5-6 sec." },
+      { q: "When does the object change direction?", choices: ["at 3-4 sec only", "at 1-2 and 5-6 sec", "at 4-5 sec", "never"], correct: 1, explain: "The slope's sign flips around 1-2 sec and again around 5-6 sec." },
+      { q: "Find the velocity during the 4-5 sec interval.", choices: ["-4 m/s", "-1 m/s", "1 m/s", "4 m/s"], correct: 0, explain: "v = Δx/Δt = -4 m / 1 s = -4 m/s." },
+      { q: "Find the velocity during the 6-10 sec interval.", choices: ["-1 m/s", "0.25 m/s", "1 m/s", "4 m/s"], correct: 2, explain: "v = Δx/Δt = (2 - (-2)) / 4 = 4/4 = 1 m/s." }
+    ]
+  },
+  {
+    label: "True/False: Distance and/or Displacement",
+    questions: [
+      { q: "A person makes a round-trip journey, finishing where she started. The displacement for the trip is 0 and the distance is some nonzero value.", choices: ["True", "False"], correct: 0, explain: "Correct restatement of the core definitions — displacement nets to zero on a round trip, but distance (total path length) does not." },
+      { q: "The phrase \"20 m, west\" likely describes the displacement for a motion.", choices: ["True", "False"], correct: 0, explain: "It has both a magnitude (20 m) and a direction (west) — that's a vector, matching displacement." },
+      { q: "A person walks A→B→C→D. The distance for this motion is 100 yds.", choices: ["True", "False"], correct: 1, explain: "The actual legs add up to 35 + 20 + 35 = 90 yds, not 100 — the statement is false as given." },
+      { q: "For the same diagram, the displacement is 50 yds.", choices: ["True", "False"], correct: 1, explain: "The magnitude (50 yds) is right, but displacement needs a direction — it's actually -50 yds (50 yds backward). Stated without direction, the claim is incomplete/false." }
+    ]
+  },
+  {
+    label: "True/False: Velocity, Speed &amp; Acceleration",
+    questions: [
+      { q: "Velocity is a vector quantity and speed is a scalar quantity.", choices: ["True", "False"], correct: 0, explain: "Correct — velocity has direction, speed doesn't." },
+      { q: "Both speed and velocity refer to how fast an object is moving.", choices: ["True", "False"], correct: 0, explain: "True — velocity additionally specifies direction." },
+      { q: "Person X moves A→B in 5 s. Person Y moves the same A→B in 10 s. Person Y is moving with twice the speed of Person X.", choices: ["True", "False"], correct: 1, explain: "Person Y took longer to cover the same distance, so Y is moving at HALF the speed of X, not twice." },
+      { q: "The velocity of an object refers to the rate at which the object's position changes.", choices: ["True", "False"], correct: 0, explain: "Correct — that's the definition of velocity." },
+      { q: "The phrase \"30 mi/hr, west\" likely refers to a scalar quantity.", choices: ["True", "False"], correct: 1, explain: "It includes a direction, so it's a vector quantity (velocity), not a scalar." },
+      { q: "An object which is slowing down has an acceleration.", choices: ["True", "False"], correct: 0, explain: "Slowing down is still a change in velocity — acceleration measures any change in velocity, not just speeding up." },
+      { q: "An object which is moving at constant speed in a circle has an acceleration.", choices: ["True", "False"], correct: 0, explain: "Its direction keeps changing even though its speed doesn't, so its velocity is changing — that's acceleration (centripetal)." },
+      { q: "Acceleration is the rate at which the velocity changes.", choices: ["True", "False"], correct: 0, explain: "Correct — that's the definition of acceleration." },
+      { q: "An object that is accelerating is moving fast.", choices: ["True", "False"], correct: 1, explain: "False, not necessarily. Accelerating just means velocity is changing — the object could be moving slowly, momentarily at rest, or even slowing down." }
+    ]
+  }
+];
+
+const quizDiv = document.getElementById('quiz');
+let ALL_QUESTIONS = [];
+SECTIONS.forEach(sec => sec.questions.forEach(q => ALL_QUESTIONS.push(q)));
+document.getElementById('total').textContent = ALL_QUESTIONS.length;
+let score = 0;
+let answered = 0;
+let qi = 0;
+
+SECTIONS.forEach(section => {
+  const h2 = document.createElement('h2');
+  h2.className = 'section';
+  h2.innerHTML = section.label;
+  quizDiv.appendChild(h2);
+
+  section.questions.forEach(item => {
+    const myIndex = qi;
+    const qDiv = document.createElement('div');
+    qDiv.className = 'q';
+    qDiv.innerHTML = `<h3>Q${myIndex+1}. ${item.q}</h3>`;
+
+    const form = document.createElement('div');
+    item.choices.forEach((choice, ci) => {
+      const label = document.createElement('label');
+      label.innerHTML = `<input type="radio" name="q${myIndex}" value="${ci}"> ${choice}`;
+      form.appendChild(label);
+    });
+    qDiv.appendChild(form);
+
+    const btn = document.createElement('button');
+    btn.className = 'check';
+    btn.textContent = 'Check Answer';
+    qDiv.appendChild(btn);
+
+    const explainDiv = document.createElement('div');
+    explainDiv.className = 'explain';
+    explainDiv.textContent = item.explain;
+    qDiv.appendChild(explainDiv);
+
+    btn.addEventListener('click', () => {
+      const selected = form.querySelector(`input[name="q${myIndex}"]:checked`);
+      if (!selected) { alert('Pick an answer first.'); return; }
+      const labels = form.querySelectorAll('label');
+      labels.forEach((lab, idx) => {
+        if (idx === item.correct) lab.classList.add('correct');
+        else if (idx === parseInt(selected.value)) lab.classList.add('incorrect');
+      });
+      explainDiv.classList.add('show');
+      btn.disabled = true;
+      form.querySelectorAll('input').forEach(i => i.disabled = true);
+
+      if (parseInt(selected.value) === item.correct) score++;
+      answered++;
+      document.getElementById('score').textContent = score;
+
+      if (answered === ALL_QUESTIONS.length) {
+        const finalDiv = document.getElementById('final');
+        const pct = Math.round((score / ALL_QUESTIONS.length) * 100);
+        finalDiv.style.display = 'block';
+        finalDiv.textContent = `Final Score: ${score} / ${ALL_QUESTIONS.length} (${pct}%)` +
+          (pct >= 80 ? ' — Ready for the test! 🎉' : ' — Review the explanations above and retake before test day.');
+        document.getElementById('restart').style.display = 'inline-block';
+      }
+    });
+
+    quizDiv.appendChild(qDiv);
+    qi++;
+  });
+});
+
+document.getElementById('restart').addEventListener('click', () => location.reload());
+</script>
+</body>
+</html>
