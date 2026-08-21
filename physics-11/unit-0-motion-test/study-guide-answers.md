@@ -2,7 +2,7 @@
 
 Transcribed from the scanned answer key (`Key_Study_Guide_Motion.pdf` in this folder — treat the scan as the source of truth; this file is a typed reference for quick review and for building flashcards/quizzes from).
 
-> ⚠️ A few handwritten check marks on the True/False sections and the exact letter-to-segment matching on the velocity-time graph task were not fully legible when transcribing. Those spots are flagged below — double-check them against the original scan before treating them as final.
+> ⚠️ The exact letter-to-segment matching on the velocity-time graph task (last section below) was not fully legible when transcribing — that spot is flagged below. Everything else has been re-checked against a clearer scan and confirmed.
 
 ---
 
@@ -101,10 +101,8 @@ Be able to **define each term**, give its **units**, and state whether it is a *
 
 ## True/False: Distance and/or Displacement
 
-*(⚠️ Marks for items 1 and 3 weren't fully clear on the scan — verify against the original before using as a final answer key.)*
-
-1. **"A person makes a round-trip journey, finishing where she started. The displacement for the trip is 0 and the distance is some nonzero value."** — **True** (this is the core distance-vs-displacement definition).
-2. **"The phrase '20 m, west' likely describes the displacement for a motion."** — **True** ✓ (marked on scan). It has both magnitude and direction, matching displacement (a vector).
+1. **"A person makes a round-trip journey, finishing where she started. The displacement for the trip is 0 and the distance is some nonzero value."** — **True** (this is the core distance-vs-displacement definition). No letter grade is written next to this item on the scan — it reads as a worked example restating the definition rather than one of the graded items — but the statement itself is correct.
+2. **"The phrase '20 m, west' likely describes the displacement for a motion."** — **True** — marked with a clear "T" on the scan. It has both magnitude and direction, matching displacement (a vector).
 3. **"The diagram depicts a person walking A→B→C→D. The distance for this motion is 100 yds."** — Worked calculation on the scan: $35 + 20 + 35 = 90\ \text{yds}$, not 100 → statement is **False** as stated (correct distance is 90 yds).
 4. **"For the same diagram, the displacement is 50 yds."** — Calculation shown: $-50\ \text{yds}$ (with a note to include **direction**). The magnitude (50 yds) is correct, but as stated without a direction the claim is incomplete — displacement requires both magnitude *and* direction to be fully correct.
 
@@ -136,7 +134,7 @@ On a velocity-time graph, sketch/identify a plot representing each motion below.
 - f. moving with a positive velocity and a negative acceleration
 - g. moving with a positive velocity at constant speed and then decelerating to a stop
 
-> ⚠️ The scan shows letters (b, c, d, e, f, g) marked onto a hand-drawn velocity-time graph with connecting arrows, but the exact line-segment-to-letter matching wasn't reliably transcribable from the scan as an image. **Verify the actual matching against the original PDF** rather than relying on this file for that part.
+> ⚠️ The scan shows letters (b, c, d, f, g) handwritten onto a red zigzag velocity-time line, with arrows connecting some letters to specific segments. The general shape is legible — the line starts near zero, rises to a positive peak, dips down through zero to a negative low point, rises back up through zero to a second positive peak, then gradually decreases (staying positive) toward the end — and the letters cluster accordingly (b/c/d around the dip below zero in the middle third of the graph; f/g around the second peak and the gradual decline near the end). But the precise segment-by-segment assignment isn't reliably resolvable from the scan alone. **Verify the exact matching against the original PDF** (or redraw it from the letter definitions above, which is arguably faster and less error-prone than reading the handwriting).
 
 ---
 
