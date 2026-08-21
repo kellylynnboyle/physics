@@ -12,6 +12,7 @@ Open any `quiz.html` file directly in a browser — no install needed.
 
 ## Unit Sequence
 
+0. [**Distance vs. Displacement & Speed-Distance-Time**](00-speed-distance-time/cornell-notes.md) — foundational vocabulary and the speed formula, ahead of full kinematics (Apprentice/Master level notes)
 1. [**Kinematics**](01-kinematics/README.md) — describing motion in 1D
 2. [**Projectile Motion**](02-projectile-motion/README.md) — motion in 2D under gravity
 3. [**Newton's Laws**](03-newtons-laws/README.md) — forces and why motion changes

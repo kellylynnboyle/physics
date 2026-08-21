@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Distance vs. Displacement & Speed-Distance-Time Quiz</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 780px; margin: 2rem auto; padding: 0 1rem; background:#f7f7f9; color:#1a1a1a; }
+  h1 { font-size: 1.5rem; }
+  h2.level { margin-top: 2rem; padding: .4rem .8rem; border-radius: 6px; color: #fff; }
+  h2.apprentice { background:#3a7d44; }
+  h2.master { background:#7d3a5c; }
+  #score-bar { position: sticky; top:0; background:#f7f7f9; padding: .5rem 0; font-weight:600; border-bottom: 2px solid #ddd; margin-bottom: 1rem; }
+  .q { background:#fff; border:1px solid #ddd; border-radius:8px; padding: 1rem 1.25rem; margin-bottom: 1rem; }
+  .q h3 { margin-top:0; }
+  .why { font-size:.85rem; color:#555; margin: .25rem 0 .75rem; font-style: italic; }
+  label { display:block; padding:.4rem .5rem; border-radius:6px; cursor:pointer; margin-bottom:.25rem; }
+  label:hover { background:#f0f0f5; }
+  .correct { background:#d9f2df !important; }
+  .incorrect { background:#fbdcdc !important; }
+  button.check { margin-top:.5rem; background:#2557a7; color:#fff; border:none; padding:.5rem 1rem; border-radius:6px; cursor:pointer; }
+  button.check:disabled { background:#aaa; cursor: default; }
+  .explain { display:none; margin-top:.6rem; padding:.6rem .8rem; background:#eef3fb; border-left:4px solid #2557a7; border-radius:4px; }
+  .explain.show { display:block; }
+  #restart { display:none; background:#444; color:#fff; border:none; padding:.6rem 1.2rem; border-radius:6px; cursor:pointer; margin-top:1rem; }
+  #final { display:none; font-size:1.2rem; font-weight:700; margin-top:1rem; padding:1rem; background:#fff; border-radius:8px; text-align:center; }
+</style>
+</head>
+<body>
+<h1>Distance vs. Displacement &amp; Speed-Distance-Time</h1>
+<p>Matches the PhysicsClassroom.com Task Tracker Concept Builders assigned in class: "Distance vs Displacement" and "Speed-distance-time" (Matching Pairs) — <strong>Apprentice &amp; Master levels only</strong>.</p>
+<div id="score-bar">Score: <span id="score">0</span> / <span id="total">0</span></div>
+<div id="quiz"></div>
+<div id="final"></div>
+<button id="restart">Retake Quiz</button>
+
+<script>
+const SECTIONS = [
+  {
+    level: "apprentice",
+    label: "Apprentice Level",
+    questions: [
+      {
+        q: "According to class notes, is DISTANCE dependent on the path taken, or independent of it?",
+        choices: ["Dependent on the path", "Independent of the path", "Depends only on units used", "Only defined for straight-line paths"],
+        correct: 0,
+        why: "Straight from the class definition.",
+        explain: "Distance = total length of the ACTUAL PATH traveled — different paths between the same two points give different distances, so distance is path-dependent."
+      },
+      {
+        q: "Which of these is a VECTOR quantity, per the class list (Displacement, Velocity, Acceleration, Momentum, Force = vectors; Distance, Speed, Time, Mass, Energy = scalars)?",
+        choices: ["Distance", "Speed", "Displacement", "Time"],
+        correct: 2,
+        why: "Tests the vector/scalar list directly from notes.",
+        explain: "Displacement is a vector (has magnitude AND direction). Distance, speed, and time are all scalars (magnitude only)."
+      },
+      {
+        q: "A jogger runs 3 m east, then 3 m west back to the starting point. What is the total DISTANCE traveled?",
+        choices: ["0 m", "3 m", "6 m", "9 m"],
+        correct: 2,
+        why: "Basic apprentice-level distance calculation.",
+        explain: "Distance adds up the full path length regardless of direction: 3 m + 3 m = 6 m."
+      },
+      {
+        q: "Same jogger (3 m east, then 3 m west back to start). What is the total DISPLACEMENT?",
+        choices: ["0 m", "3 m", "6 m", "-3 m"],
+        correct: 0,
+        why: "Basic apprentice-level displacement calculation — the direct comparison question to the one above.",
+        explain: "Displacement only compares start and end position. Since the jogger ends up back where they started, net displacement = 0 m, even though distance traveled was 6 m."
+      },
+      {
+        q: "In class notation, what does x₀ represent?",
+        choices: ["Final position", "Initial position", "Total distance", "Time interval"],
+        correct: 1,
+        why: "Tests the symbol key from notes.",
+        explain: "x₀ = initial position, x = final position, and Δx = x − x₀ = displacement."
+      },
+      {
+        q: "Is SPEED a scalar or vector quantity?",
+        choices: ["Scalar — magnitude only, no direction", "Vector — has magnitude and direction", "Neither — it's not a physical quantity", "It depends on the units used"],
+        correct: 0,
+        why: "Direct recall from the vector/scalar list.",
+        explain: "Speed tells you how fast something is moving as a single number, with no direction — that makes it a scalar. Velocity is the vector version that includes direction."
+      }
+    ]
+  },
+  {
+    level: "master",
+    label: "Master Level",
+    questions: [
+      {
+        q: "Class example: a person starts on the 2 m mark, walks to the 8 m mark, then runs back to the -2 m mark. What is the TOTAL DISTANCE traveled?",
+        choices: ["4 m", "6 m", "10 m", "16 m"],
+        correct: 3,
+        why: "The core worked example from class — total distance sums both legs regardless of direction.",
+        explain: "Walk: 2 m → 8 m = 6 m. Run: 8 m → -2 m = 10 m. Total distance = 6 + 10 = 16 m."
+      },
+      {
+        q: "Same example — what is the TOTAL DISPLACEMENT (from start to finish)?",
+        choices: ["16 m forward", "10 m backward", "4 m backward", "4 m forward"],
+        correct: 2,
+        why: "The direct companion to the total-distance question — tests whether students confuse the two.",
+        explain: "Displacement only depends on start (2 m) and end (-2 m) position: Δx = -2 − 2 = -4 m, i.e., 4 m backward — regardless of the 16 m actually walked/run."
+      },
+      {
+        q: "In that same example, why is the total distance (16 m) so much larger than the magnitude of the total displacement (4 m)?",
+        choices: [
+          "Because the person changed direction partway through, so some of the path 'cancels out' in displacement but still counts toward distance",
+          "Because distance and displacement always differ by exactly 12 m",
+          "Because the units were different for each leg",
+          "They shouldn't differ — one of the values must be wrong"
+        ],
+        correct: 0,
+        why: "Tests the conceptual reasoning behind the numbers, not just the calculation.",
+        explain: "Displacement only tracks net change in position, so backtracking partially cancels out. Distance has no such cancellation — every meter walked in ANY direction adds to the total, which is why it can be much larger."
+      },
+      {
+        q: "LA driving scenario from class: your speedometer reads 70 mph early in the trip and 30 mph later in traffic — you're never faster or slower than that range. Why can't you just average 70 and 30 to get the trip's average velocity?",
+        choices: [
+          "You can — average velocity is always the average of the highest and lowest speedometer readings",
+          "Average velocity = total displacement ÷ total time, which depends on how LONG you spent at each speed, not just the two extreme readings",
+          "Speedometer readings can't be used at all in physics",
+          "Because velocity can only be calculated for constant-speed trips"
+        ],
+        correct: 1,
+        why: "Directly from the class's LA driving example — tests the difference between an average of readings and a true average velocity.",
+        explain: "True average velocity is total displacement over total time. If you spend most of the trip at 30 mph in traffic and only a little time at 70 mph, the average is much closer to 30 mph than to 50 mph — simply averaging the two speedometer readings ignores how much time was spent at each."
+      },
+      {
+        q: "If a leopard veers left but continues at the same speed, does its VELOCITY change?",
+        choices: [
+          "No — velocity only changes if speed changes",
+          "Yes — velocity includes direction, and the direction changed even though the speed didn't",
+          "No — direction changes don't affect any motion quantity",
+          "Cannot be determined without knowing the leopard's mass"
+        ],
+        correct: 1,
+        why: "Direct class question — tests whether 'velocity' is understood as a full vector, not just a speed reading.",
+        explain: "Velocity = speed + direction. Changing direction alone (even at constant speed) changes the velocity vector, since its direction component changed — this is exactly why acceleration can occur even without speeding up or slowing down."
+      },
+      {
+        q: "Does a speedometer measure average speed, instantaneous speed, or velocity?",
+        choices: ["Average speed", "Instantaneous speed", "Average velocity", "Instantaneous velocity"],
+        correct: 1,
+        why: "A recurring class discussion question — tests the instantaneous vs. average distinction plus speed vs. velocity.",
+        explain: "A speedometer shows your rate of motion at THIS instant (instantaneous), and it shows a single number with no direction — so it measures instantaneous SPEED, not velocity, and not an average."
+      }
+    ]
+  }
+];
+
+const quizDiv = document.getElementById('quiz');
+let ALL_QUESTIONS = [];
+SECTIONS.forEach(sec => sec.questions.forEach(q => ALL_QUESTIONS.push(q)));
+document.getElementById('total').textContent = ALL_QUESTIONS.length;
+let score = 0;
+let answered = 0;
+let qi = 0;
+
+SECTIONS.forEach(section => {
+  const h2 = document.createElement('h2');
+  h2.className = 'level ' + section.level;
+  h2.textContent = section.label;
+  quizDiv.appendChild(h2);
+
+  section.questions.forEach(item => {
+    const myIndex = qi;
+    const qDiv = document.createElement('div');
+    qDiv.className = 'q';
+    qDiv.innerHTML = `<h3>Q${myIndex+1}. ${item.q}</h3><div class="why">Why this is tricky: ${item.why}</div>`;
+
+    const form = document.createElement('div');
+    item.choices.forEach((choice, ci) => {
+      const label = document.createElement('label');
+      label.innerHTML = `<input type="radio" name="q${myIndex}" value="${ci}"> ${choice}`;
+      form.appendChild(label);
+    });
+    qDiv.appendChild(form);
+
+    const btn = document.createElement('button');
+    btn.className = 'check';
+    btn.textContent = 'Check Answer';
+    qDiv.appendChild(btn);
+
+    const explainDiv = document.createElement('div');
+    explainDiv.className = 'explain';
+    explainDiv.textContent = item.explain;
+    qDiv.appendChild(explainDiv);
+
+    btn.addEventListener('click', () => {
+      const selected = form.querySelector(`input[name="q${myIndex}"]:checked`);
+      if (!selected) { alert('Pick an answer first.'); return; }
+      const labels = form.querySelectorAll('label');
+      labels.forEach((lab, idx) => {
+        if (idx === item.correct) lab.classList.add('correct');
+        else if (idx === parseInt(selected.value)) lab.classList.add('incorrect');
+      });
+      explainDiv.classList.add('show');
+      btn.disabled = true;
+      form.querySelectorAll('input').forEach(i => i.disabled = true);
+
+      if (parseInt(selected.value) === item.correct) score++;
+      answered++;
+      document.getElementById('score').textContent = score;
+
+      if (answered === ALL_QUESTIONS.length) {
+        const finalDiv = document.getElementById('final');
+        const pct = Math.round((score / ALL_QUESTIONS.length) * 100);
+        finalDiv.style.display = 'block';
+        finalDiv.textContent = `Final Score: ${score} / ${ALL_QUESTIONS.length} (${pct}%)` +
+          (pct >= 80 ? ' — Mastery achieved! 🎉' : ' — Review the explanations above and retake.');
+        document.getElementById('restart').style.display = 'inline-block';
+      }
+    });
+
+    quizDiv.appendChild(qDiv);
+    qi++;
+  });
+});
+
+document.getElementById('restart').addEventListener('click', () => location.reload());
+</script>
+</body>
+</html>

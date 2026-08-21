@@ -1,0 +1,28 @@
+#separator:tab
+#html:true
+#tags column:3
+What is <b>distance</b>?	The total length of the actual path traveled between two points (scalar — no direction).	distance-displacement apprentice
+What is <b>displacement</b>?	The length of the straight line between the starting and ending points, including direction (vector).	distance-displacement apprentice
+Is distance dependent or independent of the path taken?	Dependent — different paths between the same two points can have different distances.	distance-displacement apprentice
+Is displacement dependent or independent of the path taken?	Independent — displacement only depends on the start and end points, not the path.	distance-displacement apprentice
+What does the symbol &Delta;x represent?	Displacement: &Delta;x = x &minus; x&#8320; (final position minus initial position).	distance-displacement apprentice
+What does x&#8320; represent in class notation?	Initial position.	distance-displacement apprentice
+What does x (without a subscript) represent in class notation?	Final position.	distance-displacement apprentice
+Name the 5 vector quantities listed in class.	Displacement, Velocity, Acceleration, Momentum, Force.	distance-displacement apprentice
+Name the 5 scalar quantities listed in class.	Distance, Speed, Time, Mass, Energy.	distance-displacement apprentice
+Class example: a person starts at the 2 m mark, walks to the 8 m mark, then runs back to the -2 m mark. What is the TOTAL DISTANCE traveled?	16 m (6 m walk + 10 m run).	distance-displacement master
+Same example — what is the TOTAL DISPLACEMENT?	-4 m, i.e. 4 m backward (from +2 m to -2 m).	distance-displacement master
+Same example — what is the displacement of just the walk (2 m &rarr; 8 m)?	+6 m forward.	distance-displacement master
+Same example — what is the displacement of just the run (8 m &rarr; -2 m)?	-10 m (10 m backward).	distance-displacement master
+Why can total distance be much larger than the magnitude of total displacement?	Because distance adds up every bit of path length including backtracking, while displacement only reflects the net straight-line change from start to end.	distance-displacement master
+What is the formula for average velocity?	v = &Delta;x / t (displacement divided by the time interval).	speed-distance-time apprentice
+Is speed a scalar or a vector?	Scalar — magnitude only, no direction.	speed-distance-time apprentice
+Is velocity a scalar or a vector?	Vector — has both magnitude (speed) and direction.	speed-distance-time apprentice
+How is the symbol for velocity written differently from the symbol for speed?	Speed = v (plain); Velocity = <b>v</b> (bold) or v with an arrow over it, since it's a vector.	speed-distance-time apprentice
+What are the standard units for speed/velocity used in this class?	Meters per second (m/s).	speed-distance-time apprentice
+If you start at the zero mark and move in only one direction, how do distance and displacement compare?	They are equal in magnitude — there's no backtracking to cause a difference.	speed-distance-time apprentice
+What's the difference between average velocity and instantaneous velocity?	Average velocity = displacement over a longer time interval; instantaneous velocity = displacement during a tiny instant of time. Both include direction.	speed-distance-time master
+Does a speedometer measure average speed, instantaneous speed, or velocity?	Instantaneous speed — it shows the current rate of motion with no direction.	speed-distance-time master
+LA driving scenario: speedometer reads 70 mph early, then 30 mph in traffic, never outside that range. Why isn't the trip's average velocity simply (70+30)/2?	Average velocity = total displacement &divide; total time — it depends on how LONG you spent at each speed, not just the two extreme readings.	speed-distance-time master
+If a leopard veers left but keeps the same speed, does its velocity change? Why?	Yes — velocity includes direction, and the direction changed even though the speed (magnitude) didn't.	speed-distance-time master
+Changes in velocity can come from what three things?	A change in speed, a change in direction, or both.	speed-distance-time master
