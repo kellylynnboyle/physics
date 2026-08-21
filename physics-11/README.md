@@ -19,6 +19,8 @@ Open any `quiz.html` file directly in a browser — no install needed.
 4. [**Momentum**](04-momentum/README.md) — collisions and conservation
 5. [**Work & Energy**](05-work-energy/README.md) — the energy approach to mechanics
 
+**Test prep:** [Unit 0 Motion Test — Study Guide & Answer Key](unit-0-motion-test/study-guide-answers.md) (covers Topics 0 & 1) — transcribed from the class's answer key, plus a matching [Anki flashcard deck](unit-0-motion-test/flashcards.tsv) for the True/False conceptual questions and formulas.
+
 This is also the intended teaching order: kinematics gives the vocabulary, projectile motion applies it in 2D, Newton's Laws explains *why* motion changes, and momentum/energy give two alternative (often faster) problem-solving lenses for the same physical situations.
 
 ## How to Use This Project
