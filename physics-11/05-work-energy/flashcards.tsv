@@ -1,0 +1,15 @@
+#separator:tab
+#html:true
+#tags column:3
+A person carries a bag at constant height while walking horizontally. How much work does gravity do on the bag?	Zero — gravity is vertical, displacement is horizontal, so &theta;=90&deg; and cos(90&deg;)=0.	work-energy
+A ball moves in a circle at constant speed on a string. How much work does the tension (centripetal force) do?	Zero — tension is always perpendicular to velocity/displacement, which is exactly why speed (and KE) stays constant.	work-energy
+Is gravitational potential energy an absolute value or relative to something?	Relative — PE = mgh depends on your chosen reference height. Only CHANGES in PE are physically meaningful.	work-energy
+A box slides across a rough floor and stops. What equation correctly applies conservation of energy?	KE<sub>i</sub> + PE<sub>i</sub> = KE<sub>f</sub> + PE<sub>f</sub> + W<sub>friction</sub> — you must add the energy lost to friction, not assume simple conservation.	work-energy
+If you double the compression distance x of a spring, how does its elastic PE change?	It quadruples — PE<sub>spring</sub> = &frac12;kx&sup2; is quadratic in x.	work-energy
+Two people carry the same box up the same stairs (same height gained), but one takes half the time. Compare their work and power.	Same work (same force, same displacement) — but the faster person has GREATER power (same energy delivered in less time).	work-energy
+What is the Work-Energy Theorem?	W<sub>net</sub> = &Delta;KE — the net work done on an object equals its change in kinetic energy.	work-energy
+What is the formula for work?	W = Fd&middot;cos(&theta;) — only the force component parallel to displacement does work.	work-energy
+What is the formula for kinetic energy?	KE = &frac12;mv&sup2;	work-energy
+When is total mechanical energy (KE+PE) conserved?	When only conservative forces (gravity, springs) act — no friction or air resistance.	work-energy
+What is power?	P = W/t = Fv — the RATE of doing work / transferring energy (Watts), not a total amount (Joules).	work-energy
+Name common forces that do ZERO work on an object, and why.	Normal force, and tension/centripetal force in circular motion — all act perpendicular to the direction of motion.	work-energy

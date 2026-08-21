@@ -1,0 +1,15 @@
+#separator:tab
+#html:true
+#tags column:3
+What is the Newton's 3rd Law reaction pair to gravity pulling down on a book resting on a table?	The book pulling the Earth upward (also gravitational) — NOT the normal force. 3rd-law pairs act on different objects and are the same TYPE of force.	newtons-laws
+A hockey puck slides at constant velocity on frictionless ice. What is the net force on it?	Zero — Newton's 1st Law: constant velocity means zero net force, even though it's still moving.	newtons-laws
+A box doesn't move even though you push it with 30 N, and the max static friction is 45 N. What is the actual friction force?	30 N — static friction matches the applied force up to its maximum, only reaching the max at the verge of slipping.	newtons-laws
+Two blocks are connected by a string over a pulley. How do their accelerations compare?	Same magnitude — linked by the inextensible string, even though the forces on each block differ.	newtons-laws
+A person stands on a scale in an elevator accelerating UPWARD. Does the scale read more or less than their true weight?	More — Normal force = mg + ma (the upward acceleration adds to the required normal force).	newtons-laws
+While a ball is in projectile motion (ignoring air resistance), what force(s) act on it?	Only gravity — there is no "force of motion" maintaining horizontal velocity; it's constant because no horizontal force acts on it (1st Law).	newtons-laws
+On a frictionless incline at angle &theta;, which component of gravity causes acceleration down the slope?	The component PARALLEL to the incline: mg&middot;sin(&theta;) — not the full weight, and not mg&middot;cos(&theta;) (which is balanced by the normal force).	newtons-laws
+State Newton's Second Law.	&Sigma;F = ma — net force equals mass times acceleration.	newtons-laws
+State Newton's Third Law.	For every action force, there is an equal and opposite reaction force, acting on a DIFFERENT object.	newtons-laws
+What's the difference between static and kinetic friction?	Static friction resists the START of motion (variable, up to a max); kinetic friction acts once something is already sliding (roughly constant).	newtons-laws
+What forces belong in a free-body diagram for a box resting on a table?	Gravity (weight, down) and the normal force (up) — plus any applied forces, tension, or friction present in the scenario.	newtons-laws
+Why does a scale in an accelerating elevator not read your true weight?	The scale reads the normal force, not gravity directly — and &Sigma;F=ma means the normal force must differ from mg whenever the elevator accelerates.	newtons-laws

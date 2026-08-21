@@ -1,0 +1,13 @@
+#separator:tab
+#html:true
+#tags column:3
+A ball is launched at 20 m/s at 30&deg; above horizontal. What velocity value do you use for its VERTICAL motion?	The vertical component: v<sub>y</sub> = v<sub>0</sub>&middot;sin(30&deg;) — never the full launch speed.	projectile-motion
+A ball is dropped from height h, and at the same instant an identical ball is launched horizontally from the same height. Which lands first?	Neither — they land at the same time, since both have the same initial vertical velocity (0) and the same vertical acceleration (-g).	projectile-motion
+For a projectile launched and landing at the same height, how does horizontal velocity behave during flight?	It stays constant — gravity acts only vertically (a<sub>x</sub> = 0).	projectile-motion
+For a projectile launched/landing at the same height, how does time-up compare to time-down?	They're equal — the trajectory is symmetric.	projectile-motion
+A ball is kicked horizontally off a cliff. What determines its time of flight?	Only the vertical motion (height and g) — horizontal velocity has no effect on fall time.	projectile-motion
+On level ground, what launch angle maximizes range?	45&deg;	projectile-motion
+On level ground, name two launch angles that give the SAME range.	Any pair that adds to 90&deg; (e.g., 30&deg; and 60&deg;) — since range &prop; sin(2&theta;).	projectile-motion
+A projectile is launched from a height above its landing point. Can you use the symmetric shortcut formulas (time up = time down)?	No — launch and landing heights differ, so you must solve &Delta;y = v<sub>y0</sub>t &minus; &frac12;gt&sup2; directly for t.	projectile-motion
+Why can horizontal and vertical motion be analyzed independently in projectile motion?	Because gravity only acts vertically — there's no horizontal force (ignoring air resistance), so the two directions don't affect each other.	projectile-motion
+What are a<sub>x</sub> and a<sub>y</sub> for a projectile in flight (ignoring air resistance)?	a<sub>x</sub> = 0 &nbsp;|&nbsp; a<sub>y</sub> = -g	projectile-motion

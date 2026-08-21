@@ -1,0 +1,13 @@
+#separator:tab
+#html:true
+#tags column:3
+A car is moving in the negative direction and speeding up. What is the sign of its acceleration?	Negative — speeding up means velocity and acceleration have the SAME sign.	kinematics
+At the exact top of a ball's vertical throw, what are its velocity and acceleration?	Velocity = 0 momentarily; acceleration is still -9.8 m/s&sup2; (gravity never stops acting).	kinematics
+Which of the 4 kinematic equations does NOT involve time?	v<sub>f</sub>&sup2; = v<sub>i</sub>&sup2; + 2a&Delta;x	kinematics
+On a velocity-time graph, what does the AREA under the curve represent?	Displacement.	kinematics
+On a velocity-time graph, what does the SLOPE represent?	Acceleration.	kinematics
+On a position-time graph, what does the SLOPE represent?	Velocity.	kinematics
+A ball is thrown up and caught at the same height it was released. How does the catch velocity compare to the launch velocity?	Same magnitude, opposite sign — by symmetry of free fall.	kinematics
+A straight (non-curved) line on a position-time graph means what?	Constant velocity (could be zero or nonzero) — NOT acceleration.	kinematics
+List the 4 kinematic equations for constant acceleration.	v<sub>f</sub>=v<sub>i</sub>+at &nbsp;|&nbsp; &Delta;x=v<sub>i</sub>t+&frac12;at&sup2; &nbsp;|&nbsp; v<sub>f</sub>&sup2;=v<sub>i</sub>&sup2;+2a&Delta;x &nbsp;|&nbsp; &Delta;x=&frac12;(v<sub>i</sub>+v<sub>f</sub>)t	kinematics
+What is the standard free-fall acceleration near Earth's surface, and its direction?	9.8 m/s&sup2;, directed downward.	kinematics

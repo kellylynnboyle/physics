@@ -1,0 +1,15 @@
+#separator:tab
+#html:true
+#tags column:3
+A 2 kg ball at +5 m/s collides with a 2 kg ball at -5 m/s. What is the total momentum of the system before the collision?	0 kg&middot;m/s — momentum is a signed/vector quantity: (2)(5) + (2)(-5) = 0.	momentum
+Is kinetic energy conserved in a perfectly inelastic collision?	No — only momentum is conserved in any collision. KE is only conserved in ELASTIC collisions; in inelastic ones it converts to heat/sound/deformation.	momentum
+In a perfectly inelastic collision, how many final velocities are there for the combined object?	One shared final velocity — the objects have physically become a single object.	momentum
+A firework at rest explodes into two unequal-mass fragments. What must be true about their momenta after?	Equal in magnitude, opposite in direction (they sum to the original zero momentum) — NOT equal velocities.	momentum
+What time interval do you use in the impulse-momentum theorem (J = F&Delta;t) for a bat hitting a ball?	The contact time between bat and ball — not the ball's total flight time.	momentum
+An elastic, equal-mass, head-on collision: a moving cart hits an identical stationary cart. What happens?	The moving cart stops completely; the stationary cart moves off with the first cart's original velocity (same physics as Newton's cradle).	momentum
+Why do airbags and crumple zones reduce injury?	They increase the collision's &Delta;t for the same &Delta;p (change in momentum), which reduces the average force, since F = &Delta;p/&Delta;t.	momentum
+What is the formula for momentum?	p = mv (a vector, same direction as velocity).	momentum
+What is the impulse-momentum theorem?	J = F&Delta;t = &Delta;p — impulse equals the change in momentum.	momentum
+State conservation of momentum.	In an isolated system (no external net force), total momentum before an interaction equals total momentum after.	momentum
+What's the difference between elastic and inelastic collisions?	Elastic: both momentum AND kinetic energy are conserved. Inelastic: only momentum is conserved; KE is lost to heat/sound/deformation.	momentum
+In a 2D collision, how must momentum be conserved?	Component by component — conserve momentum separately in the x-direction and the y-direction.	momentum

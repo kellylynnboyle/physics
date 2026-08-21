@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Flashcards — Newton's Laws</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 700px; margin: 2rem auto; padding: 0 1rem; background:#f7f7f9; color:#1a1a1a; }
+  h1 { font-size: 1.4rem; }
+  .controls { display:flex; gap: .75rem; align-items:center; margin-bottom: 1rem; }
+  #progress { font-weight:600; margin-bottom: .75rem; }
+  #card { background:#fff; border:1px solid #ddd; border-radius:12px; padding: 2.5rem 2rem; min-height: 220px; display:flex; align-items:center; justify-content:center; text-align:center; font-size:1.15rem; cursor:pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+  #tags { text-align:center; font-size:.8rem; color:#888; margin-top:.5rem; }
+  .nav { display:flex; justify-content:space-between; gap:1rem; margin-top:1.25rem; }
+  button { background:#2557a7; color:#fff; border:none; padding:.6rem 1.1rem; border-radius:6px; cursor:pointer; font-size:.95rem; }
+  button.secondary { background:#555; }
+  #hint { text-align:center; color:#888; font-size:.85rem; margin-top:.5rem; }
+</style>
+</head>
+<body>
+<h1>Newton's Laws — Flashcards</h1>
+<p style="font-size:.9rem;color:#555;">Same deck as <code>flashcards.tsv</code> (for Anki), playable directly in the browser — no import needed.</p>
+
+<div class="controls">
+  <button id="shuffleBtn" class="secondary">Shuffle</button>
+</div>
+
+<div id="progress"></div>
+<div id="card"></div>
+<div id="tags"></div>
+<div id="hint">Click the card to flip it</div>
+<div class="nav">
+  <button id="prevBtn" class="secondary">&larr; Previous</button>
+  <button id="nextBtn">Next &rarr;</button>
+</div>
+
+<script>
+const CARDS = [
+  { front: `What is the Newton's 3rd Law reaction pair to gravity pulling down on a book resting on a table?`, back: `The book pulling the Earth upward (also gravitational) — NOT the normal force. 3rd-law pairs act on different objects and are the same TYPE of force.`, tags: ["newtons-laws"] },
+  { front: `A hockey puck slides at constant velocity on frictionless ice. What is the net force on it?`, back: `Zero — Newton's 1st Law: constant velocity means zero net force, even though it's still moving.`, tags: ["newtons-laws"] },
+  { front: `A box doesn't move even though you push it with 30 N, and the max static friction is 45 N. What is the actual friction force?`, back: `30 N — static friction matches the applied force up to its maximum, only reaching the max at the verge of slipping.`, tags: ["newtons-laws"] },
+  { front: `Two blocks are connected by a string over a pulley. How do their accelerations compare?`, back: `Same magnitude — linked by the inextensible string, even though the forces on each block differ.`, tags: ["newtons-laws"] },
+  { front: `A person stands on a scale in an elevator accelerating UPWARD. Does the scale read more or less than their true weight?`, back: `More — Normal force = mg + ma (the upward acceleration adds to the required normal force).`, tags: ["newtons-laws"] },
+  { front: `While a ball is in projectile motion (ignoring air resistance), what force(s) act on it?`, back: `Only gravity — there is no "force of motion" maintaining horizontal velocity; it's constant because no horizontal force acts on it (1st Law).`, tags: ["newtons-laws"] },
+  { front: `On a frictionless incline at angle &theta;, which component of gravity causes acceleration down the slope?`, back: `The component PARALLEL to the incline: mg&middot;sin(&theta;) — not the full weight, and not mg&middot;cos(&theta;) (which is balanced by the normal force).`, tags: ["newtons-laws"] },
+  { front: `State Newton's Second Law.`, back: `&Sigma;F = ma — net force equals mass times acceleration.`, tags: ["newtons-laws"] },
+  { front: `State Newton's Third Law.`, back: `For every action force, there is an equal and opposite reaction force, acting on a DIFFERENT object.`, tags: ["newtons-laws"] },
+  { front: `What's the difference between static and kinetic friction?`, back: `Static friction resists the START of motion (variable, up to a max); kinetic friction acts once something is already sliding (roughly constant).`, tags: ["newtons-laws"] },
+  { front: `What forces belong in a free-body diagram for a box resting on a table?`, back: `Gravity (weight, down) and the normal force (up) — plus any applied forces, tension, or friction present in the scenario.`, tags: ["newtons-laws"] },
+  { front: `Why does a scale in an accelerating elevator not read your true weight?`, back: `The scale reads the normal force, not gravity directly — and &Sigma;F=ma means the normal force must differ from mg whenever the elevator accelerates.`, tags: ["newtons-laws"] },
+];
+
+let deck = [...CARDS];
+let idx = 0;
+let flipped = false;
+
+const cardEl = document.getElementById('card');
+const tagsEl = document.getElementById('tags');
+const progressEl = document.getElementById('progress');
+
+function render() {
+  const c = deck[idx];
+  cardEl.innerHTML = flipped ? c.back : c.front;
+  tagsEl.textContent = c.tags.join(" · ");
+  progressEl.textContent = `Card ${idx + 1} / ${deck.length}` + (flipped ? "  (showing answer)" : "  (showing question)");
+}
+
+cardEl.addEventListener('click', () => { flipped = !flipped; render(); });
+
+document.getElementById('nextBtn').addEventListener('click', () => {
+  idx = (idx + 1) % deck.length;
+  flipped = false;
+  render();
+});
+
+document.getElementById('prevBtn').addEventListener('click', () => {
+  idx = (idx - 1 + deck.length) % deck.length;
+  flipped = false;
+  render();
+});
+
+document.getElementById('shuffleBtn').addEventListener('click', () => {
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  idx = 0;
+  flipped = false;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Flashcards — Work & Energy</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 700px; margin: 2rem auto; padding: 0 1rem; background:#f7f7f9; color:#1a1a1a; }
+  h1 { font-size: 1.4rem; }
+  .controls { display:flex; gap: .75rem; align-items:center; margin-bottom: 1rem; }
+  #progress { font-weight:600; margin-bottom: .75rem; }
+  #card { background:#fff; border:1px solid #ddd; border-radius:12px; padding: 2.5rem 2rem; min-height: 220px; display:flex; align-items:center; justify-content:center; text-align:center; font-size:1.15rem; cursor:pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+  #tags { text-align:center; font-size:.8rem; color:#888; margin-top:.5rem; }
+  .nav { display:flex; justify-content:space-between; gap:1rem; margin-top:1.25rem; }
+  button { background:#2557a7; color:#fff; border:none; padding:.6rem 1.1rem; border-radius:6px; cursor:pointer; font-size:.95rem; }
+  button.secondary { background:#555; }
+  #hint { text-align:center; color:#888; font-size:.85rem; margin-top:.5rem; }
+</style>
+</head>
+<body>
+<h1>Work & Energy — Flashcards</h1>
+<p style="font-size:.9rem;color:#555;">Same deck as <code>flashcards.tsv</code> (for Anki), playable directly in the browser — no import needed.</p>
+
+<div class="controls">
+  <button id="shuffleBtn" class="secondary">Shuffle</button>
+</div>
+
+<div id="progress"></div>
+<div id="card"></div>
+<div id="tags"></div>
+<div id="hint">Click the card to flip it</div>
+<div class="nav">
+  <button id="prevBtn" class="secondary">&larr; Previous</button>
+  <button id="nextBtn">Next &rarr;</button>
+</div>
+
+<script>
+const CARDS = [
+  { front: `A person carries a bag at constant height while walking horizontally. How much work does gravity do on the bag?`, back: `Zero — gravity is vertical, displacement is horizontal, so &theta;=90&deg; and cos(90&deg;)=0.`, tags: ["work-energy"] },
+  { front: `A ball moves in a circle at constant speed on a string. How much work does the tension (centripetal force) do?`, back: `Zero — tension is always perpendicular to velocity/displacement, which is exactly why speed (and KE) stays constant.`, tags: ["work-energy"] },
+  { front: `Is gravitational potential energy an absolute value or relative to something?`, back: `Relative — PE = mgh depends on your chosen reference height. Only CHANGES in PE are physically meaningful.`, tags: ["work-energy"] },
+  { front: `A box slides across a rough floor and stops. What equation correctly applies conservation of energy?`, back: `KE<sub>i</sub> + PE<sub>i</sub> = KE<sub>f</sub> + PE<sub>f</sub> + W<sub>friction</sub> — you must add the energy lost to friction, not assume simple conservation.`, tags: ["work-energy"] },
+  { front: `If you double the compression distance x of a spring, how does its elastic PE change?`, back: `It quadruples — PE<sub>spring</sub> = &frac12;kx&sup2; is quadratic in x.`, tags: ["work-energy"] },
+  { front: `Two people carry the same box up the same stairs (same height gained), but one takes half the time. Compare their work and power.`, back: `Same work (same force, same displacement) — but the faster person has GREATER power (same energy delivered in less time).`, tags: ["work-energy"] },
+  { front: `What is the Work-Energy Theorem?`, back: `W<sub>net</sub> = &Delta;KE — the net work done on an object equals its change in kinetic energy.`, tags: ["work-energy"] },
+  { front: `What is the formula for work?`, back: `W = Fd&middot;cos(&theta;) — only the force component parallel to displacement does work.`, tags: ["work-energy"] },
+  { front: `What is the formula for kinetic energy?`, back: `KE = &frac12;mv&sup2;`, tags: ["work-energy"] },
+  { front: `When is total mechanical energy (KE+PE) conserved?`, back: `When only conservative forces (gravity, springs) act — no friction or air resistance.`, tags: ["work-energy"] },
+  { front: `What is power?`, back: `P = W/t = Fv — the RATE of doing work / transferring energy (Watts), not a total amount (Joules).`, tags: ["work-energy"] },
+  { front: `Name common forces that do ZERO work on an object, and why.`, back: `Normal force, and tension/centripetal force in circular motion — all act perpendicular to the direction of motion.`, tags: ["work-energy"] },
+];
+
+let deck = [...CARDS];
+let idx = 0;
+let flipped = false;
+
+const cardEl = document.getElementById('card');
+const tagsEl = document.getElementById('tags');
+const progressEl = document.getElementById('progress');
+
+function render() {
+  const c = deck[idx];
+  cardEl.innerHTML = flipped ? c.back : c.front;
+  tagsEl.textContent = c.tags.join(" · ");
+  progressEl.textContent = `Card ${idx + 1} / ${deck.length}` + (flipped ? "  (showing answer)" : "  (showing question)");
+}
+
+cardEl.addEventListener('click', () => { flipped = !flipped; render(); });
+
+document.getElementById('nextBtn').addEventListener('click', () => {
+  idx = (idx + 1) % deck.length;
+  flipped = false;
+  render();
+});
+
+document.getElementById('prevBtn').addEventListener('click', () => {
+  idx = (idx - 1 + deck.length) % deck.length;
+  flipped = false;
+  render();
+});
+
+document.getElementById('shuffleBtn').addEventListener('click', () => {
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  idx = 0;
+  flipped = false;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
