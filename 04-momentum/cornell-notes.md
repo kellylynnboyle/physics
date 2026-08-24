@@ -1,0 +1,20 @@
+# Cornell Notes — Momentum
+
+> **How to use:** Cover the "Notes" column and try to answer each cue from memory first.
+
+| Cue / Question | Notes |
+|---|---|
+| Define momentum, with formula and units. | $p = mv$. Vector quantity — direction matters. Units: kg·m/s. |
+| Define impulse, with formula, and state the impulse-momentum theorem. | $J = F\Delta t$. Impulse-momentum theorem: $J = \Delta p$ — the impulse delivered to an object equals its change in momentum. This connects force-over-time directly to a change in motion. |
+| Why does increasing contact time ($\Delta t$) reduce the force in a collision? | Since $J = F\Delta t = \Delta p$ and $\Delta p$ is fixed by the situation (same change in velocity), a longer $\Delta t$ requires a smaller average $F$ to produce the same impulse. This is the physics behind airbags, crumple zones, and catching a ball with "give" in your hands. |
+| State conservation of momentum. When does it apply? | For an isolated system (no net external force), total momentum before an event = total momentum after: $\sum p_{before} = \sum p_{after}$. Applies to explosions and collisions alike, in any single direction independently. |
+| What's the difference between an elastic and inelastic collision? | Elastic: BOTH momentum and kinetic energy are conserved (objects bounce apart, no permanent deformation — idealized). Inelastic: momentum is conserved, but kinetic energy is NOT (some converts to heat, sound, deformation). Perfectly inelastic: objects stick together, moving with one common final velocity — the maximum possible KE loss for the given momentum. |
+| Is kinetic energy always conserved in a collision? | NO — this is the single most commonly missed idea in the unit. Momentum is ALWAYS conserved (for an isolated system), but kinetic energy is only conserved in the special case of an elastic collision. Never assume KE conservation unless told the collision is elastic or asked to verify it. |
+| For a perfectly inelastic collision, what's the shortcut for the final velocity? | Treat the two objects as combining into one mass: $v_f = \dfrac{m_1v_1 + m_2v_2}{m_1+m_2}$ — derived directly from setting total momentum before equal to total momentum after, with both objects sharing $v_f$. |
+| In a 1D elastic collision between two EQUAL masses (one initially at rest), what happens? | The moving object stops completely, and the initially-at-rest object moves off with the exact velocity the first one had — velocities "exchange." (This is why Newton's cradle looks the way it does with equal-mass balls.) |
+| A cannon at rest fires a cannonball. How can momentum be conserved if the total momentum was zero before firing? | Total momentum stays zero: the cannonball gains forward momentum, and the cannon gains exactly equal and opposite (backward/recoil) momentum, summing back to zero. This is the same underlying idea as Newton's Third Law from Section 03, viewed through momentum. |
+| What sign convention mistake is most common in momentum problems? | Forgetting that objects moving in opposite directions must have opposite-signed velocities in the conservation equation — treating all speeds as positive regardless of direction leads to a wrong total momentum before the collision. |
+
+## Summary (write this in your own words first)
+
+Momentum ($p=mv$) and impulse ($J=F\Delta t=\Delta p$) connect force and time to a change in motion, explaining why extending collision time (airbags, follow-through) reduces the force needed for the same change in momentum. For any isolated system, total momentum is always conserved before and after a collision or explosion — but kinetic energy is only conserved in elastic collisions; inelastic collisions (especially perfectly inelastic ones, where objects stick together) lose kinetic energy to heat, sound, and deformation even while momentum is perfectly preserved. Because momentum is a vector, correctly assigning signs based on direction before setting up the conservation equation is essential, especially for head-on collisions between objects moving toward each other.

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Momentum Quiz — Most Missed Questions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    --bg:#f7f7f5; --card:#ffffff; --ink:#1c1c1c; --muted:#63635d;
+    --accent:#2f6f4f; --accent-ink:#ffffff; --wrong:#b3432b; --right:#2f6f4f;
+    --border:#e2e0da; --chip:#eef1ec;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#16181a; --card:#1f2224; --ink:#eceae4; --muted:#a3a39a;
+      --accent:#5fae83; --accent-ink:#0d140f; --wrong:#e08268; --right:#5fae83;
+      --border:#33363a; --chip:#262a2c; }
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,'Iowan Old Style',serif;line-height:1.5;}
+  .wrap{max-width:720px;margin:0 auto;padding:2rem 1.25rem 4rem;}
+  h1{font-size:1.5rem;margin-bottom:.15rem;}
+  .sub{color:var(--muted);font-size:.95rem;margin-bottom:1.5rem;}
+  .progress{display:flex;gap:.35rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+  .dot{width:1.6rem;height:1.6rem;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:.75rem;border:1px solid var(--border);color:var(--muted);background:var(--card);}
+  .dot.answered{border-color:var(--accent);}
+  .dot.correct{background:var(--right);color:var(--accent-ink);border-color:var(--right);}
+  .dot.incorrect{background:var(--wrong);color:var(--accent-ink);border-color:var(--wrong);}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:.6rem;padding:1.25rem 1.4rem;margin-bottom:1.1rem;}
+  .tag{display:inline-block;font-family:-apple-system,sans-serif;font-size:.7rem;letter-spacing:.04em;
+    text-transform:uppercase;color:var(--accent);background:var(--chip);padding:.15rem .5rem;border-radius:1rem;margin-bottom:.6rem;}
+  .qtext{font-size:1.08rem;margin-bottom:.9rem;}
+  .opt{display:block;width:100%;text-align:left;background:var(--chip);border:1px solid var(--border);color:var(--ink);
+    padding:.6rem .8rem;border-radius:.4rem;margin-bottom:.5rem;cursor:pointer;font-family:inherit;font-size:.98rem;}
+  .opt:hover{border-color:var(--accent);}
+  .opt.correct{background:var(--right);color:var(--accent-ink);border-color:var(--right);}
+  .opt.incorrect{background:var(--wrong);color:var(--accent-ink);border-color:var(--wrong);}
+  .opt:disabled{cursor:default;}
+  .explain{display:none;margin-top:.7rem;padding:.7rem .9rem;background:var(--chip);border-left:3px solid var(--accent);
+    border-radius:0 .3rem .3rem 0;font-size:.93rem;color:var(--ink);}
+  .explain.show{display:block;}
+  .missed{color:var(--wrong);font-family:-apple-system,sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;}
+  #score-panel{background:var(--card);border:1px solid var(--border);border-radius:.6rem;padding:1.5rem;text-align:center;display:none;}
+  #score-panel.show{display:block;}
+  #score-big{font-size:2.4rem;font-weight:bold;margin:.3rem 0;}
+  button.retake{font-family:-apple-system,sans-serif;background:var(--accent);color:var(--accent-ink);border:none;
+    padding:.6rem 1.2rem;border-radius:.4rem;font-size:.95rem;cursor:pointer;margin-top:.5rem;}
+  footer{color:var(--muted);font-size:.85rem;margin-top:2rem;font-family:-apple-system,sans-serif;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Momentum — Most Missed Questions</h1>
+  <div class="sub">10 questions drawn from the concepts students most often get wrong. Answer, read the explanation, then move on.</div>
+  <div class="progress" id="progress"></div>
+  <div id="quiz"></div>
+  <div id="score-panel">
+    <div style="font-family:-apple-system,sans-serif;color:var(--muted);">Your score</div>
+    <div id="score-big">0 / 0</div>
+    <div id="score-msg" style="font-family:-apple-system,sans-serif;color:var(--muted);"></div>
+    <button class="retake" onclick="location.reload()">Retake Quiz</button>
+  </div>
+  <footer>Section 04 — Momentum · part of the 11th Grade Physics Learning Project</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "In a collision between two objects in an isolated system, which of the following is ALWAYS conserved?",
+    opts: ["Kinetic energy", "Momentum", "Both momentum and kinetic energy, always", "Neither, unless the collision is elastic"],
+    correct: 1,
+    missed: true,
+    explain: "Momentum is conserved for any isolated system regardless of collision type. Kinetic energy is only conserved in elastic collisions — this distinction is the most heavily tested idea in the whole unit."
+  },
+  {
+    q: "Two identical cars collide head-on at the same speed and crumple together, coming to a complete stop. What happened to the kinetic energy they had before the collision?",
+    opts: ["It was conserved — it's still there as motion", "It converted into other forms: heat, sound, and deformation of the metal", "It violates conservation laws — this shouldn't be possible", "It transferred entirely into momentum"],
+    correct: 1,
+    missed: true,
+    explain: "This is a perfectly inelastic collision — momentum was conserved (net momentum was zero before and after, since the cars had equal and opposite momentum), but kinetic energy was NOT — it converted to heat, sound, and permanent deformation of the vehicles."
+  },
+  {
+    q: "Why do airbags and crumple zones make car crashes safer, in terms of impulse?",
+    opts: ["They reduce the change in momentum the passenger experiences", "They increase the time over which momentum changes, reducing the average force", "They increase the force to stop the passenger faster", "They have no effect on the physics, only on comfort"],
+    correct: 1,
+    missed: true,
+    explain: "The passenger's change in momentum (Δp) during a crash is essentially fixed by the crash itself. Since J = FΔt = Δp, increasing Δt (the time over which the passenger decelerates) reduces the average force F needed to produce that same Δp — that's the entire safety principle."
+  },
+  {
+    q: "A 2 kg ball moving at +3 m/s collides head-on with a 2 kg ball moving at -3 m/s (opposite direction). What is the total momentum of the system BEFORE the collision?",
+    opts: ["12 kg·m/s", "6 kg·m/s", "0 kg·m/s", "-6 kg·m/s"],
+    correct: 2,
+    missed: true,
+    explain: "Momentum is a vector: p₁ = 2×3 = +6 kg·m/s, p₂ = 2×(-3) = -6 kg·m/s. Total = +6 + (-6) = 0 kg·m/s. A common error is adding speeds as if both were positive (getting 12), ignoring that they move in opposite directions."
+  },
+  {
+    q: "A stationary cannon fires a cannonball forward. What is true about the cannon's recoil?",
+    opts: ["The cannon doesn't move since it's much more massive", "The cannon moves backward with a momentum equal in magnitude to the cannonball's forward momentum", "The cannon moves backward with the same VELOCITY as the cannonball", "Momentum isn't conserved here since a force (gunpowder) was added"],
+    correct: 1,
+    missed: true,
+    explain: "Total momentum starts at zero (everything at rest) and must stay zero. The cannonball gains forward momentum, so the cannon must gain exactly equal and opposite (backward) momentum — not equal velocity, since the cannon's much larger mass means a much smaller recoil velocity for the same momentum."
+  },
+  {
+    q: "In a PERFECTLY INELASTIC collision, what happens to the two objects after impact?",
+    opts: ["They bounce apart with equal and opposite velocities", "They stick together and move with one common final velocity", "They stop completely, transferring all energy to sound", "They pass through each other"],
+    correct: 1,
+    missed: false,
+    explain: "\"Perfectly inelastic\" specifically means the objects stick together after colliding, moving as one combined mass with a single shared final velocity — found using p_before = p_after with (m₁+m₂) as the combined mass."
+  },
+  {
+    q: "In a 1D elastic collision, a moving ball strikes an identical stationary ball head-on. What happens?",
+    opts: ["Both balls move off together at half the original speed", "The moving ball stops, and the stationary ball moves off with the original ball's velocity", "The moving ball bounces straight back at the same speed", "Nothing changes — equal masses can't transfer momentum"],
+    correct: 1,
+    missed: true,
+    explain: "For equal masses in a 1D elastic collision, the velocities \"exchange\" completely: the incoming ball stops dead, and the target ball moves off with exactly the incoming ball's original velocity. This is the physics behind a single ball in Newton's cradle."
+  },
+  {
+    q: "A collision is described as \"elastic.\" What does this tell you that you can use in your equations?",
+    opts: ["Only momentum is conserved", "Only kinetic energy is conserved", "Both momentum AND kinetic energy are conserved — you get two independent equations", "Neither is conserved; you need the coefficient of restitution"],
+    correct: 2,
+    missed: false,
+    explain: "\"Elastic\" is the signal that you have two independent conservation equations to work with — momentum conservation and kinetic energy conservation — which is exactly enough to solve for two unknown final velocities in a two-object collision."
+  },
+  {
+    q: "Impulse is defined as J = FΔt. If an object experiences an impulse of 20 kg·m/s, what does this tell you directly?",
+    opts: ["Its final velocity is 20 m/s", "Its change in momentum (Δp) is 20 kg·m/s", "The force applied was 20 N", "Its mass is 20 kg"],
+    correct: 1,
+    missed: true,
+    explain: "By the impulse-momentum theorem, J = Δp — impulse IS the change in momentum, by definition. You cannot determine final velocity, force, or mass from impulse alone without additional information (like the object's mass, initial velocity, or the time interval)."
+  },
+  {
+    q: "Which statement correctly compares momentum conservation and Newton's Third Law?",
+    opts: ["They are unrelated physics concepts", "Momentum conservation in a two-object collision follows directly from Newton's Third Law (equal and opposite forces over the same contact time produce equal and opposite impulses)", "Newton's Third Law only applies to stationary objects, unlike momentum", "Momentum conservation replaces the need for Newton's Third Law"],
+    correct: 1,
+    missed: false,
+    explain: "During a collision, the two objects exert equal and opposite forces on each other (Third Law) for the same duration of contact, producing equal and opposite impulses — and therefore equal and opposite changes in momentum, which is exactly why total momentum is conserved."
+  }
+];
+
+const quizEl = document.getElementById('quiz');
+const progressEl = document.getElementById('progress');
+let answered = new Array(QUESTIONS.length).fill(null);
+
+QUESTIONS.forEach((item, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot';
+  dot.id = 'dot-' + i;
+  dot.textContent = i + 1;
+  progressEl.appendChild(dot);
+
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = 'card-' + i;
+  card.innerHTML = `
+    <span class="tag">${item.missed ? '<span class="missed">Frequently missed</span> · ' : ''}Question ${i+1} of ${QUESTIONS.length}</span>
+    <div class="qtext">${item.q}</div>
+    <div class="opts">
+      ${item.opts.map((o, j) => `<button class="opt" data-i="${i}" data-j="${j}">${o}</button>`).join('')}
+    </div>
+    <div class="explain" id="explain-${i}">${item.explain}</div>
+  `;
+  quizEl.appendChild(card);
+});
+
+quizEl.addEventListener('click', (e) => {
+  const btn = e.target.closest('.opt');
+  if (!btn) return;
+  const i = Number(btn.dataset.i);
+  const j = Number(btn.dataset.j);
+  if (answered[i] !== null) return;
+  answered[i] = j;
+
+  const card = document.getElementById('card-' + i);
+  const buttons = card.querySelectorAll('.opt');
+  buttons.forEach(b => b.disabled = true);
+  const correct = QUESTIONS[i].correct;
+  buttons[correct].classList.add('correct');
+  if (j !== correct) buttons[j].classList.add('incorrect');
+  document.getElementById('explain-' + i).classList.add('show');
+
+  const dot = document.getElementById('dot-' + i);
+  dot.classList.add('answered', j === correct ? 'correct' : 'incorrect');
+
+  if (answered.every(a => a !== null)) showScore();
+});
+
+function showScore(){
+  const total = QUESTIONS.length;
+  const correctCount = answered.filter((a, i) => a === QUESTIONS[i].correct).length;
+  const pct = Math.round((correctCount/total)*100);
+  document.getElementById('score-big').textContent = `${correctCount} / ${total} (${pct}%)`;
+  const msg = pct >= 90 ? "Mastery level — ready to move on." :
+              pct >= 70 ? "Solid, but review the missed ones above before moving on." :
+              "Revisit the Cornell notes for this section, then retake.";
+  document.getElementById('score-msg').textContent = msg;
+  document.getElementById('score-panel').classList.add('show');
+  document.getElementById('score-panel').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+</script>
+</body>
+</html>

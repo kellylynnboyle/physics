@@ -1,0 +1,20 @@
+# Cornell Notes — Newton's Laws
+
+> **How to use:** Cover the "Notes" column and try to answer each cue from memory first.
+
+| Cue / Question | Notes |
+|---|---|
+| State Newton's First Law in your own words. | An object at rest stays at rest, and an object in motion stays in motion at constant velocity (same speed AND direction), unless acted on by a net external force. Also called the Law of Inertia. |
+| What is inertia, and what property of an object measures it? | Inertia is the resistance to a change in velocity. Mass is the measure of inertia — more mass means more resistance to acceleration for the same applied force. |
+| State Newton's Second Law as an equation, and explain each part. | $F_{net} = ma$. $F_{net}$ is the vector sum of ALL forces acting on the object (not any single force). $a$ is in the same direction as $F_{net}$. Applies separately in x and y. |
+| State Newton's Third Law, and identify the key phrase that's easy to misread. | For every action force there is an equal and opposite reaction force. Key phrase: the two forces act on DIFFERENT objects — never on the same object. This is why action-reaction pairs never "cancel out" for a single object's FBD. |
+| Give an example of two forces that LOOK like a Newton's Third Law pair but are NOT. | A book on a table: gravity pulls the book down, the table pushes the book up (normal force). These are equal and opposite, but they act on the SAME object (the book) and are two different types of force — this is a balanced-force pair (equilibrium), not an action-reaction pair. The true reaction pairs are: book pulls Earth up (gravity's pair) and book pushes table down (normal force's pair). |
+| What's the difference between mass and weight? | Mass (kg): amount of matter, measure of inertia, constant regardless of location. Weight (N): force of gravity on that mass, $F_g = mg$, changes with location (Moon, orbit, different planets). |
+| What are the four/five forces most commonly appearing in an FBD? | Gravity ($F_g = mg$, always straight down), Normal force ($F_N$, perpendicular to the contact surface, pushing away from it), Friction ($f = \mu F_N$, opposes relative motion/attempted motion, parallel to surface), Tension ($F_T$, along a rope/string, always pulling), Applied force (whatever push/pull is stated in the problem). |
+| What does "equilibrium" mean, and what are its two possible motion states? | Net force = 0, which means acceleration = 0. This includes BOTH an object at rest AND an object moving at constant velocity — "equilibrium" does not mean "not moving." |
+| How do you handle a system of two objects connected by a rope/pulley? | Either (a) treat each object with its own separate FBD and set of equations, using the SAME magnitude of tension and acceleration for both (since they're connected), or (b) treat the whole system as one object with total mass, being careful that internal forces (tension) cancel out and don't appear in the system-level equation. Don't mix the two approaches in one solution. |
+| On an incline, how do you set up the FBD? | Tilt your coordinate axes to align with the incline: x-axis along the slope, y-axis perpendicular to it. Then $F_g$ must be decomposed into components: $mg\sin\theta$ (along the slope, causing acceleration) and $mg\cos\theta$ (into the slope, balanced by normal force). |
+
+## Summary (write this in your own words first)
+
+Newton's Laws connect force to motion: the First Law says nothing changes without a net force (inertia), the Second Law quantifies that relationship as $F_{net}=ma$, and the Third Law says every force comes paired with an equal, opposite force on a *different* object. Free-body diagrams are the practical tool for all of this — isolate one object, draw only the forces acting on it (gravity, normal, friction, tension, applied), and apply $F_{net}=ma$ separately in each direction. The most common mistakes are confusing balanced forces on one object with Third-Law action-reaction pairs on two different objects, and forgetting that equilibrium (net force = 0) includes constant-velocity motion, not just objects at rest.

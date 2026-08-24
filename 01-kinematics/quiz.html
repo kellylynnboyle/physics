@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kinematics Quiz — Most Missed Questions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    --bg:#f7f7f5; --card:#ffffff; --ink:#1c1c1c; --muted:#63635d;
+    --accent:#2f6f4f; --accent-ink:#ffffff; --wrong:#b3432b; --right:#2f6f4f;
+    --border:#e2e0da; --chip:#eef1ec;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#16181a; --card:#1f2224; --ink:#eceae4; --muted:#a3a39a;
+      --accent:#5fae83; --accent-ink:#0d140f; --wrong:#e08268; --right:#5fae83;
+      --border:#33363a; --chip:#262a2c; }
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,'Iowan Old Style',serif;line-height:1.5;}
+  .wrap{max-width:720px;margin:0 auto;padding:2rem 1.25rem 4rem;}
+  h1{font-size:1.5rem;margin-bottom:.15rem;}
+  .sub{color:var(--muted);font-size:.95rem;margin-bottom:1.5rem;}
+  .progress{display:flex;gap:.35rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+  .dot{width:1.6rem;height:1.6rem;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:.75rem;border:1px solid var(--border);color:var(--muted);background:var(--card);}
+  .dot.answered{border-color:var(--accent);}
+  .dot.correct{background:var(--right);color:var(--accent-ink);border-color:var(--right);}
+  .dot.incorrect{background:var(--wrong);color:var(--accent-ink);border-color:var(--wrong);}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:.6rem;padding:1.25rem 1.4rem;margin-bottom:1.1rem;}
+  .tag{display:inline-block;font-family:-apple-system,sans-serif;font-size:.7rem;letter-spacing:.04em;
+    text-transform:uppercase;color:var(--accent);background:var(--chip);padding:.15rem .5rem;border-radius:1rem;margin-bottom:.6rem;}
+  .qtext{font-size:1.08rem;margin-bottom:.9rem;}
+  .opt{display:block;width:100%;text-align:left;background:var(--chip);border:1px solid var(--border);color:var(--ink);
+    padding:.6rem .8rem;border-radius:.4rem;margin-bottom:.5rem;cursor:pointer;font-family:inherit;font-size:.98rem;}
+  .opt:hover{border-color:var(--accent);}
+  .opt.correct{background:var(--right);color:var(--accent-ink);border-color:var(--right);}
+  .opt.incorrect{background:var(--wrong);color:var(--accent-ink);border-color:var(--wrong);}
+  .opt:disabled{cursor:default;}
+  .explain{display:none;margin-top:.7rem;padding:.7rem .9rem;background:var(--chip);border-left:3px solid var(--accent);
+    border-radius:0 .3rem .3rem 0;font-size:.93rem;color:var(--ink);}
+  .explain.show{display:block;}
+  .missed{color:var(--wrong);font-family:-apple-system,sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;}
+  #score-panel{background:var(--card);border:1px solid var(--border);border-radius:.6rem;padding:1.5rem;text-align:center;display:none;}
+  #score-panel.show{display:block;}
+  #score-big{font-size:2.4rem;font-weight:bold;margin:.3rem 0;}
+  button.retake{font-family:-apple-system,sans-serif;background:var(--accent);color:var(--accent-ink);border:none;
+    padding:.6rem 1.2rem;border-radius:.4rem;font-size:.95rem;cursor:pointer;margin-top:.5rem;}
+  footer{color:var(--muted);font-size:.85rem;margin-top:2rem;font-family:-apple-system,sans-serif;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Kinematics — Most Missed Questions</h1>
+  <div class="sub">10 questions drawn from the concepts students most often get wrong. Answer, read the explanation, then move on — score isn't the point, the reasoning is.</div>
+  <div class="progress" id="progress"></div>
+  <div id="quiz"></div>
+  <div id="score-panel">
+    <div style="font-family:-apple-system,sans-serif;color:var(--muted);">Your score</div>
+    <div id="score-big">0 / 0</div>
+    <div id="score-msg" style="font-family:-apple-system,sans-serif;color:var(--muted);"></div>
+    <button class="retake" onclick="location.reload()">Retake Quiz</button>
+  </div>
+  <footer>Section 01 — Kinematics · part of the 11th Grade Physics Learning Project</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A ball is thrown straight up. At the very top of its path, what is true?",
+    opts: ["Velocity = 0, acceleration = 0", "Velocity = 0, acceleration = 9.8 m/s² downward",
+           "Velocity = 9.8 m/s upward, acceleration = 0", "Both velocity and acceleration are undefined"],
+    correct: 1,
+    missed: true,
+    explain: "Gravity never switches off — acceleration stays g downward the entire flight, including at the peak. Only the velocity momentarily reaches zero there. This is the #1 misconception in kinematics."
+  },
+  {
+    q: "A runner completes one full lap of a 400 m track and returns to the starting line. What is their displacement?",
+    opts: ["400 m", "0 m", "200 m", "Cannot be determined"],
+    correct: 1,
+    missed: true,
+    explain: "Displacement depends only on the start and end position. Since the runner ends where they started, displacement is 0 m — even though the distance traveled is a full 400 m."
+  },
+  {
+    q: "An object has a negative acceleration. What must be true about its motion?",
+    opts: ["It is slowing down", "It is speeding up", "It is moving in the negative direction", "It cannot be determined from acceleration sign alone"],
+    correct: 3,
+    missed: true,
+    explain: "The sign of acceleration only tells you direction relative to your chosen positive axis — not whether the object speeds up or slows down. That depends on whether velocity and acceleration have the same sign (speeding up) or opposite signs (slowing down)."
+  },
+  {
+    q: "On a position-time graph, what does the slope at a point represent?",
+    opts: ["Acceleration at that instant", "Average velocity over the whole graph", "Instantaneous velocity at that instant", "Displacement at that instant"],
+    correct: 2,
+    missed: false,
+    explain: "The slope of the tangent line to a position-time graph at a given instant is the instantaneous velocity at that instant."
+  },
+  {
+    q: "On a velocity-time graph, what does the AREA under the curve represent?",
+    opts: ["Acceleration", "Displacement", "Speed", "Jerk (rate of change of acceleration)"],
+    correct: 1,
+    missed: true,
+    explain: "Area under a velocity-time graph = displacement. Students often confuse this with the slope (which gives acceleration) — slope and area answer different questions on this graph."
+  },
+  {
+    q: "A car moving in the positive direction has a negative acceleration. What is happening to the car?",
+    opts: ["Speeding up in the positive direction", "Slowing down", "Moving backward", "Staying at constant velocity"],
+    correct: 1,
+    missed: true,
+    explain: "Positive velocity + negative acceleration = opposite signs = slowing down. If the acceleration continued long enough, the car would stop and then start moving in the negative direction."
+  },
+  {
+    q: "Which kinematic equation should you use if you are NOT given the time, and don't need to find it?",
+    opts: ["v = v₀ + at", "x = x₀ + v₀t + ½at²", "v² = v₀² + 2a(x - x₀)", "x = x₀ + ½(v₀ + v)t"],
+    correct: 2,
+    missed: false,
+    explain: "v² = v₀² + 2aΔx is the only one of the four standard kinematic equations that does not contain time — use it whenever time is unknown and not asked for."
+  },
+  {
+    q: "Two balls are dropped from the same height at the same time — one twice as heavy as the other. Ignoring air resistance, which hits the ground first?",
+    opts: ["The heavier ball", "The lighter ball", "They land at the same time", "It depends on their exact masses"],
+    correct: 2,
+    missed: true,
+    explain: "In free fall (no air resistance), acceleration due to gravity is independent of mass — all objects fall at the same rate. This surprises most students because it conflicts with everyday experience, which is dominated by air resistance."
+  },
+  {
+    q: "A stone is dropped from a cliff and takes 3 seconds to hit the ground. If a second stone were thrown straight down instead of dropped, how would its fall time to the same ground compare?",
+    opts: ["Exactly the same, 3 seconds", "Less than 3 seconds", "More than 3 seconds", "Impossible to say without more information"],
+    correct: 1,
+    missed: true,
+    explain: "Throwing it down gives it a nonzero initial velocity (v₀ > 0 downward) instead of starting from rest, so it covers the same distance faster — less than 3 seconds. A common error is assuming fall time only depends on height, ignoring initial velocity."
+  },
+  {
+    q: "A velocity-time graph shows a horizontal line above the time axis. What does this describe?",
+    opts: ["The object is at rest", "The object moves with constant nonzero velocity (zero acceleration)", "The object is accelerating at a constant rate", "The object's displacement is zero"],
+    correct: 1,
+    missed: false,
+    explain: "A horizontal line on a v-t graph means velocity isn't changing — constant velocity, therefore zero acceleration (slope = 0). It does NOT mean the object is at rest, since the line is above zero."
+  }
+];
+
+const quizEl = document.getElementById('quiz');
+const progressEl = document.getElementById('progress');
+let answered = new Array(QUESTIONS.length).fill(null);
+
+QUESTIONS.forEach((item, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot';
+  dot.id = 'dot-' + i;
+  dot.textContent = i + 1;
+  progressEl.appendChild(dot);
+
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = 'card-' + i;
+  card.innerHTML = `
+    <span class="tag">${item.missed ? '<span class="missed">Frequently missed</span> · ' : ''}Question ${i+1} of ${QUESTIONS.length}</span>
+    <div class="qtext">${item.q}</div>
+    <div class="opts">
+      ${item.opts.map((o, j) => `<button class="opt" data-i="${i}" data-j="${j}">${o}</button>`).join('')}
+    </div>
+    <div class="explain" id="explain-${i}">${item.explain}</div>
+  `;
+  quizEl.appendChild(card);
+});
+
+quizEl.addEventListener('click', (e) => {
+  const btn = e.target.closest('.opt');
+  if (!btn) return;
+  const i = Number(btn.dataset.i);
+  const j = Number(btn.dataset.j);
+  if (answered[i] !== null) return;
+  answered[i] = j;
+
+  const card = document.getElementById('card-' + i);
+  const buttons = card.querySelectorAll('.opt');
+  buttons.forEach(b => b.disabled = true);
+  const correct = QUESTIONS[i].correct;
+  buttons[correct].classList.add('correct');
+  if (j !== correct) buttons[j].classList.add('incorrect');
+  document.getElementById('explain-' + i).classList.add('show');
+
+  const dot = document.getElementById('dot-' + i);
+  dot.classList.add('answered', j === correct ? 'correct' : 'incorrect');
+
+  if (answered.every(a => a !== null)) showScore();
+});
+
+function showScore(){
+  const total = QUESTIONS.length;
+  const correctCount = answered.filter((a, i) => a === QUESTIONS[i].correct).length;
+  const pct = Math.round((correctCount/total)*100);
+  document.getElementById('score-big').textContent = `${correctCount} / ${total} (${pct}%)`;
+  const msg = pct >= 90 ? "Mastery level — ready to move on." :
+              pct >= 70 ? "Solid, but review the missed ones above before moving on." :
+              "Revisit the Cornell notes for this section, then retake.";
+  document.getElementById('score-msg').textContent = msg;
+  document.getElementById('score-panel').classList.add('show');
+  document.getElementById('score-panel').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+</script>
+</body>
+</html>

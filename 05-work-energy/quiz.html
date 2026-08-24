@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Work & Energy Quiz — Most Missed Questions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    --bg:#f7f7f5; --card:#ffffff; --ink:#1c1c1c; --muted:#63635d;
+    --accent:#2f6f4f; --accent-ink:#ffffff; --wrong:#b3432b; --right:#2f6f4f;
+    --border:#e2e0da; --chip:#eef1ec;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#16181a; --card:#1f2224; --ink:#eceae4; --muted:#a3a39a;
+      --accent:#5fae83; --accent-ink:#0d140f; --wrong:#e08268; --right:#5fae83;
+      --border:#33363a; --chip:#262a2c; }
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,'Iowan Old Style',serif;line-height:1.5;}
+  .wrap{max-width:720px;margin:0 auto;padding:2rem 1.25rem 4rem;}
+  h1{font-size:1.5rem;margin-bottom:.15rem;}
+  .sub{color:var(--muted);font-size:.95rem;margin-bottom:1.5rem;}
+  .progress{display:flex;gap:.35rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+  .dot{width:1.6rem;height:1.6rem;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:.75rem;border:1px solid var(--border);color:var(--muted);background:var(--card);}
+  .dot.answered{border-color:var(--accent);}
+  .dot.correct{background:var(--right);color:var(--accent-ink);border-color:var(--right);}
+  .dot.incorrect{background:var(--wrong);color:var(--accent-ink);border-color:var(--wrong);}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:.6rem;padding:1.25rem 1.4rem;margin-bottom:1.1rem;}
+  .tag{display:inline-block;font-family:-apple-system,sans-serif;font-size:.7rem;letter-spacing:.04em;
+    text-transform:uppercase;color:var(--accent);background:var(--chip);padding:.15rem .5rem;border-radius:1rem;margin-bottom:.6rem;}
+  .qtext{font-size:1.08rem;margin-bottom:.9rem;}
+  .opt{display:block;width:100%;text-align:left;background:var(--chip);border:1px solid var(--border);color:var(--ink);
+    padding:.6rem .8rem;border-radius:.4rem;margin-bottom:.5rem;cursor:pointer;font-family:inherit;font-size:.98rem;}
+  .opt:hover{border-color:var(--accent);}
+  .opt.correct{background:var(--right);color:var(--accent-ink);border-color:var(--right);}
+  .opt.incorrect{background:var(--wrong);color:var(--accent-ink);border-color:var(--wrong);}
+  .opt:disabled{cursor:default;}
+  .explain{display:none;margin-top:.7rem;padding:.7rem .9rem;background:var(--chip);border-left:3px solid var(--accent);
+    border-radius:0 .3rem .3rem 0;font-size:.93rem;color:var(--ink);}
+  .explain.show{display:block;}
+  .missed{color:var(--wrong);font-family:-apple-system,sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;}
+  #score-panel{background:var(--card);border:1px solid var(--border);border-radius:.6rem;padding:1.5rem;text-align:center;display:none;}
+  #score-panel.show{display:block;}
+  #score-big{font-size:2.4rem;font-weight:bold;margin:.3rem 0;}
+  button.retake{font-family:-apple-system,sans-serif;background:var(--accent);color:var(--accent-ink);border:none;
+    padding:.6rem 1.2rem;border-radius:.4rem;font-size:.95rem;cursor:pointer;margin-top:.5rem;}
+  footer{color:var(--muted);font-size:.85rem;margin-top:2rem;font-family:-apple-system,sans-serif;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Work &amp; Energy — Most Missed Questions</h1>
+  <div class="sub">10 questions drawn from the concepts students most often get wrong. Answer, read the explanation, then move on.</div>
+  <div class="progress" id="progress"></div>
+  <div id="quiz"></div>
+  <div id="score-panel">
+    <div style="font-family:-apple-system,sans-serif;color:var(--muted);">Your score</div>
+    <div id="score-big">0 / 0</div>
+    <div id="score-msg" style="font-family:-apple-system,sans-serif;color:var(--muted);"></div>
+    <button class="retake" onclick="location.reload()">Retake Quiz</button>
+  </div>
+  <footer>Section 05 — Work &amp; Energy · part of the 11th Grade Physics Learning Project</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A person holds a heavy box stationary above their head for 5 minutes, arms shaking with effort. How much work do they do on the box?",
+    opts: ["A large amount, proportional to how tired they get", "Zero — there is no displacement of the box", "A large amount, proportional to the box's weight only", "It depends on how long they hold it"],
+    correct: 1,
+    missed: true,
+    explain: "Work requires displacement: W = Fd·cosθ. Since the box doesn't move (d = 0), the work done on it is zero, no matter how much force or effort is involved. Physics \"work\" and everyday \"effort\" are not the same thing — this trips up nearly every student the first time."
+  },
+  {
+    q: "A waiter carries a tray of food at constant height across a room at constant velocity. How much work does the waiter do AGAINST GRAVITY on the tray during this horizontal carry?",
+    opts: ["A large amount, since the tray is heavy", "Zero — the force (gravity, or the waiter's supporting force) is perpendicular to the horizontal displacement", "Negative, since the waiter is fighting gravity", "Cannot be determined without knowing the distance"],
+    correct: 1,
+    missed: true,
+    explain: "The vertical support force (and gravity) is perpendicular to the horizontal displacement, so cosθ = cos(90°) = 0, making the work done in the vertical direction zero — even though the waiter is clearly exerting force to support the tray's weight."
+  },
+  {
+    q: "A block slides across a rough floor and comes to a stop due to friction. What is the sign of the work done by friction on the block?",
+    opts: ["Positive, because friction is a force", "Zero, since the block eventually stops", "Negative, since friction opposes the direction of motion", "Depends on the block's mass"],
+    correct: 2,
+    missed: true,
+    explain: "Friction always acts opposite to the direction of motion (or attempted motion), so the angle between the friction force and displacement is 180°, making cosθ = -1 and the work negative — this is exactly why friction removes kinetic energy from the block."
+  },
+  {
+    q: "A ball is dropped and falls freely (no air resistance) toward the ground. As it falls, what happens to its total mechanical energy (KE + PE)?",
+    opts: ["It increases, since KE is increasing", "It decreases, since PE is decreasing", "It stays constant — energy converts from PE to KE, but the total doesn't change", "It's impossible to say without the ball's mass"],
+    correct: 2,
+    missed: true,
+    explain: "With no non-conservative forces (no air resistance here), mechanical energy is conserved — PE converts into KE as the ball falls, but the SUM of KE and PE stays constant throughout the fall. Students often only track one form of energy and miss that the total is unchanged."
+  },
+  {
+    q: "A roller coaster car (with friction/air resistance present) climbs from the bottom of a hill back up to a second, slightly higher, hill. Compared to a frictionless version of the same track, what must be true?",
+    opts: ["It reaches exactly the same height, since energy is always conserved", "It reaches a LOWER maximum height, since some mechanical energy converted to heat via friction", "It reaches a HIGHER maximum height, since friction adds energy", "Friction has no effect on maximum height, only on speed"],
+    correct: 1,
+    missed: true,
+    explain: "Total energy (including heat) is always conserved, but MECHANICAL energy (KE + PE) is not when friction/air resistance does negative work on the system. That \"lost\" mechanical energy becomes heat, so the car has less KE+PE available and reaches a lower height than the frictionless case."
+  },
+  {
+    q: "Two identical boxes are lifted to the same height: Box A takes 2 seconds, Box B takes 10 seconds. Which statement is correct?",
+    opts: ["Box A required more work than Box B", "Box A required more power than Box B, but the same amount of work", "Box B required more power, since it took longer", "Work and power are the same thing here, so both are equal"],
+    correct: 1,
+    missed: true,
+    explain: "Work depends only on force and displacement (same height, same weight = same work for both). Power = work/time, so doing the SAME work in LESS time (Box A) means MORE power was required — power and work answer different questions."
+  },
+  {
+    q: "What is the Work-Energy Theorem, and what does it let you calculate that pure kinematics cannot easily provide?",
+    opts: ["W_net = ΔPE; it lets you find height changes directly", "W_net = ΔKE; it lets you relate forces to speed changes without needing time or acceleration explicitly", "W = Pt; it lets you find how long a task takes", "F = ma; it lets you find the net force directly"],
+    correct: 1,
+    missed: false,
+    explain: "The Work-Energy Theorem (W_net = ΔKE) connects the net work done on an object directly to its change in kinetic energy — useful specifically when you know forces and distances but NOT time, which kinematics equations typically require."
+  },
+  {
+    q: "A spring is compressed and then released, launching a block. Is the spring force conservative or non-conservative?",
+    opts: ["Non-conservative, since it only acts briefly", "Conservative — the energy stored can be fully recovered as kinetic energy, and work done is path-independent", "Neither — springs don't do work", "It depends on the spring's material"],
+    correct: 1,
+    missed: false,
+    explain: "Spring force is conservative, just like gravity: energy stored as elastic potential energy can be fully converted back to kinetic energy with none permanently lost, and the work done depends only on compression/extension, not on the path or speed of compression."
+  },
+  {
+    q: "In calculating gravitational potential energy, PE = mgh, why is the reference point (where h = 0) arbitrary?",
+    opts: ["It isn't arbitrary — h must always be measured from the ground", "Only CHANGES in height (Δh) have physical meaning for energy calculations, so any consistent reference point gives the same ΔPE", "PE itself has no physical meaning at all", "The reference point must always be at the object's starting position"],
+    correct: 1,
+    missed: true,
+    explain: "Since only ΔPE (not absolute PE) shows up in the conservation of energy equation, you can set h = 0 anywhere convenient — the ground, a tabletop, the bottom of a ramp — as long as you're consistent for both the initial and final states within one problem."
+  },
+  {
+    q: "A car engine and a much weaker motor both lift the same load to the same height. The car engine does it in 3 seconds; the weak motor takes 60 seconds. Compare the total WORK done by each.",
+    opts: ["The car engine does far more work, since it's more powerful", "Both do the exact same amount of work — only the power (rate) differs", "The weak motor does more work, since it takes longer", "Impossible to determine without knowing each motor's power rating"],
+    correct: 1,
+    missed: false,
+    explain: "Work depends on force and displacement only (W = Fd for lifting against gravity) — since both lift the identical load the identical height, they do identical work. The car engine simply does it at a much higher power (rate), which is a completely separate quantity from work."
+  }
+];
+
+const quizEl = document.getElementById('quiz');
+const progressEl = document.getElementById('progress');
+let answered = new Array(QUESTIONS.length).fill(null);
+
+QUESTIONS.forEach((item, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot';
+  dot.id = 'dot-' + i;
+  dot.textContent = i + 1;
+  progressEl.appendChild(dot);
+
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = 'card-' + i;
+  card.innerHTML = `
+    <span class="tag">${item.missed ? '<span class="missed">Frequently missed</span> · ' : ''}Question ${i+1} of ${QUESTIONS.length}</span>
+    <div class="qtext">${item.q}</div>
+    <div class="opts">
+      ${item.opts.map((o, j) => `<button class="opt" data-i="${i}" data-j="${j}">${o}</button>`).join('')}
+    </div>
+    <div class="explain" id="explain-${i}">${item.explain}</div>
+  `;
+  quizEl.appendChild(card);
+});
+
+quizEl.addEventListener('click', (e) => {
+  const btn = e.target.closest('.opt');
+  if (!btn) return;
+  const i = Number(btn.dataset.i);
+  const j = Number(btn.dataset.j);
+  if (answered[i] !== null) return;
+  answered[i] = j;
+
+  const card = document.getElementById('card-' + i);
+  const buttons = card.querySelectorAll('.opt');
+  buttons.forEach(b => b.disabled = true);
+  const correct = QUESTIONS[i].correct;
+  buttons[correct].classList.add('correct');
+  if (j !== correct) buttons[j].classList.add('incorrect');
+  document.getElementById('explain-' + i).classList.add('show');
+
+  const dot = document.getElementById('dot-' + i);
+  dot.classList.add('answered', j === correct ? 'correct' : 'incorrect');
+
+  if (answered.every(a => a !== null)) showScore();
+});
+
+function showScore(){
+  const total = QUESTIONS.length;
+  const correctCount = answered.filter((a, i) => a === QUESTIONS[i].correct).length;
+  const pct = Math.round((correctCount/total)*100);
+  document.getElementById('score-big').textContent = `${correctCount} / ${total} (${pct}%)`;
+  const msg = pct >= 90 ? "Mastery level — ready to move on." :
+              pct >= 70 ? "Solid, but review the missed ones above before moving on." :
+              "Revisit the Cornell notes for this section, then retake.";
+  document.getElementById('score-msg').textContent = msg;
+  document.getElementById('score-panel').classList.add('show');
+  document.getElementById('score-panel').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+</script>
+</body>
+</html>

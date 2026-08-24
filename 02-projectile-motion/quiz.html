@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Projectile Motion Quiz — Most Missed Questions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    --bg:#f7f7f5; --card:#ffffff; --ink:#1c1c1c; --muted:#63635d;
+    --accent:#2f6f4f; --accent-ink:#ffffff; --wrong:#b3432b; --right:#2f6f4f;
+    --border:#e2e0da; --chip:#eef1ec;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#16181a; --card:#1f2224; --ink:#eceae4; --muted:#a3a39a;
+      --accent:#5fae83; --accent-ink:#0d140f; --wrong:#e08268; --right:#5fae83;
+      --border:#33363a; --chip:#262a2c; }
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,'Iowan Old Style',serif;line-height:1.5;}
+  .wrap{max-width:720px;margin:0 auto;padding:2rem 1.25rem 4rem;}
+  h1{font-size:1.5rem;margin-bottom:.15rem;}
+  .sub{color:var(--muted);font-size:.95rem;margin-bottom:1.5rem;}
+  .progress{display:flex;gap:.35rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+  .dot{width:1.6rem;height:1.6rem;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:.75rem;border:1px solid var(--border);color:var(--muted);background:var(--card);}
+  .dot.answered{border-color:var(--accent);}
+  .dot.correct{background:var(--right);color:var(--accent-ink);border-color:var(--right);}
+  .dot.incorrect{background:var(--wrong);color:var(--accent-ink);border-color:var(--wrong);}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:.6rem;padding:1.25rem 1.4rem;margin-bottom:1.1rem;}
+  .tag{display:inline-block;font-family:-apple-system,sans-serif;font-size:.7rem;letter-spacing:.04em;
+    text-transform:uppercase;color:var(--accent);background:var(--chip);padding:.15rem .5rem;border-radius:1rem;margin-bottom:.6rem;}
+  .qtext{font-size:1.08rem;margin-bottom:.9rem;}
+  .opt{display:block;width:100%;text-align:left;background:var(--chip);border:1px solid var(--border);color:var(--ink);
+    padding:.6rem .8rem;border-radius:.4rem;margin-bottom:.5rem;cursor:pointer;font-family:inherit;font-size:.98rem;}
+  .opt:hover{border-color:var(--accent);}
+  .opt.correct{background:var(--right);color:var(--accent-ink);border-color:var(--right);}
+  .opt.incorrect{background:var(--wrong);color:var(--accent-ink);border-color:var(--wrong);}
+  .opt:disabled{cursor:default;}
+  .explain{display:none;margin-top:.7rem;padding:.7rem .9rem;background:var(--chip);border-left:3px solid var(--accent);
+    border-radius:0 .3rem .3rem 0;font-size:.93rem;color:var(--ink);}
+  .explain.show{display:block;}
+  .missed{color:var(--wrong);font-family:-apple-system,sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;}
+  #score-panel{background:var(--card);border:1px solid var(--border);border-radius:.6rem;padding:1.5rem;text-align:center;display:none;}
+  #score-panel.show{display:block;}
+  #score-big{font-size:2.4rem;font-weight:bold;margin:.3rem 0;}
+  button.retake{font-family:-apple-system,sans-serif;background:var(--accent);color:var(--accent-ink);border:none;
+    padding:.6rem 1.2rem;border-radius:.4rem;font-size:.95rem;cursor:pointer;margin-top:.5rem;}
+  footer{color:var(--muted);font-size:.85rem;margin-top:2rem;font-family:-apple-system,sans-serif;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Projectile Motion — Most Missed Questions</h1>
+  <div class="sub">10 questions drawn from the concepts students most often get wrong. Answer, read the explanation, then move on.</div>
+  <div class="progress" id="progress"></div>
+  <div id="quiz"></div>
+  <div id="score-panel">
+    <div style="font-family:-apple-system,sans-serif;color:var(--muted);">Your score</div>
+    <div id="score-big">0 / 0</div>
+    <div id="score-msg" style="font-family:-apple-system,sans-serif;color:var(--muted);"></div>
+    <button class="retake" onclick="location.reload()">Retake Quiz</button>
+  </div>
+  <footer>Section 02 — Projectile Motion · part of the 11th Grade Physics Learning Project</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A projectile is launched at an angle above the horizontal. What happens to its horizontal velocity (vₓ) during flight (ignoring air resistance)?",
+    opts: ["It decreases steadily due to gravity", "It stays constant the entire flight", "It increases as the projectile falls", "It becomes zero at the peak"],
+    correct: 1,
+    missed: true,
+    explain: "Gravity acts only vertically, so there is no horizontal acceleration. vₓ is set at launch and never changes — this is the core idea of projectile motion that trips up the most students."
+  },
+  {
+    q: "What determines the total time of flight for a projectile launched and landing at the same height?",
+    opts: ["The horizontal launch speed", "The horizontal distance to the target", "The vertical launch speed and gravity only", "The total launch speed (vₓ and vy combined)"],
+    correct: 2,
+    missed: true,
+    explain: "Time of flight depends entirely on the vertical motion — it's a free-fall problem embedded in the vertical component. Horizontal speed has zero influence on how long the projectile stays in the air."
+  },
+  {
+    q: "At the highest point of a projectile's (non-vertical) trajectory, which statement is TRUE?",
+    opts: ["Both vₓ and vy are zero", "vy = 0 and vₓ = 0, but acceleration is also 0", "vy = 0, but vₓ is unchanged and acceleration is still -g", "vₓ = 0, but vy is unchanged"],
+    correct: 2,
+    missed: true,
+    explain: "Only the vertical velocity component reaches zero at the peak. The horizontal component is untouched (no horizontal force), and gravity is still acting — acceleration is never zero during projectile flight."
+  },
+  {
+    q: "A ball is launched at 30° above horizontal and another at 60° above horizontal, both at the same speed, on level ground. How do their ranges compare?",
+    opts: ["The 60° launch goes farther", "The 30° launch goes farther", "They land at the same horizontal distance", "Not enough information"],
+    correct: 2,
+    missed: true,
+    explain: "30° and 60° are complementary angles (they sum to 90°), and complementary launch angles at the same speed produce identical ranges on level ground — even though their time of flight and max height differ."
+  },
+  {
+    q: "A rock is thrown horizontally off a cliff. What is its initial vertical velocity component (vy0)?",
+    opts: ["Equal to the horizontal launch speed", "Zero", "Equal to g", "Cannot be determined without the height"],
+    correct: 1,
+    missed: true,
+    explain: "\"Thrown horizontally\" means the entire initial velocity is in the x-direction — vy0 = 0. The object still accelerates downward immediately due to gravity, but it starts with zero vertical speed."
+  },
+  {
+    q: "Two balls are released at the exact same instant from the same height: Ball A is dropped straight down, Ball B is launched horizontally. Which hits the ground first (ignore air resistance)?",
+    opts: ["Ball A (the dropped one)", "Ball B (the horizontally launched one)", "They land at the same time", "Depends on Ball B's horizontal speed"],
+    correct: 2,
+    missed: true,
+    explain: "Both balls have the same initial vertical velocity (zero) and the same vertical acceleration (-g), so their vertical motion — and therefore their fall time — is identical. Horizontal speed is irrelevant to fall time, which is the same trap as the previous question in reverse."
+  },
+  {
+    q: "For a projectile launched and landing at the same height, how does the launch angle compare to the landing angle (measured from horizontal)?",
+    opts: ["The landing angle is always steeper", "The landing angle is always shallower", "They have equal magnitude, mirrored below horizontal", "There is no relationship between them"],
+    correct: 2,
+    missed: false,
+    explain: "The trajectory is symmetric about its peak when launch and landing heights match, so the landing angle equals the launch angle in magnitude, just below the horizontal instead of above it."
+  },
+  {
+    q: "What launch angle produces the maximum range for a projectile launched and landing at the same height (no air resistance)?",
+    opts: ["90°", "60°", "45°", "30°"],
+    correct: 2,
+    missed: false,
+    explain: "45° splits the initial speed evenly between horizontal and vertical components in a way that maximizes horizontal distance — it's the textbook result for equal launch/landing height with no air resistance."
+  },
+  {
+    q: "How do you find the speed (magnitude) of a projectile at some point mid-flight?",
+    opts: ["Add vₓ and vy directly", "Use only vy, since vₓ never changes", "Use the Pythagorean theorem: √(vₓ² + vy²)", "Use the initial launch speed — it never changes"],
+    correct: 2,
+    missed: true,
+    explain: "vₓ and vy are perpendicular components of the velocity vector, so the speed (magnitude) is found with the Pythagorean theorem, not by simple addition. The overall speed DOES change during flight even though vₓ alone does not."
+  },
+  {
+    q: "A projectile is launched at an angle. Which pair of quantities remains constant throughout the entire flight?",
+    opts: ["Vertical velocity and total speed", "Horizontal velocity and horizontal acceleration (both are constant, though acceleration is zero)", "Vertical acceleration and total speed", "Total velocity vector"],
+    correct: 1,
+    missed: false,
+    explain: "Horizontal velocity is constant, and horizontal acceleration is constant too — it's just constantly zero. Everything vertical (velocity, and therefore total speed and direction) changes throughout the flight."
+  }
+];
+
+const quizEl = document.getElementById('quiz');
+const progressEl = document.getElementById('progress');
+let answered = new Array(QUESTIONS.length).fill(null);
+
+QUESTIONS.forEach((item, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot';
+  dot.id = 'dot-' + i;
+  dot.textContent = i + 1;
+  progressEl.appendChild(dot);
+
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = 'card-' + i;
+  card.innerHTML = `
+    <span class="tag">${item.missed ? '<span class="missed">Frequently missed</span> · ' : ''}Question ${i+1} of ${QUESTIONS.length}</span>
+    <div class="qtext">${item.q}</div>
+    <div class="opts">
+      ${item.opts.map((o, j) => `<button class="opt" data-i="${i}" data-j="${j}">${o}</button>`).join('')}
+    </div>
+    <div class="explain" id="explain-${i}">${item.explain}</div>
+  `;
+  quizEl.appendChild(card);
+});
+
+quizEl.addEventListener('click', (e) => {
+  const btn = e.target.closest('.opt');
+  if (!btn) return;
+  const i = Number(btn.dataset.i);
+  const j = Number(btn.dataset.j);
+  if (answered[i] !== null) return;
+  answered[i] = j;
+
+  const card = document.getElementById('card-' + i);
+  const buttons = card.querySelectorAll('.opt');
+  buttons.forEach(b => b.disabled = true);
+  const correct = QUESTIONS[i].correct;
+  buttons[correct].classList.add('correct');
+  if (j !== correct) buttons[j].classList.add('incorrect');
+  document.getElementById('explain-' + i).classList.add('show');
+
+  const dot = document.getElementById('dot-' + i);
+  dot.classList.add('answered', j === correct ? 'correct' : 'incorrect');
+
+  if (answered.every(a => a !== null)) showScore();
+});
+
+function showScore(){
+  const total = QUESTIONS.length;
+  const correctCount = answered.filter((a, i) => a === QUESTIONS[i].correct).length;
+  const pct = Math.round((correctCount/total)*100);
+  document.getElementById('score-big').textContent = `${correctCount} / ${total} (${pct}%)`;
+  const msg = pct >= 90 ? "Mastery level — ready to move on." :
+              pct >= 70 ? "Solid, but review the missed ones above before moving on." :
+              "Revisit the Cornell notes for this section, then retake.";
+  document.getElementById('score-msg').textContent = msg;
+  document.getElementById('score-panel').classList.add('show');
+  document.getElementById('score-panel').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+</script>
+</body>
+</html>
