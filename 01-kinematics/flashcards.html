@@ -2,187 +2,593 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Kinematics Flashcards — Unit 1 Terms</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Motion Vocabulary — Unit 1 Flashcards</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,900&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
   :root{
-    --bg:#f7f7f5; --card:#ffffff; --ink:#1c1c1c; --muted:#63635d;
-    --accent:#2f6f4f; --accent-ink:#ffffff; --border:#e2e0da; --chip:#eef1ec;
-    --vector:#3a5f8a; --scalar:#8a5a3a;
+    --paper:#f6f1e2;
+    --paper-line:rgba(35,40,58,0.075);
+    --paper-line-strong:rgba(35,40,58,0.14);
+    --ink:#232839;
+    --ink-soft:#5c5f74;
+    --card-bg:#fffdf6;
+    --card-edge:rgba(35,40,58,0.15);
+    --accent-vector:#2f5fa8;
+    --accent-vector-soft:rgba(47,95,168,0.12);
+    --accent-scalar:#b5651d;
+    --accent-scalar-soft:rgba(181,101,29,0.12);
+    --accent-concept:#726b52;
+    --accent-concept-soft:rgba(114,107,82,0.14);
+    --good:#3f7a4f;
+    --shadow: 0 1px 2px rgba(35,40,58,0.08), 0 10px 24px -12px rgba(35,40,58,0.35);
   }
   @media (prefers-color-scheme: dark){
-    :root{ --bg:#16181a; --card:#1f2224; --ink:#eceae4; --muted:#a3a39a;
-      --accent:#5fae83; --accent-ink:#0d140f; --border:#33363a; --chip:#262a2c;
-      --vector:#7fa8d6; --scalar:#d6a37f; }
+    :root:not([data-theme="light"]){
+      --paper:#171b26;
+      --paper-line:rgba(255,255,255,0.045);
+      --paper-line-strong:rgba(255,255,255,0.09);
+      --ink:#eae6d8;
+      --ink-soft:#9b9fb5;
+      --card-bg:#232a3b;
+      --card-edge:rgba(234,230,216,0.14);
+      --accent-vector:#82b1f4;
+      --accent-vector-soft:rgba(130,177,244,0.16);
+      --accent-scalar:#e6ac72;
+      --accent-scalar-soft:rgba(230,172,114,0.16);
+      --accent-concept:#c3bca2;
+      --accent-concept-soft:rgba(195,188,162,0.14);
+      --good:#7bc98d;
+      --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 14px 32px -14px rgba(0,0,0,0.6);
+    }
   }
+  :root[data-theme="dark"]{
+    --paper:#171b26;
+    --paper-line:rgba(255,255,255,0.045);
+    --paper-line-strong:rgba(255,255,255,0.09);
+    --ink:#eae6d8;
+    --ink-soft:#9b9fb5;
+    --card-bg:#232a3b;
+    --card-edge:rgba(234,230,216,0.14);
+    --accent-vector:#82b1f4;
+    --accent-vector-soft:rgba(130,177,244,0.16);
+    --accent-scalar:#e6ac72;
+    --accent-scalar-soft:rgba(230,172,114,0.16);
+    --accent-concept:#c3bca2;
+    --accent-concept-soft:rgba(195,188,162,0.14);
+    --good:#7bc98d;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 14px 32px -14px rgba(0,0,0,0.6);
+  }
+
   *{box-sizing:border-box;}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,'Iowan Old Style',serif;line-height:1.5;}
-  .wrap{max-width:640px;margin:0 auto;padding:2rem 1.25rem 4rem;}
-  h1{font-size:1.5rem;margin-bottom:.15rem;}
-  .sub{color:var(--muted);font-size:.95rem;margin-bottom:1.5rem;font-family:-apple-system,sans-serif;}
-  .controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;
-    font-family:-apple-system,sans-serif;font-size:.85rem;color:var(--muted);}
-  .stage{perspective:1200px;height:280px;margin-bottom:1.25rem;}
-  .card{position:relative;width:100%;height:100%;cursor:pointer;transform-style:preserve-3d;
-    transition:transform .5s;}
-  .card.flipped{transform:rotateY(180deg);}
-  .face{position:absolute;inset:0;backface-visibility:hidden;border:1px solid var(--border);
-    border-radius:.7rem;background:var(--card);display:flex;flex-direction:column;
-    align-items:center;justify-content:center;text-align:center;padding:1.5rem;}
-  .face.front{font-size:1.7rem;font-weight:bold;}
-  .face.back{transform:rotateY(180deg);font-size:1.05rem;}
-  .hint{position:absolute;bottom:.9rem;font-family:-apple-system,sans-serif;font-size:.72rem;
-    color:var(--muted);letter-spacing:.03em;text-transform:uppercase;}
-  .badge{display:inline-block;font-family:-apple-system,sans-serif;font-size:.7rem;
-    letter-spacing:.04em;text-transform:uppercase;padding:.15rem .55rem;border-radius:1rem;
-    margin-bottom:.7rem;color:#fff;}
-  .badge.vector{background:var(--vector);}
-  .badge.scalar{background:var(--scalar);}
-  .badge.neutral{background:var(--muted);}
-  .units{font-family:-apple-system,sans-serif;font-size:.8rem;color:var(--muted);margin-top:.6rem;}
-  .nav{display:flex;gap:.6rem;justify-content:center;font-family:-apple-system,sans-serif;}
-  button{font-family:inherit;background:var(--accent);color:var(--accent-ink);border:none;
-    padding:.6rem 1.1rem;border-radius:.4rem;font-size:.92rem;cursor:pointer;}
-  button.secondary{background:var(--chip);color:var(--ink);border:1px solid var(--border);}
-  button:disabled{opacity:.4;cursor:default;}
-  .deck-list{margin-top:2.5rem;font-family:-apple-system,sans-serif;font-size:.85rem;}
-  .deck-list summary{cursor:pointer;color:var(--muted);margin-bottom:.6rem;}
-  table{width:100%;border-collapse:collapse;font-size:.85rem;}
-  th,td{text-align:left;padding:.4rem .5rem;border-bottom:1px solid var(--border);vertical-align:top;}
-  th{color:var(--muted);font-weight:normal;}
-  footer{color:var(--muted);font-size:.85rem;margin-top:2rem;font-family:-apple-system,sans-serif;}
-  .source{font-family:-apple-system,sans-serif;font-size:.8rem;color:var(--muted);margin-top:.3rem;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      linear-gradient(var(--paper-line) 1px, transparent 1px) 0 0/100% 28px,
+      linear-gradient(90deg, var(--paper-line) 1px, transparent 1px) 0 0/28px 100%,
+      var(--paper);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+    min-height:100vh;
+  }
+  ::selection{ background:var(--accent-vector-soft); }
+
+  .page{
+    max-width:640px;
+    margin:0 auto;
+    padding:2.75rem 1.5rem 4.5rem;
+  }
+
+  .masthead{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:1rem;
+    margin-bottom:2rem;
+    padding-bottom:1.1rem;
+    border-bottom:1.5px solid var(--paper-line-strong);
+  }
+  .masthead-label{
+    font-family:"IBM Plex Mono", "SF Mono", Consolas, monospace;
+    font-size:0.72rem;
+    letter-spacing:0.09em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:0.5rem;
+  }
+  h1{
+    font-family:"Fraunces", Georgia, "Iowan Old Style", serif;
+    font-optical-sizing:auto;
+    font-weight:600;
+    font-size:clamp(1.7rem, 4.5vw, 2.15rem);
+    line-height:1.08;
+    margin:0;
+    text-wrap:balance;
+    letter-spacing:-0.01em;
+  }
+  .deck-meta{
+    text-align:right;
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.78rem;
+    color:var(--ink-soft);
+    white-space:nowrap;
+  }
+  .deck-meta strong{ color:var(--ink); font-weight:500; }
+
+  .source-line{
+    font-size:0.85rem;
+    color:var(--ink-soft);
+    margin:-1.35rem 0 2.1rem;
+  }
+  .source-line code{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.82em;
+    background:var(--paper-line-strong);
+    padding:0.05em 0.4em;
+    border-radius:3px;
+  }
+
+  /* --- progress rail --- */
+  .rail{
+    display:flex;
+    gap:0.28rem;
+    margin-bottom:1.9rem;
+  }
+  .rail-seg{
+    flex:1;
+    height:4px;
+    border-radius:2px;
+    background:var(--paper-line-strong);
+    overflow:hidden;
+    position:relative;
+  }
+  .rail-seg::after{
+    content:"";
+    position:absolute; inset:0;
+    background:var(--ink-soft);
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:transform .25s ease, background .25s ease;
+  }
+  .rail-seg.seen::after{ transform:scaleX(1); }
+  .rail-seg.known::after{ background:var(--good); }
+
+  /* --- stage & stacked-deck illusion --- */
+  .stage{
+    position:relative;
+    height:340px;
+    margin-bottom:1.6rem;
+  }
+  .deck-shadow-card{
+    position:absolute;
+    inset:0;
+    border-radius:14px;
+    background:var(--card-bg);
+    border:1px solid var(--card-edge);
+  }
+  .deck-shadow-card.d2{ transform:rotate(-4deg) translateY(6px); opacity:.55; }
+  .deck-shadow-card.d1{ transform:rotate(2.4deg) translateY(3px); opacity:.8; }
+
+  .flip-zone{
+    position:absolute;
+    inset:0;
+    perspective:1400px;
+  }
+  .card{
+    position:relative;
+    width:100%;
+    height:100%;
+    cursor:pointer;
+    transform-style:preserve-3d;
+    transition:transform .55s cubic-bezier(.2,.8,.2,1);
+  }
+  .card.flipped{ transform:rotateY(180deg); }
+  @media (prefers-reduced-motion: reduce){
+    .card{ transition:none; }
+  }
+
+  .face{
+    position:absolute; inset:0;
+    backface-visibility:hidden;
+    border-radius:14px;
+    background:var(--card-bg);
+    border:1px solid var(--card-edge);
+    box-shadow:var(--shadow);
+    display:flex;
+    flex-direction:column;
+    padding:1.9rem 1.9rem 1.5rem;
+  }
+  .face.back{ transform:rotateY(180deg); }
+
+  .face-index{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.72rem;
+    color:var(--ink-soft);
+    letter-spacing:0.04em;
+  }
+
+  .face.front{
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    gap:0.9rem;
+  }
+  .front .face-index{ position:absolute; top:1.5rem; left:1.9rem; }
+  .glyph{
+    width:2.6rem; height:2.6rem;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .glyph svg{ width:100%; height:100%; }
+  .term{
+    font-family:"Fraunces", Georgia, serif;
+    font-optical-sizing:auto;
+    font-weight:600;
+    font-size:clamp(1.5rem, 6vw, 2.05rem);
+    line-height:1.12;
+    text-wrap:balance;
+  }
+  .flip-hint{
+    position:absolute;
+    bottom:1.3rem;
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.68rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    opacity:.75;
+  }
+
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:0.35rem;
+    align-self:flex-start;
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.68rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    padding:0.25rem 0.6rem 0.25rem 0.5rem;
+    border-radius:100px;
+    margin-bottom:0.95rem;
+  }
+  .badge.vector{ color:var(--accent-vector); background:var(--accent-vector-soft); }
+  .badge.scalar{ color:var(--accent-scalar); background:var(--accent-scalar-soft); }
+  .badge.concept{ color:var(--accent-concept); background:var(--accent-concept-soft); }
+  .badge svg{ width:0.85em; height:0.85em; }
+
+  .def{
+    font-size:1.02rem;
+    line-height:1.5;
+    color:var(--ink);
+  }
+  .back-foot{
+    margin-top:auto;
+    padding-top:0.9rem;
+    border-top:1px dashed var(--paper-line-strong);
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.78rem;
+    color:var(--ink-soft);
+  }
+  .back-foot b{ color:var(--ink); font-weight:500; }
+
+  /* --- controls --- */
+  .controls{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:0.6rem;
+    margin-bottom:0.4rem;
+  }
+  button{
+    font-family:"IBM Plex Sans", sans-serif;
+    font-size:0.88rem;
+    font-weight:500;
+    border-radius:9px;
+    padding:0.65rem 0.7rem;
+    cursor:pointer;
+    border:1px solid var(--card-edge);
+    background:var(--card-bg);
+    color:var(--ink);
+    transition:transform .12s ease, border-color .12s ease;
+  }
+  button:hover{ border-color:var(--ink-soft); }
+  button:active{ transform:translateY(1px) scale(.99); }
+  button:focus-visible{ outline:2px solid var(--accent-vector); outline-offset:2px; }
+  button.primary{
+    background:var(--ink);
+    color:var(--paper);
+    border-color:var(--ink);
+  }
+  button.know{ grid-column:span 1; }
+  button.know.is-known{
+    background:var(--good);
+    border-color:var(--good);
+    color:#fbfff8;
+  }
+  .wide-controls{
+    display:flex;
+    gap:0.6rem;
+    margin-top:0.6rem;
+  }
+  .wide-controls button{ flex:1; }
+
+  .keyhint{
+    text-align:center;
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.72rem;
+    color:var(--ink-soft);
+    margin-top:0.9rem;
+    opacity:.8;
+  }
+  .keyhint kbd{
+    font-family:inherit;
+    background:var(--paper-line-strong);
+    padding:0.05em 0.4em;
+    border-radius:3px;
+  }
+
+  /* --- reference table --- */
+  details.deck-list{
+    margin-top:3rem;
+    font-size:0.88rem;
+  }
+  details.deck-list summary{
+    cursor:pointer;
+    color:var(--ink-soft);
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.78rem;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    padding:0.5rem 0;
+  }
+  .ref-table{ width:100%; border-collapse:collapse; margin-top:0.6rem; }
+  .ref-table th, .ref-table td{
+    text-align:left;
+    padding:0.55rem 0.6rem;
+    border-bottom:1px solid var(--paper-line-strong);
+    vertical-align:top;
+  }
+  .ref-table th{
+    font-family:"IBM Plex Mono", monospace;
+    font-weight:500;
+    font-size:0.72rem;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:var(--ink-soft);
+  }
+  .ref-table td:first-child{ font-family:"Fraunces", serif; font-weight:600; white-space:nowrap; }
+  .table-wrap{ overflow-x:auto; }
+
+  footer{
+    margin-top:2.5rem;
+    padding-top:1.2rem;
+    border-top:1px solid var(--paper-line-strong);
+    font-size:0.82rem;
+    color:var(--ink-soft);
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>Unit 1 — Motion &amp; Kinematics Vocabulary</h1>
-  <div class="sub">12 terms, pulled from the "Terms Practice," "Average Velocity," and "Study Guide for Motion Quiz" worksheets. Click a card to flip it.</div>
-  <div class="source">Source worksheets: <code>class-materials/unit-1-terms-practice-scan.pdf</code></div>
-
-  <div class="controls" style="margin-top:1rem;">
-    <span id="counter">Card 1 of 12</span>
-    <span id="know-count">Marked known: 0</span>
+<div class="page">
+  <div class="masthead">
+    <div>
+      <div class="masthead-label">Physics 11 &middot; Unit 1 &middot; Kinematics</div>
+      <h1>Motion Vocabulary</h1>
+    </div>
+    <div class="deck-meta">Card <strong id="pos">1</strong>/<span id="total">12</span></div>
   </div>
+  <div class="source-line">Terms drawn from the class's <code>Terms Practice</code>, <code>Average Velocity</code>, and <code>Study Guide for Motion Quiz</code> worksheets.</div>
+
+  <div class="rail" id="rail"></div>
 
   <div class="stage">
-    <div class="card" id="card">
-      <div class="face front" id="front"></div>
-      <div class="face back" id="back"></div>
-      <div class="hint">click to flip</div>
+    <div class="deck-shadow-card d2" aria-hidden="true"></div>
+    <div class="deck-shadow-card d1" aria-hidden="true"></div>
+    <div class="flip-zone">
+      <div class="card" id="card" role="button" tabindex="0" aria-label="Flashcard, press space to flip">
+        <div class="face front">
+          <span class="face-index" id="frontIndex">01 / 12</span>
+          <div class="glyph" id="frontGlyph"></div>
+          <div class="term" id="frontTerm"></div>
+          <div class="flip-hint">tap to flip</div>
+        </div>
+        <div class="face back">
+          <span class="badge" id="backBadge"></span>
+          <div class="def" id="backDef"></div>
+          <div class="back-foot">
+            <span>units</span>
+            <b id="backUnits"></b>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="nav">
-    <button class="secondary" id="prev">← Prev</button>
-    <button class="secondary" id="know">Mark known</button>
-    <button class="secondary" id="shuffle">Shuffle</button>
-    <button id="next">Next →</button>
+  <div class="controls">
+    <button class="secondary" id="prevBtn">&larr; Prev</button>
+    <button class="know" id="knowBtn">Mark known</button>
+    <button class="secondary" id="shuffleBtn">Shuffle</button>
   </div>
+  <div class="wide-controls">
+    <button class="primary" id="nextBtn">Next &rarr;</button>
+  </div>
+  <div class="keyhint"><kbd>&larr;</kbd> <kbd>&rarr;</kbd> to move &middot; <kbd>space</kbd> to flip &middot; progress saved on this device</div>
 
   <details class="deck-list">
-    <summary>View the full term list as a table</summary>
-    <table id="table"></table>
+    <summary>Full term list (12)</summary>
+    <div class="table-wrap">
+      <table class="ref-table" id="refTable"></table>
+    </div>
   </details>
 
-  <footer>Section 01 — Kinematics · part of the 11th Grade Physics Learning Project</footer>
+  <footer>Section 01 &mdash; Kinematics &middot; 11th Grade Physics Learning Project</footer>
 </div>
 
 <script>
-const TERMS = [
-  { term: "Reference Point / Origin", type: "neutral",
-    def: "The fixed location chosen as position = 0. Every position and displacement in a problem is measured relative to this point.",
-    units: "n/a — a chosen point, not a measured quantity" },
-  { term: "Position", type: "vector",
-    def: "An object's location relative to the reference point/origin. Can be positive or negative depending on which side of the origin it's on.",
-    units: "m (length units)" },
-  { term: "Distance", type: "scalar",
-    def: "The total length of the path traveled, regardless of direction. Always positive, and never decreases as an object moves.",
-    units: "m" },
-  { term: "Displacement", type: "vector",
-    def: "The change in position: Δx = x − x₀. Depends only on start and end points, not the path taken — can be positive, negative, or zero.",
-    units: "m" },
-  { term: "Vector", type: "vector",
-    def: "A quantity that has both magnitude (size) AND direction. Displacement, velocity, and acceleration are all vectors.",
-    units: "n/a — a category of quantity" },
-  { term: "Scalar", type: "scalar",
-    def: "A quantity that has magnitude only — no direction. Distance and speed are scalars.",
-    units: "n/a — a category of quantity" },
-  { term: "Magnitude", type: "neutral",
-    def: "The size or numerical value of a vector, ignoring direction. Always a positive number.",
-    units: "matches the vector's units" },
-  { term: "Direction", type: "neutral",
-    def: "Which way a vector points — e.g., north, forward/backward, or positive/negative along a chosen axis. A vector isn't fully described without it.",
-    units: "n/a (compass direction, +/-, or fwd/bwd)" },
-  { term: "Speed", type: "scalar",
-    def: "How fast an object is moving: distance ÷ time. Always positive — has no direction.",
-    units: "m/s" },
-  { term: "Average Velocity", type: "vector",
-    def: "Displacement divided by the total time elapsed: v̄ = Δx / Δt. A single value describing motion over an entire interval.",
-    units: "m/s" },
-  { term: "Instantaneous Velocity", type: "vector",
-    def: "The velocity at one specific moment in time — the slope of the tangent line to a position-time graph at that instant.",
-    units: "m/s" },
-  { term: "Acceleration", type: "vector",
-    def: "The rate of change of velocity: a = Δv / Δt. Can be caused by a change in speed, direction, or both.",
-    units: "m/s²" }
-];
+(function(){
+  var TERMS = [
+    { term:"Reference Point / Origin", type:"concept",
+      def:"The fixed location chosen as position = 0. Every position and displacement in a problem is measured relative to this point.",
+      units:"none — a chosen point" },
+    { term:"Position", type:"vector",
+      def:"An object's location relative to the origin. Positive or negative depending on which side of the origin it falls on.",
+      units:"m" },
+    { term:"Distance", type:"scalar",
+      def:"Total length of the path traveled, regardless of direction. Always positive, and never decreases as an object moves.",
+      units:"m" },
+    { term:"Displacement", type:"vector",
+      def:"The change in position: Δx = x − x₀. Depends only on start and end points, not the path taken.",
+      units:"m" },
+    { term:"Vector", type:"vector",
+      def:"A quantity with both magnitude AND direction. Displacement, velocity, and acceleration are all vectors.",
+      units:"n/a — a category" },
+    { term:"Scalar", type:"scalar",
+      def:"A quantity with magnitude only — no direction. Distance and speed are scalars.",
+      units:"n/a — a category" },
+    { term:"Magnitude", type:"concept",
+      def:"The size or numerical value of a vector, ignoring direction. Always a positive number.",
+      units:"matches the vector's units" },
+    { term:"Direction", type:"concept",
+      def:"Which way a vector points — e.g. north, forward/backward, or +/− along a chosen axis.",
+      units:"n/a — compass, +/−, or fwd/bwd" },
+    { term:"Speed", type:"scalar",
+      def:"How fast an object is moving: distance ÷ time. Always positive — has no direction.",
+      units:"m/s" },
+    { term:"Average Velocity", type:"vector",
+      def:"Displacement over total time elapsed: v̄ = Δx / Δt. One value describing an entire interval.",
+      units:"m/s" },
+    { term:"Instantaneous Velocity", type:"vector",
+      def:"Velocity at one specific moment — the slope of the tangent line to a position-time graph at that instant.",
+      units:"m/s" },
+    { term:"Acceleration", type:"vector",
+      def:"The rate of change of velocity: a = Δv / Δt. Caused by a change in speed, direction, or both.",
+      units:"m/s²" }
+  ];
 
-let order = TERMS.map((_, i) => i);
-let idx = 0;
-let known = new Set();
+  var GLYPH = {
+    vector: '<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="7" y1="30" x2="30" y2="10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M30 10 L21 12.5 M30 10 L27.5 19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    scalar: '<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="6" fill="currentColor"/></svg>',
+    concept: '<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="12" stroke="currentColor" stroke-width="2.2"/><line x1="20" y1="20" x2="20" y2="10" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>'
+  };
+  var LABEL = { vector:"vector", scalar:"scalar", concept:"concept" };
 
-const cardEl = document.getElementById('card');
-const frontEl = document.getElementById('front');
-const backEl = document.getElementById('back');
-const counterEl = document.getElementById('counter');
-const knowCountEl = document.getElementById('know-count');
+  var STORE_KEY = "physics11-unit1-flashcards-known";
+  var order = TERMS.map(function(_, i){ return i; });
+  var idx = 0;
+  var known = new Set();
+  try {
+    var saved = JSON.parse(localStorage.getItem(STORE_KEY) || "[]");
+    known = new Set(saved);
+  } catch (e) { known = new Set(); }
+  var seen = new Set();
 
-function render(){
-  const t = TERMS[order[idx]];
-  cardEl.classList.remove('flipped');
-  frontEl.textContent = t.term;
-  backEl.innerHTML = `
-    <span class="badge ${t.type}">${t.type === 'neutral' ? 'concept' : t.type}</span>
-    <div>${t.def}</div>
-    <div class="units">Units: ${t.units}</div>
-  `;
-  counterEl.textContent = `Card ${idx + 1} of ${TERMS.length}`;
-  knowCountEl.textContent = `Marked known: ${known.size}`;
-  document.getElementById('prev').disabled = idx === 0;
-  document.getElementById('next').textContent = idx === TERMS.length - 1 ? 'Restart ↻' : 'Next →';
-}
+  var els = {
+    card: document.getElementById('card'),
+    frontIndex: document.getElementById('frontIndex'),
+    frontGlyph: document.getElementById('frontGlyph'),
+    frontTerm: document.getElementById('frontTerm'),
+    backBadge: document.getElementById('backBadge'),
+    backDef: document.getElementById('backDef'),
+    backUnits: document.getElementById('backUnits'),
+    pos: document.getElementById('pos'),
+    total: document.getElementById('total'),
+    rail: document.getElementById('rail'),
+    knowBtn: document.getElementById('knowBtn'),
+    prevBtn: document.getElementById('prevBtn'),
+    nextBtn: document.getElementById('nextBtn'),
+    shuffleBtn: document.getElementById('shuffleBtn'),
+    refTable: document.getElementById('refTable')
+  };
 
-cardEl.addEventListener('click', () => cardEl.classList.toggle('flipped'));
+  els.total.textContent = TERMS.length;
 
-document.getElementById('next').addEventListener('click', () => {
-  idx = (idx + 1) % TERMS.length;
-  render();
-});
+  TERMS.forEach(function(_, i){
+    var seg = document.createElement('div');
+    seg.className = 'rail-seg';
+    seg.id = 'seg-' + i;
+    els.rail.appendChild(seg);
+  });
 
-document.getElementById('prev').addEventListener('click', () => {
-  if (idx > 0) { idx--; render(); }
-});
-
-document.getElementById('know').addEventListener('click', () => {
-  known.add(order[idx]);
-  knowCountEl.textContent = `Marked known: ${known.size}`;
-});
-
-document.getElementById('shuffle').addEventListener('click', () => {
-  for (let i = order.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [order[i], order[j]] = [order[j], order[i]];
+  function persist(){
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(Array.from(known))); } catch (e) {}
   }
-  idx = 0;
+
+  function render(){
+    var i = order[idx];
+    var t = TERMS[i];
+    els.card.classList.remove('flipped');
+    els.frontIndex.textContent = String(idx + 1).padStart(2, '0') + ' / ' + TERMS.length;
+    els.frontGlyph.innerHTML = GLYPH[t.type];
+    els.frontGlyph.style.color = 'var(--accent-' + t.type + ')';
+    els.frontTerm.textContent = t.term;
+
+    els.backBadge.className = 'badge ' + t.type;
+    els.backBadge.innerHTML = GLYPH[t.type] + '<span>' + LABEL[t.type] + '</span>';
+    els.backDef.textContent = t.def;
+    els.backUnits.textContent = t.units;
+
+    els.pos.textContent = idx + 1;
+    seen.add(i);
+    updateRail();
+    els.knowBtn.classList.toggle('is-known', known.has(i));
+    els.knowBtn.textContent = known.has(i) ? 'Known ✓' : 'Mark known';
+  }
+
+  function updateRail(){
+    TERMS.forEach(function(_, i){
+      var seg = document.getElementById('seg-' + i);
+      seg.classList.toggle('seen', seen.has(i));
+      seg.classList.toggle('known', known.has(i));
+    });
+  }
+
+  function go(delta){
+    idx = (idx + delta + order.length) % order.length;
+    render();
+  }
+
+  els.card.addEventListener('click', function(){ els.card.classList.toggle('flipped'); });
+  els.card.addEventListener('keydown', function(e){
+    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); els.card.classList.toggle('flipped'); }
+  });
+
+  els.nextBtn.addEventListener('click', function(){ go(1); });
+  els.prevBtn.addEventListener('click', function(){ go(-1); });
+
+  els.knowBtn.addEventListener('click', function(){
+    var i = order[idx];
+    if (known.has(i)) { known.delete(i); } else { known.add(i); }
+    persist();
+    updateRail();
+    els.knowBtn.classList.toggle('is-known', known.has(i));
+    els.knowBtn.textContent = known.has(i) ? 'Known ✓' : 'Mark known';
+  });
+
+  els.shuffleBtn.addEventListener('click', function(){
+    for (var i = order.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = order[i]; order[i] = order[j]; order[j] = tmp;
+    }
+    idx = 0;
+    render();
+  });
+
+  document.addEventListener('keydown', function(e){
+    if (document.activeElement && ['INPUT','TEXTAREA'].indexOf(document.activeElement.tagName) !== -1) return;
+    if (e.key === 'ArrowRight') go(1);
+    if (e.key === 'ArrowLeft') go(-1);
+  });
+
+  var rows = '<tr><th>Term</th><th>Type</th><th>Definition</th><th>Units</th></tr>';
+  TERMS.forEach(function(t){
+    rows += '<tr><td>' + t.term + '</td><td>' + LABEL[t.type] + '</td><td>' + t.def + '</td><td>' + t.units + '</td></tr>';
+  });
+  els.refTable.innerHTML = rows;
+
   render();
-});
-
-const tableEl = document.getElementById('table');
-tableEl.innerHTML = `<tr><th>Term</th><th>Type</th><th>Definition</th><th>Units</th></tr>` +
-  TERMS.map(t => `<tr><td><strong>${t.term}</strong></td><td>${t.type === 'neutral' ? 'concept' : t.type}</td><td>${t.def}</td><td>${t.units}</td></tr>`).join('');
-
-render();
+})();
 </script>
 </body>
 </html>
