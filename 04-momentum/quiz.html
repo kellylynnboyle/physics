@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Momentum Quiz — Most Commonly Missed Questions</title>
+<style>
+  :root {
+    --bg: #f4f6f8;
+    --card-bg: #ffffff;
+    --text: #1e2530;
+    --muted: #5a6472;
+    --border: #d7dce2;
+    --accent: #2b5b84;
+    --accent-contrast: #ffffff;
+    --correct-bg: #e3f5e8;
+    --correct-border: #3f9d5b;
+    --incorrect-bg: #fbe7e7;
+    --incorrect-border: #c0504d;
+    --option-hover: #eef2f6;
+    --score-bg: #eaf1f7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1b1f24;
+      --card-bg: #262b32;
+      --text: #e8ebef;
+      --muted: #a3adb8;
+      --border: #3a4149;
+      --accent: #6fa8d6;
+      --accent-contrast: #10151a;
+      --correct-bg: #1e3a26;
+      --correct-border: #4caf6a;
+      --incorrect-bg: #3d2323;
+      --incorrect-border: #d97772;
+      --option-hover: #2e353d;
+      --score-bg: #24313c;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  h1 {
+    font-size: 1.6rem;
+    margin: 0 0 0.4rem;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+  #score-panel {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--score-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    margin: 1rem 0 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-weight: 600;
+  }
+  #score-panel .score-value {
+    color: var(--accent);
+  }
+  .question {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.25rem 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .q-title {
+    font-weight: 600;
+    margin: 0 0 0.9rem;
+    font-size: 1.02rem;
+  }
+  .q-number {
+    color: var(--accent);
+    margin-right: 0.35rem;
+  }
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .option:hover {
+    background: var(--option-hover);
+  }
+  .option input {
+    margin-top: 0.2rem;
+    flex-shrink: 0;
+  }
+  .option label {
+    cursor: pointer;
+  }
+  .option.correct-answer {
+    background: var(--correct-bg);
+    border-color: var(--correct-border);
+  }
+  .option.incorrect-answer {
+    background: var(--incorrect-bg);
+    border-color: var(--incorrect-border);
+  }
+  .explanation {
+    display: none;
+    margin-top: 0.85rem;
+    padding: 0.75rem 0.9rem;
+    border-left: 3px solid var(--accent);
+    background: var(--option-hover);
+    border-radius: 0 8px 8px 0;
+    font-size: 0.92rem;
+    color: var(--text);
+  }
+  .explanation.show {
+    display: block;
+  }
+  .explanation .verdict {
+    font-weight: 700;
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+  .verdict.correct-text { color: var(--correct-border); }
+  .verdict.incorrect-text { color: var(--incorrect-border); }
+  .controls {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  button {
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.7rem 1.6rem;
+    border-radius: 8px;
+    border: 1px solid var(--accent);
+    cursor: pointer;
+    background: var(--accent);
+    color: var(--accent-contrast);
+  }
+  button.secondary {
+    background: transparent;
+    color: var(--accent);
+  }
+  button:hover {
+    filter: brightness(1.08);
+  }
+  #final-summary {
+    display: none;
+    text-align: center;
+    font-weight: 600;
+    margin-top: 1rem;
+    padding: 0.9rem;
+    border-radius: 10px;
+    background: var(--score-bg);
+    border: 1px solid var(--border);
+  }
+  #final-summary.show { display: block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Momentum Quiz — Most Commonly Missed Questions</h1>
+    <p class="subtitle">14 questions targeting the classic momentum misconceptions. Select an answer for each question, then check your results.</p>
+  </header>
+
+  <div id="score-panel">
+    <span>Score: <span class="score-value"><span id="score-current">0</span> / <span id="score-total">0</span></span></span>
+    <span id="answered-count">0 of 14 answered</span>
+  </div>
+
+  <form id="quiz-form">
+
+    <div class="question" data-qid="1" data-correct="c">
+      <p class="q-title"><span class="q-number">1.</span> A 0.5 kg ball moves at 4 m/s. Which statement correctly compares its momentum and kinetic energy?</p>
+      <div class="options">
+        <div class="option"><input type="radio" name="q1" id="q1a" value="a"><label for="q1a">Momentum and kinetic energy are the same quantity, just different names.</label></div>
+        <div class="option"><input type="radio" name="q1" id="q1b" value="b"><label for="q1b">Momentum is measured in Joules, like kinetic energy.</label></div>
+        <div class="option"><input type="radio" name="q1" id="q1c" value="c"><label for="q1c">Momentum (p = mv = 2 kg·m/s) and kinetic energy (KE = ½mv² = 4 J) are different quantities with different units.</label></div>
+        <div class="option"><input type="radio" name="q1" id="q1d" value="d"><label for="q1d">Kinetic energy is a vector while momentum is a scalar.</label></div>
+      </div>
+      <div class="explanation">
+        <span class="verdict"></span>
+        Momentum (p = mv) and kinetic energy (KE = ½mv²) are two distinct physical quantities. Momentum is a vector measured in kg·m/s; kinetic energy is a scalar measured in Joules. They are related but not interchangeable, and it is a common misconception to treat them as the same thing.
+      </div>
+    </div>
+
+    <div class="question" data-qid="2" data-correct="b">
+      <p class="q-title"><span class="q-number">2.</span> In a collision inside an isolated system, which quantity is ALWAYS conserved, regardless of whether the collision is elastic or inelastic?</p>
+      <div class="options">
+        <div class="option"><input type="radio" name="q2" id="q2a" value="a"><label for="q2a">Kinetic energy</label></div>
+        <div class="option"><input type="radio" name="q2" id="q2b" value="b"><label for="q2b">Momentum</label></div>
+        <div class="option"><input type="radio" name="q2" id="q2c" value="c"><label for="q2c">Both kinetic energy and momentum, always</label></div>
+        <div class="option"><input type="radio" name="q2" id="q2d" value="d"><label for="q2d">Neither — both can change freely</label></div>
+      </div>
+      <div class="explanation">
+        <span class="verdict"></span>
+        Momentum is conserved in ALL collisions within an isolated system — elastic, inelastic, and perfectly inelastic. Kinetic energy is conserved only in elastic collisions. This is one of the most important distinctions in the momentum unit.
+      </div>
+    </div>
+
+    <div class="question" data-qid="3" data-correct="b">
+      <p class="q-title"><span class="q-number">3.</span> Car A (1000 kg) moves east at 10 m/s. Car B (1000 kg) moves west at 10 m/s. What is the total momentum of the two-car system?</p>
+      <div class="options">
+        <div class="option"><input type="radio" name="q3" id="q3a" value="a"><label for="q3a">20,000 kg·m/s east</label></div>
+        <div class="option"><input type="radio" name="q3" id="q3b" value="b"><label for="q3b">0 kg·m/s</label></div>
+        <div class="option"><input type="radio" name="q3" id="q3c" value="c"><label for="q3c">20,000 kg·m/s west</label></div>
+        <div class="option"><input type="radio" name="q3" id="q3d" value="d"><label for="q3d">10,000 kg·m/s east</label></div>
+      </div>
+      <div class="explanation">
+        <span class="verdict"></span>
+        Momentum is a vector, so direction (sign) matters. If east is positive: p_A = (1000)(+10) = +10,000 kg·m/s, and p_B = (1000)(−10) = −10,000 kg·m/s. Total = +10,000 + (−10,000) = 0 kg·m/s. Two objects moving toward each other have momenta of opposite sign, which can partially or fully cancel.
+      </div>
+    </div>
+
+    <div class="question" data-qid="4" data-correct="d">
+      <p class="q-title"><span class="q-number">4.</span> A hockey puck slides across ice and slowly comes to a stop due to friction with the ice surface. Is momentum conserved for the puck alone during this process?</p>
+      <div class="options">
+        <div class="option"><input type="radio" name="q4" id="q4a" value="a"><label for="q4a">Yes, momentum is always conserved for any object.</label></div>
+        <div class="option"><input type="radio" name="q4" id="q4b" value="b"><label for="q4b">Yes, because friction is an internal force.</label></div>
+        <div class="option"><input type="radio" name="q4" id="q4c" value="c"><label for="q4c">No, because the puck is not a system.</label></div>
+        <div class="option"><input type="radio" name="q4" id="q4d" value="d"><label for="q4d">No — friction from the ice is an external force on the puck, so the puck's momentum alone is not conserved.</label></div>
+      </div>
+      <div class="explanation">
+        <span class="verdict"></span>
+        Momentum conservation applies to an isolated system experiencing no net external force. The puck alone is not isolated — friction from the ice (part of the "outside world," not part of the puck-only system) is an external force that removes momentum from the puck over time. To use conservation of momentum validly, you must define a system where all significant forces are internal (or friction is negligible over the interaction).
+      </div>
+    </div>
+
+    <div class="question" data-qid="5" data-correct="c">
+      <p class="q-title"><span class="q-number">5.</span> Two lumps of clay collide head-on and stick together, moving off as one combined mass. This is an example of:</p>
+      <div class="options">
+        <div class="option"><input type="radio" name="q5" id="q5a" value="a"><label for="q5a">An elastic collision, because momentum is conserved.</label></div>
+        <div class="option"><input type="radio" name="q5" id="q5b" value="b"><label for="q5b">A collision where nothing is conserved.</label></div>
+        <div class="option"><input type="radio" name="q5" id="q5c" value="c"><label for="q5c">A perfectly inelastic collision — momentum is conserved, but kinetic energy is not.</label></div>
+        <div class="option"><input type="radio" name="q5" id="q5d" value="d"><label for="q5d">A perfectly inelastic collision where both momentum and kinetic energy are conserved.</label></div>
+      </div>
+      <div class="explanation">
+        <span class="verdict"></span>
+        When objects stick together and move with one common final velocity, the collision is perfectly inelastic. Momentum is still conserved (it always is for an isolated system), but kinetic energy is NOT conserved — a significant amount converts to heat, sound, and deformation of the clay. Perfectly inelastic collisions lose the maximum possible kinetic energy allowed by momentum conservation.
+      </div>
+    </div>
+
+    <div class="question" data-qid="6" data-correct="a">
+      <p class="q-title"><span class="q-number">6.</span> In a perfectly elastic collision between two billiard balls, which statement is true?</p>
+      <div class="options">
+        <div class="option"><input type="radio" name="q6" id="q6a" value="a"><label for="q6a">Both total momentum and total kinetic energy are conserved.</label></div>
+        <div class="option"><input type="radio" name="q6" id="q6b" value="b"><label for="q6b">Only momentum is conserved; kinetic energy is lost as heat.</label></div>
+        <div class="option"><input type="radio" name="q6" id="q6c" value="c"><label for="q6c">Only kinetic energy is conserved; momentum can change.</label></div>
+        <div class="option"><input type="radio" name="q6" id="q6d" value="d"><label for="q6d">Neither momentum nor kinetic energy is conserved.</label></div>
+      </div>
+      <div class="explanation">
+        <span class="verdict"></span>
+        Elastic collisions are defined as collisions in which BOTH total momentum and total kinetic energy are conserved. This is what distinguishes them from inelastic collisions, where momentum is still conserved but some kinetic energy is lost to other energy forms.
+      </div>
+    </div>
+
+    <div class="question" data-qid="7" data-correct="d">
+      <p class="q-title"><span class="q-number">7.</span> Object X has mass 20 kg and speed 1 m/s. Object Y has mass 0.1 kg and speed 300 m/s. Which has more momentum?</p>
+      <div class="options">
+        <div class="option"><input type="radio" name="q7" id="q7a" value="a"><label for="q7a">Object X, because it has much more mass.</label></div>
+        <div class="option"><input type="radio" name="q7" id="q7b" value="b"><label for="q7b">They must be equal, since momentum only depends on mass.</label></div>
+        <div class="option"><input type="radio" name="q7" id="q7c" value="c"><label for="q7c">Cannot be determined without more information.</label></div>
+        <div class="option"><input type="radio" name="q7" id="q7d" value="d"><label for="q7d">Object Y, because p_X = 20 kg·m/s while p_Y = 30 kg·m/s.</label></div>
+      </div>
+      <div class="explanation">
+        <span class="verdict"></span>
+        p = mv, so mass and velocity both matter equally. p_X = (20)(1) = 20 kg·m/s. p_Y = (0.1)(300) = 30 kg·m/s. Even though Object Y is far less massive, its much higher velocity gives it more momentum. Larger mass does not automatically mean larger momentum — always calculate both.
+      </div>
+    </div>
+
+    <div class="question" data-qid="8" data-correct="b">
+      <p class="q-title"><span class="q-number">8.</span> A car's airbag increases the time over which a passenger's momentum changes to zero during a crash. According to the impulse-momentum theorem, what effect does this have?</p>
+      <div class="options">
+        <div class="option"><input type="radio" name="q8" id="q8a" value="a"><label for="q8a">It increases the impulse delivered to the passenger.</label></div>
+        <div class="option"><input type="radio" name="q8" id="q8b" value="b"><label for="q8b">It reduces the average force on the passenger, since the same Δp is spread over a longer Δt.</label></div>
+        <div class="option"><input type="radio" name="q8" id="q8c" value="c"><label for="q8c">It has no effect on the force experienced.</label></div>
+        <div class="option"><input type="radio" name="q8" id="q8d" value="d"><label for="q8d">It changes the passenger's total change in momentum.</label></div>
+      </div>
+      <div class="explanation">
+        <span class="verdict"></span>
+        J = FΔt = Δp. The passenger's change in momentum (Δp) during the crash is fixed by their mass and change in velocity — the airbag doesn't change that. But by increasing the time (Δt) over which that Δp occurs, the airbag reduces the average force (F) needed, since F = Δp/Δt. This is the same principle behind crumple zones: a small force over a long time can produce the same impulse as a large force over a short time.
+      </div>
+    </div>
+
+    <div class="question" data-qid="9" data-correct="c">
+      <p class="q-title"><span class="q-number">9.</span> A 2 kg cart moving at +3 m/s collides and sticks with a 4 kg cart moving at −1 m/s (opposite direction). What is their common final velocity?</p>
+      <div class="options">
+        <div class="option"><input type="radio" name="q9" id="q9a" value="a"><label for="q9a">+2 m/s</label></div>
+        <div class="option"><input type="radio" name="q9" id="q9b" value="b"><label for="q9b">+1 m/s</label></div>
+        <div class="option"><input type="radio" name="q9" id="q9c" value="c"><label for="q9c">+0.33 m/s</label></div>
+        <div class="option"><input type="radio" name="q9" id="q9d" value="d"><label for="q9d">−0.33 m/s</label></div>
+      </div>
+      <div class="explanation">
+        <span class="verdict"></span>
+        Total initial momentum = (2)(3) + (4)(−1) = 6 − 4 = 2 kg·m/s. For a perfectly inelastic collision, (m₁ + m₂)vf = 2, so vf = 2 / 6 ≈ 0.33 m/s. Note the negative sign on the second cart's velocity — forgetting it (using +1 instead of −1) is a very common error and gives a wrong answer of +1.67 m/s.
+      </div>
+    </div>
+
+    <div class="question" data-qid="10" data-correct="a">
+      <p class="q-title"><span class="q-number">10.</span> Which of the following best describes what happens to kinetic energy in a real (non-ideal) car crash where the cars crumple and come to rest tangled together?</p>
+      <div class="options">
+        <div class="option"><input type="radio" name="q10" id="q10a" value="a"><label for="q10a">Much of the kinetic energy converts to heat, sound, and deformation of the metal, even though total momentum of the system is conserved.</label></div>
+        <div class="option"><input type="radio" name="q10" id="q10b" value="b"><label for="q10b">Kinetic energy is conserved along with momentum, since energy can never change form.</label></div>
+        <div class="option"><input type="radio" name="q10" id="q10c" value="c"><label for="q10c">Momentum is lost, but kinetic energy is fully conserved.</label></div>
+        <div class="option"><input type="radio" name="q10" id="q10d" value="d"><label for="q10d">Neither momentum nor energy exists after a crash.</label></div>
+      </div>
+      <div class="explanation">
+        <span class="verdict"></span>
+        This is a perfectly inelastic (or strongly inelastic) collision: momentum of the isolated system is conserved, but kinetic energy is not — it converts into heat, sound, and permanent deformation of the vehicles. Energy overall is still conserved (first law of thermodynamics), just not kinetic energy specifically.
+      </div>
+    </div>
+
+    <div class="question" data-qid="11" data-correct="c">
+      <p class="q-title"><span class="q-number">11.</span> Two ice skaters, initially at rest and facing each other, push off from one another. Which statement correctly applies conservation of momentum?</p>
+      <div class="options">
+        <div class="option"><input type="radio" name="q11" id="q11a" value="a"><label for="q11a">Momentum cannot be conserved because they started at rest.</label></div>
+        <div class="option"><input type="radio" name="q11" id="q11b" value="b"><label for="q11b">Both skaters must end up with the same speed and same direction.</label></div>
+        <div class="option"><input type="radio" name="q11" id="q11c" value="c"><label for="q11c">Total momentum stays zero — the skaters move apart with equal and opposite momenta.</label></div>
+        <div class="option"><input type="radio" name="q11" id="q11d" value="d"><label for="q11d">Only kinetic energy conservation determines their resulting velocities.</label></div>
+      </div>
+      <div class="explanation">
+        <span class="verdict"></span>
+        Initial total momentum is zero (both at rest). Since the ice is assumed frictionless (isolated system), total momentum after the push-off must still be zero: m₁v₁f + m₂v₂f = 0, so the two skaters move apart with momenta equal in magnitude but opposite in sign/direction. If they have different masses, they will have different speeds (the lighter skater moves faster), but their momenta remain equal and opposite.
+      </div>
+    </div>
+
+    <div class="question" data-qid="12" data-correct="b">
+      <p class="q-title"><span class="q-number">12.</span> A student sets up a 1D collision problem but forgets to assign a negative sign to an object moving in the "negative" direction. What is the most likely consequence?</p>
+      <div class="options">
+        <div class="option"><input type="radio" name="q12" id="q12a" value="a"><label for="q12a">No consequence — signs don't affect the answer in momentum problems.</label></div>
+        <div class="option"><input type="radio" name="q12" id="q12b" value="b"><label for="q12b">The calculated total momentum (and any resulting final velocity) will be incorrect.</label></div>
+        <div class="option"><input type="radio" name="q12" id="q12c" value="c"><label for="q12c">Only the kinetic energy calculation would be affected, not momentum.</label></div>
+        <div class="option"><input type="radio" name="q12" id="q12d" value="d"><label for="q12d">The units of momentum would change.</label></div>
+      </div>
+      <div class="explanation">
+        <span class="verdict"></span>
+        Because momentum is a vector, every velocity must carry the correct sign relative to the chosen positive direction. Dropping or misassigning a sign changes the computed total momentum (a magnitude-only sum instead of a signed vector sum), which propagates into any solved final velocity — this is one of the most common errors in 1D collision problems.
+      </div>
+    </div>
+
+    <div class="question" data-qid="13" data-correct="d">
+      <p class="q-title"><span class="q-number">13.</span> A net force of 50 N acts on an object for 0.2 seconds. What is the impulse delivered, and what does it equal?</p>
+      <div class="options">
+        <div class="option"><input type="radio" name="q13" id="q13a" value="a"><label for="q13a">250 N, equal to the object's final velocity</label></div>
+        <div class="option"><input type="radio" name="q13" id="q13b" value="b"><label for="q13b">10 N, equal to the object's kinetic energy</label></div>
+        <div class="option"><input type="radio" name="q13" id="q13c" value="c"><label for="q13c">0.004 kg·m/s, equal to the object's mass</label></div>
+        <div class="option"><input type="radio" name="q13" id="q13d" value="d"><label for="q13d">10 kg·m/s (or N·s), equal to the object's change in momentum</label></div>
+      </div>
+      <div class="explanation">
+        <span class="verdict"></span>
+        J = FΔt = (50 N)(0.2 s) = 10 N·s = 10 kg·m/s. By the impulse-momentum theorem, this impulse equals the object's change in momentum, Δp — not its velocity, kinetic energy, or mass directly.
+      </div>
+    </div>
+
+    <div class="question" data-qid="14" data-correct="c">
+      <p class="q-title"><span class="q-number">14.</span> Which pair of statements correctly separates momentum from kinetic energy?</p>
+      <div class="options">
+        <div class="option"><input type="radio" name="q14" id="q14a" value="a"><label for="q14a">Momentum depends on v²; kinetic energy depends on v.</label></div>
+        <div class="option"><input type="radio" name="q14" id="q14b" value="b"><label for="q14b">Momentum is a scalar always conserved; kinetic energy is a vector sometimes conserved.</label></div>
+        <div class="option"><input type="radio" name="q14" id="q14c" value="c"><label for="q14c">Momentum (p = mv) is a vector conserved in all isolated-system collisions; kinetic energy (KE = ½mv²) is a scalar conserved only in elastic collisions.</label></div>
+        <div class="option"><input type="radio" name="q14" id="q14d" value="d"><label for="q14d">Momentum and kinetic energy are always equal in magnitude for the same object.</label></div>
+      </div>
+      <div class="explanation">
+        <span class="verdict"></span>
+        Momentum (p = mv) is a vector, scales linearly with velocity, and is conserved in every collision within an isolated system. Kinetic energy (KE = ½mv²) is a scalar, scales with velocity squared, and is conserved only in elastic collisions. Confusing these two quantities is one of the most persistent misconceptions in this unit.
+      </div>
+    </div>
+
+  </form>
+
+  <div class="controls">
+    <button type="button" id="check-btn">Check Answers</button>
+    <button type="button" id="retake-btn" class="secondary">Retake Quiz</button>
+  </div>
+
+  <div id="final-summary"></div>
+</div>
+
+<script>
+(function () {
+  var TOTAL = 14;
+  document.getElementById('score-total').textContent = TOTAL;
+
+  var form = document.getElementById('quiz-form');
+  var checkBtn = document.getElementById('check-btn');
+  var retakeBtn = document.getElementById('retake-btn');
+  var scoreCurrentEl = document.getElementById('score-current');
+  var answeredCountEl = document.getElementById('answered-count');
+  var finalSummary = document.getElementById('final-summary');
+
+  function countAnswered() {
+    var count = 0;
+    var questions = document.querySelectorAll('.question');
+    questions.forEach(function (q) {
+      var name = q.querySelectorAll('input[type=radio]')[0].name;
+      if (form.querySelector('input[name="' + name + '"]:checked')) {
+        count++;
+      }
+    });
+    return count;
+  }
+
+  function updateAnsweredCount() {
+    var answered = countAnswered();
+    answeredCountEl.textContent = answered + ' of ' + TOTAL + ' answered';
+  }
+
+  form.addEventListener('change', updateAnsweredCount);
+
+  checkBtn.addEventListener('click', function () {
+    var questions = document.querySelectorAll('.question');
+    var score = 0;
+
+    questions.forEach(function (q) {
+      var correct = q.getAttribute('data-correct');
+      var radios = q.querySelectorAll('input[type=radio]');
+      var name = radios[0].name;
+      var selected = form.querySelector('input[name="' + name + '"]:checked');
+      var explanation = q.querySelector('.explanation');
+      var verdictEl = explanation.querySelector('.verdict');
+
+      // reset option highlighting
+      q.querySelectorAll('.option').forEach(function (opt) {
+        opt.classList.remove('correct-answer', 'incorrect-answer');
+      });
+
+      // always reveal the correct option
+      var correctInput = q.querySelector('input[value="' + correct + '"]');
+      var correctOption = correctInput.closest('.option');
+      correctOption.classList.add('correct-answer');
+
+      if (selected) {
+        var isCorrect = selected.value === correct;
+        if (isCorrect) {
+          score++;
+          verdictEl.textContent = 'Correct!';
+          verdictEl.className = 'verdict correct-text';
+        } else {
+          var selectedOption = selected.closest('.option');
+          selectedOption.classList.add('incorrect-answer');
+          verdictEl.textContent = 'Not quite.';
+          verdictEl.className = 'verdict incorrect-text';
+        }
+      } else {
+        verdictEl.textContent = 'Not answered — here is the correct answer:';
+        verdictEl.className = 'verdict incorrect-text';
+      }
+
+      explanation.classList.add('show');
+    });
+
+    scoreCurrentEl.textContent = score;
+    updateAnsweredCount();
+
+    var pct = Math.round((score / TOTAL) * 100);
+    finalSummary.textContent = 'You scored ' + score + ' / ' + TOTAL + ' (' + pct + '%).';
+    finalSummary.classList.add('show');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  retakeBtn.addEventListener('click', function () {
+    form.reset();
+    document.querySelectorAll('.option').forEach(function (opt) {
+      opt.classList.remove('correct-answer', 'incorrect-answer');
+    });
+    document.querySelectorAll('.explanation').forEach(function (ex) {
+      ex.classList.remove('show');
+    });
+    scoreCurrentEl.textContent = '0';
+    updateAnsweredCount();
+    finalSummary.classList.remove('show');
+    finalSummary.textContent = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  updateAnsweredCount();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kinematics Quiz — Most Commonly Missed Questions</title>
+<style>
+  :root {
+    --bg: #f2f1ec;
+    --surface: #ffffff;
+    --text: #2b2b2b;
+    --muted: #5a5a5a;
+    --border: #d8d5cc;
+    --accent: #3a5a7d;
+    --accent-text: #ffffff;
+    --correct-bg: #dcefdc;
+    --correct-border: #4c8c4a;
+    --incorrect-bg: #f6dcdc;
+    --incorrect-border: #b95555;
+    --neutral-badge: #e6e3d8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #23262b;
+      --surface: #2d3138;
+      --text: #e7e5df;
+      --muted: #b0aea6;
+      --border: #454a52;
+      --accent: #7fa8d9;
+      --accent-text: #17191c;
+      --correct-bg: #24382a;
+      --correct-border: #5aa15a;
+      --incorrect-bg: #3d2626;
+      --incorrect-border: #b96a6a;
+      --neutral-badge: #3a3e45;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Georgia, 'Times New Roman', serif;
+    line-height: 1.5;
+  }
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+  }
+  header h1 {
+    font-size: 1.6rem;
+    margin: 0 0 0.35rem;
+    color: var(--text);
+  }
+  header p.sub {
+    margin: 0 0 1.75rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  .question {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.1rem 1.25rem 1.25rem;
+    margin-bottom: 1.1rem;
+  }
+  .question .qhead {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+  }
+  .question .qnum {
+    font-weight: bold;
+    font-size: 1.02rem;
+  }
+  .badge {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.75rem;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    background: var(--neutral-badge);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .badge.correct { background: var(--correct-bg); color: var(--correct-border); border: 1px solid var(--correct-border); }
+  .badge.incorrect { background: var(--incorrect-bg); color: var(--incorrect-border); border: 1px solid var(--incorrect-border); }
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    padding: 0.5rem 0.65rem;
+    border-radius: 7px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-size: 0.98rem;
+  }
+  .option:hover {
+    background: var(--neutral-badge);
+  }
+  .option input {
+    margin-top: 0.28rem;
+    flex-shrink: 0;
+  }
+  .option.correct-answer {
+    background: var(--correct-bg);
+    border-color: var(--correct-border);
+  }
+  .option.wrong-answer {
+    background: var(--incorrect-bg);
+    border-color: var(--incorrect-border);
+  }
+  .explanation {
+    margin-top: 0.75rem;
+    padding: 0.65rem 0.8rem;
+    border-left: 3px solid var(--accent);
+    background: var(--neutral-badge);
+    border-radius: 0 6px 6px 0;
+    font-size: 0.92rem;
+    color: var(--text);
+    display: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .explanation.show { display: block; }
+  .controls {
+    position: sticky;
+    bottom: 0;
+    background: var(--bg);
+    padding: 1rem 0 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--border);
+    margin-top: 1rem;
+  }
+  button {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.98rem;
+    padding: 0.6rem 1.3rem;
+    border-radius: 7px;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: var(--accent-text);
+    cursor: pointer;
+    font-weight: 600;
+  }
+  button.secondary {
+    background: transparent;
+    color: var(--text);
+    border-color: var(--border);
+  }
+  button:hover { filter: brightness(1.08); }
+  #score {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--text);
+  }
+  #unanswered-note {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Kinematics Quiz — Most Commonly Missed Questions</h1>
+    <p class="sub">15 multiple-choice questions targeting the misconceptions 11th graders most often get wrong. Select one answer per question, then click "Check Answers" below.</p>
+  </header>
+
+  <div id="quiz"></div>
+
+  <div class="controls">
+    <button id="checkBtn">Check Answers</button>
+    <button id="retakeBtn" class="secondary">Retake Quiz</button>
+    <span id="score"></span>
+    <span id="unanswered-note"></span>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "A jogger runs 8 meters east, then turns around and runs 3 meters back west. What is the jogger's total distance traveled and displacement?",
+    options: [
+      "Distance = 5 m, Displacement = 5 m east",
+      "Distance = 11 m, Displacement = 5 m east",
+      "Distance = 11 m, Displacement = 11 m east",
+      "Distance = 5 m, Displacement = 11 m east"
+    ],
+    correct: 1,
+    explanation: "Distance is the total path length traveled: 8 m + 3 m = 11 m. Displacement is only the net change in position (final minus initial): 8 m east − 3 m east = 5 m east. Doubling back adds to distance but subtracts from the net displacement — the two are not the same quantity."
+  },
+  {
+    q: "A ball is thrown straight up into the air. At the exact instant it reaches the top of its path, which statement is true?",
+    options: [
+      "Both velocity and acceleration are zero",
+      "Velocity is zero, and acceleration is zero too because the ball isn't moving",
+      "Velocity is zero, but acceleration is still 9.8 m/s² downward",
+      "Velocity is at its maximum, and acceleration is zero"
+    ],
+    correct: 2,
+    explanation: "Velocity is momentarily zero at the peak because the ball has stopped moving up and hasn't started moving down yet. But gravity never stops acting — acceleration remains 9.8 m/s² downward the entire flight, including at the very top. Zero velocity does not mean zero acceleration."
+  },
+  {
+    q: "A car is traveling in the negative direction (velocity is negative) and its acceleration is also negative. What is happening to the car's speed?",
+    options: [
+      "The car is slowing down, because negative acceleration always means slowing down",
+      "The car is speeding up, because velocity and acceleration point the same way",
+      "The car's speed is constant",
+      "Not enough information to know"
+    ],
+    correct: 1,
+    explanation: "Negative acceleration does not automatically mean 'slowing down' — that depends on whether it points the same way as the velocity or the opposite way. Here velocity is negative and acceleration is negative, so they point in the same direction, meaning the car is speeding up (getting more negative velocity, i.e., moving faster in the negative direction)."
+  },
+  {
+    q: "On a position-time graph, what does the slope of the line at any point represent?",
+    options: [
+      "Acceleration at that point",
+      "Displacement at that point",
+      "Velocity at that point",
+      "Distance traveled up to that point"
+    ],
+    correct: 2,
+    explanation: "The slope of a position-time graph is the rate of change of position with respect to time, which is velocity by definition. A steeper slope means greater speed; a flat (zero) slope means the object is momentarily at rest."
+  },
+  {
+    q: "On a velocity-time graph, what does the slope of the line represent?",
+    options: [
+      "Velocity",
+      "Displacement",
+      "Distance",
+      "Acceleration"
+    ],
+    correct: 3,
+    explanation: "Slope on a velocity-time graph is the rate of change of velocity with respect to time — that is the definition of acceleration. Don't confuse this with the position-time graph, where slope gives velocity instead."
+  },
+  {
+    q: "On a velocity-time graph, what does the area between the line and the time axis represent?",
+    options: [
+      "Acceleration",
+      "Displacement",
+      "Average speed only",
+      "Position at t = 0"
+    ],
+    correct: 1,
+    explanation: "The area under a velocity-time curve represents displacement, since velocity × time gives a change in position. Area above the axis (positive velocity) counts as positive displacement; area below the axis (negative velocity) counts as negative displacement and must be subtracted, not added."
+  },
+  {
+    q: "A 2 kg bowling ball and a 0.5 kg tennis ball are dropped from the same height at the same time, with air resistance ignored. Which hits the ground first?",
+    options: [
+      "The bowling ball, because it's heavier and falls faster",
+      "The tennis ball, because it's lighter",
+      "They hit at the same time — mass does not affect the acceleration due to gravity",
+      "It depends on their sizes, not their masses"
+    ],
+    correct: 2,
+    explanation: "In free fall with no air resistance, all objects accelerate downward at the same rate, g = 9.8 m/s², regardless of mass. A common misconception (traced back to everyday experience with air resistance) is that heavier objects fall faster — in a vacuum or when air resistance is negligible, they don't."
+  },
+  {
+    q: "A cyclist starts with an initial velocity v₀, accelerates at a constant rate a for a time t, and you are asked to find the displacement Δx. You are NOT given the final velocity. Which kinematic equation should you use?",
+    options: [
+      "v = v₀ + at",
+      "Δx = v₀t + ½at²",
+      "v² = v₀² + 2aΔx",
+      "Δx = ½(v₀ + v)t"
+    ],
+    correct: 1,
+    explanation: "You know v₀, a, and t, and you want Δx — final velocity v is unknown and not needed. The equation Δx = v₀t + ½at² is exactly the one that relates v₀, a, t, and Δx without requiring v, so it's the correct choice."
+  },
+  {
+    q: "You know an object's initial velocity v₀, final velocity v, and displacement Δx, but you do NOT know the time t. Which equation lets you solve for acceleration directly?",
+    options: [
+      "v = v₀ + at",
+      "Δx = v₀t + ½at²",
+      "v² = v₀² + 2aΔx",
+      "Δx = ½(v₀ + v)t"
+    ],
+    correct: 2,
+    explanation: "v² = v₀² + 2aΔx is the only one of the four standard kinematic equations that does not contain time at all, so it's the right tool when t is unknown and you have v₀, v, and Δx."
+  },
+  {
+    q: "A runner completes one full lap around a 400 m track in 80 seconds, ending up back at the starting point. What are her average speed and average velocity?",
+    options: [
+      "Average speed = 5 m/s, Average velocity = 5 m/s",
+      "Average speed = 5 m/s, Average velocity = 0 m/s",
+      "Average speed = 0 m/s, Average velocity = 0 m/s",
+      "Average speed = 0 m/s, Average velocity = 5 m/s"
+    ],
+    correct: 1,
+    explanation: "Average speed uses total distance (400 m) divided by time (80 s) = 5 m/s. Average velocity uses displacement, and since she ends up exactly where she started, her displacement is 0 m, making average velocity 0 m/s. Whenever a path reverses or loops back to the start, average speed and average velocity can differ dramatically."
+  },
+  {
+    q: "In a free-fall problem, a student defines 'up' as the positive direction. A ball is thrown upward with an initial velocity of +15 m/s. What sign should be used for the acceleration due to gravity in this problem?",
+    options: [
+      "Positive, because gravity always uses +9.8 m/s²",
+      "Negative, because gravity acts downward, opposite to the chosen positive direction",
+      "The sign doesn't matter as long as the magnitude 9.8 is used",
+      "Positive while going up, then negative while coming down"
+    ],
+    correct: 1,
+    explanation: "Once a positive direction is chosen ('up' here), every vector quantity — including g — must use a sign consistent with that choice for the entire problem. Since gravity pulls downward, opposite to 'up', it must be entered as −9.8 m/s² throughout the motion, both on the way up and on the way down. Sign conventions cannot switch partway through a problem."
+  },
+  {
+    q: "A position-time graph shows a straight, upward-sloping line for the first 4 seconds, then a horizontal (flat) line for the next 3 seconds. What is happening to the object during the flat portion?",
+    options: [
+      "It is accelerating rapidly",
+      "It is moving at constant, nonzero velocity",
+      "It is at rest (velocity = 0)",
+      "It has reversed direction"
+    ],
+    correct: 2,
+    explanation: "A flat (zero-slope) segment on a position-time graph means position isn't changing, so velocity is zero — the object is at rest during that interval. Students sometimes mistake 'flat line' for 'constant speed,' but constant nonzero speed would appear as a straight line with a nonzero (constant) slope, not a horizontal one."
+  },
+  {
+    q: "A velocity-time graph shows the line staying below the time axis (negative velocity) for the first 5 seconds. What does the area of that region below the axis represent?",
+    options: [
+      "A positive displacement in the chosen positive direction",
+      "A negative displacement — motion in the negative direction",
+      "Speed, not displacement",
+      "It should be ignored when calculating total displacement"
+    ],
+    correct: 1,
+    explanation: "Area below the time axis on a velocity-time graph corresponds to negative velocity over that time, which contributes a negative displacement. When finding total displacement over an interval, area below the axis must be subtracted (not added and not ignored), unlike total distance, where all areas are added as positive."
+  },
+  {
+    q: "A rock is dropped (initial velocity = 0) from a cliff and takes 3.0 seconds to hit the ground. Using g = 9.8 m/s² and taking downward as positive, what is its velocity just before impact?",
+    options: [
+      "3.3 m/s",
+      "9.8 m/s",
+      "29.4 m/s",
+      "44.1 m/s"
+    ],
+    correct: 2,
+    explanation: "Using v = v₀ + at with v₀ = 0, a = 9.8 m/s², and t = 3.0 s: v = 0 + (9.8)(3.0) = 29.4 m/s. A common error is dividing instead of multiplying, or forgetting that v₀ = 0 for a dropped (not thrown) object."
+  },
+  {
+    q: "Two students both compute the 'change in velocity' for a car that slows from 20 m/s to 5 m/s over 5 seconds while moving in the positive direction. One says Δv = +15 m/s (a mistake), the other says Δv = −15 m/s. Which is correct, and why?",
+    options: [
+      "Δv = +15 m/s, because speed decreased so the change should be recorded as positive",
+      "Δv = −15 m/s, because Δv = v_final − v_initial = 5 − 20 = −15 m/s",
+      "Δv = 15 m/s with no sign needed, since velocity is always positive",
+      "Δv = −25 m/s, because you add the two velocities together"
+    ],
+    correct: 1,
+    explanation: "Change in velocity is always final minus initial: Δv = v − v₀ = 5 m/s − 20 m/s = −15 m/s. The negative sign correctly shows the velocity decreased. A frequent error is reporting the magnitude of the decrease as if it were positive, which loses the directional information that acceleration (Δv/Δt) depends on."
+  }
+];
+
+let checked = false;
+
+function buildQuiz() {
+  const container = document.getElementById('quiz');
+  container.innerHTML = '';
+  questions.forEach((item, qi) => {
+    const qDiv = document.createElement('div');
+    qDiv.className = 'question';
+    qDiv.id = 'q' + qi;
+
+    const head = document.createElement('div');
+    head.className = 'qhead';
+    const num = document.createElement('div');
+    num.className = 'qnum';
+    num.textContent = (qi + 1) + '. ' + item.q;
+    const badge = document.createElement('span');
+    badge.className = 'badge';
+    badge.id = 'badge' + qi;
+    badge.textContent = '';
+    head.appendChild(num);
+    head.appendChild(badge);
+    qDiv.appendChild(head);
+
+    const optsDiv = document.createElement('div');
+    optsDiv.className = 'options';
+    item.options.forEach((opt, oi) => {
+      const label = document.createElement('label');
+      label.className = 'option';
+      label.id = 'opt' + qi + '_' + oi;
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.name = 'q' + qi;
+      input.value = oi;
+      const span = document.createElement('span');
+      span.textContent = opt;
+      label.appendChild(input);
+      label.appendChild(span);
+      optsDiv.appendChild(label);
+    });
+    qDiv.appendChild(optsDiv);
+
+    const exp = document.createElement('div');
+    exp.className = 'explanation';
+    exp.id = 'exp' + qi;
+    exp.textContent = item.explanation;
+    qDiv.appendChild(exp);
+
+    container.appendChild(qDiv);
+  });
+}
+
+function checkAnswers() {
+  let score = 0;
+  let unanswered = 0;
+  questions.forEach((item, qi) => {
+    const selected = document.querySelector('input[name="q' + qi + '"]:checked');
+    const badge = document.getElementById('badge' + qi);
+    const exp = document.getElementById('exp' + qi);
+
+    // reset option styling
+    item.options.forEach((_, oi) => {
+      document.getElementById('opt' + qi + '_' + oi).classList.remove('correct-answer', 'wrong-answer');
+    });
+
+    // always reveal the correct option
+    document.getElementById('opt' + qi + '_' + item.correct).classList.add('correct-answer');
+
+    if (!selected) {
+      unanswered++;
+      badge.textContent = 'Not answered';
+      badge.className = 'badge';
+    } else {
+      const selIdx = parseInt(selected.value, 10);
+      if (selIdx === item.correct) {
+        score++;
+        badge.textContent = 'Correct';
+        badge.className = 'badge correct';
+      } else {
+        badge.textContent = 'Incorrect';
+        badge.className = 'badge incorrect';
+        document.getElementById('opt' + qi + '_' + selIdx).classList.add('wrong-answer');
+      }
+    }
+    exp.classList.add('show');
+  });
+
+  checked = true;
+  document.getElementById('score').textContent = 'Score: ' + score + '/' + questions.length;
+  document.getElementById('unanswered-note').textContent = unanswered > 0
+    ? (unanswered + ' question' + (unanswered > 1 ? 's' : '') + ' left unanswered')
+    : '';
+}
+
+function retakeQuiz() {
+  buildQuiz();
+  checked = false;
+  document.getElementById('score').textContent = '';
+  document.getElementById('unanswered-note').textContent = '';
+}
+
+document.getElementById('checkBtn').addEventListener('click', checkAnswers);
+document.getElementById('retakeBtn').addEventListener('click', retakeQuiz);
+
+buildQuiz();
+</script>
+</body>
+</html>

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projectile Motion Quiz — Most Commonly Missed Questions</title>
+<style>
+  :root {
+    --bg: #f4f5f7;
+    --panel-bg: #ffffff;
+    --text: #1f2430;
+    --muted: #5b6270;
+    --border: #d7dae0;
+    --accent: #3457d5;
+    --accent-text: #ffffff;
+    --correct-bg: #e4f6e8;
+    --correct-border: #3fa85a;
+    --correct-text: #1e6b34;
+    --incorrect-bg: #fdeaea;
+    --incorrect-border: #d64545;
+    --incorrect-text: #a02323;
+    --option-hover: #eef1fb;
+    --score-bg: #eef1fb;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1b1d24;
+      --panel-bg: #262933;
+      --text: #e7e9ee;
+      --muted: #a5abb9;
+      --border: #3a3f4d;
+      --accent: #7b93ff;
+      --accent-text: #14161c;
+      --correct-bg: #1c3524;
+      --correct-border: #4caf6a;
+      --correct-text: #8fe0a6;
+      --incorrect-bg: #3a2020;
+      --incorrect-border: #d9635f;
+      --incorrect-text: #f2a3a0;
+      --option-hover: #303647;
+      --score-bg: #2c3040;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+
+  .wrap {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+  }
+
+  header {
+    margin-bottom: 1.5rem;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    margin: 0 0 0.35rem;
+    line-height: 1.3;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 0.98rem;
+    margin: 0;
+  }
+
+  #score-banner {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--score-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    margin: 1.25rem 0;
+    font-weight: 600;
+    display: none;
+    text-align: center;
+  }
+
+  #score-banner.visible {
+    display: block;
+  }
+
+  .question-card {
+    background: var(--panel-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.1rem 1.25rem 1.25rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .q-number {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+
+  .q-text {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0 0 0.85rem;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.55rem 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .option:hover {
+    background: var(--option-hover);
+  }
+
+  .option input[type="radio"] {
+    margin-top: 0.2rem;
+    accent-color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .option label {
+    cursor: pointer;
+    font-size: 0.97rem;
+  }
+
+  .option.correct {
+    background: var(--correct-bg);
+    border-color: var(--correct-border);
+  }
+
+  .option.incorrect {
+    background: var(--incorrect-bg);
+    border-color: var(--incorrect-border);
+  }
+
+  .feedback {
+    display: none;
+    margin-top: 0.85rem;
+    padding: 0.7rem 0.85rem;
+    border-radius: 8px;
+    font-size: 0.93rem;
+    border: 1px solid var(--border);
+  }
+
+  .feedback.visible {
+    display: block;
+  }
+
+  .feedback.correct-fb {
+    background: var(--correct-bg);
+    border-color: var(--correct-border);
+    color: var(--correct-text);
+  }
+
+  .feedback.incorrect-fb {
+    background: var(--incorrect-bg);
+    border-color: var(--incorrect-border);
+    color: var(--incorrect-text);
+  }
+
+  .feedback strong {
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .controls {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  button {
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.7rem 1.4rem;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  #check-btn {
+    background: var(--accent);
+    color: var(--accent-text);
+  }
+
+  #check-btn:hover {
+    opacity: 0.92;
+  }
+
+  #retake-btn {
+    background: transparent;
+    color: var(--text);
+    border-color: var(--border);
+  }
+
+  #retake-btn:hover {
+    background: var(--option-hover);
+  }
+
+  .unanswered-note {
+    color: var(--incorrect-text);
+    font-size: 0.9rem;
+    margin-top: 0.75rem;
+    display: none;
+  }
+
+  .unanswered-note.visible {
+    display: block;
+  }
+
+  footer {
+    margin-top: 2rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Projectile Motion Quiz — Most Commonly Missed Questions</h1>
+    <p class="subtitle">15 multiple-choice questions targeting the misconceptions students run into most often. Select an answer for each question, then click "Check Answers" to see your score and explanations.</p>
+  </header>
+
+  <div id="score-banner"></div>
+
+  <form id="quiz-form"></form>
+
+  <div class="controls">
+    <button type="button" id="check-btn">Check Answers</button>
+    <button type="button" id="retake-btn">Retake Quiz</button>
+  </div>
+  <p class="unanswered-note" id="unanswered-note">Please answer every question before checking — unanswered questions are marked below.</p>
+
+  <footer>Assumes no air resistance and g = 9.8 m/s², downward, throughout.</footer>
+</div>
+
+<script>
+  const questions = [
+    {
+      text: "A ball is dropped from a window at the exact same instant a second identical ball is fired horizontally from the same window. Ignoring air resistance, which ball hits the ground first?",
+      options: [
+        "The dropped ball, because it has no horizontal motion to worry about",
+        "The horizontally fired ball, because it moves faster overall",
+        "They hit the ground at the same time",
+        "It depends on how fast the second ball was fired horizontally"
+      ],
+      correct: 2,
+      explanation: "Horizontal and vertical motions are independent. Both balls start with the same vertical velocity (zero) and accelerate downward at the same rate g, so their vertical motion — and therefore their fall time — is identical, regardless of horizontal speed."
+    },
+    {
+      text: "A projectile is launched at an angle above the horizontal. What happens to its horizontal velocity as it rises toward the peak of its trajectory (ignoring air resistance)?",
+      options: [
+        "It steadily decreases to zero at the peak",
+        "It stays constant throughout the entire flight",
+        "It increases as the projectile rises",
+        "It reverses direction at the peak"
+      ],
+      correct: 1,
+      explanation: "With no air resistance, there is no horizontal force acting on the projectile, so horizontal velocity never changes — it is the same at launch, at the peak, and at landing. Only vertical velocity changes due to gravity."
+    },
+    {
+      text: "At the exact peak (highest point) of a projectile's trajectory, which statement about its speed is correct?",
+      options: [
+        "Total speed is zero, since the object stops momentarily",
+        "Total speed equals the vertical velocity component, which is zero",
+        "Total speed equals the horizontal velocity component, which is nonzero",
+        "Total speed is at its maximum value for the entire flight"
+      ],
+      correct: 2,
+      explanation: "At the peak, vertical velocity is zero, but horizontal velocity is unchanged and nonzero (unless the launch was straight up). Total speed = the horizontal component, so the object is still moving — it is not momentarily at rest."
+    },
+    {
+      text: "What is the projectile's acceleration at the exact instant it reaches the peak of its trajectory?",
+      options: [
+        "Zero, because velocity is momentarily unchanging there",
+        "g, directed downward, same as at every other point in the flight",
+        "g, directed upward, since the projectile is about to fall",
+        "Zero horizontally and g downward vertically only at that instant"
+      ],
+      correct: 1,
+      explanation: "Acceleration due to gravity is constant in magnitude and direction (g, downward) throughout the entire flight, including the peak. Vertical velocity happens to equal zero at the peak, but that does not mean acceleration is zero — the object is still being pulled downward at that instant, which is exactly why it starts to fall."
+    },
+    {
+      text: "A ball is kicked off the edge of a cliff at an angle above the horizontal and lands on the ground far below. Which statement about using the range equation R = (v0^2 sin 2θ) / g is correct?",
+      options: [
+        "It works fine as long as you know the launch angle and speed",
+        "It cannot be used directly, because it assumes launch height equals landing height",
+        "It can be used if you double the result to account for the extra height",
+        "It only fails for launch angles above 45°"
+      ],
+      correct: 1,
+      explanation: "The shortcut range formula R = (v0^2 sin 2θ) / g is derived assuming the projectile lands at the same height it launched from. When launch height and landing height differ (like off a cliff), you must instead solve the general quadratic vertical displacement equation for the time of flight, then multiply by the horizontal velocity to get the range."
+    },
+    {
+      text: "If you double a projectile's launch speed while keeping the same launch angle and the same launch/landing height, what happens to its range?",
+      options: [
+        "The range doubles",
+        "The range quadruples (multiplies by 4)",
+        "The range increases by a factor of √2",
+        "The range stays the same, since angle determines range"
+      ],
+      correct: 1,
+      explanation: "Range depends on launch speed squared: R = (v0^2 sin 2θ) / g. Doubling v0 means v0^2 increases by a factor of 4, so the range quadruples, not doubles."
+    },
+    {
+      text: "A projectile is launched at 30° above the horizontal, and a second identical projectile is launched at 60°, both with the same initial speed on level ground. How do their ranges compare?",
+      options: [
+        "The 60° launch has a much greater range",
+        "The 30° launch has a much greater range",
+        "Both launches have the same range",
+        "The ranges can't be compared without knowing the launch speed"
+      ],
+      correct: 2,
+      explanation: "30° and 60° are complementary angles (they sum to 90°), and complementary angle pairs produce identical ranges on level ground because sin(2×30°) = sin(2×60°) = sin(60°) = sin(120°). However, they do not produce the same maximum height or time of flight — the 60° launch goes higher and stays airborne longer."
+    },
+    {
+      text: "For the same two complementary launch angles (30° and 60°) and the same launch speed on level ground, which statement about maximum height and time of flight is correct?",
+      options: [
+        "Both angles give the same max height and same time of flight, just like range",
+        "The 60° launch reaches a greater max height and has a longer time of flight than the 30° launch",
+        "The 30° launch reaches a greater max height and has a longer time of flight than the 60° launch",
+        "Max height is the same for both, but time of flight differs"
+      ],
+      correct: 1,
+      explanation: "Even though complementary angles share the same range, they are not equivalent trajectories. The steeper angle (60°) sends more of the initial speed into the vertical component, producing a greater maximum height and a longer time of flight than the shallower 30° launch."
+    },
+    {
+      text: "On level ground, ignoring air resistance, which launch angle maximizes the range of a projectile for a given launch speed?",
+      options: [
+        "30°",
+        "45°",
+        "60°",
+        "90°"
+      ],
+      correct: 1,
+      explanation: "Range is proportional to sin(2θ), which reaches its maximum value of 1 when 2θ = 90°, i.e., θ = 45°. This holds only when launch height equals landing height; launching from an elevated point shifts the optimal angle below 45°."
+    },
+    {
+      text: "A projectile is launched at angle θ with speed v0 and lands at the same height it was launched from. Which expression correctly gives the total time of flight?",
+      options: [
+        "t = v0 / g",
+        "t = (v0 sin θ)^2 / (2g)",
+        "t = (2 v0 sin θ) / g",
+        "t = (v0^2 sin 2θ) / g"
+      ],
+      correct: 2,
+      explanation: "Time of flight for equal launch and landing heights is t = 2 v0y / g = (2 v0 sin θ) / g. This comes from the fact that, by symmetry, the time to rise to the peak equals the time to fall back down, and each takes v0y / g."
+    },
+    {
+      text: "A ball rolls off a horizontal tabletop with speed v0 (purely horizontal, θ = 0°) and falls a height h to the floor. How does the time it takes to hit the floor compare to a ball simply dropped straight down from the same height h at the same instant?",
+      options: [
+        "The rolling ball lands first, because it has extra kinetic energy",
+        "The dropped ball lands first, because it has no horizontal distance to cover",
+        "Both balls land at exactly the same time",
+        "It depends on the value of v0"
+      ],
+      correct: 2,
+      explanation: "Since the tabletop launch is purely horizontal, its initial vertical velocity is zero — identical to the dropped ball. Vertical motion (and therefore fall time) depends only on the vertical component of initial velocity and g, not on horizontal speed, so t = √(2h/g) for both."
+    },
+    {
+      text: "A projectile is launched at angle θ with initial speed v0 on level ground. What is the correct formula for its maximum height above the launch point?",
+      options: [
+        "h_max = v0^2 / (2g)",
+        "h_max = (v0 sin θ)^2 / (2g)",
+        "h_max = (v0 cos θ)^2 / (2g)",
+        "h_max = (2 v0 sin θ) / g"
+      ],
+      correct: 1,
+      explanation: "Maximum height depends only on the vertical velocity component: h_max = v0y^2 / (2g) = (v0 sin θ)^2 / (2g). A common error is using the full speed v0 instead of just its vertical component v0 sin θ."
+    },
+    {
+      text: "A projectile launched on level ground lands at the same elevation from which it was launched. How does its landing speed compare to its launch speed?",
+      options: [
+        "Landing speed is always greater, since gravity has been accelerating it",
+        "Landing speed is always less, since some energy is lost to reaching the peak",
+        "Landing speed equals launch speed, and the landing angle below horizontal equals the launch angle above horizontal",
+        "Landing speed depends entirely on the launch angle, not the launch speed"
+      ],
+      correct: 2,
+      explanation: "When launch and landing heights are equal and air resistance is ignored, the trajectory is symmetric: the vertical velocity at landing has the same magnitude as at launch (just reversed in direction), and horizontal velocity never changes. So total speed at landing equals total speed at launch, and the landing angle mirrors the launch angle."
+    },
+    {
+      text: "During the downward half of a projectile's flight (after the peak, before landing), what is true of its vertical velocity and acceleration?",
+      options: [
+        "Vertical velocity is zero and acceleration is g downward",
+        "Vertical velocity is increasing in the downward direction and acceleration is g downward",
+        "Vertical velocity is increasing in the downward direction and acceleration is now zero",
+        "Vertical velocity is constant and acceleration is g downward"
+      ],
+      correct: 1,
+      explanation: "Gravity continues to accelerate the projectile downward at g throughout the descent, just as it did during the ascent. This causes the downward vertical velocity to keep increasing in magnitude all the way until landing — acceleration never switches off or reverses."
+    },
+    {
+      text: "A cannonball is launched from ground level at 40° and a second cannonball is launched from the top of a 50 m tower at the same 40° angle and same initial speed. Which statement correctly compares how you would solve for their ranges?",
+      options: [
+        "Both can be solved with R = (v0^2 sin 2θ) / g, since angle and speed are the same",
+        "Only the ground-level cannonball can use the level-ground shortcut formula directly; the tower launch requires solving the general quadratic vertical equation for time first",
+        "Only the tower launch can use the shortcut formula, since it travels farther",
+        "Neither can be solved using kinematics equations since the heights differ"
+      ],
+      correct: 1,
+      explanation: "The shortcut range formula assumes equal launch and landing heights, which is true for the ground-level cannonball but not the tower launch. For the tower launch, you must set up Δy = v0y t − ½ g t^2 with the correct (negative) net vertical displacement, solve the quadratic for t, and then multiply by the horizontal velocity to find the range."
+    }
+  ];
+
+  const form = document.getElementById('quiz-form');
+  const scoreBanner = document.getElementById('score-banner');
+  const unansweredNote = document.getElementById('unanswered-note');
+
+  function buildQuiz() {
+    form.innerHTML = '';
+    questions.forEach((q, qi) => {
+      const card = document.createElement('div');
+      card.className = 'question-card';
+      card.dataset.qindex = qi;
+
+      const num = document.createElement('div');
+      num.className = 'q-number';
+      num.textContent = 'Question ' + (qi + 1) + ' of ' + questions.length;
+      card.appendChild(num);
+
+      const qText = document.createElement('p');
+      qText.className = 'q-text';
+      qText.textContent = q.text;
+      card.appendChild(qText);
+
+      const optsWrap = document.createElement('div');
+      optsWrap.className = 'options';
+
+      q.options.forEach((opt, oi) => {
+        const optDiv = document.createElement('div');
+        optDiv.className = 'option';
+        optDiv.dataset.oindex = oi;
+
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'q' + qi;
+        input.id = 'q' + qi + 'o' + oi;
+        input.value = oi;
+
+        const label = document.createElement('label');
+        label.setAttribute('for', input.id);
+        label.textContent = opt;
+
+        optDiv.appendChild(input);
+        optDiv.appendChild(label);
+        optDiv.addEventListener('click', () => { input.checked = true; });
+        optsWrap.appendChild(optDiv);
+      });
+
+      card.appendChild(optsWrap);
+
+      const fb = document.createElement('div');
+      fb.className = 'feedback';
+      fb.id = 'fb' + qi;
+      card.appendChild(fb);
+
+      form.appendChild(card);
+    });
+  }
+
+  function checkAnswers() {
+    let answeredCount = 0;
+    let score = 0;
+    let allAnswered = true;
+
+    questions.forEach((q, qi) => {
+      const selected = form.querySelector('input[name="q' + qi + '"]:checked');
+      const card = form.querySelector('.question-card[data-qindex="' + qi + '"]');
+      const optionDivs = card.querySelectorAll('.option');
+      const fb = document.getElementById('fb' + qi);
+
+      optionDivs.forEach(od => od.classList.remove('correct', 'incorrect'));
+
+      if (!selected) {
+        allAnswered = false;
+        fb.className = 'feedback incorrect-fb visible';
+        fb.innerHTML = '<strong>No answer selected.</strong> Please choose an option for this question.';
+        card.style.outline = '2px solid var(--incorrect-border)';
+        return;
+      }
+
+      card.style.outline = 'none';
+      answeredCount++;
+      const selectedIndex = parseInt(selected.value, 10);
+      const isCorrect = selectedIndex === q.correct;
+      if (isCorrect) score++;
+
+      optionDivs[q.correct].classList.add('correct');
+      if (!isCorrect) {
+        optionDivs[selectedIndex].classList.add('incorrect');
+      }
+
+      fb.className = 'feedback visible ' + (isCorrect ? 'correct-fb' : 'incorrect-fb');
+      fb.innerHTML = '<strong>' + (isCorrect ? 'Correct!' : 'Not quite.') + '</strong>' + q.explanation;
+    });
+
+    if (!allAnswered) {
+      unansweredNote.classList.add('visible');
+      scoreBanner.classList.remove('visible');
+      return;
+    }
+
+    unansweredNote.classList.remove('visible');
+    scoreBanner.classList.add('visible');
+    const pct = Math.round((score / questions.length) * 100);
+    scoreBanner.textContent = 'Score: ' + score + ' / ' + questions.length + ' (' + pct + '%)';
+  }
+
+  function retakeQuiz() {
+    buildQuiz();
+    scoreBanner.classList.remove('visible');
+    scoreBanner.textContent = '';
+    unansweredNote.classList.remove('visible');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  document.getElementById('check-btn').addEventListener('click', checkAnswers);
+  document.getElementById('retake-btn').addEventListener('click', retakeQuiz);
+
+  buildQuiz();
+</script>
+</body>
+</html>

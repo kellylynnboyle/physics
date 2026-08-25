@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work & Energy Quiz — Most Commonly Missed Questions</title>
+<style>
+  :root {
+    --bg: #f4f6f8;
+    --surface: #ffffff;
+    --text: #1c2530;
+    --text-muted: #52606d;
+    --border: #d6dce2;
+    --accent: #2d6cdf;
+    --accent-text: #ffffff;
+    --correct-bg: #e3f6e8;
+    --correct-border: #3aa65a;
+    --correct-text: #1f5c33;
+    --incorrect-bg: #fbe9e9;
+    --incorrect-border: #d64545;
+    --incorrect-text: #7a2323;
+    --score-bg: #eef2ff;
+    --score-border: #2d6cdf;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161b22;
+      --surface: #1f2733;
+      --text: #e6edf3;
+      --text-muted: #9aa7b4;
+      --border: #333e4c;
+      --accent: #5b9dff;
+      --accent-text: #0b1420;
+      --correct-bg: #163524;
+      --correct-border: #3aa65a;
+      --correct-text: #8fe0ab;
+      --incorrect-bg: #3a1e1e;
+      --incorrect-border: #d64545;
+      --incorrect-text: #f3a3a3;
+      --score-bg: #1c2740;
+      --score-border: #5b9dff;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+
+  .wrap {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 32px 20px 64px;
+  }
+
+  header h1 {
+    font-size: 1.6rem;
+    margin: 0 0 6px;
+  }
+
+  header p.sub {
+    margin: 0 0 24px;
+    color: var(--text-muted);
+    font-size: 0.98rem;
+  }
+
+  #score-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--score-bg);
+    border: 1px solid var(--score-border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-weight: 600;
+  }
+
+  #score-text {
+    color: var(--text);
+  }
+
+  .question {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
+  }
+
+  .question h2 {
+    font-size: 1.02rem;
+    margin: 0 0 12px;
+    font-weight: 600;
+  }
+
+  .qnum {
+    color: var(--accent);
+    margin-right: 6px;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .option:hover {
+    border-color: var(--accent);
+  }
+
+  .option input[type="radio"] {
+    margin-top: 3px;
+    flex-shrink: 0;
+    accent-color: var(--accent);
+  }
+
+  .option.correct {
+    background: var(--correct-bg);
+    border-color: var(--correct-border);
+    color: var(--correct-text);
+  }
+
+  .option.incorrect {
+    background: var(--incorrect-bg);
+    border-color: var(--incorrect-border);
+    color: var(--incorrect-text);
+  }
+
+  .explanation {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: var(--bg);
+    border: 1px dashed var(--border);
+    font-size: 0.93rem;
+    color: var(--text);
+    display: none;
+  }
+
+  .explanation.show {
+    display: block;
+  }
+
+  .explanation strong {
+    color: var(--accent);
+  }
+
+  .controls {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+
+  button {
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 12px 22px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  #check-btn {
+    background: var(--accent);
+    color: var(--accent-text);
+  }
+
+  #check-btn:hover {
+    filter: brightness(1.08);
+  }
+
+  #retake-btn {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    display: none;
+  }
+
+  #retake-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .unanswered-warning {
+    color: var(--incorrect-text);
+    font-weight: 600;
+    margin-top: 10px;
+    display: none;
+  }
+
+  footer {
+    margin-top: 32px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Work &amp; Energy Quiz</h1>
+    <p class="sub">Most commonly missed questions — 14 multiple choice questions targeting classic work &amp; energy misconceptions. Select an answer for each question, then click "Check Answers."</p>
+  </header>
+
+  <div id="score-bar">
+    <span id="score-text">Score: not checked yet</span>
+    <span id="progress-text"></span>
+  </div>
+
+  <form id="quiz-form"></form>
+
+  <p class="unanswered-warning" id="unanswered-warning">Please answer all questions before checking your score.</p>
+
+  <div class="controls">
+    <button type="button" id="check-btn">Check Answers</button>
+    <button type="button" id="retake-btn">Retake Quiz</button>
+  </div>
+
+  <footer>Work &amp; Energy — Unit 05</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A waiter carries a tray of food at constant velocity across a horizontal, flat room. How much work does the waiter's upward supporting force do on the tray?",
+    options: [
+      "A large positive amount, because the waiter is clearly exerting effort",
+      "Zero, because the supporting force is perpendicular to the tray's horizontal displacement",
+      "A negative amount, because gravity opposes the supporting force",
+      "It depends on how heavy the tray is"
+    ],
+    correct: 1,
+    explanation: "Work depends on the force component <em>parallel</em> to displacement (W = Fd cos&nbsp;θ). The waiter's supporting force points straight up, but the tray moves horizontally, so θ = 90° and cos&nbsp;90° = 0. The force does zero work on the tray, even though the waiter is clearly exerting muscular effort to hold it up."
+  },
+  {
+    q: "A ball on a string moves in a horizontal circle at constant speed. The string tension provides the centripetal force. How much work does the tension do on the ball?",
+    options: [
+      "Positive work, because tension keeps the ball moving",
+      "Negative work, because tension pulls the ball inward",
+      "Zero work, because the tension is always perpendicular to the ball's velocity",
+      "It alternates between positive and negative each half-cycle"
+    ],
+    correct: 2,
+    explanation: "Centripetal force always points toward the center of the circle, which is perpendicular to the object's velocity (its direction of displacement) at every instant. Since θ = 90°, cos&nbsp;θ = 0, so the centripetal force does zero work — this is exactly why the ball's speed (and kinetic energy) stays constant in uniform circular motion."
+  },
+  {
+    q: "A person walks at a steady pace across a flat floor. How much work does the normal force from the floor do on the person?",
+    options: [
+      "Zero, because the normal force is perpendicular to the horizontal displacement",
+      "Positive, because the floor supports the person's weight",
+      "Negative, because the floor pushes back against the person's steps",
+      "It depends on the person's walking speed"
+    ],
+    correct: 0,
+    explanation: "The normal force from the floor acts vertically (upward), while the person's displacement while walking is horizontal. Since the force and displacement are perpendicular, the normal force does zero work — even though it's essential for keeping the person from falling through the floor."
+  },
+  {
+    q: "A weightlifter holds a loaded barbell perfectly still above their head for 10 seconds. How much work does the weightlifter's supporting force do on the barbell during those 10 seconds?",
+    options: [
+      "A large amount, proportional to how long the barbell is held up",
+      "Zero, because there is no displacement of the barbell",
+      "A small but nonzero amount, because muscles are always working",
+      "It depends on the barbell's mass"
+    ],
+    correct: 1,
+    explanation: "Work requires displacement (W = Fd cos&nbsp;θ); with d = 0, W = 0 no matter how large the force is or how long it's applied. The barbell does not move, so zero mechanical work is done on it — even though holding it stationary is physically tiring for the weightlifter (their muscles are converting chemical energy to heat internally, but that's not mechanical work done <em>on the barbell</em>)."
+  },
+  {
+    q: "A block slides across a rough horizontal floor and gradually slows down due to kinetic friction. What is the sign of the work friction does on the block?",
+    options: [
+      "Positive, because friction is a real force acting on the block",
+      "Zero, because friction acts along the surface, same as the motion",
+      "Negative, because the friction force points opposite to the block's displacement",
+      "It's impossible to say without knowing the block's mass"
+    ],
+    correct: 2,
+    explanation: "Kinetic friction always opposes the relative motion between surfaces. Since the block slides forward but friction pushes backward on it, the force and displacement point in opposite directions (θ = 180°), so cos&nbsp;θ = −1 and the work done by friction is negative. This negative work is what removes kinetic energy from the block, slowing it down."
+  },
+  {
+    q: "A car doubles its speed, from 20 m/s to 40 m/s. How does its kinetic energy change?",
+    options: [
+      "It doubles",
+      "It increases by 20 m/s worth of energy",
+      "It quadruples",
+      "It stays the same, since mass didn't change"
+    ],
+    correct: 2,
+    explanation: "Kinetic energy is KE = ½mv², which depends on the <em>square</em> of velocity. Doubling v means v² increases by a factor of 2² = 4, so KE quadruples — not just doubles. This is a very common point of confusion: energy relationships involving v² scale much faster than the speed itself."
+  },
+  {
+    q: "If a car's speed triples, by what factor does its kinetic energy increase?",
+    options: [
+      "3 times",
+      "6 times",
+      "9 times",
+      "It's impossible to determine without knowing the mass"
+    ],
+    correct: 2,
+    explanation: "Since KE = ½mv², tripling the speed multiplies v² (and thus KE) by 3² = 9. The mass cancels out of the ratio — whatever the mass is, tripling speed always multiplies KE by 9."
+  },
+  {
+    q: "A student measures the gravitational potential energy of a ball two ways: once using the floor as h = 0, and once using a tabletop 1 m above the floor as h = 0. The two calculated PE values are different. What does this mean?",
+    options: [
+      "One of the calculations must be wrong",
+      "Both are valid; the reference point (h = 0) is an arbitrary choice, and only changes in PE are physically meaningful",
+      "The floor must always be used as the reference point in physics",
+      "Gravitational PE isn't a well-defined quantity"
+    ],
+    correct: 1,
+    explanation: "Gravitational PE = mgh is always measured relative to some chosen reference height, and that reference is arbitrary — you can put h = 0 anywhere convenient. Different reference points give different absolute PE values, but they always agree on the <em>change</em> in PE (ΔPE) between two positions, which is the physically meaningful quantity."
+  },
+  {
+    q: "Which statement about mechanical energy conservation is correct?",
+    options: [
+      "Mechanical energy (KE + PE) is always conserved in every physical situation",
+      "Mechanical energy is conserved only when non-conservative forces like friction or air resistance do no net work on the system",
+      "Mechanical energy is never conserved in real systems",
+      "Mechanical energy conservation only applies to falling objects"
+    ],
+    correct: 1,
+    explanation: "Mechanical energy (KE + PE) stays constant only when the net work done by non-conservative forces (friction, air resistance, applied forces that add/remove energy) is zero — i.e., only conservative forces like gravity or an ideal spring are doing work. Real systems with friction do not conserve mechanical energy, even though total energy (including heat) is always conserved."
+  },
+  {
+    q: "A box slides down a ramp with friction. Compared to a frictionless ramp of the same height, what happens to the box's mechanical energy as it slides down?",
+    options: [
+      "Mechanical energy is destroyed and simply disappears",
+      "Mechanical energy stays exactly the same as the frictionless case",
+      "Mechanical energy decreases because some of it converts to heat, but total energy (including heat) is still conserved",
+      "Mechanical energy increases because friction adds energy to the system"
+    ],
+    correct: 2,
+    explanation: "Friction is a non-conservative force that converts some of the box's mechanical energy into thermal energy (heat) at the sliding surfaces. The box's mechanical energy (KE + PE) at the bottom is therefore less than in the frictionless case — but energy is never destroyed. Total energy, including the heat generated, is still conserved."
+  },
+  {
+    q: "A ball is thrown upward and experiences both gravity and air resistance. Which equation correctly applies the work-energy theorem to find its change in kinetic energy?",
+    options: [
+      "ΔKE equals the work done by gravity alone",
+      "ΔKE equals the work done by air resistance alone",
+      "ΔKE equals the NET work — the sum of the work done by gravity AND air resistance together",
+      "ΔKE cannot be found unless all forces are conservative"
+    ],
+    correct: 2,
+    explanation: "The work-energy theorem states W_net = ΔKE, where W_net is the sum of the work done by <em>every</em> force acting on the object — not just one of them. If you only account for gravity's work (or only air resistance's work) while ignoring the other, you will get the wrong change in kinetic energy."
+  },
+  {
+    q: "A 2 kg object experiences two forces while moving: one does +30 J of work, the other does −10 J of work. What is the object's change in kinetic energy?",
+    options: [
+      "+30 J, using only the larger force",
+      "−10 J, using only the force that opposes motion",
+      "+20 J, the sum of both forces' work",
+      "+40 J, the difference is added incorrectly as a sum of magnitudes"
+    ],
+    correct: 2,
+    explanation: "The work-energy theorem uses the <em>net</em> work: W_net = ΔKE. Adding the individual works (including their signs) gives W_net = (+30 J) + (−10 J) = +20 J, so the object's kinetic energy increases by 20 J. Considering only one force's work would give an incorrect answer."
+  },
+  {
+    q: "Two workers lift identical boxes to the same height, doing the same amount of work. Worker A takes 5 seconds; Worker B takes 20 seconds. Which statement is correct?",
+    options: [
+      "Worker A does more total work than Worker B, since A worked harder",
+      "Both workers do the same amount of work, but Worker A delivers more power because the work is done in less time",
+      "Worker B delivers more power, since B worked for a longer time",
+      "Power is irrelevant here since the boxes and heights are identical"
+    ],
+    correct: 1,
+    explanation: "Power is the <em>rate</em> of doing work, P = W/t. Since both workers lift identical boxes to the same height, they do the same amount of work (and transfer the same energy). But Worker A does it in less time, so P_A = W/5 is greater than P_B = W/20 — Worker A is more powerful, not because they did more work, but because they did the same work faster."
+  },
+  {
+    q: "Which of the following best describes the relationship between work, energy, and power?",
+    options: [
+      "Power, work, and energy are all exactly the same physical quantity, just measured in different units",
+      "Power is a measure of how much energy is stored, unrelated to time",
+      "Work and energy measure 'how much' (in joules), while power measures 'how fast' energy is transferred or work is done (in watts, P = W/t)",
+      "Power can be calculated without knowing anything about time"
+    ],
+    correct: 2,
+    explanation: "Work and energy are both measured in joules and describe an <em>amount</em> — how much energy was transferred or transformed. Power, measured in watts (1 W = 1 J/s), describes the <em>rate</em> at which that transfer happens: P = W/t = Fv. Doing the same amount of work faster always requires more power, even though the total work/energy is unchanged."
+  }
+];
+
+const form = document.getElementById('quiz-form');
+const checkBtn = document.getElementById('check-btn');
+const retakeBtn = document.getElementById('retake-btn');
+const scoreText = document.getElementById('score-text');
+const progressText = document.getElementById('progress-text');
+const unansweredWarning = document.getElementById('unanswered-warning');
+
+function buildQuiz() {
+  form.innerHTML = '';
+  QUESTIONS.forEach((item, qi) => {
+    const qDiv = document.createElement('div');
+    qDiv.className = 'question';
+    qDiv.id = 'q' + qi;
+
+    const h2 = document.createElement('h2');
+    h2.innerHTML = '<span class="qnum">' + (qi + 1) + '.</span>' + item.q;
+    qDiv.appendChild(h2);
+
+    const optsDiv = document.createElement('div');
+    optsDiv.className = 'options';
+
+    item.options.forEach((optText, oi) => {
+      const label = document.createElement('label');
+      label.className = 'option';
+      label.id = 'q' + qi + '-opt' + oi;
+
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.name = 'q' + qi;
+      input.value = oi;
+
+      const span = document.createElement('span');
+      span.textContent = optText;
+
+      label.appendChild(input);
+      label.appendChild(span);
+      optsDiv.appendChild(label);
+    });
+
+    qDiv.appendChild(optsDiv);
+
+    const explDiv = document.createElement('div');
+    explDiv.className = 'explanation';
+    explDiv.id = 'q' + qi + '-expl';
+    explDiv.innerHTML = '<strong>Explanation:</strong> ' + item.explanation;
+    qDiv.appendChild(explDiv);
+
+    form.appendChild(qDiv);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const answered = QUESTIONS.filter((_, qi) => form.querySelector('input[name="q' + qi + '"]:checked')).length;
+  progressText.textContent = answered + ' / ' + QUESTIONS.length + ' answered';
+}
+
+form.addEventListener('change', updateProgress);
+
+checkBtn.addEventListener('click', () => {
+  let answeredCount = 0;
+  let score = 0;
+
+  QUESTIONS.forEach((item, qi) => {
+    const selected = form.querySelector('input[name="q' + qi + '"]:checked');
+    if (selected) answeredCount++;
+
+    item.options.forEach((_, oi) => {
+      const optLabel = document.getElementById('q' + qi + '-opt' + oi);
+      optLabel.classList.remove('correct', 'incorrect');
+      const input = optLabel.querySelector('input');
+      input.disabled = true;
+
+      if (oi === item.correct) {
+        optLabel.classList.add('correct');
+      } else if (selected && parseInt(selected.value, 10) === oi) {
+        optLabel.classList.add('incorrect');
+      }
+    });
+
+    if (selected && parseInt(selected.value, 10) === item.correct) {
+      score++;
+    }
+
+    document.getElementById('q' + qi + '-expl').classList.add('show');
+  });
+
+  if (answeredCount < QUESTIONS.length) {
+    unansweredWarning.style.display = 'block';
+  } else {
+    unansweredWarning.style.display = 'none';
+  }
+
+  scoreText.textContent = 'Score: ' + score + ' / ' + QUESTIONS.length +
+    ' (' + Math.round((score / QUESTIONS.length) * 100) + '%)';
+
+  checkBtn.style.display = 'none';
+  retakeBtn.style.display = 'inline-block';
+});
+
+retakeBtn.addEventListener('click', () => {
+  buildQuiz();
+  scoreText.textContent = 'Score: not checked yet';
+  unansweredWarning.style.display = 'none';
+  checkBtn.style.display = 'inline-block';
+  retakeBtn.style.display = 'none';
+});
+
+buildQuiz();
+</script>
+</body>
+</html>

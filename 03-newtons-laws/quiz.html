@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newton's Laws Quiz — Most Commonly Missed Questions</title>
+<style>
+  :root {
+    --bg: #f4f5f7;
+    --card-bg: #ffffff;
+    --text: #1f2430;
+    --muted: #5a6270;
+    --border: #d7dbe2;
+    --accent: #2f5fd9;
+    --accent-text: #ffffff;
+    --correct-bg: #e3f6e8;
+    --correct-border: #3aa15c;
+    --incorrect-bg: #fbe8e8;
+    --incorrect-border: #cc4b4b;
+    --option-hover: #eef1f8;
+    --header-bg: #1f2a44;
+    --header-text: #f4f6fb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #171a21;
+      --card-bg: #20242e;
+      --text: #e7e9ee;
+      --muted: #a3a9b7;
+      --border: #363c4a;
+      --accent: #6d8cff;
+      --accent-text: #10131a;
+      --correct-bg: #1c3324;
+      --correct-border: #4cae6f;
+      --incorrect-bg: #3a2020;
+      --incorrect-border: #e07070;
+      --option-hover: #2a2f3c;
+      --header-bg: #10131c;
+      --header-text: #f4f6fb;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  header {
+    background: var(--header-bg);
+    color: var(--header-text);
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header h1 {
+    margin: 0 0 0.5rem;
+    font-size: 1.6rem;
+  }
+  header p {
+    margin: 0;
+    color: #c7cede;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 0.95rem;
+  }
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+  }
+  #score-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  #score-bar .label {
+    font-weight: 600;
+  }
+  .question-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.25rem 1.1rem;
+    margin-bottom: 1.1rem;
+  }
+  .question-card h2 {
+    font-size: 1.02rem;
+    margin: 0 0 0.9rem;
+    line-height: 1.4;
+  }
+  .qnum {
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: 0.4rem;
+  }
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .option:hover {
+    background: var(--option-hover);
+  }
+  .option input[type="radio"] {
+    margin-top: 0.2rem;
+    flex-shrink: 0;
+    accent-color: var(--accent);
+  }
+  .option label {
+    cursor: pointer;
+    font-size: 0.95rem;
+  }
+  .option.correct {
+    background: var(--correct-bg);
+    border-color: var(--correct-border);
+  }
+  .option.incorrect {
+    background: var(--incorrect-bg);
+    border-color: var(--incorrect-border);
+  }
+  .explanation {
+    margin-top: 0.9rem;
+    padding: 0.75rem 0.9rem;
+    border-left: 4px solid var(--accent);
+    background: var(--option-hover);
+    border-radius: 6px;
+    font-size: 0.92rem;
+    display: none;
+  }
+  .explanation.show {
+    display: block;
+  }
+  .explanation strong {
+    color: var(--accent);
+  }
+  .result-tag {
+    display: none;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-top: 0.6rem;
+  }
+  .result-tag.show {
+    display: inline-block;
+  }
+  .result-tag.correct-tag {
+    color: var(--correct-border);
+  }
+  .result-tag.incorrect-tag {
+    color: var(--incorrect-border);
+  }
+  #controls {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  button {
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.75rem 1.6rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.15s ease, transform 0.05s ease;
+  }
+  button:active {
+    transform: scale(0.98);
+  }
+  #check-btn {
+    background: var(--accent);
+    color: var(--accent-text);
+  }
+  #retake-btn {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  button:hover {
+    opacity: 0.9;
+  }
+  #final-score {
+    text-align: center;
+    font-size: 1.05rem;
+    margin-top: 0.5rem;
+    font-weight: 600;
+    display: none;
+  }
+  #final-score.show {
+    display: block;
+  }
+  .unanswered-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Newton's Laws Quiz</h1>
+  <p>Most Commonly Missed Questions — test yourself on the trickiest misconceptions about forces and motion.</p>
+</header>
+<main>
+  <div id="score-bar">
+    <span class="label">Score: <span id="score-display">0 / 0</span></span>
+    <span id="progress-display" style="color: var(--muted); font-size: 0.9rem;">0 of 15 answered</span>
+  </div>
+
+  <div id="quiz-container"></div>
+
+  <div id="controls">
+    <button id="check-btn">Check Answers</button>
+    <button id="retake-btn">Retake Quiz</button>
+  </div>
+  <div id="final-score"></div>
+  <p class="unanswered-note" id="unanswered-note"></p>
+</main>
+
+<script>
+const questions = [
+  {
+    q: "A hockey puck slides across frictionless ice at a constant 5 m/s. What net force is required to keep it moving at this constant velocity?",
+    options: [
+      "A force equal to its weight",
+      "A small constant force in the direction of motion",
+      "Zero net force",
+      "A force that increases with speed"
+    ],
+    correct: 2,
+    explanation: "Newton's First Law: an object in motion stays in motion at constant velocity unless acted on by a net external force. Constant velocity means ZERO net force is needed — not a continuously applied force. This corrects the common Aristotelian misconception that motion itself requires a sustaining force."
+  },
+  {
+    q: "A 2 kg ball and a 10 kg ball are dropped from the same height at the same time (ignore air resistance). Which hits the ground first?",
+    options: [
+      "The 10 kg ball, because it has more force acting on it",
+      "The 2 kg ball, because it's lighter and easier to accelerate",
+      "They hit at the same time",
+      "It depends on their exact starting height"
+    ],
+    correct: 2,
+    explanation: "Both balls accelerate at g ≈ 9.8 m/s², regardless of mass. It's tempting to think F = ma means a heavier object (more force via F = mg) accelerates faster, but mass cancels out: a = F/m = mg/m = g. Heavier objects do NOT fall faster in free fall (ignoring air resistance)."
+  },
+  {
+    q: "A book rests on a table, pressing down on it with a force of 20 N due to gravity. The table pushes up on the book with 20 N (Newton's Third Law reaction). Why doesn't the book fly upward?",
+    options: [
+      "The two forces are an action-reaction pair and cancel out on the book",
+      "The book's weight and the table's normal force act on the SAME object (the book), but they are NOT a Third Law pair — the book stays still because these two different forces happen to balance for that one object",
+      "The book doesn't actually experience a normal force",
+      "Newton's Third Law doesn't apply to objects at rest"
+    ],
+    correct: 1,
+    explanation: "This is a classic point of confusion. Newton's Third Law pairs act on TWO DIFFERENT objects, so they can never cancel for a single object's motion. The true Third Law pair to gravity pulling the book down is the book pulling Earth up (negligibly). The normal force and gravity here are two different forces that both act on the book and happen to balance, keeping it in equilibrium — but they are not an action-reaction pair."
+  },
+  {
+    q: "A rocket in the vacuum of space fires its engines to accelerate forward. What pushes the rocket forward?",
+    options: [
+      "The exhaust gas pushes against the air behind the rocket",
+      "The rocket pushes exhaust gas backward, and by Newton's Third Law, the gas pushes the rocket forward — with no air needed",
+      "Rockets can't accelerate in a vacuum since there's nothing to push against",
+      "The rocket's engines pull it forward through space"
+    ],
+    correct: 1,
+    explanation: "Rocket propulsion is a textbook Newton's Third Law example: the rocket exerts a force on the expelled gas (pushing it backward), and the gas exerts an equal and opposite force on the rocket (pushing it forward). These act on two different objects — the rocket and the gas — so no air or other medium is needed. This works even in a vacuum."
+  },
+  {
+    q: "A block sits on a frictionless incline angled at 30° above horizontal. How does the normal force on the block compare to its weight?",
+    options: [
+      "The normal force equals the block's weight, mg",
+      "The normal force is greater than the block's weight",
+      "The normal force is less than the block's weight, equal to mg cos(30°)",
+      "There is no normal force on an incline"
+    ],
+    correct: 2,
+    explanation: "Normal force does NOT always equal weight. On a frictionless incline, N = mg cos θ, which is less than mg for any angle θ > 0. The component of gravity perpendicular to the incline surface determines the normal force, while the component along the incline (mg sin θ) causes the block to accelerate down the slope."
+  },
+  {
+    q: "A person stands on a scale inside an elevator that is accelerating upward. What does the scale read compared to their true weight?",
+    options: [
+      "Exactly their true weight, since normal force always equals weight",
+      "More than their true weight, since N = m(g + a) when accelerating upward",
+      "Less than their true weight",
+      "Zero, since they are inside a moving elevator"
+    ],
+    correct: 1,
+    explanation: "In an accelerating elevator, normal force is NOT simply mg. Applying Newton's Second Law vertically: N − mg = ma, so N = m(g + a) when accelerating upward. The scale reads this normal force, so the person feels (and the scale shows) heavier than their true weight during upward acceleration."
+  },
+  {
+    q: "An object is in equilibrium (net force = 0). What can you conclude about its motion?",
+    options: [
+      "The object must be at rest",
+      "The object must be accelerating",
+      "The object is moving at a constant velocity, which could be zero (at rest) or nonzero (constant speed in a straight line)",
+      "The object must be in free fall"
+    ],
+    correct: 2,
+    explanation: "Net force = 0 means zero acceleration, which corresponds to constant velocity — this includes both an object at rest (v = 0) AND an object moving at a constant, unchanging velocity. Equilibrium does NOT necessarily mean 'at rest.' A car cruising at a steady 60 mph in a straight line is just as much in equilibrium as a parked car."
+  },
+  {
+    q: "A wooden crate rests on a rough floor. You push on it with 40 N of force, but it doesn't move. The maximum static friction is 60 N. What is the actual static friction force acting on the crate?",
+    options: [
+      "60 N, the maximum possible value",
+      "40 N, exactly matching your applied force to keep the crate at rest",
+      "0 N, since the crate isn't moving",
+      "20 N, half of the maximum"
+    ],
+    correct: 1,
+    explanation: "Static friction is a variable, self-adjusting force — it is NOT always equal to its maximum value (μs·N). It matches whatever force is needed to prevent sliding, up to that maximum. Since the crate remains at rest, static friction must exactly balance your 40 N applied force, so f_s = 40 N. Static friction only equals its maximum (60 N here) at the verge of slipping."
+  },
+  {
+    q: "Once the crate above starts sliding, how does the kinetic friction force compare to the maximum static friction force (60 N) that was needed to start it moving?",
+    options: [
+      "Kinetic friction is generally greater than maximum static friction",
+      "Kinetic friction is generally less than maximum static friction",
+      "They are always exactly equal",
+      "Kinetic friction cannot be compared to static friction"
+    ],
+    correct: 1,
+    explanation: "The coefficient of kinetic friction (μk) is generally less than the coefficient of static friction (μs) for real surfaces, so kinetic friction is generally less than the MAXIMUM static friction. This is why it typically takes more force to get an object moving from rest than to keep it sliding once in motion."
+  },
+  {
+    q: "Which of the following correctly distinguishes mass from weight?",
+    options: [
+      "Mass and weight are the same thing, just measured in different units",
+      "Mass is measured in Newtons and weight is measured in kilograms",
+      "Mass is an invariant measure of the amount of matter (and inertia) in an object; weight = mg depends on the local gravitational field and changes from place to place",
+      "Weight is always greater than mass"
+    ],
+    correct: 2,
+    explanation: "Mass (in kg) measures the amount of matter in an object and its resistance to acceleration (inertia) — it does not change regardless of location. Weight (in Newtons) = mg is the gravitational force on that mass, and it changes depending on the local gravitational field strength (e.g., an object weighs less on the Moon but has the same mass)."
+  },
+  {
+    q: "A 5 kg object has a weight of about 49 N on Earth (g ≈ 9.8 m/s²). What is its weight on the Moon, where g ≈ 1.6 m/s²? What is its mass on the Moon?",
+    options: [
+      "Weight ≈ 49 N, mass = 5 kg (both unchanged)",
+      "Weight ≈ 8 N, mass = 5 kg (weight changes, mass stays the same)",
+      "Weight ≈ 49 N, mass ≈ 0.8 kg (mass changes to match gravity)",
+      "Weight ≈ 8 N, mass ≈ 0.8 kg (both change proportionally)"
+    ],
+    correct: 1,
+    explanation: "Mass is invariant — the object still has 5 kg of mass on the Moon. Weight depends on local gravity: weight = mg = 5 kg × 1.6 m/s² ≈ 8 N, much less than its ≈49 N weight on Earth. This illustrates that mass and weight are fundamentally different quantities."
+  },
+  {
+    q: "A block sits on a table. Which set of forces belongs in a correct free-body diagram of the block (assuming friction is present and no other forces are applied)?",
+    options: [
+      "Only gravity (weight)",
+      "Gravity and normal force only, even if the block is being pushed sideways and not sliding",
+      "Gravity, normal force, and friction (if there is an applied force being resisted or the block is on the verge of sliding) — including any applied force too",
+      "Only normal force, since gravity is not really a force"
+    ],
+    correct: 2,
+    explanation: "A correct free-body diagram must include every force acting ON the object: gravity (weight), the normal force from the table, friction if surfaces resist relative sliding or an applied force is present, and any additional applied forces. A common mistake is forgetting friction or the normal force — omitting any relevant force gives an incomplete and inaccurate diagram."
+  },
+  {
+    q: "Two blocks, m1 = 3 kg and m2 = 2 kg, are connected by a light string on a frictionless horizontal surface. A horizontal force of 20 N pulls m1. What is the acceleration of the system?",
+    options: [
+      "4 m/s²",
+      "6.67 m/s²",
+      "10 m/s²",
+      "2 m/s²"
+    ],
+    correct: 0,
+    explanation: "Treat the two blocks as one system: a = F_net / (m1 + m2) = 20 N / (3 kg + 2 kg) = 20 / 5 = 4 m/s². Since the string is inextensible, both blocks share this same acceleration."
+  },
+  {
+    q: "A 10 kg crate on a horizontal floor has a coefficient of kinetic friction of μk = 0.3 with the floor. If a horizontal force of 50 N is applied and the crate is sliding, what is the crate's acceleration? (Use g = 9.8 m/s²)",
+    options: [
+      "5.0 m/s²",
+      "2.06 m/s²",
+      "0.5 m/s²",
+      "29.4 m/s²"
+    ],
+    correct: 1,
+    explanation: "First find friction: f_k = μk·N = 0.3 × (10 kg × 9.8 m/s²) = 0.3 × 98 N = 29.4 N. Net force = applied force − friction = 50 N − 29.4 N = 20.6 N. Acceleration = F_net / m = 20.6 N / 10 kg = 2.06 m/s²."
+  },
+  {
+    q: "A person of mass 60 kg stands on a scale in an elevator accelerating downward at 2 m/s². What does the scale read (the normal force), using g = 9.8 m/s²?",
+    options: [
+      "588 N (their full weight, unaffected by the elevator)",
+      "708 N (heavier, since acceleration adds to gravity)",
+      "468 N (lighter, since N = m(g − a) for downward acceleration)",
+      "0 N (they are weightless)"
+    ],
+    correct: 2,
+    explanation: "For downward acceleration, apply Newton's Second Law with downward as positive: mg − N = ma, so N = m(g − a) = 60 kg × (9.8 − 2) m/s² = 60 × 7.8 = 468 N. The scale reads less than the person's true weight (588 N) because the normal force does not simply equal mg when the elevator accelerates — this is a case where N ≠ weight."
+  }
+];
+
+let userAnswers = new Array(questions.length).fill(null);
+let checked = false;
+
+const quizContainer = document.getElementById('quiz-container');
+const scoreDisplay = document.getElementById('score-display');
+const progressDisplay = document.getElementById('progress-display');
+const checkBtn = document.getElementById('check-btn');
+const retakeBtn = document.getElementById('retake-btn');
+const finalScore = document.getElementById('final-score');
+const unansweredNote = document.getElementById('unanswered-note');
+
+function renderQuiz() {
+  quizContainer.innerHTML = '';
+  questions.forEach((item, qIndex) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = 'card-' + qIndex;
+
+    const h2 = document.createElement('h2');
+    h2.innerHTML = '<span class="qnum">Q' + (qIndex + 1) + '.</span>' + item.q;
+    card.appendChild(h2);
+
+    const optsDiv = document.createElement('div');
+    optsDiv.className = 'options';
+
+    item.options.forEach((optText, oIndex) => {
+      const optDiv = document.createElement('div');
+      optDiv.className = 'option';
+      optDiv.id = 'opt-' + qIndex + '-' + oIndex;
+
+      const radio = document.createElement('input');
+      radio.type = 'radio';
+      radio.name = 'q' + qIndex;
+      radio.id = 'radio-' + qIndex + '-' + oIndex;
+      radio.value = oIndex;
+      radio.addEventListener('change', () => {
+        userAnswers[qIndex] = oIndex;
+        updateProgress();
+      });
+
+      const label = document.createElement('label');
+      label.setAttribute('for', 'radio-' + qIndex + '-' + oIndex);
+      label.textContent = optText;
+
+      optDiv.appendChild(radio);
+      optDiv.appendChild(label);
+      optDiv.addEventListener('click', (e) => {
+        if (e.target.tagName !== 'INPUT') {
+          radio.checked = true;
+          userAnswers[qIndex] = oIndex;
+          updateProgress();
+        }
+      });
+      optsDiv.appendChild(optDiv);
+    });
+
+    card.appendChild(optsDiv);
+
+    const resultTag = document.createElement('div');
+    resultTag.className = 'result-tag';
+    resultTag.id = 'result-' + qIndex;
+    card.appendChild(resultTag);
+
+    const explDiv = document.createElement('div');
+    explDiv.className = 'explanation';
+    explDiv.id = 'expl-' + qIndex;
+    explDiv.innerHTML = '<strong>Explanation:</strong> ' + item.explanation;
+    card.appendChild(explDiv);
+
+    quizContainer.appendChild(card);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const answeredCount = userAnswers.filter(a => a !== null).length;
+  progressDisplay.textContent = answeredCount + ' of ' + questions.length + ' answered';
+}
+
+function checkAnswers() {
+  let score = 0;
+  let unanswered = 0;
+
+  questions.forEach((item, qIndex) => {
+    const userAns = userAnswers[qIndex];
+    if (userAns === null) unanswered++;
+    if (userAns === item.correct) score++;
+
+    item.options.forEach((optText, oIndex) => {
+      const optDiv = document.getElementById('opt-' + qIndex + '-' + oIndex);
+      const radio = document.getElementById('radio-' + qIndex + '-' + oIndex);
+      radio.disabled = true;
+      optDiv.classList.remove('correct', 'incorrect');
+      if (oIndex === item.correct) {
+        optDiv.classList.add('correct');
+      } else if (oIndex === userAns) {
+        optDiv.classList.add('incorrect');
+      }
+    });
+
+    const resultTag = document.getElementById('result-' + qIndex);
+    resultTag.classList.add('show');
+    if (userAns === item.correct) {
+      resultTag.textContent = 'Correct!';
+      resultTag.className = 'result-tag show correct-tag';
+    } else if (userAns === null) {
+      resultTag.textContent = 'Not answered';
+      resultTag.className = 'result-tag show incorrect-tag';
+    } else {
+      resultTag.textContent = 'Incorrect';
+      resultTag.className = 'result-tag show incorrect-tag';
+    }
+
+    document.getElementById('expl-' + qIndex).classList.add('show');
+  });
+
+  scoreDisplay.textContent = score + ' / ' + questions.length;
+  finalScore.textContent = 'Final Score: ' + score + ' out of ' + questions.length +
+    ' (' + Math.round((score / questions.length) * 100) + '%)';
+  finalScore.classList.add('show');
+
+  if (unanswered > 0) {
+    unansweredNote.textContent = unanswered + ' question(s) were left unanswered and marked incorrect.';
+  } else {
+    unansweredNote.textContent = '';
+  }
+
+  checked = true;
+  checkBtn.disabled = true;
+  checkBtn.style.opacity = '0.5';
+  checkBtn.style.cursor = 'not-allowed';
+}
+
+function retakeQuiz() {
+  userAnswers = new Array(questions.length).fill(null);
+  checked = false;
+  scoreDisplay.textContent = '0 / ' + questions.length;
+  finalScore.classList.remove('show');
+  finalScore.textContent = '';
+  unansweredNote.textContent = '';
+  checkBtn.disabled = false;
+  checkBtn.style.opacity = '1';
+  checkBtn.style.cursor = 'pointer';
+  renderQuiz();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+checkBtn.addEventListener('click', () => {
+  if (!checked) checkAnswers();
+});
+retakeBtn.addEventListener('click', retakeQuiz);
+
+renderQuiz();
+</script>
+</body>
+</html>
