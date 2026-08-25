@@ -2,6 +2,8 @@
 
 Kinematics is the description of motion — position, velocity, and acceleration — without yet asking *what causes* the motion (that's Newton's Laws, Section 03). Everything in this unit is the mathematical toolkit you'll reuse for the rest of mechanics.
 
+> `flashcards.html` — 12-term flip-card deck (reference point, position, distance, displacement, vector, scalar, magnitude, direction, speed, average/instantaneous velocity, acceleration), built from the class's own "Terms Practice," "Average Velocity," and "Study Guide for Motion Quiz" worksheets in `class-materials/`. Open in a browser; click a card to flip it.
+
 ## Key Concepts to Master
 
 - **Position, distance, and displacement** — displacement is a vector (depends on direction); distance is a scalar (total path length). They are only equal for motion in a single direction with no reversal.

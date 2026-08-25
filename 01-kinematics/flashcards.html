@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kinematics Flashcards — Unit 1 Terms</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    --bg:#f7f7f5; --card:#ffffff; --ink:#1c1c1c; --muted:#63635d;
+    --accent:#2f6f4f; --accent-ink:#ffffff; --border:#e2e0da; --chip:#eef1ec;
+    --vector:#3a5f8a; --scalar:#8a5a3a;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#16181a; --card:#1f2224; --ink:#eceae4; --muted:#a3a39a;
+      --accent:#5fae83; --accent-ink:#0d140f; --border:#33363a; --chip:#262a2c;
+      --vector:#7fa8d6; --scalar:#d6a37f; }
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,'Iowan Old Style',serif;line-height:1.5;}
+  .wrap{max-width:640px;margin:0 auto;padding:2rem 1.25rem 4rem;}
+  h1{font-size:1.5rem;margin-bottom:.15rem;}
+  .sub{color:var(--muted);font-size:.95rem;margin-bottom:1.5rem;font-family:-apple-system,sans-serif;}
+  .controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;
+    font-family:-apple-system,sans-serif;font-size:.85rem;color:var(--muted);}
+  .stage{perspective:1200px;height:280px;margin-bottom:1.25rem;}
+  .card{position:relative;width:100%;height:100%;cursor:pointer;transform-style:preserve-3d;
+    transition:transform .5s;}
+  .card.flipped{transform:rotateY(180deg);}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border:1px solid var(--border);
+    border-radius:.7rem;background:var(--card);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;padding:1.5rem;}
+  .face.front{font-size:1.7rem;font-weight:bold;}
+  .face.back{transform:rotateY(180deg);font-size:1.05rem;}
+  .hint{position:absolute;bottom:.9rem;font-family:-apple-system,sans-serif;font-size:.72rem;
+    color:var(--muted);letter-spacing:.03em;text-transform:uppercase;}
+  .badge{display:inline-block;font-family:-apple-system,sans-serif;font-size:.7rem;
+    letter-spacing:.04em;text-transform:uppercase;padding:.15rem .55rem;border-radius:1rem;
+    margin-bottom:.7rem;color:#fff;}
+  .badge.vector{background:var(--vector);}
+  .badge.scalar{background:var(--scalar);}
+  .badge.neutral{background:var(--muted);}
+  .units{font-family:-apple-system,sans-serif;font-size:.8rem;color:var(--muted);margin-top:.6rem;}
+  .nav{display:flex;gap:.6rem;justify-content:center;font-family:-apple-system,sans-serif;}
+  button{font-family:inherit;background:var(--accent);color:var(--accent-ink);border:none;
+    padding:.6rem 1.1rem;border-radius:.4rem;font-size:.92rem;cursor:pointer;}
+  button.secondary{background:var(--chip);color:var(--ink);border:1px solid var(--border);}
+  button:disabled{opacity:.4;cursor:default;}
+  .deck-list{margin-top:2.5rem;font-family:-apple-system,sans-serif;font-size:.85rem;}
+  .deck-list summary{cursor:pointer;color:var(--muted);margin-bottom:.6rem;}
+  table{width:100%;border-collapse:collapse;font-size:.85rem;}
+  th,td{text-align:left;padding:.4rem .5rem;border-bottom:1px solid var(--border);vertical-align:top;}
+  th{color:var(--muted);font-weight:normal;}
+  footer{color:var(--muted);font-size:.85rem;margin-top:2rem;font-family:-apple-system,sans-serif;}
+  .source{font-family:-apple-system,sans-serif;font-size:.8rem;color:var(--muted);margin-top:.3rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Unit 1 — Motion &amp; Kinematics Vocabulary</h1>
+  <div class="sub">12 terms, pulled from the "Terms Practice," "Average Velocity," and "Study Guide for Motion Quiz" worksheets. Click a card to flip it.</div>
+  <div class="source">Source worksheets: <code>class-materials/unit-1-terms-practice-scan.pdf</code></div>
+
+  <div class="controls" style="margin-top:1rem;">
+    <span id="counter">Card 1 of 12</span>
+    <span id="know-count">Marked known: 0</span>
+  </div>
+
+  <div class="stage">
+    <div class="card" id="card">
+      <div class="face front" id="front"></div>
+      <div class="face back" id="back"></div>
+      <div class="hint">click to flip</div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="secondary" id="prev">← Prev</button>
+    <button class="secondary" id="know">Mark known</button>
+    <button class="secondary" id="shuffle">Shuffle</button>
+    <button id="next">Next →</button>
+  </div>
+
+  <details class="deck-list">
+    <summary>View the full term list as a table</summary>
+    <table id="table"></table>
+  </details>
+
+  <footer>Section 01 — Kinematics · part of the 11th Grade Physics Learning Project</footer>
+</div>
+
+<script>
+const TERMS = [
+  { term: "Reference Point / Origin", type: "neutral",
+    def: "The fixed location chosen as position = 0. Every position and displacement in a problem is measured relative to this point.",
+    units: "n/a — a chosen point, not a measured quantity" },
+  { term: "Position", type: "vector",
+    def: "An object's location relative to the reference point/origin. Can be positive or negative depending on which side of the origin it's on.",
+    units: "m (length units)" },
+  { term: "Distance", type: "scalar",
+    def: "The total length of the path traveled, regardless of direction. Always positive, and never decreases as an object moves.",
+    units: "m" },
+  { term: "Displacement", type: "vector",
+    def: "The change in position: Δx = x − x₀. Depends only on start and end points, not the path taken — can be positive, negative, or zero.",
+    units: "m" },
+  { term: "Vector", type: "vector",
+    def: "A quantity that has both magnitude (size) AND direction. Displacement, velocity, and acceleration are all vectors.",
+    units: "n/a — a category of quantity" },
+  { term: "Scalar", type: "scalar",
+    def: "A quantity that has magnitude only — no direction. Distance and speed are scalars.",
+    units: "n/a — a category of quantity" },
+  { term: "Magnitude", type: "neutral",
+    def: "The size or numerical value of a vector, ignoring direction. Always a positive number.",
+    units: "matches the vector's units" },
+  { term: "Direction", type: "neutral",
+    def: "Which way a vector points — e.g., north, forward/backward, or positive/negative along a chosen axis. A vector isn't fully described without it.",
+    units: "n/a (compass direction, +/-, or fwd/bwd)" },
+  { term: "Speed", type: "scalar",
+    def: "How fast an object is moving: distance ÷ time. Always positive — has no direction.",
+    units: "m/s" },
+  { term: "Average Velocity", type: "vector",
+    def: "Displacement divided by the total time elapsed: v̄ = Δx / Δt. A single value describing motion over an entire interval.",
+    units: "m/s" },
+  { term: "Instantaneous Velocity", type: "vector",
+    def: "The velocity at one specific moment in time — the slope of the tangent line to a position-time graph at that instant.",
+    units: "m/s" },
+  { term: "Acceleration", type: "vector",
+    def: "The rate of change of velocity: a = Δv / Δt. Can be caused by a change in speed, direction, or both.",
+    units: "m/s²" }
+];
+
+let order = TERMS.map((_, i) => i);
+let idx = 0;
+let known = new Set();
+
+const cardEl = document.getElementById('card');
+const frontEl = document.getElementById('front');
+const backEl = document.getElementById('back');
+const counterEl = document.getElementById('counter');
+const knowCountEl = document.getElementById('know-count');
+
+function render(){
+  const t = TERMS[order[idx]];
+  cardEl.classList.remove('flipped');
+  frontEl.textContent = t.term;
+  backEl.innerHTML = `
+    <span class="badge ${t.type}">${t.type === 'neutral' ? 'concept' : t.type}</span>
+    <div>${t.def}</div>
+    <div class="units">Units: ${t.units}</div>
+  `;
+  counterEl.textContent = `Card ${idx + 1} of ${TERMS.length}`;
+  knowCountEl.textContent = `Marked known: ${known.size}`;
+  document.getElementById('prev').disabled = idx === 0;
+  document.getElementById('next').textContent = idx === TERMS.length - 1 ? 'Restart ↻' : 'Next →';
+}
+
+cardEl.addEventListener('click', () => cardEl.classList.toggle('flipped'));
+
+document.getElementById('next').addEventListener('click', () => {
+  idx = (idx + 1) % TERMS.length;
+  render();
+});
+
+document.getElementById('prev').addEventListener('click', () => {
+  if (idx > 0) { idx--; render(); }
+});
+
+document.getElementById('know').addEventListener('click', () => {
+  known.add(order[idx]);
+  knowCountEl.textContent = `Marked known: ${known.size}`;
+});
+
+document.getElementById('shuffle').addEventListener('click', () => {
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  idx = 0;
+  render();
+});
+
+const tableEl = document.getElementById('table');
+tableEl.innerHTML = `<tr><th>Term</th><th>Type</th><th>Definition</th><th>Units</th></tr>` +
+  TERMS.map(t => `<tr><td><strong>${t.term}</strong></td><td>${t.type === 'neutral' ? 'concept' : t.type}</td><td>${t.def}</td><td>${t.units}</td></tr>`).join('');
+
+render();
+</script>
+</body>
+</html>
