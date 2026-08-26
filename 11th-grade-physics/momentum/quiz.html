@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Momentum Quiz — Commonly Missed Questions</title>
+<style>
+  :root {
+    --bg: #f4f6f9;
+    --card-bg: #ffffff;
+    --text: #1c2431;
+    --muted: #5b6472;
+    --accent: #2a5fd0;
+    --accent-dark: #1e46a3;
+    --correct-bg: #e4f7e9;
+    --correct-border: #2fa84f;
+    --incorrect-bg: #fbe7e7;
+    --incorrect-border: #d0392a;
+    --option-border: #d3d9e2;
+    --option-hover: #eef2fa;
+    --progress-track: #e2e6ee;
+    --shadow: 0 2px 10px rgba(20, 30, 60, 0.08);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14181f;
+      --card-bg: #1e232c;
+      --text: #eaedf2;
+      --muted: #9aa4b2;
+      --accent: #6f9bff;
+      --accent-dark: #a9c2ff;
+      --correct-bg: #163723;
+      --correct-border: #3fbf68;
+      --incorrect-bg: #3a1e1e;
+      --incorrect-border: #e0574a;
+      --option-border: #333c4a;
+      --option-hover: #262d38;
+      --progress-track: #2a313d;
+      --shadow: 0 2px 14px rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding: 1.5rem 1rem 4rem;
+  }
+
+  .wrap {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  h1 {
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    margin: 0 0 0.35rem;
+    color: var(--text);
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  .scoreboard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.25rem;
+    font-size: 0.95rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .score-item strong {
+    display: block;
+    font-size: 1.1rem;
+  }
+
+  .progress-track {
+    width: 100%;
+    height: 8px;
+    background: var(--progress-track);
+    border-radius: 999px;
+    overflow: hidden;
+    margin: 0.5rem 0 1.5rem;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border-radius: 14px;
+    padding: 1.25rem 1.25rem 1.5rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.25rem;
+  }
+
+  .q-meta {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+  }
+
+  .q-text {
+    font-size: 1.08rem;
+    margin: 0 0 1rem;
+    font-weight: 600;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    text-align: left;
+    background: transparent;
+    border: 1.5px solid var(--option-border);
+    border-radius: 10px;
+    padding: 0.7rem 0.85rem;
+    font-size: 0.98rem;
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+
+  .option:hover:not(:disabled) {
+    background: var(--option-hover);
+    border-color: var(--accent);
+  }
+
+  .option:disabled {
+    cursor: default;
+  }
+
+  .option .letter {
+    font-weight: 700;
+    min-width: 1.3em;
+  }
+
+  .option.correct {
+    background: var(--correct-bg);
+    border-color: var(--correct-border);
+  }
+
+  .option.incorrect {
+    background: var(--incorrect-bg);
+    border-color: var(--incorrect-border);
+  }
+
+  .option.dim {
+    opacity: 0.55;
+  }
+
+  .feedback {
+    margin-top: 1rem;
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    display: none;
+  }
+
+  .feedback.show {
+    display: block;
+  }
+
+  .feedback.correct {
+    background: var(--correct-bg);
+    border: 1px solid var(--correct-border);
+  }
+
+  .feedback.incorrect {
+    background: var(--incorrect-bg);
+    border: 1px solid var(--incorrect-border);
+  }
+
+  .feedback .verdict {
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    display: block;
+  }
+
+  .feedback.correct .verdict { color: var(--correct-border); }
+  .feedback.incorrect .verdict { color: var(--incorrect-border); }
+
+  .nav-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+
+  button.next-btn, button.restart-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.65rem 1.3rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s ease;
+  }
+
+  button.next-btn:hover, button.restart-btn:hover {
+    background: var(--accent-dark);
+  }
+
+  button.next-btn:disabled {
+    background: var(--progress-track);
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+
+  .results {
+    text-align: center;
+    padding: 2rem 1.5rem;
+  }
+
+  .results h2 {
+    margin-top: 0;
+  }
+
+  .results .big-score {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin: 0.5rem 0;
+  }
+
+  .results .msg {
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 2rem;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Momentum Quiz — Commonly Missed Questions</h1>
+    <p class="subtitle">10 questions targeting the most common momentum &amp; collision misconceptions</p>
+  </header>
+
+  <div class="scoreboard">
+    <div class="score-item">
+      <span>Score</span>
+      <strong id="scoreText">0 / 0</strong>
+    </div>
+    <div class="score-item">
+      <span>Question</span>
+      <strong id="progressText">1 of 10</strong>
+    </div>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+  <div id="quizArea"></div>
+
+  <div id="resultsArea" class="card results hidden">
+    <h2>Quiz Complete</h2>
+    <div class="big-score" id="finalScore">0 / 10</div>
+    <p class="msg" id="finalMsg"></p>
+    <button class="restart-btn" id="restartBtn">Restart Quiz</button>
+  </div>
+
+  <footer>Momentum and Collisions — 11th Grade Physics</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var questions = [
+    {
+      q: "A 2 kg cart moves at 3 m/s. What is its momentum, and how does that compare to its kinetic energy?",
+      options: [
+        "p = 6 kg·m/s and KE = 9 J — momentum and kinetic energy use different formulas (mv vs. ½mv²) and are different quantities entirely",
+        "p = 9 kg·m/s and KE = 6 J — momentum uses ½mv² and kinetic energy uses mv",
+        "p = 6 J and KE = 9 kg·m/s — momentum and kinetic energy have the same formula but different names",
+        "p and KE are the same thing, both equal to 6"
+      ],
+      correct: 0,
+      explain: "Momentum is p = mv = (2)(3) = 6 kg·m/s, a vector. Kinetic energy is KE = ½mv² = ½(2)(3²) = 9 J, a scalar. They use different formulas, have different units, and follow different conservation rules — never mix them up."
+    },
+    {
+      q: "Two clay balls collide head-on and stick together. A student claims kinetic energy must be conserved because 'energy is always conserved.' What's wrong with this reasoning?",
+      options: [
+        "Nothing — kinetic energy is always conserved in every collision",
+        "Total energy is conserved, but kinetic energy specifically converts partly to heat, sound, and deformation in this inelastic collision, so KE is NOT conserved",
+        "Kinetic energy is never conserved in any collision, ever",
+        "Momentum is what gets converted to heat, not kinetic energy"
+      ],
+      correct: 1,
+      explain: "Total energy is always conserved, but kinetic energy is only conserved in elastic collisions. In this perfectly inelastic collision (objects stick), kinetic energy converts to heat, sound, and deformation — momentum is conserved, but KE is not."
+    },
+    {
+      q: "A student says, 'Momentum is only conserved when a collision is elastic — if the collision is inelastic, momentum isn't conserved.' Is this correct?",
+      options: [
+        "Yes, momentum conservation requires an elastic collision",
+        "No — momentum is conserved in ANY collision within an isolated system, whether elastic, inelastic, or perfectly inelastic; only kinetic energy conservation depends on the collision being elastic",
+        "Momentum is only conserved in perfectly inelastic collisions",
+        "Momentum is never conserved in real collisions"
+      ],
+      correct: 1,
+      explain: "This is one of the most common misconceptions in the unit. Momentum is conserved in every isolated-system collision regardless of type. It is kinetic energy that is conserved only when the collision is elastic."
+    },
+    {
+      q: "A 1000 kg car moving at +15 m/s collides with a 1000 kg car moving at −15 m/s (opposite direction, same speed). What is the total momentum of the two-car system just before impact?",
+      options: [
+        "30,000 kg·m/s, because you add the speeds together ignoring direction",
+        "0 kg·m/s, because momentum is a vector and the two momenta point in opposite directions, canceling out",
+        "15,000 kg·m/s, the momentum of just one car",
+        "It cannot be determined without knowing the collision type"
+      ],
+      correct: 1,
+      explain: "Momentum is a vector. p1 = (1000)(+15) = +15,000 kg·m/s and p2 = (1000)(−15) = −15,000 kg·m/s. Adding these vector quantities: +15,000 + (−15,000) = 0 kg·m/s. Forgetting the sign and just adding speeds is a common error."
+    },
+    {
+      q: "In a perfectly inelastic collision between two carts, which statement correctly describes what happens?",
+      options: [
+        "The carts bounce apart, and both momentum and kinetic energy are conserved",
+        "The carts stick together and move with one common final velocity; you use their combined mass in the conservation of momentum equation, and kinetic energy is NOT conserved",
+        "The carts stick together, but you must still use each cart's separate mass and separate final velocity",
+        "Perfectly inelastic and elastic collisions are the same thing"
+      ],
+      correct: 1,
+      explain: "In a perfectly inelastic collision, the objects stick together and share one final velocity. You solve m1v1 + m2v2 = (m1+m2)v_f using the combined mass. This is the opposite of an elastic collision, where objects separate and both momentum and KE are conserved."
+    },
+    {
+      q: "Why does an airbag reduce the force experienced by a passenger in a crash, if the passenger's change in momentum (Δp) is the same either way?",
+      options: [
+        "The airbag reduces the passenger's mass, which reduces momentum",
+        "The airbag increases the time (Δt) over which the passenger's momentum changes; since F = Δp/Δt, a longer Δt for the same Δp means a smaller average force",
+        "The airbag eliminates the passenger's momentum change entirely, so no force is needed",
+        "The airbag has nothing to do with force — it just cushions impact chemically"
+      ],
+      correct: 1,
+      explain: "By the impulse-momentum theorem, J = FΔt = Δp. Since Δp is fixed by the crash (mass and velocity change), stretching out the stopping time Δt (which the airbag does) reduces the average force F needed to produce that same Δp. This is exactly how crumple zones work too."
+    },
+    {
+      q: "A skateboarder collides with a wall. A student sets up conservation of momentum using only the skateboarder's mass and velocity before/after, and gets a nonsensical answer. What went wrong?",
+      options: [
+        "Nothing is wrong; momentum is always conserved for any single object by itself",
+        "The wall (and the Earth it's attached to) exerts an external force on the skateboarder during the collision, so the skateboarder alone is not an isolated system — momentum conservation only applies to the system including all objects with significant interacting forces, or a system with no net external force",
+        "The student needs to use kinetic energy instead of momentum",
+        "Momentum conservation doesn't apply to collisions with walls, only to collisions between two moving objects"
+      ],
+      correct: 1,
+      explain: "Momentum conservation applies to an isolated system — one with no net external force. If you only track the skateboarder, the wall/Earth exerts an outside force during the collision, so the skateboarder's momentum alone is not conserved. You must include every object that exerts or receives significant force, or choose a system where external forces cancel."
+    },
+    {
+      q: "Before a collision, Object A (3 kg) moves at +4 m/s and Object B (2 kg) moves at −5 m/s (toward A). What is the correct total momentum before the collision?",
+      options: [
+        "3(4) + 2(5) = 22 kg·m/s, adding speeds since both objects are moving",
+        "3(4) + 2(−5) = 12 − 10 = +2 kg·m/s, using the correct sign for each object's direction",
+        "3(4) − 2(5) = 2 kg·m/s is wrong; the answer should just be 2 kg·m/s magnitude with no direction needed",
+        "Momentum before a collision doesn't need a sign, only momentum after does"
+      ],
+      correct: 1,
+      explain: "Since B moves in the negative direction (toward A), its velocity must be entered as −5 m/s, not +5 m/s. Total momentum = (3)(+4) + (2)(−5) = 12 − 10 = +2 kg·m/s. Dropping the negative sign because 'the object is still moving' is a very common error when objects approach each other."
+    },
+    {
+      q: "A firework, initially at rest in the air, explodes into two fragments. Fragment 1 (mass 0.3 kg) flies off at +40 m/s. What is the velocity of Fragment 2 (mass 0.1 kg)?",
+      options: [
+        "We cannot know without more information about the explosion's energy",
+        "Since total momentum before the explosion was 0 (firework at rest), total momentum after must also be 0: (0.3)(40) + (0.1)v2 = 0, so v2 = −120 m/s",
+        "Fragment 2 must also move at +40 m/s since both came from the same explosion",
+        "Momentum conservation does not apply to explosions, only to collisions"
+      ],
+      correct: 1,
+      explain: "An explosion is just a collision in reverse — momentum conservation still applies. Since the firework started at rest, total momentum before = 0, so total momentum after must also = 0. Solving (0.3)(40) + (0.1)v2 = 0 gives v2 = −120 m/s, in the opposite direction from Fragment 1."
+    },
+    {
+      q: "A student says, 'Conservation of momentum means the velocities of the objects don't change during the collision.' Is this correct?",
+      options: [
+        "Yes — if momentum is conserved, each object's velocity must stay exactly the same throughout",
+        "No — individual velocities change constantly during a collision; it is only the TOTAL momentum of the system (summed over all objects) that stays constant, not any single object's velocity",
+        "Yes, but only in elastic collisions",
+        "Conservation of momentum and conservation of velocity mean the same thing"
+      ],
+      correct: 1,
+      explain: "This confuses two very different ideas. Velocity is not a conserved quantity — objects speed up, slow down, and change direction during collisions all the time. What stays constant is the TOTAL momentum of an isolated system (the sum of all objects' individual momenta), not any individual object's velocity."
+    }
+  ];
+
+  var current = 0;
+  var score = 0;
+  var answered = false;
+
+  var quizArea = document.getElementById("quizArea");
+  var resultsArea = document.getElementById("resultsArea");
+  var scoreText = document.getElementById("scoreText");
+  var progressText = document.getElementById("progressText");
+  var progressFill = document.getElementById("progressFill");
+  var finalScore = document.getElementById("finalScore");
+  var finalMsg = document.getElementById("finalMsg");
+  var restartBtn = document.getElementById("restartBtn");
+
+  var letters = ["A", "B", "C", "D"];
+
+  function renderQuestion() {
+    answered = false;
+    var qData = questions[current];
+
+    var card = document.createElement("div");
+    card.className = "card";
+
+    var meta = document.createElement("div");
+    meta.className = "q-meta";
+    meta.textContent = "Question " + (current + 1) + " of " + questions.length;
+    card.appendChild(meta);
+
+    var qText = document.createElement("p");
+    qText.className = "q-text";
+    qText.textContent = qData.q;
+    card.appendChild(qText);
+
+    var optionsWrap = document.createElement("div");
+    optionsWrap.className = "options";
+
+    qData.options.forEach(function (optText, idx) {
+      var btn = document.createElement("button");
+      btn.className = "option";
+      btn.innerHTML = '<span class="letter">' + letters[idx] + '.</span><span>' + optText + "</span>";
+      btn.addEventListener("click", function () {
+        selectAnswer(idx, btn, optionsWrap, qData);
+      });
+      optionsWrap.appendChild(btn);
+    });
+
+    card.appendChild(optionsWrap);
+
+    var feedback = document.createElement("div");
+    feedback.className = "feedback";
+    feedback.id = "feedbackBox";
+    card.appendChild(feedback);
+
+    var navRow = document.createElement("div");
+    navRow.className = "nav-row";
+    var nextBtn = document.createElement("button");
+    nextBtn.className = "next-btn";
+    nextBtn.id = "nextBtn";
+    nextBtn.textContent = current === questions.length - 1 ? "See Results" : "Next Question";
+    nextBtn.disabled = true;
+    nextBtn.addEventListener("click", function () {
+      if (!answered) return;
+      current++;
+      if (current < questions.length) {
+        quizArea.innerHTML = "";
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    });
+    navRow.appendChild(nextBtn);
+    card.appendChild(navRow);
+
+    quizArea.innerHTML = "";
+    quizArea.appendChild(card);
+    updateScoreboard();
+  }
+
+  function selectAnswer(idx, btn, optionsWrap, qData) {
+    if (answered) return;
+    answered = true;
+
+    var isCorrect = idx === qData.correct;
+    if (isCorrect) score++;
+
+    var allOptions = optionsWrap.querySelectorAll(".option");
+    allOptions.forEach(function (optBtn, i) {
+      optBtn.disabled = true;
+      if (i === qData.correct) {
+        optBtn.classList.add("correct");
+      } else if (i === idx && !isCorrect) {
+        optBtn.classList.add("incorrect");
+      } else {
+        optBtn.classList.add("dim");
+      }
+    });
+
+    var feedback = document.getElementById("feedbackBox");
+    feedback.className = "feedback show " + (isCorrect ? "correct" : "incorrect");
+    feedback.innerHTML =
+      '<span class="verdict">' + (isCorrect ? "Correct!" : "Not quite.") + "</span>" +
+      qData.explain;
+
+    document.getElementById("nextBtn").disabled = false;
+    updateScoreboard();
+  }
+
+  function updateScoreboard() {
+    scoreText.textContent = score + " / " + questions.length;
+    var qNum = Math.min(current + 1, questions.length);
+    progressText.textContent = qNum + " of " + questions.length;
+    var pct = (current / questions.length) * 100;
+    if (answered) {
+      pct = ((current + 1) / questions.length) * 100;
+    }
+    progressFill.style.width = pct + "%";
+  }
+
+  function showResults() {
+    quizArea.innerHTML = "";
+    resultsArea.classList.remove("hidden");
+    finalScore.textContent = score + " / " + questions.length;
+    progressFill.style.width = "100%";
+    progressText.textContent = questions.length + " of " + questions.length;
+
+    var pct = Math.round((score / questions.length) * 100);
+    var msg;
+    if (pct === 100) {
+      msg = "Perfect score! You've cleared up every common momentum misconception on this quiz.";
+    } else if (pct >= 80) {
+      msg = "Great work — you have a strong grasp of momentum and collisions, with just a few ideas to double-check.";
+    } else if (pct >= 60) {
+      msg = "Good progress. Review the explanations above for the questions you missed, especially around momentum vs. kinetic energy conservation.";
+    } else {
+      msg = "This is a tricky topic. Revisit the Cornell Notes and README, paying close attention to which quantities are conserved in each collision type, then try again.";
+    }
+    finalMsg.textContent = msg;
+  }
+
+  function restartQuiz() {
+    current = 0;
+    score = 0;
+    answered = false;
+    resultsArea.classList.add("hidden");
+    renderQuestion();
+  }
+
+  restartBtn.addEventListener("click", restartQuiz);
+
+  renderQuestion();
+})();
+</script>
+</body>
+</html>
