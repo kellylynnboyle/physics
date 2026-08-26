@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newton's Laws Quiz — Commonly Missed Questions</title>
+<style>
+  :root {
+    --bg: #f4f6f9;
+    --card-bg: #ffffff;
+    --text: #1c2530;
+    --muted: #5a6674;
+    --accent: #2856c7;
+    --accent-dark: #1c3d94;
+    --correct-bg: #e4f7e9;
+    --correct-border: #2e9e51;
+    --correct-text: #1c6b34;
+    --incorrect-bg: #fdeaea;
+    --incorrect-border: #d5453c;
+    --incorrect-text: #a12e26;
+    --option-border: #d3dae3;
+    --option-hover: #eef2f8;
+    --track-bg: #dde3ec;
+    --shadow: 0 2px 10px rgba(20, 30, 50, 0.08);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12161d;
+      --card-bg: #1b212b;
+      --text: #e8ecf2;
+      --muted: #9aa5b3;
+      --accent: #6f9bff;
+      --accent-dark: #8fb0ff;
+      --correct-bg: #163524;
+      --correct-border: #3fae6a;
+      --correct-text: #7fe0a3;
+      --incorrect-bg: #3a1c1c;
+      --incorrect-border: #d5665c;
+      --incorrect-text: #f2a29c;
+      --option-border: #333e4d;
+      --option-hover: #232b37;
+      --track-bg: #2a323f;
+      --shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  header h1 {
+    font-size: 1.5rem;
+    margin: 0 0 6px;
+    color: var(--text);
+  }
+
+  header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .scoreboard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    flex-wrap: wrap;
+  }
+
+  .score-label {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .score-value {
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 1.1rem;
+  }
+
+  .progress-track {
+    flex: 1 1 140px;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--track-bg);
+    overflow: hidden;
+    min-width: 100px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border-radius: 14px;
+    padding: 20px 20px 22px;
+    box-shadow: var(--shadow);
+    margin-bottom: 18px;
+  }
+
+  .q-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .q-text {
+    font-size: 1.08rem;
+    font-weight: 600;
+    margin: 0 0 16px;
+    color: var(--text);
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    text-align: left;
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid var(--option-border);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--text);
+    font-size: 0.98rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+
+  .option:hover:not(:disabled) {
+    background: var(--option-hover);
+    border-color: var(--accent);
+  }
+
+  .option:disabled {
+    cursor: default;
+  }
+
+  .option .letter {
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .option.correct {
+    background: var(--correct-bg);
+    border-color: var(--correct-border);
+    color: var(--correct-text);
+  }
+
+  .option.correct .letter {
+    color: var(--correct-text);
+  }
+
+  .option.incorrect {
+    background: var(--incorrect-bg);
+    border-color: var(--incorrect-border);
+    color: var(--incorrect-text);
+  }
+
+  .option.incorrect .letter {
+    color: var(--incorrect-text);
+  }
+
+  .feedback {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    display: none;
+  }
+
+  .feedback.show {
+    display: block;
+  }
+
+  .feedback.correct-fb {
+    background: var(--correct-bg);
+    border: 1px solid var(--correct-border);
+    color: var(--correct-text);
+  }
+
+  .feedback.incorrect-fb {
+    background: var(--incorrect-bg);
+    border: 1px solid var(--incorrect-border);
+    color: var(--incorrect-text);
+  }
+
+  .feedback .verdict {
+    font-weight: 700;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .nav-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+  }
+
+  .btn {
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: var(--accent);
+    color: #fff;
+    transition: background 0.15s ease;
+  }
+
+  .btn:hover {
+    background: var(--accent-dark);
+  }
+
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .results {
+    display: none;
+    text-align: center;
+    padding: 30px 20px;
+  }
+
+  .results.show {
+    display: block;
+  }
+
+  .results h2 {
+    margin: 0 0 8px;
+    font-size: 1.4rem;
+  }
+
+  .results .big-score {
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin: 10px 0;
+  }
+
+  .results p {
+    color: var(--muted);
+    max-width: 480px;
+    margin: 0 auto 20px;
+  }
+
+  .quiz-body.finished #question-area {
+    display: none;
+  }
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 30px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Newton's Laws Quiz</h1>
+    <p>Commonly Missed Questions — test yourself against the classic misconceptions</p>
+  </header>
+
+  <div class="scoreboard">
+    <div>
+      <span class="score-label">Score: </span>
+      <span class="score-value"><span id="score-num">0</span> / <span id="score-total">10</span></span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="score-label" id="question-counter">Question 1 of 10</div>
+  </div>
+
+  <div class="quiz-body" id="quiz-body">
+    <div id="question-area"></div>
+
+    <div class="results" id="results-area">
+      <h2 id="results-title">Quiz Complete!</h2>
+      <div class="big-score"><span id="final-score">0</span> / 10</div>
+      <p id="results-msg"></p>
+      <button class="btn" id="restart-btn">Restart Quiz</button>
+    </div>
+  </div>
+
+  <footer>Newton's Laws of Motion &middot; 11th Grade Physics</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var questions = [
+    {
+      q: "A 5 kg object is taken from Earth (g = 9.8 m/s²) to the Moon (g = 1.6 m/s²). What happens to its mass and its weight?",
+      options: [
+        "Both mass and weight decrease.",
+        "Mass stays the same; weight decreases.",
+        "Mass decreases; weight stays the same.",
+        "Both mass and weight stay the same."
+      ],
+      correct: 1,
+      explanation: "Mass (5 kg) is the amount of matter in the object and does not depend on location, so it stays the same. Weight = mg is a force that depends on local gravity, so it decreases on the Moon where g is smaller. Never treat mass and weight as interchangeable — they have different units (kg vs. N) and different behavior."
+    },
+    {
+      q: "A puck slides across frictionless ice at a constant 4 m/s in a straight line. What net force is required to keep it moving at this constant velocity?",
+      options: [
+        "A force equal to its weight, applied forward.",
+        "A small constant forward force, just enough to overcome its inertia.",
+        "Zero net force.",
+        "A force that increases the longer it slides."
+      ],
+      correct: 2,
+      explanation: "This is Newton's First Law: constant velocity (constant speed AND direction) requires zero net force, not a continuous push. A net force is only needed to change velocity — to speed up, slow down, or turn. Motion does not 'run out' and need to be renewed by a force."
+    },
+    {
+      q: "A book rests motionless on a table. The table's normal force on the book and gravity's pull on the book are equal and opposite. Is this a Newton's Third Law action-reaction pair?",
+      options: [
+        "Yes — equal and opposite forces are always a 3rd law pair.",
+        "No — both forces act on the same object (the book), so this is an equilibrium pair, not a 3rd law pair.",
+        "Yes, but only because the book is not accelerating.",
+        "No — because gravity and normal force are different types of forces, they can never relate to each other at all."
+      ],
+      correct: 1,
+      explanation: "A true 3rd law pair must act on two DIFFERENT objects. Here, both the normal force and gravity act on the same object — the book — so this is an equilibrium condition (net force = 0), not an action-reaction pair. The true 3rd law partner of gravity-on-book is the book's gravitational pull on the Earth; the true partner of the table's normal force on the book is the book's normal force on the table."
+    },
+    {
+      q: "According to Newton's Third Law, action-reaction force pairs are equal and opposite. Why don't these pairs cancel each other out?",
+      options: [
+        "They do cancel out — that's why objects in contact never accelerate.",
+        "They act on two different objects, so each force still fully affects the object it acts on.",
+        "They only fail to cancel when friction is present.",
+        "They cancel only in a vacuum, but not in air."
+      ],
+      correct: 1,
+      explanation: "Forces can only cancel when they act on the SAME object. Since the two forces in a 3rd law pair act on two different objects, each object experiences its own unbalanced force and can still accelerate — for example, a rocket pushes exhaust gas backward, and the gas pushes the rocket forward; the rocket definitely accelerates even though the pair is 'equal and opposite.'"
+    },
+    {
+      q: "A crate is being pushed to the right across a rough floor and is sliding. Which direction does the kinetic friction force on the crate point?",
+      options: [
+        "To the right, in the same direction as the push.",
+        "To the left, opposing the crate's motion relative to the floor.",
+        "Straight down, adding to the crate's weight.",
+        "Friction direction depends only on the crate's mass, not its motion."
+      ],
+      correct: 1,
+      explanation: "Kinetic friction always opposes the relative motion between the two surfaces in contact. Since the crate slides to the right relative to the floor, friction acts to the left on the crate. (Static friction similarly opposes the direction of attempted or impending motion, even though nothing is sliding yet.)"
+    },
+    {
+      q: "A 2 kg ball and a 10 kg ball are dropped from the same height at the same time, with air resistance considered negligible. Which hits the ground first?",
+      options: [
+        "The 10 kg ball, because gravity pulls harder on more massive objects.",
+        "The 2 kg ball, because it has less inertia to overcome.",
+        "They land at the same time — both accelerate at g regardless of mass.",
+        "It depends on which ball is denser, not which is heavier."
+      ],
+      correct: 2,
+      explanation: "In free fall without air resistance, all objects accelerate at the same rate g. It's true that gravity's force (mg) is larger on the heavier ball, but its inertia (mass) is also larger by the same factor, and in a = F/m = mg/m = g, the mass cancels out. Bigger force does not mean bigger acceleration if mass increases proportionally too."
+    },
+    {
+      q: "A block sits on a frictionless ramp inclined at angle θ above horizontal. Which expression correctly gives the component of gravity that pulls the block DOWN the slope (parallel to the surface)?",
+      options: [
+        "mg cos θ",
+        "mg sin θ",
+        "mg tan θ",
+        "mg, unchanged by the angle"
+      ],
+      correct: 1,
+      explanation: "The component of weight parallel to the incline (causing sliding) is mg sin θ, while the component perpendicular to the incline (balanced by the normal force) is mg cos θ. A quick check: at θ = 0° (flat ground), sin(0°) = 0, correctly giving no sliding component, while cos(0°) = 1, correctly putting the full weight into the normal force."
+    },
+    {
+      q: "A person stands on a scale inside an elevator that is accelerating UPWARD. Compared to standing still, what does the scale read?",
+      options: [
+        "The same as standing still, since only velocity changes.",
+        "Less than standing still — the person feels lighter.",
+        "More than standing still — the person feels heavier.",
+        "Zero, because acceleration always causes weightlessness."
+      ],
+      correct: 2,
+      explanation: "The scale reads the normal force, N = m(g + a), where a is positive for upward acceleration. The floor must push up harder than mg to accelerate the person upward, so the scale reads MORE than their true weight — they feel heavier. The reverse (feeling lighter) happens when accelerating downward, and constant velocity in either direction produces no change from normal weight."
+    },
+    {
+      q: "A crate is being pushed but remains stationary because static friction balances the applied force exactly. Is the net force on the crate zero, and does that mean no forces are acting on it?",
+      options: [
+        "Net force is zero, and this means no forces are acting on the crate at all.",
+        "Net force is zero, but multiple forces (applied force, friction, gravity, normal force) are still acting — they are simply balanced.",
+        "Net force cannot be zero if the crate is being pushed.",
+        "Net force is zero only if the crate is also not touching the ground."
+      ],
+      correct: 1,
+      explanation: "Equilibrium (net force = 0) means the forces acting on an object are balanced — it does NOT mean zero forces are present. In this example, the applied push, static friction, gravity, and the normal force are all acting simultaneously; they just sum to zero, so the crate has zero acceleration and stays at rest (or moves at constant velocity if already moving)."
+    },
+    {
+      q: "A box on the floor has coefficient of static friction μs = 0.5 and kinetic friction μk = 0.3, with normal force N = 100 N. A horizontal force of 40 N is applied. What friction force acts on the box, and does it move?",
+      options: [
+        "Kinetic friction of 30 N; the box slides.",
+        "Static friction of 40 N; the box does not move, since 40 N is below the maximum static friction of 50 N.",
+        "Static friction of 50 N regardless of the applied force; the box does not move.",
+        "The box always moves once any horizontal force is applied."
+      ],
+      correct: 1,
+      explanation: "Static friction is not a fixed value — it adjusts to match the applied force up to a maximum of μs·N = (0.5)(100 N) = 50 N. Since the 40 N applied force is below this maximum, static friction simply matches it at 40 N and the box stays still. Only once the applied force exceeds 50 N would the box start sliding, at which point kinetic friction (μk·N = 30 N) would take over."
+    }
+  ];
+
+  var current = 0;
+  var score = 0;
+  var answered = false;
+
+  var questionArea = document.getElementById("question-area");
+  var resultsArea = document.getElementById("results-area");
+  var quizBody = document.getElementById("quiz-body");
+  var scoreNum = document.getElementById("score-num");
+  var scoreTotal = document.getElementById("score-total");
+  var progressFill = document.getElementById("progress-fill");
+  var questionCounter = document.getElementById("question-counter");
+  var finalScore = document.getElementById("final-score");
+  var resultsMsg = document.getElementById("results-msg");
+  var resultsTitle = document.getElementById("results-title");
+  var restartBtn = document.getElementById("restart-btn");
+
+  scoreTotal.textContent = questions.length;
+
+  function letterFor(i) {
+    return String.fromCharCode(65 + i);
+  }
+
+  function renderQuestion() {
+    answered = false;
+    var qData = questions[current];
+
+    questionCounter.textContent = "Question " + (current + 1) + " of " + questions.length;
+    progressFill.style.width = ((current) / questions.length * 100) + "%";
+
+    var card = document.createElement("div");
+    card.className = "card";
+
+    var meta = document.createElement("div");
+    meta.className = "q-meta";
+    meta.innerHTML = "<span>Question " + (current + 1) + " / " + questions.length + "</span>";
+    card.appendChild(meta);
+
+    var qText = document.createElement("p");
+    qText.className = "q-text";
+    qText.textContent = qData.q;
+    card.appendChild(qText);
+
+    var optionsWrap = document.createElement("div");
+    optionsWrap.className = "options";
+
+    qData.options.forEach(function (optText, idx) {
+      var btn = document.createElement("button");
+      btn.className = "option";
+      btn.type = "button";
+      btn.innerHTML = '<span class="letter">' + letterFor(idx) + '.</span><span>' + optText + '</span>';
+      btn.addEventListener("click", function () {
+        handleAnswer(idx, optionsWrap, feedback, card);
+      });
+      optionsWrap.appendChild(btn);
+    });
+
+    card.appendChild(optionsWrap);
+
+    var feedback = document.createElement("div");
+    feedback.className = "feedback";
+    card.appendChild(feedback);
+
+    var navRow = document.createElement("div");
+    navRow.className = "nav-row";
+    var nextBtn = document.createElement("button");
+    nextBtn.className = "btn";
+    nextBtn.type = "button";
+    nextBtn.id = "next-btn";
+    nextBtn.disabled = true;
+    nextBtn.textContent = (current === questions.length - 1) ? "See Results" : "Next Question";
+    nextBtn.addEventListener("click", function () {
+      if (current < questions.length - 1) {
+        current++;
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    });
+    navRow.appendChild(nextBtn);
+    card.appendChild(navRow);
+
+    questionArea.innerHTML = "";
+    questionArea.appendChild(card);
+  }
+
+  function handleAnswer(selectedIdx, optionsWrap, feedback, card) {
+    if (answered) return;
+    answered = true;
+
+    var qData = questions[current];
+    var buttons = optionsWrap.querySelectorAll(".option");
+
+    buttons.forEach(function (btn, idx) {
+      btn.disabled = true;
+      if (idx === qData.correct) {
+        btn.classList.add("correct");
+      } else if (idx === selectedIdx) {
+        btn.classList.add("incorrect");
+      }
+    });
+
+    var isCorrect = selectedIdx === qData.correct;
+    if (isCorrect) {
+      score++;
+      scoreNum.textContent = score;
+    }
+
+    feedback.classList.add("show");
+    feedback.classList.add(isCorrect ? "correct-fb" : "incorrect-fb");
+    feedback.innerHTML =
+      '<span class="verdict">' + (isCorrect ? "Correct!" : "Not quite.") + '</span>' +
+      (isCorrect ? "" : "The correct answer is " + letterFor(qData.correct) + ": " + qData.options[qData.correct] + ". ") +
+      qData.explanation;
+
+    var nextBtn = card.querySelector("#next-btn");
+    if (nextBtn) nextBtn.disabled = false;
+
+    progressFill.style.width = ((current + 1) / questions.length * 100) + "%";
+  }
+
+  function showResults() {
+    quizBody.classList.add("finished");
+    resultsArea.classList.add("show");
+    finalScore.textContent = score;
+    progressFill.style.width = "100%";
+    questionCounter.textContent = "Quiz complete";
+
+    var pct = Math.round((score / questions.length) * 100);
+    var msg;
+    if (pct >= 90) {
+      msg = "Outstanding! You have a strong handle on Newton's Laws and the misconceptions that trip most students up.";
+    } else if (pct >= 70) {
+      msg = "Good work. Review the explanations for any missed questions — pay special attention to distinguishing 3rd law pairs from equilibrium pairs.";
+    } else {
+      msg = "Keep practicing. Revisit the Cornell Notes and README, especially the sections on mass vs. weight, 3rd law pairs, and friction — then try again.";
+    }
+    resultsTitle.textContent = "Quiz Complete! (" + pct + "%)";
+    resultsMsg.textContent = msg;
+  }
+
+  restartBtn.addEventListener("click", function () {
+    current = 0;
+    score = 0;
+    scoreNum.textContent = 0;
+    quizBody.classList.remove("finished");
+    resultsArea.classList.remove("show");
+    renderQuestion();
+  });
+
+  renderQuestion();
+})();
+</script>
+
+</body>
+</html>
