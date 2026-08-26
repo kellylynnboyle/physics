@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work &amp; Energy Quiz — Commonly Missed Questions</title>
+<style>
+  :root {
+    --bg: #f4f6f9;
+    --card-bg: #ffffff;
+    --text: #1c2430;
+    --muted: #5a6472;
+    --accent: #2f5fa8;
+    --accent-dark: #234b87;
+    --border: #d8dee6;
+    --correct-bg: #e3f6e8;
+    --correct-border: #3f9d55;
+    --correct-text: #206532;
+    --incorrect-bg: #fbe9e9;
+    --incorrect-border: #c94848;
+    --incorrect-text: #8a2626;
+    --option-hover: #eef2f8;
+    --progress-track: #e2e7ee;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14181f;
+      --card-bg: #1d232d;
+      --text: #e7ebf1;
+      --muted: #9aa5b3;
+      --accent: #6f9ceb;
+      --accent-dark: #8fb2f0;
+      --border: #333c49;
+      --correct-bg: #163823;
+      --correct-border: #3f9d55;
+      --correct-text: #7fd996;
+      --incorrect-bg: #3a1d1d;
+      --incorrect-border: #c94848;
+      --incorrect-text: #f0a3a3;
+      --option-hover: #262e3a;
+      --progress-track: #2a313d;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 16px 64px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  header h1 {
+    font-size: 1.5rem;
+    margin: 0 0 6px;
+    color: var(--text);
+  }
+
+  header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .scoreboard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 18px;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+  }
+
+  .scoreboard .score {
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .progress-track {
+    height: 8px;
+    background: var(--progress-track);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .q-number {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  .q-text {
+    font-size: 1.1rem;
+    margin: 0 0 18px;
+    color: var(--text);
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    text-align: left;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--text);
+    font-size: 0.98rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+
+  .option:hover:not(:disabled) {
+    background: var(--option-hover);
+    border-color: var(--accent);
+  }
+
+  .option:disabled {
+    cursor: default;
+  }
+
+  .option .letter {
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    width: 1.3em;
+  }
+
+  .option.correct {
+    background: var(--correct-bg);
+    border-color: var(--correct-border);
+    color: var(--correct-text);
+  }
+
+  .option.correct .letter {
+    color: var(--correct-text);
+  }
+
+  .option.incorrect {
+    background: var(--incorrect-bg);
+    border-color: var(--incorrect-border);
+    color: var(--incorrect-text);
+  }
+
+  .option.incorrect .letter {
+    color: var(--incorrect-text);
+  }
+
+  .feedback {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    display: none;
+  }
+
+  .feedback.show {
+    display: block;
+  }
+
+  .feedback.correct-fb {
+    background: var(--correct-bg);
+    border: 1px solid var(--correct-border);
+    color: var(--correct-text);
+  }
+
+  .feedback.incorrect-fb {
+    background: var(--incorrect-bg);
+    border: 1px solid var(--incorrect-border);
+    color: var(--incorrect-text);
+  }
+
+  .feedback strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 1rem;
+  }
+
+  .controls {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  button.next-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    display: none;
+  }
+
+  button.next-btn.show {
+    display: inline-block;
+  }
+
+  button.next-btn:hover {
+    background: var(--accent-dark);
+  }
+
+  .results {
+    text-align: center;
+    display: none;
+  }
+
+  .results.show {
+    display: block;
+  }
+
+  .results .big-score {
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 8px 0;
+  }
+
+  .results p {
+    color: var(--muted);
+    margin: 4px 0 20px;
+  }
+
+  .results .message {
+    font-size: 1.05rem;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+
+  button.restart-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  button.restart-btn:hover {
+    background: var(--accent-dark);
+  }
+
+  .quiz-card {
+    display: block;
+  }
+
+  .quiz-card.hidden {
+    display: none;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 28px;
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+
+  @media (max-width: 480px) {
+    .q-text { font-size: 1.02rem; }
+    .card { padding: 18px 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Work &amp; Energy Quiz</h1>
+    <p>Commonly Missed Questions — test yourself against the most frequent mistakes</p>
+  </header>
+
+  <div class="scoreboard">
+    <span>Question <span id="currentQNum">1</span> of <span id="totalQNum">10</span></span>
+    <span class="score">Score: <span id="scoreDisplay">0</span> / <span id="answeredDisplay">0</span></span>
+  </div>
+
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+
+  <div class="card quiz-card" id="quizCard">
+    <div class="q-number" id="qNumberLabel">Question 1</div>
+    <p class="q-text" id="qText"></p>
+    <div class="options" id="optionsContainer"></div>
+    <div class="feedback" id="feedbackBox">
+      <strong id="feedbackTitle"></strong>
+      <span id="feedbackText"></span>
+    </div>
+    <div class="controls">
+      <button class="next-btn" id="nextBtn">Next Question</button>
+    </div>
+  </div>
+
+  <div class="card results" id="resultsCard">
+    <div class="q-number">Quiz Complete</div>
+    <div class="big-score"><span id="finalScore">0</span> / <span id="finalTotal">10</span></div>
+    <p id="finalPercent"></p>
+    <p class="message" id="finalMessage"></p>
+    <button class="restart-btn" id="restartBtn">Restart Quiz</button>
+  </div>
+
+  <footer>Work &amp; Energy · 11th Grade Physics</footer>
+</div>
+
+<script>
+(function () {
+  var questions = [
+    {
+      text: "A student holds a 15 N textbook stationary at arm's length for two minutes, and their arm gets very tired. How much work does the student do on the book?",
+      options: [
+        "A large amount, because holding it up takes a lot of effort",
+        "Zero, because the book's displacement is zero",
+        "15 J, equal to the weight of the book",
+        "It depends on how heavy the book is"
+      ],
+      correct: 1,
+      explanation: "Work requires displacement: W = Fd cos θ. Since the book never moves (d = 0), no physics work is done on it, no matter how much force is applied or how tired the student's arm gets. Muscular effort and physics work are not the same thing."
+    },
+    {
+      text: "A ball is thrown straight up into the air. While the ball is rising, what is the sign of the work done on it by gravity?",
+      options: [
+        "Positive, because gravity always does positive work near Earth's surface",
+        "Zero, because gravity doesn't act on objects while they're in the air",
+        "Negative, because gravity points downward while the ball moves upward",
+        "Positive on the way up and negative on the way down"
+      ],
+      correct: 2,
+      explanation: "Work is negative when the force and displacement point in opposite directions. While rising, the ball moves up but gravity pulls down (θ = 180°, cos θ = −1), so gravity does negative work, slowing the ball down. (On the way down, gravity and displacement align, so the work becomes positive — the reverse of option D.)"
+    },
+    {
+      text: "Work and energy are both measured in joules. What is the key conceptual difference between them?",
+      options: [
+        "There is no real difference — they're just two names for the same thing",
+        "Work is a process that transfers energy, while energy is a property a system possesses",
+        "Work is always a larger number than energy in any given problem",
+        "Energy is measured in joules, but work is actually measured in newtons"
+      ],
+      correct: 1,
+      explanation: "Sharing units (joules) doesn't make two quantities identical. Energy describes how much a system 'has' (its capacity to do work), while work describes the transfer mechanism — the process by which energy moves into, out of, or between systems via a force acting through a displacement."
+    },
+    {
+      text: "Student A measures a 2 kg ball's height from the floor and calculates PE = 19.6 J. Student B measures the same ball's height from a tabletop it's resting on and calculates PE = 0 J. Who is correct?",
+      options: [
+        "Only Student A, because the floor is the one true zero point",
+        "Only Student B, because the tabletop is physically closer to the ball",
+        "Both can be correct — PE depends on an arbitrary reference height, but the change in PE (ΔPE) between two points is the same either way",
+        "Neither — gravitational PE must always be measured from sea level"
+      ],
+      correct: 2,
+      explanation: "PE_grav = mgh depends entirely on where you choose h = 0, so its absolute value is arbitrary — both students can be 'right' about PE relative to their own reference point. What's physically meaningful, and reference-independent, is the CHANGE in PE (ΔPE) between two positions."
+    },
+    {
+      text: "A skateboarder rolls down a ramp with noticeable friction and air resistance. Which equation correctly relates her energy at the top and bottom of the ramp?",
+      options: [
+        "KE_top + PE_top = KE_bottom + PE_bottom (mechanical energy is always conserved)",
+        "KE_top + PE_top = KE_bottom + PE_bottom + energy converted to heat (mechanical energy is NOT conserved when friction/air resistance act)",
+        "PE_bottom must equal PE_top since energy is always conserved",
+        "KE_bottom = PE_top with no other terms needed"
+      ],
+      correct: 1,
+      explanation: "Conservation of mechanical energy (KE + PE = constant) only holds when no non-conservative forces act. With friction and air resistance present, some mechanical energy converts to heat (and sound), so total mechanical energy at the bottom is less than at the top — even though total energy overall is still conserved."
+    },
+    {
+      text: "A car's speed doubles. What happens to its kinetic energy compared to its momentum?",
+      options: [
+        "Both double",
+        "Kinetic energy quadruples; momentum doubles",
+        "Kinetic energy doubles; momentum quadruples",
+        "Both quadruple"
+      ],
+      correct: 1,
+      explanation: "KE = ½mv² depends on velocity SQUARED, so doubling v quadruples KE (2² = 4). Momentum, p = mv, depends on velocity linearly, so doubling v simply doubles p. These two quantities scale very differently with speed, even though both involve mass and velocity."
+    },
+    {
+      text: "Crane A lifts a 500 kg load to a certain height in 10 seconds. Crane B lifts an identical load to the same height in 20 seconds. Which statement is correct?",
+      options: [
+        "Crane A does more total work than Crane B",
+        "Crane A and Crane B do the same amount of work, but Crane A has greater power",
+        "Crane B has greater power because it took more time",
+        "Power isn't relevant here since the loads and heights are identical"
+      ],
+      correct: 1,
+      explanation: "Both cranes do the same amount of WORK (same force, same distance: W = mgh). But power is the RATE of doing that work (P = W/t), so the crane that does the same work in less time (Crane A) has greater power. Power ≠ work — it's about how fast the energy transfer happens."
+    },
+    {
+      text: "A spring compressed 2 cm stores 4 J of elastic potential energy. If the same spring is instead compressed 4 cm, how much elastic PE does it store?",
+      options: [
+        "8 J — twice as much, since the compression doubled",
+        "16 J — because elastic PE scales with the square of the displacement",
+        "4 J — elastic PE doesn't depend on compression distance",
+        "2 J — half as much, since more compression means less stored energy"
+      ],
+      correct: 1,
+      explanation: "PE_elastic = ½kx² depends on x SQUARED, not on x directly. Doubling the compression (x) quadruples the stored energy (2² = 4), so 4 J becomes 16 J — not simply double. This is a common source of error since many other formulas in this unit scale linearly."
+    },
+    {
+      text: "Two balls of different mass roll down two different frictionless ramps of different shapes, both starting at a height of 5 m and ending at height 0 m. How do their speeds at the bottom compare?",
+      options: [
+        "The heavier ball is faster, because gravity pulls harder on more mass",
+        "The ball on the steeper ramp is faster, because steeper always means faster",
+        "They have the same speed, because final speed depends only on the height dropped when no non-conservative forces act",
+        "It's impossible to know without knowing the exact ramp shapes"
+      ],
+      correct: 2,
+      explanation: "When only conservative forces (like gravity) act, conservation of energy gives v = √(2gh) — mass cancels out, and the ramp's shape/path doesn't matter. Speed at a given height depends only on that height, not on mass or path, as long as no friction or air resistance removes energy along the way."
+    },
+    {
+      text: "A motor lifts a crate at constant speed, exerting a force of 600 N over a distance of 5 m, taking 5 seconds to do so. Which set of values correctly matches each quantity to its proper unit?",
+      options: [
+        "Work = 3000 W, Power = 600 J, Force = 5 N·m",
+        "Work = 3000 J (equivalently 3000 N·m), Power = 600 W, Force = 600 N",
+        "Work = 600 J, Power = 3000 W, Force = 5 N",
+        "Work, power, and force are all measured in joules since they're part of the same calculation"
+      ],
+      correct: 1,
+      explanation: "Work = Fd = (600 N)(5 m) = 3000 J, which can also correctly be written as 3000 N·m since a joule of work IS a newton-meter. Power = W/t = 3000 J / 5 s = 600 W (watts, not joules — power is J/s). Force stays in newtons (600 N). Mixing these up is a very common multi-step-problem error."
+    }
+  ];
+
+  var current = 0;
+  var score = 0;
+  var answered = 0;
+  var locked = false;
+
+  var qNumberLabel = document.getElementById('qNumberLabel');
+  var qText = document.getElementById('qText');
+  var optionsContainer = document.getElementById('optionsContainer');
+  var feedbackBox = document.getElementById('feedbackBox');
+  var feedbackTitle = document.getElementById('feedbackTitle');
+  var feedbackText = document.getElementById('feedbackText');
+  var nextBtn = document.getElementById('nextBtn');
+  var scoreDisplay = document.getElementById('scoreDisplay');
+  var answeredDisplay = document.getElementById('answeredDisplay');
+  var currentQNum = document.getElementById('currentQNum');
+  var totalQNum = document.getElementById('totalQNum');
+  var progressFill = document.getElementById('progressFill');
+  var quizCard = document.getElementById('quizCard');
+  var resultsCard = document.getElementById('resultsCard');
+  var finalScore = document.getElementById('finalScore');
+  var finalTotal = document.getElementById('finalTotal');
+  var finalPercent = document.getElementById('finalPercent');
+  var finalMessage = document.getElementById('finalMessage');
+  var restartBtn = document.getElementById('restartBtn');
+
+  totalQNum.textContent = questions.length;
+  finalTotal.textContent = questions.length;
+
+  function renderQuestion() {
+    locked = false;
+    var q = questions[current];
+    qNumberLabel.textContent = 'Question ' + (current + 1);
+    currentQNum.textContent = current + 1;
+    qText.textContent = q.text;
+    optionsContainer.innerHTML = '';
+    feedbackBox.className = 'feedback';
+    feedbackBox.classList.remove('show');
+    nextBtn.classList.remove('show');
+    progressFill.style.width = (current / questions.length * 100) + '%';
+
+    var letters = ['A', 'B', 'C', 'D'];
+    q.options.forEach(function (optText, idx) {
+      var btn = document.createElement('button');
+      btn.className = 'option';
+      btn.type = 'button';
+      var letterSpan = document.createElement('span');
+      letterSpan.className = 'letter';
+      letterSpan.textContent = letters[idx] + '.';
+      var textSpan = document.createElement('span');
+      textSpan.textContent = optText;
+      btn.appendChild(letterSpan);
+      btn.appendChild(textSpan);
+      btn.addEventListener('click', function () { handleAnswer(idx, btn); });
+      optionsContainer.appendChild(btn);
+    });
+  }
+
+  function handleAnswer(selectedIdx, selectedBtn) {
+    if (locked) return;
+    locked = true;
+    answered++;
+    var q = questions[current];
+    var isCorrect = selectedIdx === q.correct;
+    if (isCorrect) score++;
+
+    var allBtns = optionsContainer.querySelectorAll('.option');
+    allBtns.forEach(function (btn, idx) {
+      btn.disabled = true;
+      if (idx === q.correct) {
+        btn.classList.add('correct');
+      } else if (idx === selectedIdx && !isCorrect) {
+        btn.classList.add('incorrect');
+      }
+    });
+
+    feedbackBox.classList.add('show');
+    if (isCorrect) {
+      feedbackBox.classList.add('correct-fb');
+      feedbackTitle.textContent = 'Correct!';
+    } else {
+      feedbackBox.classList.add('incorrect-fb');
+      feedbackTitle.textContent = 'Not quite.';
+    }
+    feedbackText.textContent = q.explanation;
+
+    scoreDisplay.textContent = score;
+    answeredDisplay.textContent = answered;
+    progressFill.style.width = ((current + 1) / questions.length * 100) + '%';
+
+    nextBtn.classList.add('show');
+    nextBtn.textContent = (current === questions.length - 1) ? 'See Results' : 'Next Question';
+  }
+
+  function goNext() {
+    if (current < questions.length - 1) {
+      current++;
+      renderQuestion();
+    } else {
+      showResults();
+    }
+  }
+
+  function showResults() {
+    quizCard.classList.add('hidden');
+    resultsCard.classList.add('show');
+    finalScore.textContent = score;
+    var pct = Math.round((score / questions.length) * 100);
+    finalPercent.textContent = pct + '% correct';
+    var msg;
+    if (pct === 100) {
+      msg = "Perfect score! You've got a very solid handle on work, energy, and power — including the tricky misconceptions.";
+    } else if (pct >= 80) {
+      msg = "Great work! You understand these concepts well — review the explanations for any missed questions to lock it in.";
+    } else if (pct >= 60) {
+      msg = "Good effort. Revisit the Cornell Notes and README, especially the questions you missed, then try again.";
+    } else {
+      msg = "This topic has some tricky misconceptions — go back through the Key Concepts section and worked examples, then retake the quiz.";
+    }
+    finalMessage.textContent = msg;
+  }
+
+  function restartQuiz() {
+    current = 0;
+    score = 0;
+    answered = 0;
+    locked = false;
+    scoreDisplay.textContent = '0';
+    answeredDisplay.textContent = '0';
+    resultsCard.classList.remove('show');
+    quizCard.classList.remove('hidden');
+    renderQuestion();
+  }
+
+  nextBtn.addEventListener('click', goNext);
+  restartBtn.addEventListener('click', restartQuiz);
+
+  renderQuestion();
+})();
+</script>
+</body>
+</html>
