@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinematics Quiz — Commonly Missed Questions</title>
+<style>
+  :root {
+    --bg: #f4f6f9;
+    --card-bg: #ffffff;
+    --text: #1c2530;
+    --muted: #5b6774;
+    --accent: #2b6cb0;
+    --accent-dark: #1e4e80;
+    --correct-bg: #e6f6ea;
+    --correct-border: #2f9e44;
+    --incorrect-bg: #fdecec;
+    --incorrect-border: #d9463c;
+    --option-border: #d6dce3;
+    --option-hover: #eef3f9;
+    --progress-track: #e3e8ee;
+    --shadow: 0 2px 8px rgba(20, 30, 45, 0.08);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 16px 64px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    margin: 0 0 6px;
+    color: var(--accent-dark);
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  .scoreboard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 12px 16px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+  }
+
+  .score-text {
+    font-weight: 600;
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+
+  .progress-track {
+    flex: 1 1 140px;
+    height: 8px;
+    background: var(--progress-track);
+    border-radius: 999px;
+    overflow: hidden;
+    min-width: 100px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-bottom: 18px;
+  }
+
+  .q-number {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: #e8f1fb;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+  }
+
+  .q-text {
+    font-size: 1.08rem;
+    font-weight: 600;
+    margin: 0 0 14px;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    text-align: left;
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--option-border);
+    border-radius: 10px;
+    background: var(--card-bg);
+    color: var(--text);
+    font-size: 0.98rem;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+  }
+
+  .option:hover:not(:disabled) {
+    background: var(--option-hover);
+    border-color: var(--accent);
+  }
+
+  .option:active:not(:disabled) {
+    transform: scale(0.995);
+  }
+
+  .option:disabled {
+    cursor: default;
+  }
+
+  .option .letter {
+    flex: 0 0 auto;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 1.2em;
+  }
+
+  .option.selected-correct {
+    background: var(--correct-bg);
+    border-color: var(--correct-border);
+  }
+
+  .option.selected-incorrect {
+    background: var(--incorrect-bg);
+    border-color: var(--incorrect-border);
+  }
+
+  .option.reveal-correct {
+    background: var(--correct-bg);
+    border-color: var(--correct-border);
+  }
+
+  .feedback {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    display: none;
+  }
+
+  .feedback.show {
+    display: block;
+  }
+
+  .feedback.correct {
+    background: var(--correct-bg);
+    border: 1px solid var(--correct-border);
+    color: #1b5e2a;
+  }
+
+  .feedback.incorrect {
+    background: var(--incorrect-bg);
+    border: 1px solid var(--incorrect-border);
+    color: #8a2c25;
+  }
+
+  .feedback strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .results {
+    display: none;
+    text-align: center;
+    background: var(--card-bg);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 32px 20px;
+  }
+
+  .results.show {
+    display: block;
+  }
+
+  .results h2 {
+    margin-top: 0;
+    color: var(--accent-dark);
+  }
+
+  .results .big-score {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin: 8px 0;
+  }
+
+  .results p.msg {
+    color: var(--muted);
+    margin-bottom: 22px;
+  }
+
+  button.restart {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 12px 26px;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  button.restart:hover {
+    background: var(--accent-dark);
+  }
+
+  .quiz-body.hide {
+    display: none;
+  }
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 28px;
+  }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 1.35rem; }
+    .card { padding: 16px; }
+    .q-text { font-size: 1rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Kinematics Quiz — Commonly Missed Questions</h1>
+    <p class="subtitle">10 questions targeting the trickiest ideas in 1D motion. Pick an answer to see instant feedback.</p>
+  </header>
+
+  <div class="scoreboard">
+    <span class="score-text">Score: <span id="scoreVal">0</span> / <span id="totalVal">10</span></span>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <span class="score-text" id="questionCounter">Question 1 of 10</span>
+  </div>
+
+  <div class="quiz-body" id="quizBody"></div>
+
+  <div class="results" id="resultsPanel">
+    <h2>Quiz Complete</h2>
+    <div class="big-score"><span id="finalScore">0</span> / 10</div>
+    <p class="msg" id="finalMsg"></p>
+    <button class="restart" id="restartBtn">Restart Quiz</button>
+  </div>
+
+  <footer>Kinematics Module — 11th Grade Physics</footer>
+</div>
+
+<script>
+(function () {
+  var questions = [
+    {
+      q: "A runner completes one full lap of a 400 m track in 80 seconds, finishing back at the starting line. What is the runner's average velocity for the lap?",
+      options: [
+        "5 m/s",
+        "0 m/s",
+        "10 m/s",
+        "It cannot be determined without knowing the track's shape"
+      ],
+      correct: 1,
+      explanation: "Average velocity depends on displacement, not distance. Since the runner returns to the exact starting point, the displacement is zero, so average velocity = 0 m/s — even though average speed (400 m / 80 s = 5 m/s) is not zero. Speed and velocity answer different questions."
+    },
+    {
+      q: "On a velocity-time graph, the shaded area between the curve and the time axis over an interval represents:",
+      options: [
+        "The object's acceleration during that interval",
+        "The object's instantaneous velocity at the end of the interval",
+        "The object's displacement during that interval",
+        "The object's average speed during that interval"
+      ],
+      correct: 2,
+      explanation: "On a velocity-time graph, area under the curve equals displacement (this comes from displacement = velocity × time for each thin strip of area). Slope, not area, gives acceleration on this graph — mixing up slope and area is one of the most common graph-reading mistakes."
+    },
+    {
+      q: "A car is moving in the negative direction and gradually slowing down until it stops. What is the sign of its acceleration?",
+      options: [
+        "Negative, because the car is slowing down",
+        "Positive, because slowing down means acceleration opposes the direction of motion",
+        "Zero, because deceleration always means zero acceleration",
+        "It cannot be determined without more information"
+      ],
+      correct: 1,
+      explanation: "Acceleration's sign depends on the direction it points, not on whether the object is speeding up. Here velocity is negative and decreasing in magnitude (moving toward zero), so the change in velocity (Δv) is positive — meaning acceleration is positive, even though the car is slowing down. Speeding up vs. slowing down depends on whether v and a share the same sign (speeding up) or opposite signs (slowing down)."
+    },
+    {
+      q: "A hiker walks 3 km east, then turns around and walks 3 km back west to her starting point. What are her total distance and total displacement?",
+      options: [
+        "Distance = 6 km, Displacement = 6 km",
+        "Distance = 0 km, Displacement = 0 km",
+        "Distance = 6 km, Displacement = 0 km",
+        "Distance = 3 km, Displacement = 0 km"
+      ],
+      correct: 2,
+      explanation: "Distance is the total path length traveled regardless of direction, so it adds up: 3 km + 3 km = 6 km. Displacement only cares about the net change in position — since she ends up exactly where she started, displacement = 0 km. Round trips are the classic case where distance and displacement diverge sharply."
+    },
+    {
+      q: "A ball is thrown straight upward. At the exact instant it reaches the top of its path, which statement is correct?",
+      options: [
+        "Both velocity and acceleration are zero",
+        "Velocity is zero and acceleration is zero, because the ball is momentarily at rest",
+        "Velocity is zero, but acceleration is still −9.8 m/s² (downward)",
+        "Velocity is at its maximum, and acceleration is zero"
+      ],
+      correct: 2,
+      explanation: "At the peak, the ball's velocity is instantaneously zero because it has stopped moving up and hasn't started moving down yet. But gravity never stops acting — acceleration remains g = 9.8 m/s² downward throughout the entire flight, including at the top. Zero velocity does not imply zero acceleration; this is one of the most frequently missed ideas in free-fall problems."
+    },
+    {
+      q: "A problem gives you initial velocity, acceleration, and time elapsed, and asks you to find the final displacement (no final velocity given or needed). Which kinematic equation should you use directly?",
+      options: [
+        "v = v₀ + at",
+        "Δx = v₀t + ½at²",
+        "v² = v₀² + 2aΔx",
+        "Δx = ½(v₀ + v)t"
+      ],
+      correct: 1,
+      explanation: "Δx = v₀t + ½at² is the only one of the four equations that doesn't require the final velocity v — it uses only v₀, a, and t to solve for Δx directly, matching exactly the knowns given. Picking the right equation means checking which variable is missing from both your knowns and what you need."
+    },
+    {
+      q: "A car travels at a constant, unchanging acceleration of 3 m/s² for 10 seconds. Which statement about its velocity during this time is true?",
+      options: [
+        "Its velocity is also constant, since acceleration is constant",
+        "Its velocity increases by the same amount, 3 m/s, during every second",
+        "Its velocity stays at 3 m/s the whole time",
+        "Its velocity cannot change if acceleration doesn't change"
+      ],
+      correct: 1,
+      explanation: "Constant acceleration means velocity changes at a steady rate — it does NOT mean velocity itself is constant. With a = 3 m/s², velocity increases by 3 m/s every second (e.g., 0, 3, 6, 9... m/s). Confusing 'constant acceleration' with 'constant velocity' is a very common error — they describe different quantities entirely."
+    },
+    {
+      q: "An object has a velocity of −8 m/s. What does the negative sign tell you?",
+      options: [
+        "The object is not moving",
+        "The object is moving in the negative direction at a speed of 8 m/s",
+        "The object is decelerating",
+        "There is an error, since velocity cannot be negative"
+      ],
+      correct: 1,
+      explanation: "In one-dimensional motion, a negative velocity simply means the object is moving in the direction chosen as negative — it says nothing by itself about whether the object is speeding up or slowing down, and it definitely does not mean the object is at rest. The sign encodes direction; the magnitude (8 m/s) encodes speed."
+    },
+    {
+      q: "A position-time graph shows a smooth curve that bends upward more and more steeply over time (not a straight line). What does this tell you about the object's motion?",
+      options: [
+        "The object is moving at constant velocity",
+        "The object is at rest",
+        "The object's velocity is changing, so it has non-zero acceleration",
+        "The graph must contain an error, since position-time graphs should always be straight lines"
+      ],
+      correct: 2,
+      explanation: "The slope of a position-time graph gives the velocity at each instant. If the curve isn't straight — here it gets steeper over time — the slope (velocity) is changing, which means the object has non-zero acceleration. Only a straight-line position-time graph corresponds to constant velocity (zero acceleration)."
+    },
+    {
+      q: "A student calculates a car's stopping distance using two measured quantities: a reaction-time distance of 22.4 m (3 sig figs) and a braking distance of 55.0 m (3 sig figs). Adding these, a calculator shows 77.4 m. How should the final answer be reported?",
+      options: [
+        "77.400 m, to show all the calculator's digits",
+        "77.4 m, matching the precision of the least precise measurement",
+        "77 m, rounding to 2 sig figs to be safe",
+        "80 m, rounding to 1 sig fig"
+      ],
+      correct: 1,
+      explanation: "Both given values have 3 significant figures, so the sum should also be reported with a precision consistent with the least precise input — here, both inputs support 3 sig figs, so 77.4 m is correct. Reporting extra digits from a calculator display (like 77.400 m) falsely implies more precision than the original measurements actually have."
+    }
+  ];
+
+  var current = 0;
+  var score = 0;
+  var answered = [];
+
+  var quizBody = document.getElementById('quizBody');
+  var resultsPanel = document.getElementById('resultsPanel');
+  var scoreVal = document.getElementById('scoreVal');
+  var totalVal = document.getElementById('totalVal');
+  var progressFill = document.getElementById('progressFill');
+  var questionCounter = document.getElementById('questionCounter');
+  var finalScore = document.getElementById('finalScore');
+  var finalMsg = document.getElementById('finalMsg');
+  var restartBtn = document.getElementById('restartBtn');
+
+  totalVal.textContent = questions.length;
+
+  function letterFor(i) {
+    return String.fromCharCode(65 + i);
+  }
+
+  function renderQuestion() {
+    if (current >= questions.length) {
+      showResults();
+      return;
+    }
+
+    quizBody.classList.remove('hide');
+    resultsPanel.classList.remove('show');
+
+    var qObj = questions[current];
+    questionCounter.textContent = 'Question ' + (current + 1) + ' of ' + questions.length;
+    progressFill.style.width = ((current) / questions.length * 100) + '%';
+
+    var card = document.createElement('div');
+    card.className = 'card';
+
+    var num = document.createElement('div');
+    num.className = 'q-number';
+    num.textContent = 'Question ' + (current + 1);
+    card.appendChild(num);
+
+    var qText = document.createElement('p');
+    qText.className = 'q-text';
+    qText.textContent = qObj.q;
+    card.appendChild(qText);
+
+    var optionsWrap = document.createElement('div');
+    optionsWrap.className = 'options';
+
+    var feedback = document.createElement('div');
+    feedback.className = 'feedback';
+
+    qObj.options.forEach(function (optText, idx) {
+      var btn = document.createElement('button');
+      btn.className = 'option';
+      btn.type = 'button';
+
+      var letterSpan = document.createElement('span');
+      letterSpan.className = 'letter';
+      letterSpan.textContent = letterFor(idx) + '.';
+
+      var textSpan = document.createElement('span');
+      textSpan.textContent = optText;
+
+      btn.appendChild(letterSpan);
+      btn.appendChild(textSpan);
+
+      btn.addEventListener('click', function () {
+        handleAnswer(idx, qObj, optionsWrap, feedback);
+      });
+
+      optionsWrap.appendChild(btn);
+    });
+
+    card.appendChild(optionsWrap);
+    card.appendChild(feedback);
+
+    quizBody.innerHTML = '';
+    quizBody.appendChild(card);
+  }
+
+  function handleAnswer(selectedIdx, qObj, optionsWrap, feedbackEl) {
+    var buttons = optionsWrap.querySelectorAll('.option');
+    var isCorrect = selectedIdx === qObj.correct;
+
+    buttons.forEach(function (btn, idx) {
+      btn.disabled = true;
+      if (idx === selectedIdx && idx === qObj.correct) {
+        btn.classList.add('selected-correct');
+      } else if (idx === selectedIdx && idx !== qObj.correct) {
+        btn.classList.add('selected-incorrect');
+      } else if (idx === qObj.correct) {
+        btn.classList.add('reveal-correct');
+      }
+    });
+
+    feedbackEl.classList.add('show');
+    feedbackEl.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+    var label = document.createElement('strong');
+    label.textContent = isCorrect ? 'Correct!' : 'Not quite — correct answer: ' + letterFor(qObj.correct) + '. ' + qObj.options[qObj.correct];
+    feedbackEl.innerHTML = '';
+    feedbackEl.appendChild(label);
+
+    var explanation = document.createElement('div');
+    explanation.textContent = qObj.explanation;
+    feedbackEl.appendChild(explanation);
+
+    if (isCorrect) {
+      score++;
+      scoreVal.textContent = score;
+    }
+
+    progressFill.style.width = ((current + 1) / questions.length * 100) + '%';
+
+    var nextBtn = document.createElement('button');
+    nextBtn.className = 'restart';
+    nextBtn.type = 'button';
+    nextBtn.style.marginTop = '14px';
+    nextBtn.textContent = (current === questions.length - 1) ? 'See Results' : 'Next Question';
+    nextBtn.addEventListener('click', function () {
+      current++;
+      renderQuestion();
+    });
+    feedbackEl.appendChild(document.createElement('br'));
+    feedbackEl.appendChild(nextBtn);
+  }
+
+  function showResults() {
+    quizBody.classList.add('hide');
+    resultsPanel.classList.add('show');
+    questionCounter.textContent = 'Quiz complete';
+    progressFill.style.width = '100%';
+    finalScore.textContent = score;
+
+    var pct = Math.round((score / questions.length) * 100);
+    var msg;
+    if (pct === 100) {
+      msg = "Perfect score! You've cleared up the most common kinematics misconceptions.";
+    } else if (pct >= 80) {
+      msg = "Strong work — you're proficient. Review the missed explanations to lock in mastery.";
+    } else if (pct >= 50) {
+      msg = "Solid start. Revisit the Cornell Notes for the ideas you missed, especially sign conventions and graphs.";
+    } else {
+      msg = "This topic has some tricky ideas — go back through the README and Cornell Notes, then try again.";
+    }
+    finalMsg.textContent = msg;
+  }
+
+  restartBtn.addEventListener('click', function () {
+    current = 0;
+    score = 0;
+    scoreVal.textContent = 0;
+    renderQuestion();
+  });
+
+  renderQuestion();
+})();
+</script>
+</body>
+</html>
