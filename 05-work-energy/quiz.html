@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work & Energy Quiz — Most Missed Questions</title>
+<style>
+  :root {
+    --bg: #f4f6f9;
+    --card: #ffffff;
+    --ink: #1c2733;
+    --muted: #5b6b7b;
+    --accent: #2b5fad;
+    --accent-ink: #ffffff;
+    --correct: #1e8e3e;
+    --correct-bg: #e6f4ea;
+    --incorrect: #c5221f;
+    --incorrect-bg: #fce8e6;
+    --border: #dde3ea;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    padding: 24px 16px 64px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  header { margin-bottom: 20px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-size: 0.95rem; }
+  .progress-bar {
+    height: 8px; background: var(--border); border-radius: 999px; overflow: hidden; margin-top: 14px;
+  }
+  .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width .25s ease; }
+  .progress-label { font-size: 0.85rem; color: var(--muted); margin-top: 6px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .qtag {
+    display: inline-block; font-size: 0.75rem; font-weight: 600; letter-spacing: .03em;
+    color: var(--accent); text-transform: uppercase; margin-bottom: 8px;
+  }
+  .qtext { font-size: 1.05rem; font-weight: 600; margin-bottom: 14px; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option {
+    display: flex; align-items: flex-start; gap: 10px;
+    border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px;
+    cursor: pointer; background: #fbfcfd; transition: border-color .15s ease, background .15s ease;
+  }
+  .option:hover { border-color: var(--accent); }
+  .option input { margin-top: 3px; }
+  .option.correct { border-color: var(--correct); background: var(--correct-bg); }
+  .option.incorrect { border-color: var(--incorrect); background: var(--incorrect-bg); }
+  .option.disabled { cursor: default; }
+
+  .explain {
+    margin-top: 14px; padding: 12px 14px; border-radius: 8px;
+    font-size: 0.95rem; display: none;
+  }
+  .explain.show { display: block; }
+  .explain.correct-box { background: var(--correct-bg); color: #14532d; }
+  .explain.incorrect-box { background: var(--incorrect-bg); color: #7a1a17; }
+
+  .actions { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
+  button {
+    font: inherit; font-weight: 600; border: none; border-radius: 8px;
+    padding: 10px 18px; cursor: pointer; background: var(--accent); color: var(--accent-ink);
+  }
+  button:disabled { opacity: 0.45; cursor: not-allowed; }
+  button.secondary { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+
+  .summary { text-align: center; }
+  .score-big { font-size: 2.6rem; font-weight: 700; margin: 8px 0; }
+  .score-note { color: var(--muted); margin-bottom: 20px; }
+  .review-item { text-align: left; padding: 12px 0; border-top: 1px solid var(--border); }
+  .review-item:first-child { border-top: none; }
+  .review-item .qtext { font-size: 0.98rem; }
+  .badge-pass { color: var(--correct); font-weight: 700; }
+  .badge-fail { color: var(--incorrect); font-weight: 700; }
+  .hidden { display: none !important; }
+  footer { text-align: center; color: var(--muted); font-size: 0.8rem; margin-top: 24px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Work &amp; Energy — Most Missed Questions</h1>
+    <div class="sub">10 questions targeting the mistakes students make most often on this unit. Pick the best answer, then check it — every question explains the reasoning either way.</div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">Question 1 of 10</div>
+  </header>
+
+  <div id="quizArea"></div>
+
+  <div id="summaryArea" class="card summary hidden">
+    <div class="qtag">Results</div>
+    <div class="score-big" id="scoreBig"></div>
+    <div class="score-note" id="scoreNote"></div>
+    <div id="reviewList"></div>
+    <div class="actions" style="justify-content:center; margin-top:20px;">
+      <button class="secondary" id="retakeBtn">Retake Quiz</button>
+    </div>
+  </div>
+
+  <footer>Standalone file — works offline, no data leaves this page.</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    tag: "Zero work — perpendicular force",
+    text: "A satellite moves in a circular orbit around the Earth at constant speed. Gravity is the only force acting on it. How much work does gravity do on the satellite per orbit?",
+    options: [
+      "A large positive amount, since gravity is a strong force acting the whole time.",
+      "Zero, because gravity (centripetal, pointing toward Earth) is always perpendicular to the satellite's velocity (tangent to the orbit).",
+      "A large negative amount, since gravity is always pulling the satellite inward.",
+      "It depends on the satellite's mass."
+    ],
+    correct: 1,
+    explain: "Work is W = F·d·cos(θ), and for a circular orbit the gravitational force always points toward the center while the velocity (and displacement) is always tangent to the circle — the angle between them is always 90°, so cos(90°) = 0. Gravity changes the satellite's direction but never its speed, which is exactly what zero work implies (no change in kinetic energy)."
+  },
+  {
+    tag: "Zero work — no displacement",
+    text: "A person pushes as hard as they can against a brick wall for 30 seconds, but the wall does not move at all. How much work does the person do on the wall?",
+    options: [
+      "A large amount, proportional to how hard they pushed.",
+      "A moderate amount, proportional to the 30 seconds they pushed.",
+      "Zero, because work requires displacement and the wall didn't move.",
+      "It's impossible to know without knowing the person's mass."
+    ],
+    correct: 2,
+    explain: "W = F·d·cos(θ). No matter how large F is, if d = 0 then W = 0. The person may get tired (their muscles convert chemical energy to heat internally), but no mechanical work is done ON the wall, because the wall never moves."
+  },
+  {
+    tag: "Work-energy theorem",
+    text: "A 1000 kg car traveling at 15 m/s comes to a complete stop due to braking. What does the work-energy theorem say about the net work done on the car during braking?",
+    options: [
+      "The net work is zero, since the car ends up at rest just like it started (from a physics standpoint, at rest is at rest).",
+      "The net work equals the car's final kinetic energy minus its initial kinetic energy, which is a negative number equal in size to its initial KE.",
+      "The net work equals the car's momentum change.",
+      "The net work cannot be found without knowing the braking distance."
+    ],
+    correct: 1,
+    explain: "The work-energy theorem states W_net = ΔKE = KE_f − KE_i. Here KE_f = 0 and KE_i = ½(1000)(15²) = 112,500 J, so W_net = −112,500 J. The negative sign makes sense: the net force (friction/braking) opposed the motion, removing kinetic energy from the car. You don't need distance or force separately to state this relationship — only to solve for one of them individually."
+  },
+  {
+    tag: "Kinetic energy formula",
+    text: "A student writes the kinetic energy of a 4 kg object moving at 3 m/s as KE = mv = (4)(3) = 12. What is wrong with this calculation?",
+    options: [
+      "Nothing — that's correct.",
+      "They used the momentum formula (mv) instead of the kinetic energy formula (½mv²); the correct KE is 18 J.",
+      "They forgot to include a negative sign, since velocity could be negative.",
+      "The units should be kg·m/s, not joules, so the formula is fine but the units are wrong."
+    ],
+    correct: 1,
+    explain: "Kinetic energy is KE = ½mv² = ½(4)(3²) = ½(4)(9) = 18 J, not mv. Writing \"KE = mv\" confuses kinetic energy with momentum (p = mv) — a very common mix-up. Also note KE is a scalar, so even if velocity were negative, squaring it would still give a non-negative KE — energy can never come out negative."
+  },
+  {
+    tag: "Kinetic energy — scalar and non-negative",
+    text: "An object's velocity changes from +6 m/s to −6 m/s (it reverses direction but keeps the same speed). What happens to its kinetic energy?",
+    options: [
+      "KE becomes negative, since velocity is now negative.",
+      "KE stays exactly the same, since KE depends on v², and (−6)² = (6)² = 36.",
+      "KE doubles.",
+      "KE becomes zero, since velocity passed through zero during the reversal."
+    ],
+    correct: 1,
+    explain: "KE = ½mv² depends on the SQUARE of velocity, so direction doesn't matter — only speed does. Since the speed is unchanged (6 m/s either way), KE is unchanged. Kinetic energy is a scalar and is always ≥ 0; it can never be negative, regardless of the sign of velocity."
+  },
+  {
+    tag: "Potential energy reference point",
+    text: "Two students calculate the gravitational PE of the same 2 kg book sitting on a 1 m high table. Student A sets h = 0 at the floor and gets PE = 19.6 J. Student B sets h = 0 at the tabletop itself and gets PE = 0 J. Who is correct?",
+    options: [
+      "Student A is correct; Student B made an error.",
+      "Student B is correct; Student A made an error.",
+      "Both are correct — PE's absolute value depends on the arbitrary choice of reference height, so different valid choices give different numbers.",
+      "Neither is correct; PE must always be measured from sea level."
+    ],
+    correct: 2,
+    explain: "Gravitational PE = mgh is only meaningful relative to a chosen reference point (datum). There is no single \"true\" absolute PE. Both students made valid, self-consistent choices. What both students WILL agree on is any change in PE (ΔPE) as the book moves between two heights — that quantity doesn't depend on where h = 0 was placed."
+  },
+  {
+    tag: "Conservation of mechanical energy",
+    text: "A block slides down a ramp that has significant friction. A student writes KE_i + PE_i = KE_f + PE_f to find the block's final speed. Is this valid?",
+    options: [
+      "Yes, mechanical energy is always conserved regardless of friction.",
+      "No — with friction present doing negative work on the block, mechanical energy is NOT conserved; some of it converts to heat, so this equation will overestimate the final speed.",
+      "No, because friction destroys energy entirely, violating conservation of energy.",
+      "Yes, as long as the ramp angle is known."
+    ],
+    correct: 1,
+    explain: "Mechanical energy (KE + PE) is only conserved when non-conservative forces like friction do zero net work. When friction acts, it removes energy from the mechanical system and converts it to heat (and some sound) — so KE_i + PE_i = KE_f + PE_f is not valid here; you'd need KE_i + PE_i = KE_f + PE_f + (heat generated). Total energy is still conserved, but not the purely mechanical part."
+  },
+  {
+    tag: "Conservation of mechanical energy",
+    text: "If mechanical energy decreases in a system with friction, what happened to the 'missing' energy?",
+    options: [
+      "It was destroyed — energy is not always conserved in the real world.",
+      "It converted into other forms, primarily thermal energy (heat) and some sound, so total energy is still conserved.",
+      "It converted directly back into potential energy.",
+      "Nothing — the calculation must have been done incorrectly if energy appears to decrease."
+    ],
+    correct: 1,
+    explain: "Energy is never destroyed. When mechanical energy (KE + PE) decreases due to friction or air resistance, that energy doesn't vanish — it converts into thermal energy and sound. Total energy, including these other forms, remains constant. Only the mechanical portion (KE + PE) can decrease when non-conservative forces act."
+  },
+  {
+    tag: "Power vs. work/energy",
+    text: "Two identical motors each lift the same 50 kg crate to the same height of 10 m. Motor A takes 5 seconds; Motor B takes 10 seconds. Which statement is correct?",
+    options: [
+      "Motor A did more work, since it finished faster.",
+      "Motor A and Motor B did the same amount of work, but Motor A delivered twice the power.",
+      "Motor B did more work, since it ran longer.",
+      "Both motors delivered the same power, since they did the same work."
+    ],
+    correct: 1,
+    explain: "Work depends only on force and displacement (here, lifting the same crate the same height means the same work, W = mgh, for both). Power is the RATE of doing work, P = W/t. Since Motor A did the same work in half the time, its power output was twice as large. Faster does not mean \"more energy used\" — it means the same (or different) energy delivered more quickly."
+  },
+  {
+    tag: "Elastic potential energy",
+    text: "A spring with spring constant k = 400 N/m is compressed 0.1 m from its natural length. What is the elastic potential energy stored, and how would this change if the spring were instead stretched 0.1 m from its natural length?",
+    options: [
+      "PE = 2 J when compressed; PE = −2 J when stretched, since stretching is the opposite of compressing.",
+      "PE = 2 J in both cases, since PE_spring = ½kx² depends on x², so compression and stretching by the same amount store the same (positive) energy.",
+      "PE = 4 J in both cases, since spring PE is always double the compression.",
+      "PE = 40 J when compressed; PE = 0 J when stretched."
+    ],
+    correct: 1,
+    explain: "PE_spring = ½kx² = ½(400)(0.1²) = 2 J. Because x is squared, the sign of the displacement (stretch vs. compression) doesn't matter — a spring stores the same amount of elastic potential energy for equal displacements in either direction, and that energy is always non-negative, just like kinetic energy."
+  }
+];
+
+let current = 0;
+let answered = new Array(QUESTIONS.length).fill(null);
+const quizArea = document.getElementById('quizArea');
+const summaryArea = document.getElementById('summaryArea');
+const progressFill = document.getElementById('progressFill');
+const progressLabel = document.getElementById('progressLabel');
+
+function renderQuestion(i) {
+  const q = QUESTIONS[i];
+  const chosen = answered[i];
+  const isAnswered = chosen !== null;
+
+  progressFill.style.width = ((i) / QUESTIONS.length * 100) + '%';
+  progressLabel.textContent = `Question ${i + 1} of ${QUESTIONS.length}`;
+
+  let optsHtml = q.options.map((opt, idx) => {
+    let cls = 'option';
+    if (isAnswered) {
+      cls += ' disabled';
+      if (idx === q.correct) cls += ' correct';
+      else if (idx === chosen) cls += ' incorrect';
+    }
+    return `
+      <label class="${cls}" data-idx="${idx}">
+        <input type="radio" name="opt" value="${idx}" ${chosen === idx ? 'checked' : ''} ${isAnswered ? 'disabled' : ''}>
+        <span>${opt}</span>
+      </label>`;
+  }).join('');
+
+  let explainHtml = '';
+  if (isAnswered) {
+    const boxClass = chosen === q.correct ? 'correct-box' : 'incorrect-box';
+    const verdict = chosen === q.correct ? 'Correct.' : 'Not quite.';
+    explainHtml = `<div class="explain show ${boxClass}"><strong>${verdict}</strong> ${q.explain}</div>`;
+  }
+
+  quizArea.innerHTML = `
+    <div class="card">
+      <div class="qtag">${q.tag}</div>
+      <div class="qtext">${q.text}</div>
+      <div class="options">${optsHtml}</div>
+      ${explainHtml}
+      <div class="actions">
+        <button class="secondary" id="prevBtn" ${i === 0 ? 'disabled' : ''}>Back</button>
+        <button id="nextBtn" ${isAnswered ? '' : 'disabled'}>${i === QUESTIONS.length - 1 ? 'See Results' : 'Next'}</button>
+      </div>
+    </div>`;
+
+  if (!isAnswered) {
+    quizArea.querySelectorAll('.option').forEach(el => {
+      el.addEventListener('click', () => {
+        const idx = parseInt(el.getAttribute('data-idx'), 10);
+        answered[i] = idx;
+        renderQuestion(i);
+      });
+    });
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', () => {
+    current = Math.max(0, current - 1);
+    renderQuestion(current);
+  });
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    if (current === QUESTIONS.length - 1) {
+      showSummary();
+    } else {
+      current++;
+      renderQuestion(current);
+    }
+  });
+}
+
+function showSummary() {
+  quizArea.classList.add('hidden');
+  summaryArea.classList.remove('hidden');
+  progressFill.style.width = '100%';
+  progressLabel.textContent = `Question ${QUESTIONS.length} of ${QUESTIONS.length} — complete`;
+
+  const correctCount = answered.reduce((sum, a, i) => sum + (a === QUESTIONS[i].correct ? 1 : 0), 0);
+  const pct = Math.round((correctCount / QUESTIONS.length) * 100);
+  document.getElementById('scoreBig').textContent = `${correctCount} / ${QUESTIONS.length} (${pct}%)`;
+  const pass = pct >= 80;
+  document.getElementById('scoreNote').innerHTML = pass
+    ? '<span class="badge-pass">Mastery threshold met (≥ 80%).</span>'
+    : '<span class="badge-fail">Below the 80% mastery threshold — review the missed questions below, then retake.</span>';
+
+  const reviewList = document.getElementById('reviewList');
+  reviewList.innerHTML = QUESTIONS.map((q, i) => {
+    const chosen = answered[i];
+    const ok = chosen === q.correct;
+    return `
+      <div class="review-item">
+        <div class="qtag">${q.tag} — ${ok ? '<span class="badge-pass">Correct</span>' : '<span class="badge-fail">Missed</span>'}</div>
+        <div class="qtext">${q.text}</div>
+        <div style="color:var(--muted); font-size:0.9rem;">Your answer: ${q.options[chosen]}</div>
+        ${ok ? '' : `<div style="color:var(--muted); font-size:0.9rem;">Correct answer: ${q.options[q.correct]}</div>`}
+        <div style="margin-top:6px; font-size:0.92rem;">${q.explain}</div>
+      </div>`;
+  }).join('');
+}
+
+document.getElementById('retakeBtn').addEventListener('click', () => {
+  current = 0;
+  answered = new Array(QUESTIONS.length).fill(null);
+  summaryArea.classList.add('hidden');
+  quizArea.classList.remove('hidden');
+  renderQuestion(0);
+});
+
+renderQuestion(0);
+</script>
+</body>
+</html>
