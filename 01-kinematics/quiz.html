@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinematics Quiz — Most Missed Questions</title>
+<style>
+  :root {
+    --bg: #f4f6f9;
+    --card: #ffffff;
+    --ink: #1c2733;
+    --muted: #5b6b7b;
+    --accent: #2b5fad;
+    --accent-ink: #ffffff;
+    --correct: #1e8e3e;
+    --correct-bg: #e6f4ea;
+    --incorrect: #c5221f;
+    --incorrect-bg: #fce8e6;
+    --border: #dde3ea;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    padding: 24px 16px 64px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  header { margin-bottom: 20px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-size: 0.95rem; }
+  .progress-bar {
+    height: 8px; background: var(--border); border-radius: 999px; overflow: hidden; margin-top: 14px;
+  }
+  .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width .25s ease; }
+  .progress-label { font-size: 0.85rem; color: var(--muted); margin-top: 6px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .qtag {
+    display: inline-block; font-size: 0.75rem; font-weight: 600; letter-spacing: .03em;
+    color: var(--accent); text-transform: uppercase; margin-bottom: 8px;
+  }
+  .qtext { font-size: 1.05rem; font-weight: 600; margin-bottom: 14px; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option {
+    display: flex; align-items: flex-start; gap: 10px;
+    border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px;
+    cursor: pointer; background: #fbfcfd; transition: border-color .15s ease, background .15s ease;
+  }
+  .option:hover { border-color: var(--accent); }
+  .option input { margin-top: 3px; }
+  .option.correct { border-color: var(--correct); background: var(--correct-bg); }
+  .option.incorrect { border-color: var(--incorrect); background: var(--incorrect-bg); }
+  .option.disabled { cursor: default; }
+
+  .explain {
+    margin-top: 14px; padding: 12px 14px; border-radius: 8px;
+    font-size: 0.95rem; display: none;
+  }
+  .explain.show { display: block; }
+  .explain.correct-box { background: var(--correct-bg); color: #14532d; }
+  .explain.incorrect-box { background: var(--incorrect-bg); color: #7a1a17; }
+
+  .actions { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
+  button {
+    font: inherit; font-weight: 600; border: none; border-radius: 8px;
+    padding: 10px 18px; cursor: pointer; background: var(--accent); color: var(--accent-ink);
+  }
+  button:disabled { opacity: 0.45; cursor: not-allowed; }
+  button.secondary { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+
+  .summary { text-align: center; }
+  .score-big { font-size: 2.6rem; font-weight: 700; margin: 8px 0; }
+  .score-note { color: var(--muted); margin-bottom: 20px; }
+  .review-item { text-align: left; padding: 12px 0; border-top: 1px solid var(--border); }
+  .review-item:first-child { border-top: none; }
+  .review-item .qtext { font-size: 0.98rem; }
+  .badge-pass { color: var(--correct); font-weight: 700; }
+  .badge-fail { color: var(--incorrect); font-weight: 700; }
+  .hidden { display: none !important; }
+  footer { text-align: center; color: var(--muted); font-size: 0.8rem; margin-top: 24px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Kinematics — Most Missed Questions</h1>
+    <div class="sub">10 questions targeting the mistakes students make most often on this unit. Pick the best answer, then check it — every question explains the reasoning either way.</div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">Question 1 of 10</div>
+  </header>
+
+  <div id="quizArea"></div>
+
+  <div id="summaryArea" class="card summary hidden">
+    <div class="qtag">Results</div>
+    <div class="score-big" id="scoreBig"></div>
+    <div class="score-note" id="scoreNote"></div>
+    <div id="reviewList"></div>
+    <div class="actions" style="justify-content:center; margin-top:20px;">
+      <button class="secondary" id="retakeBtn">Retake Quiz</button>
+    </div>
+  </div>
+
+  <footer>Standalone file — works offline, no data leaves this page.</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    tag: "Sign conventions",
+    text: "A car is moving in the negative direction and has a negative acceleration. What is happening to its speed?",
+    options: [
+      "It is slowing down, because negative acceleration always means slowing down.",
+      "It is speeding up, because velocity and acceleration point the same direction.",
+      "It is impossible to tell without more information.",
+      "It is momentarily at rest."
+    ],
+    correct: 1,
+    explain: "Speed increases when velocity and acceleration have the SAME sign, and decreases when they have opposite signs. Here both are negative, so the car speeds up in the negative direction. \"Negative acceleration\" is not the same thing as \"slowing down\" — it just means acceleration points in the negative direction by your chosen convention."
+  },
+  {
+    tag: "Free fall",
+    text: "A ball is thrown straight up. At the exact top of its path, which statement is correct?",
+    options: [
+      "Both velocity and acceleration are zero.",
+      "Velocity is zero and acceleration is zero, because the ball isn't moving.",
+      "Velocity is zero, but acceleration is still −9.8 m/s² (downward).",
+      "Velocity is at its maximum and acceleration is zero."
+    ],
+    correct: 2,
+    explain: "Gravity never switches off. The ball's velocity passes through zero at the peak, but the acceleration due to gravity is −9.8 m/s² for the entire flight — going up, at the peak, and coming down. If acceleration were really zero at the top, the ball would just hover there."
+  },
+  {
+    tag: "Graph reading",
+    text: "On a velocity–time graph, what does the AREA under the curve represent?",
+    options: [
+      "Velocity",
+      "Acceleration",
+      "Displacement",
+      "Speed at that instant"
+    ],
+    correct: 2,
+    explain: "Area under a v–t graph = displacement (this is the same idea as distance = rate × time, generalized to a changing rate via integration/geometric area). The SLOPE of a v–t graph, not the area, gives acceleration. Mixing up slope and area is one of the most common graph-reading errors."
+  },
+  {
+    tag: "Graph reading",
+    text: "On a position–time graph, a curve that is concave down (bending downward) while position is increasing means the object is:",
+    options: [
+      "Speeding up while moving in the positive direction",
+      "Slowing down while moving in the positive direction",
+      "Standing still",
+      "Moving with constant velocity"
+    ],
+    correct: 1,
+    explain: "The slope of an x–t graph is velocity. If the curve is increasing but concave down, the slope is getting smaller over time — velocity is decreasing (positive direction slowing toward zero). Concave up while increasing would mean speeding up."
+  },
+  {
+    tag: "Distance vs. displacement",
+    text: "A runner jogs 400 m around a track and returns to the exact starting point. What are the runner's total distance and total displacement?",
+    options: [
+      "Distance = 0 m, Displacement = 400 m",
+      "Distance = 400 m, Displacement = 400 m",
+      "Distance = 400 m, Displacement = 0 m",
+      "Distance = 0 m, Displacement = 0 m"
+    ],
+    correct: 2,
+    explain: "Distance is the total path length traveled regardless of direction (400 m). Displacement only cares about the net change in position — since the runner ends up back where they started, displacement is 0 m even though they clearly ran the whole way around."
+  },
+  {
+    tag: "Average vs. instantaneous",
+    text: "A car drives 60 km/h for the first half of a trip (by TIME) and 20 km/h for the second half (by TIME), then stops. Is the average velocity for the whole trip 40 km/h?",
+    options: [
+      "Yes, average of two speeds is always the simple average.",
+      "Yes, because both halves took equal distance.",
+      "No — if the halves are equal in TIME, the simple average of speeds (40 km/h) is correct, but this is NOT true if the halves are equal in DISTANCE instead.",
+      "No, average velocity must always be calculated with calculus."
+    ],
+    correct: 2,
+    explain: "This is a classic trap: the simple arithmetic average of two speeds only equals the true average speed when the two legs take EQUAL TIME. If instead the two legs cover equal DISTANCE, you must use total distance ÷ total time, which gives a different (lower) answer, because more time is spent at the slower speed. Always check whether \"half\" refers to time or distance before averaging."
+  },
+  {
+    tag: "Equation selection",
+    text: "You know initial velocity, final velocity, and acceleration, and need to find displacement — but you do NOT know the time. Which kinematics equation should you use?",
+    options: [
+      "x = x₀ + v₀t + ½at²",
+      "v = v₀ + at",
+      "v² = v₀² + 2a(x − x₀)",
+      "x = x₀ + ½(v₀ + v)t"
+    ],
+    correct: 2,
+    explain: "v² = v₀² + 2a(x − x₀) is the one equation that does not contain time at all — exactly what you need when t is unknown and not asked for. Always list your knowns and unknowns first, then pick the equation missing the variable you don't have and don't need."
+  },
+  {
+    tag: "Free fall, initial velocity",
+    text: "A ball is thrown DOWNWARD from a cliff at 5 m/s. Taking up as positive, what are the correct signs for initial velocity and acceleration during the whole flight?",
+    options: [
+      "v₀ = +5 m/s, a = +9.8 m/s²",
+      "v₀ = −5 m/s, a = −9.8 m/s²",
+      "v₀ = −5 m/s, a = +9.8 m/s²",
+      "v₀ = +5 m/s, a = −9.8 m/s²"
+    ],
+    correct: 1,
+    explain: "With up defined as positive, a downward throw means v₀ is negative (−5 m/s), and gravity always pulls downward, so a = −9.8 m/s² for the whole flight. Both are negative here, so the ball just keeps speeding up downward — no sign flips."
+  },
+  {
+    tag: "Acceleration definition",
+    text: "Which of these situations involves acceleration?",
+    options: [
+      "A car traveling at a constant 100 km/h in a straight line",
+      "A car traveling at a constant 100 km/h around a circular curve",
+      "A parked car",
+      "A ball sitting at rest on a table"
+    ],
+    correct: 1,
+    explain: "Acceleration is any change in velocity — and velocity includes DIRECTION, not just speed. A car going a constant speed around a curve is constantly changing direction, so it is constantly accelerating, even though its speed never changes. This idea becomes central later in circular motion."
+  },
+  {
+    tag: "Graph translation",
+    text: "A velocity–time graph shows a horizontal line at v = +10 m/s for 5 seconds. What does the matching position–time graph look like?",
+    options: [
+      "A horizontal line (position not changing)",
+      "A straight line with a constant positive slope of 10 m/s",
+      "A curve that gets steeper and steeper",
+      "A straight line with a slope of 5 m/s"
+    ],
+    correct: 1,
+    explain: "Constant velocity on a v–t graph (a flat line) corresponds to a straight line with constant slope on the x–t graph — and that slope equals the velocity value, 10 m/s. A curve (changing slope) would only appear if velocity were changing, i.e., if there were acceleration."
+  }
+];
+
+let current = 0;
+let answered = new Array(QUESTIONS.length).fill(null);
+const quizArea = document.getElementById('quizArea');
+const summaryArea = document.getElementById('summaryArea');
+const progressFill = document.getElementById('progressFill');
+const progressLabel = document.getElementById('progressLabel');
+
+function renderQuestion(i) {
+  const q = QUESTIONS[i];
+  const chosen = answered[i];
+  const isAnswered = chosen !== null;
+
+  progressFill.style.width = ((i) / QUESTIONS.length * 100) + '%';
+  progressLabel.textContent = `Question ${i + 1} of ${QUESTIONS.length}`;
+
+  let optsHtml = q.options.map((opt, idx) => {
+    let cls = 'option';
+    if (isAnswered) {
+      cls += ' disabled';
+      if (idx === q.correct) cls += ' correct';
+      else if (idx === chosen) cls += ' incorrect';
+    }
+    return `
+      <label class="${cls}" data-idx="${idx}">
+        <input type="radio" name="opt" value="${idx}" ${chosen === idx ? 'checked' : ''} ${isAnswered ? 'disabled' : ''}>
+        <span>${opt}</span>
+      </label>`;
+  }).join('');
+
+  let explainHtml = '';
+  if (isAnswered) {
+    const boxClass = chosen === q.correct ? 'correct-box' : 'incorrect-box';
+    const verdict = chosen === q.correct ? 'Correct.' : 'Not quite.';
+    explainHtml = `<div class="explain show ${boxClass}"><strong>${verdict}</strong> ${q.explain}</div>`;
+  }
+
+  quizArea.innerHTML = `
+    <div class="card">
+      <div class="qtag">${q.tag}</div>
+      <div class="qtext">${q.text}</div>
+      <div class="options">${optsHtml}</div>
+      ${explainHtml}
+      <div class="actions">
+        <button class="secondary" id="prevBtn" ${i === 0 ? 'disabled' : ''}>Back</button>
+        <button id="nextBtn" ${isAnswered ? '' : 'disabled'}>${i === QUESTIONS.length - 1 ? 'See Results' : 'Next'}</button>
+      </div>
+    </div>`;
+
+  if (!isAnswered) {
+    quizArea.querySelectorAll('.option').forEach(el => {
+      el.addEventListener('click', () => {
+        const idx = parseInt(el.getAttribute('data-idx'), 10);
+        answered[i] = idx;
+        renderQuestion(i);
+      });
+    });
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', () => {
+    current = Math.max(0, current - 1);
+    renderQuestion(current);
+  });
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    if (current === QUESTIONS.length - 1) {
+      showSummary();
+    } else {
+      current++;
+      renderQuestion(current);
+    }
+  });
+}
+
+function showSummary() {
+  quizArea.classList.add('hidden');
+  summaryArea.classList.remove('hidden');
+  progressFill.style.width = '100%';
+  progressLabel.textContent = `Question ${QUESTIONS.length} of ${QUESTIONS.length} — complete`;
+
+  const correctCount = answered.reduce((sum, a, i) => sum + (a === QUESTIONS[i].correct ? 1 : 0), 0);
+  const pct = Math.round((correctCount / QUESTIONS.length) * 100);
+  document.getElementById('scoreBig').textContent = `${correctCount} / ${QUESTIONS.length} (${pct}%)`;
+  const pass = pct >= 80;
+  document.getElementById('scoreNote').innerHTML = pass
+    ? '<span class="badge-pass">Mastery threshold met (≥ 80%).</span>'
+    : '<span class="badge-fail">Below the 80% mastery threshold — review the missed questions below, then retake.</span>';
+
+  const reviewList = document.getElementById('reviewList');
+  reviewList.innerHTML = QUESTIONS.map((q, i) => {
+    const chosen = answered[i];
+    const ok = chosen === q.correct;
+    return `
+      <div class="review-item">
+        <div class="qtag">${q.tag} — ${ok ? '<span class="badge-pass">Correct</span>' : '<span class="badge-fail">Missed</span>'}</div>
+        <div class="qtext">${q.text}</div>
+        <div style="color:var(--muted); font-size:0.9rem;">Your answer: ${q.options[chosen]}</div>
+        ${ok ? '' : `<div style="color:var(--muted); font-size:0.9rem;">Correct answer: ${q.options[q.correct]}</div>`}
+        <div style="margin-top:6px; font-size:0.92rem;">${q.explain}</div>
+      </div>`;
+  }).join('');
+}
+
+document.getElementById('retakeBtn').addEventListener('click', () => {
+  current = 0;
+  answered = new Array(QUESTIONS.length).fill(null);
+  summaryArea.classList.add('hidden');
+  quizArea.classList.remove('hidden');
+  renderQuestion(0);
+});
+
+renderQuestion(0);
+</script>
+</body>
+</html>
