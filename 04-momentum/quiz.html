@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Momentum Quiz — Most Missed Questions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root {
+    --bg: #f7f8fb; --card: #ffffff; --ink: #1c2331; --muted: #5b6472;
+    --accent: #2f6fed; --good: #1a9e6b; --bad: #d64545; --border: #e2e6ee;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--ink); margin: 0; padding: 24px 16px 64px; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  .sub { color: var(--muted); margin-bottom: 24px; }
+  .progress { background: var(--border); border-radius: 8px; height: 8px; overflow: hidden; margin-bottom: 24px; }
+  .progress-bar { background: var(--accent); height: 100%; width: 0%; transition: width .3s; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; margin-bottom: 18px; }
+  .qnum { color: var(--accent); font-weight: 600; font-size: .85rem; margin-bottom: 6px; }
+  .qtext { font-size: 1.05rem; margin-bottom: 14px; line-height: 1.45; }
+  .choice { display: block; width: 100%; text-align: left; padding: 12px 14px; margin-bottom: 8px;
+    border: 1px solid var(--border); border-radius: 8px; background: #fbfcfe; cursor: pointer;
+    font-size: .97rem; color: var(--ink); }
+  .choice:hover { border-color: var(--accent); }
+  .choice.correct { background: #e8f7f0; border-color: var(--good); }
+  .choice.incorrect { background: #fbeaea; border-color: var(--bad); }
+  .choice[disabled] { cursor: default; }
+  .explain { display: none; margin-top: 12px; padding: 12px 14px; border-radius: 8px;
+    background: #f1f4fb; font-size: .92rem; line-height: 1.5; }
+  .explain.show { display: block; }
+  .explain b { color: var(--accent); }
+  .footer { text-align: center; margin-top: 24px; }
+  button.primary { background: var(--accent); color: white; border: none; padding: 12px 24px;
+    border-radius: 8px; font-size: 1rem; cursor: pointer; }
+  button.primary:disabled { opacity: .5; cursor: not-allowed; }
+  #result { display: none; text-align: center; padding: 28px 20px; background: var(--card);
+    border-radius: 12px; border: 1px solid var(--border); }
+  #result h2 { margin-top: 0; }
+  .missed-list { text-align: left; margin-top: 16px; }
+  .missed-list li { margin-bottom: 6px; }
+  .tag { display: inline-block; font-size: .75rem; padding: 2px 8px; border-radius: 999px;
+    background: #eef2ff; color: var(--accent); margin-left: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Momentum — Most Missed Questions</h1>
+  <p class="sub">10 questions targeting the misconceptions students trip on most often. Answer each one — you'll see feedback immediately.</p>
+  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+  <div id="quiz"></div>
+  <div class="footer">
+    <button class="primary" id="submitBtn" disabled>See my results</button>
+  </div>
+  <div id="result"></div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "In a perfectly inelastic collision, which quantities are conserved?",
+    choices: [
+      "Both momentum and kinetic energy",
+      "Momentum only — kinetic energy is NOT conserved",
+      "Kinetic energy only",
+      "Neither is conserved"
+    ],
+    correct: 1,
+    tag: "Inelastic collisions",
+    explain: "Momentum is conserved in essentially every isolated collision, including inelastic ones. Kinetic energy, however, is only conserved in ELASTIC collisions — in an inelastic collision, some KE converts to heat, sound, or deformation."
+  },
+  {
+    q: "A ball moving at +5 m/s collides with a wall and bounces straight back at −5 m/s (same speed, opposite direction). What is the magnitude of its change in momentum, Δp?",
+    choices: [
+      "0, since speed didn't change",
+      "m(5) [only accounts for one direction]",
+      "m(10) — you must subtract the negative final velocity from the positive initial velocity",
+      "Cannot be determined without knowing the wall's mass"
+    ],
+    correct: 2,
+    tag: "Vector nature of momentum",
+    explain: "Δp = m(v_f − v_i) = m(−5 − 5) = m(−10), magnitude m(10). Because velocity reversed direction, the momentum change is much larger than if the ball had just slowed down — this is why bouncing collisions deliver bigger impulses than ones where objects just stop."
+  },
+  {
+    q: "Two objects with equal and opposite momenta collide and stick together. What is their combined velocity immediately after?",
+    choices: [
+      "The average of their two speeds",
+      "Zero — their momenta cancel exactly",
+      "Depends on which one is heavier",
+      "The sum of their speeds"
+    ],
+    correct: 1,
+    tag: "Conservation of momentum",
+    explain: "If p₁ = −p₂ (equal and opposite), then p_total = 0 before the collision. Since momentum is conserved and they move together after, (m₁+m₂)v_final = 0, so v_final = 0 — they come to a complete stop."
+  },
+  {
+    q: "A large truck and a small car collide and momentum is conserved for the system. Does that mean each vehicle individually keeps its own momentum constant?",
+    choices: [
+      "Yes, momentum conservation applies to each object separately",
+      "No — conservation applies to the TOTAL momentum of the system; individual objects' momenta can and do change during the collision",
+      "Only the heavier object's momentum stays constant",
+      "Momentum conservation doesn't apply to vehicles"
+    ],
+    correct: 1,
+    tag: "System vs. individual momentum",
+    explain: "Conservation of momentum applies to the whole isolated system. Individual objects exchange momentum with each other during the collision (that's the whole point of the collision), but the TOTAL stays the same before and after."
+  },
+  {
+    q: "What does the impulse-momentum theorem (FΔt = Δp) explain about why airbags reduce injury?",
+    choices: [
+      "Airbags reduce the momentum change needed to stop a person",
+      "Airbags increase the time (Δt) over which the momentum change happens, which reduces the average force (F) for the same impulse",
+      "Airbags eliminate momentum entirely",
+      "Airbags work by reducing the person's mass"
+    ],
+    correct: 1,
+    tag: "Impulse-momentum theorem",
+    explain: "The person's momentum change (Δp) is fixed by how fast they were going and that they must stop. Airbags don't change Δp — they extend the STOPPING TIME (Δt), and since F = Δp/Δt, a longer Δt means a smaller average force on the body."
+  },
+  {
+    q: "In an elastic collision between two carts of EQUAL mass, where one is initially at rest, what happens to their velocities after collision?",
+    choices: [
+      "They move off together at half the original speed",
+      "The moving cart stops, and the cart that was at rest moves off with the moving cart's original velocity",
+      "Both carts end up with the same final velocity",
+      "The moving cart bounces straight back"
+    ],
+    correct: 1,
+    tag: "Elastic collision (equal mass)",
+    explain: "This is a classic and often-missed elastic collision result: for equal masses in a 1D elastic collision, the velocities are completely exchanged. The initially moving cart stops dead, and the initially stationary cart takes off with the original velocity — like a Newton's cradle."
+  },
+  {
+    q: "A stationary firework explodes into two fragments. Fragment A (2 kg) flies off at 10 m/s to the right. What must be true about Fragment B?",
+    choices: [
+      "It flies off to the right at a slower speed",
+      "It flies off to the left, with momentum equal in magnitude to Fragment A's momentum",
+      "It stays at rest",
+      "Its speed depends only on its own mass, not on Fragment A"
+    ],
+    correct: 1,
+    tag: "Conservation in explosions",
+    explain: "Before the explosion, total momentum was zero (at rest). After, total momentum must still be zero, so Fragment B's momentum must be equal in magnitude and opposite in direction to Fragment A's momentum (m_A·v_A = −m_B·v_B) — this is conservation of momentum working in reverse of a collision."
+  },
+  {
+    q: "Which pair of quantities has the same units?",
+    choices: [
+      "Momentum and impulse",
+      "Momentum and force",
+      "Impulse and kinetic energy",
+      "Force and kinetic energy"
+    ],
+    correct: 0,
+    tag: "Units",
+    explain: "Impulse equals the CHANGE in momentum (J = Δp), so they share the same units: kg·m/s (equivalently, N·s). Recognizing this helps you sanity-check your algebra when impulse and momentum appear in the same problem."
+  },
+  {
+    q: "Two skaters push off each other. The lighter skater ends up moving much faster than the heavier skater. Does this violate conservation of momentum?",
+    choices: [
+      "Yes, since their speeds are so different",
+      "No — momentum (mass × velocity) can be equal in magnitude even when speeds differ, since the lighter skater has less mass",
+      "No, because momentum conservation doesn't apply to people",
+      "It depends on how hard they pushed"
+    ],
+    correct: 1,
+    tag: "Momentum vs. speed",
+    explain: "Conservation of momentum requires equal and opposite MOMENTUM (mv), not equal speed. Since momentum before the push was zero, m_light·v_light must equal m_heavy·v_heavy in magnitude — the lighter skater naturally ends up with proportionally greater speed to make up for having less mass."
+  },
+  {
+    q: "A car crashes into a wall and crumples significantly versus a hypothetical perfectly rigid car that doesn't deform at all (both stop completely). Which car experiences a smaller average force during the crash?",
+    choices: [
+      "The rigid car, because it stops faster",
+      "The crumpling car, because crumpling extends the stopping time",
+      "Both experience identical force since Δp is the same",
+      "It only depends on the car's mass"
+    ],
+    correct: 1,
+    tag: "Impulse-momentum in crash design",
+    explain: "Both cars have the same Δp (same mass, same starting and ending velocity), but the crumpling car takes longer to stop (larger Δt). Since F = Δp/Δt, the longer stopping time means a smaller average force on the occupants — this is exactly why crumple zones are engineered into modern vehicles."
+  }
+];
+
+let current = 0;
+let score = 0;
+const missed = [];
+const quizEl = document.getElementById('quiz');
+const progressBar = document.getElementById('progressBar');
+const submitBtn = document.getElementById('submitBtn');
+
+function renderQuestion(i) {
+  const q = QUESTIONS[i];
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="qnum">Question ${i + 1} of ${QUESTIONS.length}<span class="tag">${q.tag}</span></div>
+    <div class="qtext">${q.q}</div>
+    <div class="choices"></div>
+    <div class="explain" id="explain-${i}"></div>
+  `;
+  const choicesEl = card.querySelector('.choices');
+  q.choices.forEach((choice, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.textContent = choice;
+    btn.onclick = () => selectAnswer(i, idx, card);
+    choicesEl.appendChild(btn);
+  });
+  quizEl.appendChild(card);
+}
+
+function selectAnswer(qIndex, choiceIndex, card) {
+  const q = QUESTIONS[qIndex];
+  const buttons = card.querySelectorAll('.choice');
+  if (buttons[0].disabled) return;
+  buttons.forEach((b, idx) => {
+    b.disabled = true;
+    if (idx === q.correct) b.classList.add('correct');
+    else if (idx === choiceIndex) b.classList.add('incorrect');
+  });
+  const explainEl = card.querySelector('.explain');
+  explainEl.innerHTML = (choiceIndex === q.correct ? '<b>Correct.</b> ' : '<b>Not quite.</b> ') + q.explain;
+  explainEl.classList.add('show');
+
+  if (choiceIndex === q.correct) score++;
+  else missed.push(q);
+
+  current++;
+  progressBar.style.width = (current / QUESTIONS.length * 100) + '%';
+  if (current === QUESTIONS.length) submitBtn.disabled = false;
+}
+
+QUESTIONS.forEach((_, i) => renderQuestion(i));
+
+submitBtn.addEventListener('click', () => {
+  document.getElementById('quiz').style.display = 'none';
+  submitBtn.style.display = 'none';
+  const resultEl = document.getElementById('result');
+  resultEl.style.display = 'block';
+  let missedHtml = '';
+  if (missed.length) {
+    missedHtml = '<div class="missed-list"><p><b>Review these before moving on:</b></p><ul>' +
+      missed.map(m => `<li>${m.tag}: ${m.q}</li>`).join('') + '</ul></div>';
+  } else {
+    missedHtml = '<p>No misses — nice work! You\'ve got the common Momentum traps covered.</p>';
+  }
+  resultEl.innerHTML = `<h2>${score} / ${QUESTIONS.length}</h2><p>${score === QUESTIONS.length ? 'Perfect score!' : 'Keep practicing the missed concepts below.'}</p>${missedHtml}`;
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Newton's Laws Quiz — Most Missed Questions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root {
+    --bg: #f7f8fb; --card: #ffffff; --ink: #1c2331; --muted: #5b6472;
+    --accent: #2f6fed; --good: #1a9e6b; --bad: #d64545; --border: #e2e6ee;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--ink); margin: 0; padding: 24px 16px 64px; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  .sub { color: var(--muted); margin-bottom: 24px; }
+  .progress { background: var(--border); border-radius: 8px; height: 8px; overflow: hidden; margin-bottom: 24px; }
+  .progress-bar { background: var(--accent); height: 100%; width: 0%; transition: width .3s; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; margin-bottom: 18px; }
+  .qnum { color: var(--accent); font-weight: 600; font-size: .85rem; margin-bottom: 6px; }
+  .qtext { font-size: 1.05rem; margin-bottom: 14px; line-height: 1.45; }
+  .choice { display: block; width: 100%; text-align: left; padding: 12px 14px; margin-bottom: 8px;
+    border: 1px solid var(--border); border-radius: 8px; background: #fbfcfe; cursor: pointer;
+    font-size: .97rem; color: var(--ink); }
+  .choice:hover { border-color: var(--accent); }
+  .choice.correct { background: #e8f7f0; border-color: var(--good); }
+  .choice.incorrect { background: #fbeaea; border-color: var(--bad); }
+  .choice[disabled] { cursor: default; }
+  .explain { display: none; margin-top: 12px; padding: 12px 14px; border-radius: 8px;
+    background: #f1f4fb; font-size: .92rem; line-height: 1.5; }
+  .explain.show { display: block; }
+  .explain b { color: var(--accent); }
+  .footer { text-align: center; margin-top: 24px; }
+  button.primary { background: var(--accent); color: white; border: none; padding: 12px 24px;
+    border-radius: 8px; font-size: 1rem; cursor: pointer; }
+  button.primary:disabled { opacity: .5; cursor: not-allowed; }
+  #result { display: none; text-align: center; padding: 28px 20px; background: var(--card);
+    border-radius: 12px; border: 1px solid var(--border); }
+  #result h2 { margin-top: 0; }
+  .missed-list { text-align: left; margin-top: 16px; }
+  .missed-list li { margin-bottom: 6px; }
+  .tag { display: inline-block; font-size: .75rem; padding: 2px 8px; border-radius: 999px;
+    background: #eef2ff; color: var(--accent); margin-left: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Newton's Laws — Most Missed Questions</h1>
+  <p class="sub">10 questions targeting the misconceptions students trip on most often. Answer each one — you'll see feedback immediately.</p>
+  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+  <div id="quiz"></div>
+  <div class="footer">
+    <button class="primary" id="submitBtn" disabled>See my results</button>
+  </div>
+  <div id="result"></div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A book rests on a table, not accelerating. The table pushes up on the book with a normal force equal to the book's weight. Is this an example of Newton's 3rd Law?",
+    choices: [
+      "Yes — normal force and weight are an action-reaction pair",
+      "No — both forces act on the SAME object (the book); a 3rd-law pair requires two different objects",
+      "Yes, but only because the book isn't moving",
+      "No — 3rd-law pairs only apply to collisions"
+    ],
+    correct: 1,
+    tag: "3rd-law pairs vs. equilibrium",
+    explain: "This is the most common Newton's Laws misconception. Normal force and weight act on the SAME object and happen to be equal because the book is in equilibrium — that's a coincidence of the 2nd law (net force = 0), not the 3rd law. A true 3rd-law pair would be: book pushes down on table (action) / table pushes up on book (reaction) — two different objects, but note that's a DIFFERENT force than gravity."
+  },
+  {
+    q: "An astronaut in the vacuum of space fires a rocket engine. How does the rocket accelerate forward if there's no air to push against?",
+    choices: [
+      "It pushes against the vacuum itself",
+      "It's propelled by the 3rd law — expelling exhaust mass backward creates an equal, opposite force pushing the rocket forward",
+      "Rockets can't actually accelerate in a vacuum",
+      "It works via air resistance on the exhaust"
+    ],
+    correct: 1,
+    tag: "3rd law application",
+    explain: "Rockets need no air or medium to push against. The engine pushes exhaust gas backward (action); by the 3rd law, the exhaust pushes the rocket forward (reaction) with equal magnitude. This works identically in a vacuum."
+  },
+  {
+    q: "A 2 kg object and a 10 kg object are both acted on by the same 20 N net force. Compare their accelerations.",
+    choices: [
+      "Both accelerate the same, since the force is the same",
+      "The 2 kg object accelerates 5 times faster than the 10 kg object",
+      "The 10 kg object accelerates faster because it has more mass",
+      "Acceleration depends only on force, not mass"
+    ],
+    correct: 1,
+    tag: "F = ma",
+    explain: "a = F/m. For the 2 kg object, a = 20/2 = 10 m/s². For the 10 kg object, a = 20/10 = 2 m/s². The lighter object accelerates 5 times faster under the same net force — mass and acceleration are inversely proportional."
+  },
+  {
+    q: "An astronaut has a mass of 70 kg on Earth. What is their mass on the Moon (where gravity is about 1/6th of Earth's)?",
+    choices: ["70 kg", "About 11.7 kg", "420 kg", "0 kg (weightless)"],
+    correct: 0,
+    tag: "Mass vs. weight",
+    explain: "Mass does not change with location — it's a measure of the amount of matter, not the force of gravity on it. The astronaut's WEIGHT would be about 1/6th as much on the Moon, but their mass stays 70 kg everywhere."
+  },
+  {
+    q: "A block sits on a table with no horizontal forces applied and nothing else pressing on it. What is the normal force?",
+    choices: ["N = 0, since normal force is only needed when something pushes down extra", "N = mg, equal and opposite to gravity to keep the block from accelerating through the table", "N is always greater than weight", "N depends on the block's velocity"],
+    correct: 1,
+    tag: "Normal force",
+    explain: "With no other vertical forces, Newton's 2nd law requires zero net vertical force (block isn't accelerating vertically), so normal force must exactly balance weight: N = mg."
+  },
+  {
+    q: "A box is not moving, but you're pushing it with 30 N and it still doesn't slide. What can you conclude about static friction?",
+    choices: [
+      "Static friction is exactly μₛN, always",
+      "Static friction is exactly 30 N, matching your applied force, and hasn't reached its maximum yet",
+      "Static friction is zero since the box isn't moving",
+      "There's no way to know anything about friction"
+    ],
+    correct: 1,
+    tag: "Static friction",
+    explain: "Static friction is NOT a fixed value — it adjusts to match the applied force (up to a maximum of μₛN) to keep the object at rest. Since the box remains stationary under a 30 N push, static friction must also be 30 N (opposing it) — you haven't yet found its maximum possible value."
+  },
+  {
+    q: "A 4 kg block sits on a frictionless 30° incline. What is the correct expression for the component of gravity pulling it down the slope?",
+    choices: ["mg", "mg cos 30°", "mg sin 30°", "mg tan 30°"],
+    correct: 2,
+    tag: "Inclined planes",
+    explain: "When axes are rotated to align with the incline, weight splits into mg sin θ (along the slope, causing sliding) and mg cos θ (into the slope, balanced by the normal force). Mixing up sin and cos here is one of the most common incline errors."
+  },
+  {
+    q: "You push a heavy box across the floor at CONSTANT velocity. What can you conclude about the net force on the box?",
+    choices: [
+      "Net force must be in the direction of motion",
+      "Net force is zero — your applied force exactly balances friction",
+      "Net force is impossible to determine without the box's mass",
+      "Net force equals your applied force"
+    ],
+    correct: 1,
+    tag: "Equilibrium at constant velocity",
+    explain: "Newton's 1st law: constant velocity (including zero acceleration) means net force = 0. Your push force and kinetic friction must be equal in magnitude and opposite in direction — this doesn't mean there's no force at all, just no NET force."
+  },
+  {
+    q: "A truck (heavy) and a small car (light) collide head-on. Which experiences the greater force during the collision?",
+    choices: [
+      "The car, because it's lighter",
+      "The truck, because it's heavier",
+      "Both experience exactly the same magnitude of force — it's a 3rd-law pair",
+      "Neither experiences a force; only acceleration occurs"
+    ],
+    correct: 2,
+    tag: "3rd law in collisions",
+    explain: "By Newton's 3rd law, the force the truck exerts on the car and the force the car exerts on the truck are always equal in magnitude and opposite in direction, regardless of mass difference. What DIFFERS is the resulting acceleration (a = F/m) — the lighter car experiences much greater acceleration from that same-magnitude force."
+  },
+  {
+    q: "An object is moving at constant velocity in a straight line. What must be true about the forces acting on it?",
+    choices: [
+      "No forces act on it at all",
+      "The net force is zero, though individual forces may be nonzero",
+      "There must be a constant forward force to keep it moving",
+      "It must be in free fall"
+    ],
+    correct: 1,
+    tag: "1st law misconception",
+    explain: "A very common intuition is 'motion requires a continuous force' — but Newton's 1st law says the opposite: constant velocity requires ZERO net force. Individual forces can exist (like friction and an applied force) as long as they balance."
+  }
+];
+
+let current = 0;
+let score = 0;
+const missed = [];
+const quizEl = document.getElementById('quiz');
+const progressBar = document.getElementById('progressBar');
+const submitBtn = document.getElementById('submitBtn');
+
+function renderQuestion(i) {
+  const q = QUESTIONS[i];
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="qnum">Question ${i + 1} of ${QUESTIONS.length}<span class="tag">${q.tag}</span></div>
+    <div class="qtext">${q.q}</div>
+    <div class="choices"></div>
+    <div class="explain" id="explain-${i}"></div>
+  `;
+  const choicesEl = card.querySelector('.choices');
+  q.choices.forEach((choice, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.textContent = choice;
+    btn.onclick = () => selectAnswer(i, idx, card);
+    choicesEl.appendChild(btn);
+  });
+  quizEl.appendChild(card);
+}
+
+function selectAnswer(qIndex, choiceIndex, card) {
+  const q = QUESTIONS[qIndex];
+  const buttons = card.querySelectorAll('.choice');
+  if (buttons[0].disabled) return;
+  buttons.forEach((b, idx) => {
+    b.disabled = true;
+    if (idx === q.correct) b.classList.add('correct');
+    else if (idx === choiceIndex) b.classList.add('incorrect');
+  });
+  const explainEl = card.querySelector('.explain');
+  explainEl.innerHTML = (choiceIndex === q.correct ? '<b>Correct.</b> ' : '<b>Not quite.</b> ') + q.explain;
+  explainEl.classList.add('show');
+
+  if (choiceIndex === q.correct) score++;
+  else missed.push(q);
+
+  current++;
+  progressBar.style.width = (current / QUESTIONS.length * 100) + '%';
+  if (current === QUESTIONS.length) submitBtn.disabled = false;
+}
+
+QUESTIONS.forEach((_, i) => renderQuestion(i));
+
+submitBtn.addEventListener('click', () => {
+  document.getElementById('quiz').style.display = 'none';
+  submitBtn.style.display = 'none';
+  const resultEl = document.getElementById('result');
+  resultEl.style.display = 'block';
+  let missedHtml = '';
+  if (missed.length) {
+    missedHtml = '<div class="missed-list"><p><b>Review these before moving on:</b></p><ul>' +
+      missed.map(m => `<li>${m.tag}: ${m.q}</li>`).join('') + '</ul></div>';
+  } else {
+    missedHtml = '<p>No misses — nice work! You\'ve got the common Newton\'s Laws traps covered.</p>';
+  }
+  resultEl.innerHTML = `<h2>${score} / ${QUESTIONS.length}</h2><p>${score === QUESTIONS.length ? 'Perfect score!' : 'Keep practicing the missed concepts below.'}</p>${missedHtml}`;
+});
+</script>
+</body>
+</html>

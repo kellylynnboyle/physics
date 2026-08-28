@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Work & Energy Quiz — Most Missed Questions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root {
+    --bg: #f7f8fb; --card: #ffffff; --ink: #1c2331; --muted: #5b6472;
+    --accent: #2f6fed; --good: #1a9e6b; --bad: #d64545; --border: #e2e6ee;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--ink); margin: 0; padding: 24px 16px 64px; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  .sub { color: var(--muted); margin-bottom: 24px; }
+  .progress { background: var(--border); border-radius: 8px; height: 8px; overflow: hidden; margin-bottom: 24px; }
+  .progress-bar { background: var(--accent); height: 100%; width: 0%; transition: width .3s; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; margin-bottom: 18px; }
+  .qnum { color: var(--accent); font-weight: 600; font-size: .85rem; margin-bottom: 6px; }
+  .qtext { font-size: 1.05rem; margin-bottom: 14px; line-height: 1.45; }
+  .choice { display: block; width: 100%; text-align: left; padding: 12px 14px; margin-bottom: 8px;
+    border: 1px solid var(--border); border-radius: 8px; background: #fbfcfe; cursor: pointer;
+    font-size: .97rem; color: var(--ink); }
+  .choice:hover { border-color: var(--accent); }
+  .choice.correct { background: #e8f7f0; border-color: var(--good); }
+  .choice.incorrect { background: #fbeaea; border-color: var(--bad); }
+  .choice[disabled] { cursor: default; }
+  .explain { display: none; margin-top: 12px; padding: 12px 14px; border-radius: 8px;
+    background: #f1f4fb; font-size: .92rem; line-height: 1.5; }
+  .explain.show { display: block; }
+  .explain b { color: var(--accent); }
+  .footer { text-align: center; margin-top: 24px; }
+  button.primary { background: var(--accent); color: white; border: none; padding: 12px 24px;
+    border-radius: 8px; font-size: 1rem; cursor: pointer; }
+  button.primary:disabled { opacity: .5; cursor: not-allowed; }
+  #result { display: none; text-align: center; padding: 28px 20px; background: var(--card);
+    border-radius: 12px; border: 1px solid var(--border); }
+  #result h2 { margin-top: 0; }
+  .missed-list { text-align: left; margin-top: 16px; }
+  .missed-list li { margin-bottom: 6px; }
+  .tag { display: inline-block; font-size: .75rem; padding: 2px 8px; border-radius: 999px;
+    background: #eef2ff; color: var(--accent); margin-left: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Work & Energy — Most Missed Questions</h1>
+  <p class="sub">10 questions targeting the misconceptions students trip on most often. Answer each one — you'll see feedback immediately.</p>
+  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+  <div id="quiz"></div>
+  <div class="footer">
+    <button class="primary" id="submitBtn" disabled>See my results</button>
+  </div>
+  <div id="result"></div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A person carries a heavy box at constant height across a room, walking horizontally. How much work does the person's upward-supporting force do on the box?",
+    choices: [
+      "A large positive amount, since they're clearly exerting effort",
+      "Zero — the supporting force is vertical (perpendicular) while displacement is horizontal",
+      "A negative amount, since gravity is also acting",
+      "Depends on how heavy the box is"
+    ],
+    correct: 1,
+    tag: "Perpendicular forces do zero work",
+    explain: "Physics 'work' requires a force component ALONG the displacement. Since the person's support force is vertical and the box moves horizontally, cos 90° = 0, so the physics work done on the box by that force is exactly zero — even though it clearly takes physical effort to hold it up."
+  },
+  {
+    q: "An object's speed doubles. What happens to its kinetic energy?",
+    choices: ["It also doubles", "It quadruples (×4)", "It stays the same", "It increases by 50%"],
+    correct: 1,
+    tag: "KE depends on v²",
+    explain: "KE = ½mv², so kinetic energy depends on the SQUARE of speed. Doubling v means KE increases by a factor of 2² = 4, not just 2 — a very commonly underestimated relationship."
+  },
+  {
+    q: "A pendulum bob swings on a string. What is the work done BY THE TENSION on the bob during the swing?",
+    choices: [
+      "Positive, since tension keeps the bob moving",
+      "Negative, since tension pulls inward",
+      "Zero throughout the swing — tension is always perpendicular to the bob's circular path",
+      "Depends on the length of the string"
+    ],
+    correct: 2,
+    tag: "Zero work in circular motion",
+    explain: "Tension in a pendulum (or any string in circular motion) always points toward the center, perpendicular to the direction of motion at every instant. Since cos 90° = 0, tension does zero work — it changes the bob's DIRECTION but never its speed by itself; gravity is what actually converts PE to KE here."
+  },
+  {
+    q: "A ball rolls down a frictionless hill and reaches the bottom with a certain speed. If a second, IDENTICAL ball rolls down a hill of the SAME HEIGHT but a different shape/path, how does its speed at the bottom compare?",
+    choices: [
+      "It will be different, because the paths are different",
+      "It will be the same, because conservation of energy depends only on height, not path shape (for frictionless cases)",
+      "It depends on which hill is steeper",
+      "The longer path always gives a higher speed"
+    ],
+    correct: 1,
+    tag: "Path independence",
+    explain: "For frictionless (conservative) systems, only the height drop matters for the energy conversion (PE = mgh depends only on h). Two frictionless paths dropping the same height convert the same amount of PE into KE, giving the same final speed — regardless of path shape or length."
+  },
+  {
+    q: "A crate is pushed 4 m by a 10 N force applied at a 60° angle above horizontal (partly lifting, partly pushing forward). What is the correct calculation for the work done?",
+    choices: [
+      "W = 10 × 4 = 40 J (ignore the angle since it's being pushed)",
+      "W = 10 × 4 × cos 60° = 20 J",
+      "W = 10 × 4 × sin 60° ≈ 34.6 J",
+      "W = 10 / 4 × cos 60°"
+    ],
+    correct: 1,
+    tag: "Work formula with angle",
+    explain: "W = Fd cos θ, where θ is the angle BETWEEN the force and the displacement direction. Since the crate still moves horizontally and the force is angled 60° from that direction, you must use cos 60°, not sin 60° or ignore the angle: W = 10 × 4 × cos 60° = 20 J."
+  },
+  {
+    q: "A skater goes down a hill with friction present. Compared to a frictionless hill of the same height, what happens to the skater's final speed at the bottom, and where does the 'missing' energy go?",
+    choices: [
+      "Final speed is higher; the energy is stored as extra PE",
+      "Final speed is lower; the missing energy converted into heat (and some sound) due to friction",
+      "Final speed is the same; energy is never affected by friction",
+      "Final speed is lower; the energy simply disappears"
+    ],
+    correct: 1,
+    tag: "Energy conservation with friction",
+    explain: "With friction, total mechanical energy is NOT conserved — but total energy still is. Some of the initial PE converts to KE as before, but some converts to thermal energy (heat) via friction, so less is left over for KE, meaning a lower final speed. Energy is converted, never destroyed."
+  },
+  {
+    q: "Two motors do the exact same amount of total work lifting identical crates to the same height, but Motor A takes 2 seconds and Motor B takes 8 seconds. Which motor is more powerful?",
+    choices: [
+      "Motor B, because it takes longer so it must work harder",
+      "Motor A, because power is work divided by time, and A does the same work in less time",
+      "They have equal power since they do equal work",
+      "Cannot be determined without knowing the crate's mass"
+    ],
+    correct: 1,
+    tag: "Power vs. work",
+    explain: "P = W/t. Since both motors do the same work W, but Motor A does it in less time, Motor A has higher power (P_A = W/2 vs P_B = W/8 — A is 4x more powerful). Power measures RATE of energy transfer, not total amount."
+  },
+  {
+    q: "A spring is compressed to store 50 J of elastic potential energy, then released to launch a block across a frictionless floor. What is the block's kinetic energy the instant it leaves the spring?",
+    choices: [
+      "50 J, assuming no other forces did work during the launch",
+      "Always less than 50 J due to energy loss",
+      "Cannot be determined without the spring constant",
+      "0 J, since energy is stored, not transferred"
+    ],
+    correct: 0,
+    tag: "Elastic PE to KE conversion",
+    explain: "On a frictionless surface with no other forces doing work, all 50 J of elastic PE converts directly into the block's kinetic energy by conservation of energy: KE = 50 J. (In a real system with friction, some energy would be lost to heat during the push, but this problem specifies frictionless.)"
+  },
+  {
+    q: "The work-energy theorem states W_net = ΔKE. If the NET work done on an object over some interval is negative, what does that tell you?",
+    choices: [
+      "The object is speeding up",
+      "The object's kinetic energy is decreasing — it's slowing down",
+      "The object is doing negative work on itself",
+      "The object must be in free fall"
+    ],
+    correct: 1,
+    tag: "Work-energy theorem",
+    explain: "Negative net work means ΔKE < 0, so kinetic energy is decreasing — the object is slowing down (regardless of direction of motion). This is how friction or an opposing applied force reduces speed, tracked directly through work rather than through force/acceleration."
+  },
+  {
+    q: "Which statement best describes what 'height' means in the formula PE = mgh?",
+    choices: [
+      "It must always be measured from the ground/Earth's surface",
+      "It's the height above any reference level YOU choose — only the CHANGE in height (and thus change in PE) has physical meaning",
+      "It must always be measured from sea level",
+      "It's meaningless unless the object is falling"
+    ],
+    correct: 1,
+    tag: "Reference height",
+    explain: "PE_grav = mgh is always relative to a chosen reference point (h = 0), and that choice is arbitrary — a tabletop, the floor, or the ground outside are all valid choices. What matters physically is the CHANGE in PE (ΔPE = mgΔh) between two points, not the absolute PE value, which depends on your reference choice."
+  }
+];
+
+let current = 0;
+let score = 0;
+const missed = [];
+const quizEl = document.getElementById('quiz');
+const progressBar = document.getElementById('progressBar');
+const submitBtn = document.getElementById('submitBtn');
+
+function renderQuestion(i) {
+  const q = QUESTIONS[i];
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="qnum">Question ${i + 1} of ${QUESTIONS.length}<span class="tag">${q.tag}</span></div>
+    <div class="qtext">${q.q}</div>
+    <div class="choices"></div>
+    <div class="explain" id="explain-${i}"></div>
+  `;
+  const choicesEl = card.querySelector('.choices');
+  q.choices.forEach((choice, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.textContent = choice;
+    btn.onclick = () => selectAnswer(i, idx, card);
+    choicesEl.appendChild(btn);
+  });
+  quizEl.appendChild(card);
+}
+
+function selectAnswer(qIndex, choiceIndex, card) {
+  const q = QUESTIONS[qIndex];
+  const buttons = card.querySelectorAll('.choice');
+  if (buttons[0].disabled) return;
+  buttons.forEach((b, idx) => {
+    b.disabled = true;
+    if (idx === q.correct) b.classList.add('correct');
+    else if (idx === choiceIndex) b.classList.add('incorrect');
+  });
+  const explainEl = card.querySelector('.explain');
+  explainEl.innerHTML = (choiceIndex === q.correct ? '<b>Correct.</b> ' : '<b>Not quite.</b> ') + q.explain;
+  explainEl.classList.add('show');
+
+  if (choiceIndex === q.correct) score++;
+  else missed.push(q);
+
+  current++;
+  progressBar.style.width = (current / QUESTIONS.length * 100) + '%';
+  if (current === QUESTIONS.length) submitBtn.disabled = false;
+}
+
+QUESTIONS.forEach((_, i) => renderQuestion(i));
+
+submitBtn.addEventListener('click', () => {
+  document.getElementById('quiz').style.display = 'none';
+  submitBtn.style.display = 'none';
+  const resultEl = document.getElementById('result');
+  resultEl.style.display = 'block';
+  let missedHtml = '';
+  if (missed.length) {
+    missedHtml = '<div class="missed-list"><p><b>Review these before moving on:</b></p><ul>' +
+      missed.map(m => `<li>${m.tag}: ${m.q}</li>`).join('') + '</ul></div>';
+  } else {
+    missedHtml = '<p>No misses — nice work! You\'ve got the common Work & Energy traps covered.</p>';
+  }
+  resultEl.innerHTML = `<h2>${score} / ${QUESTIONS.length}</h2><p>${score === QUESTIONS.length ? 'Perfect score!' : 'Keep practicing the missed concepts below.'}</p>${missedHtml}`;
+});
+</script>
+</body>
+</html>
