@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work & Energy Quiz</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f7f5;
+    --card: #ffffff;
+    --text: #1f2328;
+    --muted: #5b6169;
+    --border: #e2e3e0;
+    --accent: #2f6f4f;
+    --accent-ink: #ffffff;
+    --wrong: #b3441e;
+    --wrong-bg: #fbeee7;
+    --right: #2f6f4f;
+    --right-bg: #e9f3ed;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181a;
+      --card: #202325;
+      --text: #edeef0;
+      --muted: #a3a9b0;
+      --border: #34383b;
+      --accent: #6fbf94;
+      --accent-ink: #10241a;
+      --wrong: #ff8a65;
+      --wrong-bg: #3a241d;
+      --right: #6fbf94;
+      --right-bg: #1d3327;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 2rem 1rem 4rem;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.4rem; margin-bottom: 0.15rem; }
+  .sub { color: var(--muted); font-size: 0.92rem; margin-bottom: 1.5rem; }
+  .progress {
+    height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 1.75rem;
+  }
+  .progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width .25s ease; }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 1.5rem; margin-bottom: 1.25rem;
+  }
+  .qnum { color: var(--accent); font-weight: 600; font-size: 0.82rem; text-transform: uppercase; letter-spacing: .04em; }
+  .qtext { font-size: 1.05rem; margin: 0.4rem 0 1rem; line-height: 1.45; }
+  .choices { display: flex; flex-direction: column; gap: 0.6rem; }
+  button.choice {
+    text-align: left; padding: 0.7rem 0.9rem; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--bg); color: var(--text); font-size: 0.96rem; cursor: pointer; line-height: 1.4;
+  }
+  button.choice:hover:not(:disabled) { border-color: var(--accent); }
+  button.choice:disabled { cursor: default; }
+  button.choice.correct { background: var(--right-bg); border-color: var(--right); color: var(--text); }
+  button.choice.incorrect { background: var(--wrong-bg); border-color: var(--wrong); color: var(--text); }
+  .explain {
+    display: none; margin-top: 0.9rem; padding: 0.8rem 0.9rem; border-radius: 8px;
+    background: var(--bg); border: 1px dashed var(--border); font-size: 0.92rem; color: var(--muted); line-height: 1.5;
+  }
+  .explain.show { display: block; }
+  .explain b { color: var(--text); }
+  .footer-nav {
+    display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;
+  }
+  button.nav {
+    background: var(--accent); color: var(--accent-ink); border: none; border-radius: 8px;
+    padding: 0.65rem 1.3rem; font-size: 0.95rem; font-weight: 600; cursor: pointer;
+  }
+  button.nav:disabled { opacity: 0.4; cursor: not-allowed; }
+  button.ghost {
+    background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 8px;
+    padding: 0.65rem 1.1rem; font-size: 0.9rem; cursor: pointer;
+  }
+  .score-screen { text-align: center; padding: 2.5rem 1rem; }
+  .score-big { font-size: 3rem; font-weight: 700; color: var(--accent); }
+  .score-msg { color: var(--muted); margin: 0.75rem 0 1.75rem; font-size: 1rem; }
+  .missed-list { text-align: left; margin: 1.5rem 0; }
+  .missed-list li { margin-bottom: 0.5rem; color: var(--muted); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Work & Energy</h1>
+  <div class="sub">Most-missed questions &middot; 10 questions &middot; instant feedback, no data leaves this browser</div>
+  <div class="progress"><div class="progress-bar" id="bar"></div></div>
+
+  <div id="quiz-area"></div>
+
+  <div id="score-area" class="score-screen" hidden>
+    <div class="score-big" id="scoreBig">0/10</div>
+    <div class="score-msg" id="scoreMsg"></div>
+    <ul class="missed-list" id="missedList"></ul>
+    <button class="nav" id="retakeBtn">Retake Quiz</button>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    "q": "A person holds a heavy box stationary above their head for one minute. How much work do they do on the box during that minute?",
+    "choices": [
+      "A large positive amount, because they're exerting force",
+      "Zero, because the box doesn't move (no displacement)",
+      "Negative work",
+      "It depends on how heavy the box is"
+    ],
+    "correct": 1,
+    "explain": "Work = F\u00b7d\u00b7cos(\u03b8) requires displacement. Since the box doesn't move, no work is done on it, regardless of how much force or effort is exerted \u2014 a very common everyday-language vs. physics-definition mix-up."
+  },
+  {
+    "q": "A crate is pushed across a floor. The normal force acts on the crate throughout. How much work does the normal force do?",
+    "choices": [
+      "The same as the applied force",
+      "Zero, because the normal force is perpendicular to the displacement",
+      "Negative, opposing the motion",
+      "It depends on the crate's mass"
+    ],
+    "correct": 1,
+    "explain": "Work = F\u00b7d\u00b7cos(\u03b8). Since normal force is perpendicular (\u03b8 = 90\u00b0) to horizontal displacement, cos(90\u00b0) = 0, so the normal force does zero work \u2014 same reasoning applies to gravity when motion is purely horizontal."
+  },
+  {
+    "q": "A block slides across a rough floor and comes to a stop due to friction. What happens to its kinetic energy?",
+    "choices": [
+      "It's converted entirely into potential energy",
+      "It's destroyed completely, violating energy conservation",
+      "It's converted into thermal energy (heat) via the negative work done by friction",
+      "It transfers entirely into the floor's kinetic energy"
+    ],
+    "correct": 2,
+    "explain": "Friction does negative work on the block, removing kinetic energy from its motion; energy is not destroyed, it's converted into thermal energy (heat) at the sliding surfaces \u2014 this is why total energy (including heat) is still conserved."
+  },
+  {
+    "q": "Under what condition is total mechanical energy (KE + PE) of a system conserved?",
+    "choices": [
+      "Always, in every situation",
+      "Only when no non-conservative forces (like friction or air resistance) do net work on the system",
+      "Only when the object is in free fall",
+      "Only when speed is constant"
+    ],
+    "correct": 1,
+    "explain": "Mechanical energy is conserved only in the absence of non-conservative forces doing net work (friction, air resistance, applied pushes). If such forces act, mechanical energy changes \u2014 commonly, some is lost as heat."
+  },
+  {
+    "q": "What is the correct relationship in the work-energy theorem?",
+    "choices": [
+      "Net work done on an object equals its change in kinetic energy",
+      "Work done equals the object's total kinetic energy, not the change in it",
+      "Net work done equals the change in the object's potential energy only",
+      "Work and kinetic energy are unrelated"
+    ],
+    "correct": 0,
+    "explain": "The work-energy theorem: W_net = \u0394KE = KE_final \u2212 KE_initial. A common error is equating work to the total KE rather than the CHANGE in KE."
+  },
+  {
+    "q": "A ball rolls down a frictionless ramp from height h. Which statement correctly compares its speed at the bottom depending on the ramp's shape (steep vs. gradual, same height)?",
+    "choices": [
+      "The steeper ramp always produces a higher final speed",
+      "The final speed at the bottom is the same regardless of ramp shape, since it depends only on height (energy conservation)",
+      "The final speed depends only on the ramp's length, not height",
+      "A gradual ramp always produces a higher final speed"
+    ],
+    "correct": 1,
+    "explain": "By conservation of energy, mgh = \u00bdmv\u00b2 (frictionless), so final speed depends only on the drop height h, not the path taken or ramp angle \u2014 though a steeper ramp gets there faster, it doesn't produce a different final speed."
+  },
+  {
+    "q": "What is the key difference between work and power?",
+    "choices": [
+      "They are the same quantity with different units",
+      "Power is the rate at which work is done (work per unit time)",
+      "Work depends on time; power does not",
+      "Power is a vector; work is a scalar"
+    ],
+    "correct": 1,
+    "explain": "Power = Work / time (P = W/\u0394t). Two processes can involve the same amount of work but different power if they take different amounts of time \u2014 confusing 'how much energy' (work) with 'how fast' (power) is a common error."
+  },
+  {
+    "q": "A spring is compressed by a distance x. If you double the compression distance, what happens to the elastic potential energy stored (assuming the spring stays within its elastic limit)?",
+    "choices": [
+      "It doubles",
+      "It quadruples",
+      "It stays the same",
+      "It halves"
+    ],
+    "correct": 1,
+    "explain": "Elastic PE = \u00bdkx\u00b2. Since PE depends on x\u00b2, doubling x quadruples the stored energy \u2014 students often assume a linear (doubling) relationship instead of the correct squared one."
+  },
+  {
+    "q": "A roller coaster car at the top of a hill (height h\u2081) has some kinetic energy already. As it descends to a lower hill (height h\u2082), assuming no friction, how do you correctly find its speed at h\u2082?",
+    "choices": [
+      "Ignore the initial kinetic energy and use only mgh\u2082 = \u00bdmv\u00b2",
+      "Use total mechanical energy conservation: KE\u2081 + mgh\u2081 = KE\u2082 + mgh\u2082, solving for v\u2082",
+      "Speed at h\u2082 is unrelated to speed at h\u2081",
+      "Use only the height difference and ignore initial speed entirely, always"
+    ],
+    "correct": 1,
+    "explain": "The correct approach conserves TOTAL mechanical energy, including any initial kinetic energy, not just gravitational PE. Forgetting an existing initial KE term is a very common setup mistake."
+  },
+  {
+    "q": "Gravitational potential energy (PE = mgh) depends on a chosen reference height (where PE = 0). Does this choice affect the physics results, like calculated speeds or energy transfers?",
+    "choices": [
+      "Yes, changing the reference point changes the actual physical speed of the object",
+      "No \u2014 only CHANGES in PE matter physically; the reference point is arbitrary and cancels out in calculations",
+      "The reference point must always be the ground, or the answer is wrong",
+      "PE has no reference point; it's an absolute quantity"
+    ],
+    "correct": 1,
+    "explain": "Only differences in PE (i.e., \u0394PE) have physical meaning; the zero-reference is a free choice that doesn't affect calculated speeds, since it cancels out when you compute a change. Students sometimes worry the 'wrong' reference point will change the physical answer \u2014 it won't, as long as it's used consistently."
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = new Array(QUESTIONS.length).fill(false);
+let missed = [];
+
+const quizArea = document.getElementById('quiz-area');
+const scoreArea = document.getElementById('score-area');
+const bar = document.getElementById('bar');
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  bar.style.width = ((current) / QUESTIONS.length * 100) + '%';
+
+  const card = document.createElement('div');
+  card.className = 'card';
+
+  const num = document.createElement('div');
+  num.className = 'qnum';
+  num.textContent = 'Question ' + (current + 1) + ' of ' + QUESTIONS.length;
+  card.appendChild(num);
+
+  const qtext = document.createElement('div');
+  qtext.className = 'qtext';
+  qtext.textContent = q.q;
+  card.appendChild(qtext);
+
+  const choicesWrap = document.createElement('div');
+  choicesWrap.className = 'choices';
+
+  const explain = document.createElement('div');
+  explain.className = 'explain';
+  explain.innerHTML = '<b>Why:</b> ' + q.explain;
+
+  q.choices.forEach((choiceText, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.textContent = choiceText;
+    btn.addEventListener('click', () => {
+      if (answered[current]) return;
+      answered[current] = true;
+      const correct = idx === q.correct;
+      Array.from(choicesWrap.children).forEach((b, i) => {
+        b.disabled = true;
+        if (i === q.correct) b.classList.add('correct');
+        else if (i === idx) b.classList.add('incorrect');
+      });
+      if (correct) {
+        score++;
+      } else {
+        missed.push(q.q);
+      }
+      explain.classList.add('show');
+      nextBtn.disabled = false;
+    });
+    choicesWrap.appendChild(btn);
+  });
+
+  card.appendChild(choicesWrap);
+  card.appendChild(explain);
+
+  const nav = document.createElement('div');
+  nav.className = 'footer-nav';
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'nav';
+  nextBtn.textContent = current === QUESTIONS.length - 1 ? 'See Results' : 'Next';
+  nextBtn.disabled = true;
+  nextBtn.addEventListener('click', () => {
+    if (current < QUESTIONS.length - 1) {
+      current++;
+      quizArea.innerHTML = '';
+      renderQuestion();
+    } else {
+      showScore();
+    }
+  });
+  nav.appendChild(document.createElement('span'));
+  nav.appendChild(nextBtn);
+  card.appendChild(nav);
+
+  quizArea.appendChild(card);
+}
+
+function showScore() {
+  bar.style.width = '100%';
+  quizArea.hidden = true;
+  scoreArea.hidden = false;
+  const pct = Math.round((score / QUESTIONS.length) * 100);
+  document.getElementById('scoreBig').textContent = score + '/' + QUESTIONS.length;
+  let msg = pct >= 80 ? "Nice work — you've met the 80% target for this unit." :
+            pct >= 60 ? "Getting there. Re-read the missed concepts in your Cornell notes, then retake." :
+            "Revisit the unit README key concepts before retaking this quiz.";
+  document.getElementById('scoreMsg').textContent = msg + ' (' + pct + '%)';
+  const list = document.getElementById('missedList');
+  list.innerHTML = '';
+  if (missed.length) {
+    const heading = document.createElement('div');
+    heading.style.color = 'var(--text)';
+    heading.style.fontWeight = '600';
+    heading.style.marginBottom = '0.4rem';
+    heading.textContent = 'Review these:';
+    list.appendChild(heading);
+    missed.forEach(m => {
+      const li = document.createElement('li');
+      li.textContent = m;
+      list.appendChild(li);
+    });
+  }
+}
+
+document.getElementById('retakeBtn').addEventListener('click', () => {
+  current = 0; score = 0; answered = new Array(QUESTIONS.length).fill(false); missed = [];
+  quizArea.hidden = false; scoreArea.hidden = true; quizArea.innerHTML = '';
+  renderQuestion();
+});
+
+renderQuestion();
+</script>
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinematics Quiz</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f7f5;
+    --card: #ffffff;
+    --text: #1f2328;
+    --muted: #5b6169;
+    --border: #e2e3e0;
+    --accent: #2f6f4f;
+    --accent-ink: #ffffff;
+    --wrong: #b3441e;
+    --wrong-bg: #fbeee7;
+    --right: #2f6f4f;
+    --right-bg: #e9f3ed;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181a;
+      --card: #202325;
+      --text: #edeef0;
+      --muted: #a3a9b0;
+      --border: #34383b;
+      --accent: #6fbf94;
+      --accent-ink: #10241a;
+      --wrong: #ff8a65;
+      --wrong-bg: #3a241d;
+      --right: #6fbf94;
+      --right-bg: #1d3327;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 2rem 1rem 4rem;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.4rem; margin-bottom: 0.15rem; }
+  .sub { color: var(--muted); font-size: 0.92rem; margin-bottom: 1.5rem; }
+  .progress {
+    height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 1.75rem;
+  }
+  .progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width .25s ease; }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 1.5rem; margin-bottom: 1.25rem;
+  }
+  .qnum { color: var(--accent); font-weight: 600; font-size: 0.82rem; text-transform: uppercase; letter-spacing: .04em; }
+  .qtext { font-size: 1.05rem; margin: 0.4rem 0 1rem; line-height: 1.45; }
+  .choices { display: flex; flex-direction: column; gap: 0.6rem; }
+  button.choice {
+    text-align: left; padding: 0.7rem 0.9rem; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--bg); color: var(--text); font-size: 0.96rem; cursor: pointer; line-height: 1.4;
+  }
+  button.choice:hover:not(:disabled) { border-color: var(--accent); }
+  button.choice:disabled { cursor: default; }
+  button.choice.correct { background: var(--right-bg); border-color: var(--right); color: var(--text); }
+  button.choice.incorrect { background: var(--wrong-bg); border-color: var(--wrong); color: var(--text); }
+  .explain {
+    display: none; margin-top: 0.9rem; padding: 0.8rem 0.9rem; border-radius: 8px;
+    background: var(--bg); border: 1px dashed var(--border); font-size: 0.92rem; color: var(--muted); line-height: 1.5;
+  }
+  .explain.show { display: block; }
+  .explain b { color: var(--text); }
+  .footer-nav {
+    display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;
+  }
+  button.nav {
+    background: var(--accent); color: var(--accent-ink); border: none; border-radius: 8px;
+    padding: 0.65rem 1.3rem; font-size: 0.95rem; font-weight: 600; cursor: pointer;
+  }
+  button.nav:disabled { opacity: 0.4; cursor: not-allowed; }
+  button.ghost {
+    background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 8px;
+    padding: 0.65rem 1.1rem; font-size: 0.9rem; cursor: pointer;
+  }
+  .score-screen { text-align: center; padding: 2.5rem 1rem; }
+  .score-big { font-size: 3rem; font-weight: 700; color: var(--accent); }
+  .score-msg { color: var(--muted); margin: 0.75rem 0 1.75rem; font-size: 1rem; }
+  .missed-list { text-align: left; margin: 1.5rem 0; }
+  .missed-list li { margin-bottom: 0.5rem; color: var(--muted); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Kinematics</h1>
+  <div class="sub">Most-missed questions &middot; 10 questions &middot; instant feedback, no data leaves this browser</div>
+  <div class="progress"><div class="progress-bar" id="bar"></div></div>
+
+  <div id="quiz-area"></div>
+
+  <div id="score-area" class="score-screen" hidden>
+    <div class="score-big" id="scoreBig">0/10</div>
+    <div class="score-msg" id="scoreMsg"></div>
+    <ul class="missed-list" id="missedList"></ul>
+    <button class="nav" id="retakeBtn">Retake Quiz</button>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    "q": "A runner goes 400 m around a track and ends up back at the starting line. What is the runner's displacement?",
+    "choices": [
+      "400 m",
+      "0 m",
+      "200 m",
+      "Cannot be determined"
+    ],
+    "correct": 1,
+    "explain": "Displacement is the straight-line change in position (start to end), not the path length. Since the runner returns to the start, displacement is 0 m even though distance traveled is 400 m."
+  },
+  {
+    "q": "On a position-vs-time graph, what does the slope of the line at a point represent?",
+    "choices": [
+      "Acceleration",
+      "Velocity",
+      "Displacement",
+      "Distance"
+    ],
+    "correct": 1,
+    "explain": "Slope of a position-time graph is the rate of change of position, i.e., velocity. (Slope of a velocity-time graph would give acceleration instead.)"
+  },
+  {
+    "q": "On a velocity-vs-time graph, what does the area under the curve between two times represent?",
+    "choices": [
+      "Acceleration",
+      "Average velocity",
+      "Displacement",
+      "Jerk"
+    ],
+    "correct": 2,
+    "explain": "Area under a v-t graph is velocity \u00d7 time, which gives displacement over that interval \u2014 a very common point of confusion with the slope of a position-time graph."
+  },
+  {
+    "q": "A ball is thrown straight up. What is its acceleration at the very top of its path, at the instant its velocity is zero?",
+    "choices": [
+      "Zero, since velocity is zero",
+      "9.8 m/s\u00b2 downward",
+      "9.8 m/s\u00b2 upward",
+      "Undefined at that instant"
+    ],
+    "correct": 1,
+    "explain": "Velocity being momentarily zero does not mean acceleration is zero. Gravity acts continuously, so acceleration is 9.8 m/s\u00b2 downward throughout the entire flight, including at the peak."
+  },
+  {
+    "q": "A car speeds up from rest. Which statement about its velocity and acceleration is correct?",
+    "choices": [
+      "Velocity and acceleration must always have the same sign",
+      "Acceleration can point opposite to velocity even while speeding up",
+      "If acceleration is positive, the object is always speeding up",
+      "Acceleration is positive here and velocity is positive; but a positive acceleration does not always mean speeding up in general"
+    ],
+    "correct": 3,
+    "explain": "Whether an object speeds up or slows down depends on whether velocity and acceleration point the same way or opposite ways, not on the sign of acceleration alone. A positive acceleration slows an object down if its velocity is negative."
+  },
+  {
+    "q": "Which kinematic equation should you use to find final velocity when you know initial velocity, acceleration, and displacement, but NOT time?",
+    "choices": [
+      "v = v\u2080 + at",
+      "x = v\u2080t + \u00bdat\u00b2",
+      "v\u00b2 = v\u2080\u00b2 + 2a\u0394x",
+      "x = \u00bd(v\u2080 + v)t"
+    ],
+    "correct": 2,
+    "explain": "v\u00b2 = v\u2080\u00b2 + 2a\u0394x is the only one of the four standard kinematic equations that omits time, so it's the direct tool when time isn't given or asked for."
+  },
+  {
+    "q": "Two objects are dropped from the same height at the same time, one with mass 1 kg and one with mass 10 kg (ignore air resistance). Which hits the ground first?",
+    "choices": [
+      "The 10 kg object, because it's heavier",
+      "The 1 kg object, because it's lighter",
+      "They land at the same time",
+      "It depends on their shapes"
+    ],
+    "correct": 2,
+    "explain": "In free fall with no air resistance, all objects accelerate at the same rate g \u2248 9.8 m/s\u00b2 regardless of mass, so they land simultaneously. Mass affects the force of gravity but also its own inertia, and the two effects cancel."
+  },
+  {
+    "q": "A curved line on a position-vs-time graph indicates that the object is:",
+    "choices": [
+      "Moving at constant velocity",
+      "At rest",
+      "Accelerating (velocity is changing)",
+      "Moving with constant acceleration only if the curve is a straight line"
+    ],
+    "correct": 2,
+    "explain": "A straight line on a position-time graph means constant velocity. A curve means the slope (velocity) is changing over time, i.e., the object is accelerating."
+  },
+  {
+    "q": "An object's velocity changes from +8 m/s to -2 m/s over 4 seconds, moving in a straight line. What is its average acceleration?",
+    "choices": [
+      "+2.5 m/s\u00b2",
+      "-2.5 m/s\u00b2",
+      "-1.5 m/s\u00b2",
+      "+1.5 m/s\u00b2"
+    ],
+    "correct": 1,
+    "explain": "a = \u0394v/\u0394t = (-2 - 8)/4 = -10/4 = -2.5 m/s\u00b2. Forgetting the sign of the initial or final velocity is the most common error here."
+  },
+  {
+    "q": "Which pair of quantities are both vectors?",
+    "choices": [
+      "Distance and speed",
+      "Displacement and velocity",
+      "Speed and velocity",
+      "Distance and displacement"
+    ],
+    "correct": 1,
+    "explain": "Displacement and velocity have direction, so they are vectors. Distance and speed are scalars (magnitude only) \u2014 a frequent mix-up is treating speed and velocity as interchangeable."
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = new Array(QUESTIONS.length).fill(false);
+let missed = [];
+
+const quizArea = document.getElementById('quiz-area');
+const scoreArea = document.getElementById('score-area');
+const bar = document.getElementById('bar');
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  bar.style.width = ((current) / QUESTIONS.length * 100) + '%';
+
+  const card = document.createElement('div');
+  card.className = 'card';
+
+  const num = document.createElement('div');
+  num.className = 'qnum';
+  num.textContent = 'Question ' + (current + 1) + ' of ' + QUESTIONS.length;
+  card.appendChild(num);
+
+  const qtext = document.createElement('div');
+  qtext.className = 'qtext';
+  qtext.textContent = q.q;
+  card.appendChild(qtext);
+
+  const choicesWrap = document.createElement('div');
+  choicesWrap.className = 'choices';
+
+  const explain = document.createElement('div');
+  explain.className = 'explain';
+  explain.innerHTML = '<b>Why:</b> ' + q.explain;
+
+  q.choices.forEach((choiceText, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.textContent = choiceText;
+    btn.addEventListener('click', () => {
+      if (answered[current]) return;
+      answered[current] = true;
+      const correct = idx === q.correct;
+      Array.from(choicesWrap.children).forEach((b, i) => {
+        b.disabled = true;
+        if (i === q.correct) b.classList.add('correct');
+        else if (i === idx) b.classList.add('incorrect');
+      });
+      if (correct) {
+        score++;
+      } else {
+        missed.push(q.q);
+      }
+      explain.classList.add('show');
+      nextBtn.disabled = false;
+    });
+    choicesWrap.appendChild(btn);
+  });
+
+  card.appendChild(choicesWrap);
+  card.appendChild(explain);
+
+  const nav = document.createElement('div');
+  nav.className = 'footer-nav';
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'nav';
+  nextBtn.textContent = current === QUESTIONS.length - 1 ? 'See Results' : 'Next';
+  nextBtn.disabled = true;
+  nextBtn.addEventListener('click', () => {
+    if (current < QUESTIONS.length - 1) {
+      current++;
+      quizArea.innerHTML = '';
+      renderQuestion();
+    } else {
+      showScore();
+    }
+  });
+  nav.appendChild(document.createElement('span'));
+  nav.appendChild(nextBtn);
+  card.appendChild(nav);
+
+  quizArea.appendChild(card);
+}
+
+function showScore() {
+  bar.style.width = '100%';
+  quizArea.hidden = true;
+  scoreArea.hidden = false;
+  const pct = Math.round((score / QUESTIONS.length) * 100);
+  document.getElementById('scoreBig').textContent = score + '/' + QUESTIONS.length;
+  let msg = pct >= 80 ? "Nice work — you've met the 80% target for this unit." :
+            pct >= 60 ? "Getting there. Re-read the missed concepts in your Cornell notes, then retake." :
+            "Revisit the unit README key concepts before retaking this quiz.";
+  document.getElementById('scoreMsg').textContent = msg + ' (' + pct + '%)';
+  const list = document.getElementById('missedList');
+  list.innerHTML = '';
+  if (missed.length) {
+    const heading = document.createElement('div');
+    heading.style.color = 'var(--text)';
+    heading.style.fontWeight = '600';
+    heading.style.marginBottom = '0.4rem';
+    heading.textContent = 'Review these:';
+    list.appendChild(heading);
+    missed.forEach(m => {
+      const li = document.createElement('li');
+      li.textContent = m;
+      list.appendChild(li);
+    });
+  }
+}
+
+document.getElementById('retakeBtn').addEventListener('click', () => {
+  current = 0; score = 0; answered = new Array(QUESTIONS.length).fill(false); missed = [];
+  quizArea.hidden = false; scoreArea.hidden = true; quizArea.innerHTML = '';
+  renderQuestion();
+});
+
+renderQuestion();
+</script>
+</body>
+</html>

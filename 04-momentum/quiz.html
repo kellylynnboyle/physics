@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Momentum Quiz</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f7f5;
+    --card: #ffffff;
+    --text: #1f2328;
+    --muted: #5b6169;
+    --border: #e2e3e0;
+    --accent: #2f6f4f;
+    --accent-ink: #ffffff;
+    --wrong: #b3441e;
+    --wrong-bg: #fbeee7;
+    --right: #2f6f4f;
+    --right-bg: #e9f3ed;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181a;
+      --card: #202325;
+      --text: #edeef0;
+      --muted: #a3a9b0;
+      --border: #34383b;
+      --accent: #6fbf94;
+      --accent-ink: #10241a;
+      --wrong: #ff8a65;
+      --wrong-bg: #3a241d;
+      --right: #6fbf94;
+      --right-bg: #1d3327;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 2rem 1rem 4rem;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.4rem; margin-bottom: 0.15rem; }
+  .sub { color: var(--muted); font-size: 0.92rem; margin-bottom: 1.5rem; }
+  .progress {
+    height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 1.75rem;
+  }
+  .progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width .25s ease; }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 1.5rem; margin-bottom: 1.25rem;
+  }
+  .qnum { color: var(--accent); font-weight: 600; font-size: 0.82rem; text-transform: uppercase; letter-spacing: .04em; }
+  .qtext { font-size: 1.05rem; margin: 0.4rem 0 1rem; line-height: 1.45; }
+  .choices { display: flex; flex-direction: column; gap: 0.6rem; }
+  button.choice {
+    text-align: left; padding: 0.7rem 0.9rem; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--bg); color: var(--text); font-size: 0.96rem; cursor: pointer; line-height: 1.4;
+  }
+  button.choice:hover:not(:disabled) { border-color: var(--accent); }
+  button.choice:disabled { cursor: default; }
+  button.choice.correct { background: var(--right-bg); border-color: var(--right); color: var(--text); }
+  button.choice.incorrect { background: var(--wrong-bg); border-color: var(--wrong); color: var(--text); }
+  .explain {
+    display: none; margin-top: 0.9rem; padding: 0.8rem 0.9rem; border-radius: 8px;
+    background: var(--bg); border: 1px dashed var(--border); font-size: 0.92rem; color: var(--muted); line-height: 1.5;
+  }
+  .explain.show { display: block; }
+  .explain b { color: var(--text); }
+  .footer-nav {
+    display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;
+  }
+  button.nav {
+    background: var(--accent); color: var(--accent-ink); border: none; border-radius: 8px;
+    padding: 0.65rem 1.3rem; font-size: 0.95rem; font-weight: 600; cursor: pointer;
+  }
+  button.nav:disabled { opacity: 0.4; cursor: not-allowed; }
+  button.ghost {
+    background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 8px;
+    padding: 0.65rem 1.1rem; font-size: 0.9rem; cursor: pointer;
+  }
+  .score-screen { text-align: center; padding: 2.5rem 1rem; }
+  .score-big { font-size: 3rem; font-weight: 700; color: var(--accent); }
+  .score-msg { color: var(--muted); margin: 0.75rem 0 1.75rem; font-size: 1rem; }
+  .missed-list { text-align: left; margin: 1.5rem 0; }
+  .missed-list li { margin-bottom: 0.5rem; color: var(--muted); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Momentum</h1>
+  <div class="sub">Most-missed questions &middot; 10 questions &middot; instant feedback, no data leaves this browser</div>
+  <div class="progress"><div class="progress-bar" id="bar"></div></div>
+
+  <div id="quiz-area"></div>
+
+  <div id="score-area" class="score-screen" hidden>
+    <div class="score-big" id="scoreBig">0/10</div>
+    <div class="score-msg" id="scoreMsg"></div>
+    <ul class="missed-list" id="missedList"></ul>
+    <button class="nav" id="retakeBtn">Retake Quiz</button>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    "q": "Is momentum always conserved in every collision?",
+    "choices": [
+      "Yes, in all collisions regardless of conditions",
+      "Only when there is no net external force on the system",
+      "Only in elastic collisions",
+      "Only if both objects have equal mass"
+    ],
+    "correct": 1,
+    "explain": "Total momentum of a system is conserved only when the net EXTERNAL force on that system is zero (or negligible during the collision). It holds for both elastic and inelastic collisions as long as this condition is met \u2014 a frequent confusion is thinking conservation requires 'elastic' specifically."
+  },
+  {
+    "q": "What distinguishes an elastic collision from an inelastic one?",
+    "choices": [
+      "Elastic collisions conserve momentum; inelastic ones don't",
+      "Elastic collisions conserve both momentum and total kinetic energy; inelastic collisions conserve momentum but not total kinetic energy",
+      "Inelastic collisions conserve kinetic energy; elastic ones don't",
+      "There's no meaningful difference"
+    ],
+    "correct": 1,
+    "explain": "Both types conserve momentum (assuming no external force). The distinguishing feature is kinetic energy: elastic collisions conserve it, inelastic collisions convert some of it into heat, sound, or deformation."
+  },
+  {
+    "q": "Two objects stick together after colliding. What type of collision is this, and is momentum conserved?",
+    "choices": [
+      "Elastic; momentum is conserved",
+      "Perfectly inelastic; momentum is still conserved (kinetic energy is not)",
+      "Perfectly inelastic; neither momentum nor kinetic energy is conserved",
+      "This cannot be analyzed with momentum concepts"
+    ],
+    "correct": 1,
+    "explain": "Objects sticking together defines a perfectly inelastic collision. Momentum is still conserved (assuming no external force); it's specifically kinetic energy that is lost \u2014 a very common point of confusion, since students often assume 'inelastic' means momentum isn't conserved either."
+  },
+  {
+    "q": "How is impulse related to momentum?",
+    "choices": [
+      "Impulse is unrelated to momentum",
+      "Impulse equals the change in momentum of an object (J = \u0394p)",
+      "Impulse is the same thing as force",
+      "Impulse only applies to collisions, not general force application"
+    ],
+    "correct": 1,
+    "explain": "The impulse-momentum theorem states J = F\u0394t = \u0394p: the impulse delivered by a net force over a time interval equals the resulting change in the object's momentum."
+  },
+  {
+    "q": "On a force-vs-time graph, how do you find the impulse delivered over a time interval?",
+    "choices": [
+      "The slope of the line",
+      "The value of force at the final time",
+      "The area under the curve",
+      "The y-intercept"
+    ],
+    "correct": 2,
+    "explain": "Impulse J = \u222bF dt, which corresponds to the area under a force-time graph \u2014 analogous to how area under a velocity-time graph gives displacement."
+  },
+  {
+    "q": "A 1000 kg car moving at +15 m/s (east) collides with a stationary 1000 kg car and they lock together. What is their combined velocity right after the collision?",
+    "choices": [
+      "+15 m/s",
+      "+7.5 m/s",
+      "+30 m/s",
+      "0 m/s"
+    ],
+    "correct": 1,
+    "explain": "Conservation of momentum: m\u2081v\u2081 + m\u2082v\u2082 = (m\u2081+m\u2082)v_f \u2192 (1000)(15) + (1000)(0) = (2000)v_f \u2192 v_f = 7.5 m/s. A common mistake is forgetting to divide by the combined mass."
+  },
+  {
+    "q": "Why do airbags and crumple zones reduce injury in a car crash, in terms of impulse?",
+    "choices": [
+      "They reduce the total change in momentum",
+      "They increase the collision time, which reduces the peak force for the same impulse",
+      "They eliminate momentum entirely",
+      "They have no effect on the physics, only on comfort"
+    ],
+    "correct": 1,
+    "explain": "The change in momentum (impulse needed to stop a passenger) is fixed by mass and speed change. Since J = F\u0394t is fixed, stretching \u0394t (a longer, softer stop) reduces the average force F \u2014 this is the key real-world application often missed."
+  },
+  {
+    "q": "In a 1D collision between two carts on a frictionless track, one moving right (+) and one moving left (\u2212), what sign convention mistake most commonly causes errors?",
+    "choices": [
+      "Using kg for mass instead of grams",
+      "Forgetting that velocity in the opposite direction must be entered as a negative number",
+      "Using momentum instead of force",
+      "There is no risk of sign errors in 1D"
+    ],
+    "correct": 1,
+    "explain": "In one-dimensional momentum problems, direction matters \u2014 velocities (and hence momenta) opposing your chosen positive direction must be negative. Dropping this sign is one of the single most common calculation errors in momentum problems."
+  },
+  {
+    "q": "Is momentum a vector or a scalar quantity?",
+    "choices": [
+      "Scalar \u2014 only magnitude matters",
+      "Vector \u2014 it has both magnitude and direction",
+      "Neither; it's a unit only",
+      "It depends on the object's mass"
+    ],
+    "correct": 1,
+    "explain": "Momentum p = mv is a vector because velocity is a vector; momentum points in the same direction as the object's velocity. This is why direction/sign must always be tracked in momentum problems."
+  },
+  {
+    "q": "A system of two colliding objects experiences a collision on a rough (frictional) surface. Is momentum of the two-object system still exactly conserved during the brief collision?",
+    "choices": [
+      "No, never, because friction always destroys momentum conservation",
+      "Approximately yes, because the collision happens so fast that friction's external impulse during that instant is negligible compared to the internal collision forces",
+      "Yes, exactly, under all circumstances no matter how long the interaction takes",
+      "Momentum conservation doesn't apply if any external force exists, ever, at any timescale"
+    ],
+    "correct": 1,
+    "explain": "External forces like friction do act, but real collisions happen over very short times, so the external impulse (F\u00b7\u0394t) they contribute during the collision itself is tiny compared to the large internal collision forces \u2014 making momentum approximately conserved during the collision, even though friction will change the system's momentum before/after."
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = new Array(QUESTIONS.length).fill(false);
+let missed = [];
+
+const quizArea = document.getElementById('quiz-area');
+const scoreArea = document.getElementById('score-area');
+const bar = document.getElementById('bar');
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  bar.style.width = ((current) / QUESTIONS.length * 100) + '%';
+
+  const card = document.createElement('div');
+  card.className = 'card';
+
+  const num = document.createElement('div');
+  num.className = 'qnum';
+  num.textContent = 'Question ' + (current + 1) + ' of ' + QUESTIONS.length;
+  card.appendChild(num);
+
+  const qtext = document.createElement('div');
+  qtext.className = 'qtext';
+  qtext.textContent = q.q;
+  card.appendChild(qtext);
+
+  const choicesWrap = document.createElement('div');
+  choicesWrap.className = 'choices';
+
+  const explain = document.createElement('div');
+  explain.className = 'explain';
+  explain.innerHTML = '<b>Why:</b> ' + q.explain;
+
+  q.choices.forEach((choiceText, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.textContent = choiceText;
+    btn.addEventListener('click', () => {
+      if (answered[current]) return;
+      answered[current] = true;
+      const correct = idx === q.correct;
+      Array.from(choicesWrap.children).forEach((b, i) => {
+        b.disabled = true;
+        if (i === q.correct) b.classList.add('correct');
+        else if (i === idx) b.classList.add('incorrect');
+      });
+      if (correct) {
+        score++;
+      } else {
+        missed.push(q.q);
+      }
+      explain.classList.add('show');
+      nextBtn.disabled = false;
+    });
+    choicesWrap.appendChild(btn);
+  });
+
+  card.appendChild(choicesWrap);
+  card.appendChild(explain);
+
+  const nav = document.createElement('div');
+  nav.className = 'footer-nav';
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'nav';
+  nextBtn.textContent = current === QUESTIONS.length - 1 ? 'See Results' : 'Next';
+  nextBtn.disabled = true;
+  nextBtn.addEventListener('click', () => {
+    if (current < QUESTIONS.length - 1) {
+      current++;
+      quizArea.innerHTML = '';
+      renderQuestion();
+    } else {
+      showScore();
+    }
+  });
+  nav.appendChild(document.createElement('span'));
+  nav.appendChild(nextBtn);
+  card.appendChild(nav);
+
+  quizArea.appendChild(card);
+}
+
+function showScore() {
+  bar.style.width = '100%';
+  quizArea.hidden = true;
+  scoreArea.hidden = false;
+  const pct = Math.round((score / QUESTIONS.length) * 100);
+  document.getElementById('scoreBig').textContent = score + '/' + QUESTIONS.length;
+  let msg = pct >= 80 ? "Nice work — you've met the 80% target for this unit." :
+            pct >= 60 ? "Getting there. Re-read the missed concepts in your Cornell notes, then retake." :
+            "Revisit the unit README key concepts before retaking this quiz.";
+  document.getElementById('scoreMsg').textContent = msg + ' (' + pct + '%)';
+  const list = document.getElementById('missedList');
+  list.innerHTML = '';
+  if (missed.length) {
+    const heading = document.createElement('div');
+    heading.style.color = 'var(--text)';
+    heading.style.fontWeight = '600';
+    heading.style.marginBottom = '0.4rem';
+    heading.textContent = 'Review these:';
+    list.appendChild(heading);
+    missed.forEach(m => {
+      const li = document.createElement('li');
+      li.textContent = m;
+      list.appendChild(li);
+    });
+  }
+}
+
+document.getElementById('retakeBtn').addEventListener('click', () => {
+  current = 0; score = 0; answered = new Array(QUESTIONS.length).fill(false); missed = [];
+  quizArea.hidden = false; scoreArea.hidden = true; quizArea.innerHTML = '';
+  renderQuestion();
+});
+
+renderQuestion();
+</script>
+</body>
+</html>
