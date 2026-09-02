@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newton's Laws Quiz — Most Missed Questions</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f7f5;
+    --card: #ffffff;
+    --text: #1f2328;
+    --muted: #57606a;
+    --accent: #2f5fd0;
+    --correct: #1a7f37;
+    --incorrect: #cf222e;
+    --border: #d0d7de;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14181d;
+      --card: #1c2128;
+      --text: #e6edf3;
+      --muted: #9198a1;
+      --accent: #6f9bff;
+      --correct: #3fb950;
+      --incorrect: #ff7b72;
+      --border: #30363d;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 24px 16px 64px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.4rem; margin-bottom: 4px; }
+  .sub { color: var(--muted); margin-bottom: 20px; font-size: 0.95rem; }
+  #progress {
+    height: 8px; background: var(--border); border-radius: 4px; overflow: hidden;
+    margin-bottom: 24px;
+  }
+  #progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width .3s; }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 20px; margin-bottom: 18px;
+  }
+  .qnum { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; }
+  .qtext { font-size: 1.05rem; margin-bottom: 14px; line-height: 1.4; }
+  .choices { display: flex; flex-direction: column; gap: 8px; }
+  button.choice {
+    text-align: left; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border);
+    background: transparent; color: var(--text); cursor: pointer; font-size: 0.95rem;
+  }
+  button.choice:hover:not(:disabled) { border-color: var(--accent); }
+  button.choice:disabled { cursor: default; }
+  button.choice.correct { background: color-mix(in srgb, var(--correct) 18%, transparent); border-color: var(--correct); }
+  button.choice.incorrect { background: color-mix(in srgb, var(--incorrect) 18%, transparent); border-color: var(--incorrect); }
+  .explain {
+    margin-top: 12px; padding: 12px; border-radius: 8px; font-size: 0.9rem;
+    background: color-mix(in srgb, var(--accent) 10%, transparent); border: 1px solid var(--border);
+    display: none;
+  }
+  .explain.show { display: block; }
+  #summary {
+    text-align: center; padding: 28px 20px; display: none;
+  }
+  #summary.show { display: block; }
+  #summary h2 { margin-bottom: 6px; }
+  #score { font-size: 2.2rem; font-weight: 700; color: var(--accent); }
+  button#restart {
+    margin-top: 16px; padding: 10px 20px; border-radius: 8px; border: none;
+    background: var(--accent); color: white; font-size: 0.95rem; cursor: pointer;
+  }
+  #quiz.hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Newton's Laws — Most Missed Questions</h1>
+  <p class="sub">10 questions targeting the concepts students get wrong most often. Pick an answer to see immediate feedback and an explanation.</p>
+  <div id="progress"><div id="progress-bar"></div></div>
+
+  <div id="quiz"></div>
+
+  <div id="summary">
+    <h2>Quiz complete</h2>
+    <div id="score">0 / 0</div>
+    <p id="score-msg" class="sub"></p>
+    <button id="restart">Try again</button>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A hockey puck slides across frictionless ice at a constant 4 m/s in a straight line. What is the net force on it?",
+    choices: ["Zero — it's in equilibrium", "Small, in the direction of motion, to keep it moving", "Small, opposite the direction of motion", "Cannot be determined without the puck's mass"],
+    correct: 0,
+    explain: "Newton's First Law: constant velocity (including this straight-line, non-zero case) means zero net force. Motion does not require a force to sustain it — only a change in motion does. Assuming a moving object needs a continuing force is the #1 Newton's-Laws misconception."
+  },
+  {
+    q: "A student says a bowling ball 'has more weight' than a tennis ball because it's heavier. Which statement is most accurate?",
+    choices: [
+      "The bowling ball has more mass (kg) and, since weight = mg, also more weight (N) at the same location",
+      "Mass and weight are the same thing, just different units",
+      "The bowling ball has more weight but the same mass as the tennis ball",
+      "Weight only depends on volume, not mass"
+    ],
+    correct: 0,
+    explain: "Mass (kg) is a scalar measure of inertia that doesn't change with location. Weight (N) is a force, weight = mg, and depends on both mass and the local gravitational field. The bowling ball has more mass, and therefore more weight here on Earth — but the two quantities are not interchangeable, and weight would change on the Moon while mass would not."
+  },
+  {
+    q: "A book rests on a table. The table pushes up on the book with a normal force. What is the Newton's Third Law reaction to that force?",
+    choices: [
+      "Gravity pulls the book down",
+      "The book pushes down on the table",
+      "The table pushes down on the floor",
+      "There is no reaction force in this situation"
+    ],
+    correct: 1,
+    explain: "A Third Law pair is the SAME TYPE of force, equal magnitude, opposite direction, acting on the OTHER object. The table's normal force pushes up on the book, so the reaction is the book's normal force pushing down on the table. Gravity on the book is a completely different force (acting on the same object, the book) — pairing normal force with gravity is the most common Third Law mistake."
+  },
+  {
+    q: "A 70 kg person stands on a scale inside an elevator that is accelerating upward at 2.0 m/s². How does the scale reading compare to the person's normal weight (at rest)?",
+    choices: [
+      "The scale reads exactly the person's normal weight (mg), since normal force always equals mg",
+      "The scale reads MORE than mg",
+      "The scale reads LESS than mg",
+      "The scale reads zero"
+    ],
+    correct: 1,
+    explain: "Normal force is not always equal to mg — it adjusts to whatever ΣF = ma requires. Accelerating upward means the net force on the person is upward, so N must exceed mg (N − mg = ma, N = m(g + a)). The scale (which reads N) shows more than the person's resting weight. Assuming N = mg unconditionally is a very common error."
+  },
+  {
+    q: "A wooden crate sits on a rough floor and is not moving, even though you're pushing on it with 20 N of horizontal force. The maximum possible static friction is 50 N. What is the actual friction force acting on the crate right now?",
+    choices: [
+      "50 N, since static friction always equals μₛN",
+      "20 N, exactly matching your push, since the crate isn't accelerating",
+      "0 N, because the crate isn't moving",
+      "Somewhere between 20 N and 50 N, but it can't be determined"
+    ],
+    correct: 1,
+    explain: "Static friction is NOT a fixed value — it equals whatever is needed to prevent motion, up to a maximum of μₛN. Since the crate stays at rest (a = 0), the net force must be zero, so friction exactly balances your 20 N push: it's 20 N, not the maximum 50 N. Static friction only reaches μₛN right at the verge of slipping."
+  },
+  {
+    q: "A block sits on a 25° frictionless incline. Which expression gives the normal force, and which gives the component of gravity accelerating the block down the slope?",
+    choices: [
+      "Normal force = mg sin25°; acceleration component = mg cos25°",
+      "Normal force = mg cos25°; acceleration component = mg sin25°",
+      "Normal force = mg; acceleration component = mg sin25° cos25°",
+      "Normal force = mg cos25°; acceleration component = mg cos25°"
+    ],
+    correct: 1,
+    explain: "Decompose gravity relative to the incline surface: the component perpendicular to the surface (balanced by the normal force) is mg cosθ, and the component parallel to the surface (driving acceleration down the slope) is mg sinθ. Swapping sine and cosine is the most common incline-problem error — sketch the right triangle each time rather than memorizing which is which."
+  },
+  {
+    q: "Two blocks, 3.0 kg and 6.0 kg, are connected by a string over a frictionless, massless pulley (an Atwood machine). How do their accelerations compare?",
+    choices: [
+      "The 6.0 kg block accelerates faster, since it has more mass",
+      "The 3.0 kg block accelerates faster, since it has less mass",
+      "Both blocks have the same magnitude of acceleration, since they're connected by the string",
+      "Neither block accelerates, since the forces are internal to the system"
+    ],
+    correct: 2,
+    explain: "Because the string is inextensible and connects the two blocks, they must move together — the magnitude of acceleration is the same for both (a constraint), even though each block still needs its own free-body diagram and its own ΣF = ma equation to find that shared value. Thinking the heavier block 'accelerates faster' ignores the connection between them."
+  },
+  {
+    q: "A constant 10 N force is applied first to a 2 kg cart, then to a 4 kg cart (double the mass). How does the 4 kg cart's acceleration compare to the 2 kg cart's?",
+    choices: [
+      "Twice as large, because heavier objects accelerate faster",
+      "The same, because F = ma means acceleration doesn't depend on mass",
+      "Half as large, since a = F/m and mass doubled",
+      "Cannot be determined without knowing if there's friction"
+    ],
+    correct: 2,
+    explain: "From a = F/m, doubling the mass while keeping F constant halves the acceleration — more mass means LESS acceleration for the same force. This is a different scenario from free fall, where a = g regardless of mass because the force itself (weight = mg) scales with mass too; here the applied force is fixed, so only the a = F/m relationship applies, and 'heavier accelerates faster' is backwards."
+  },
+  {
+    q: "In an idealized system with a massless string over a massless, frictionless pulley connecting two hanging blocks, how does the tension compare on the two sides of the pulley?",
+    choices: [
+      "Tension is higher on the side with the heavier block",
+      "Tension is the same on both sides of the pulley",
+      "Tension is zero on the side that's accelerating downward",
+      "Tension increases gradually along the length of the string"
+    ],
+    correct: 1,
+    explain: "For an ideal massless string over a massless, frictionless pulley, tension is the same throughout the entire string, including on both sides of the pulley — the pulley only redirects the string's direction without adding or removing force. Assuming tension differs across the pulley or changes along the rope is a common misconception at this level."
+  },
+  {
+    q: "A book sits on a table. The table exerts a normal force on the book, and gravity exerts a force on the book. These two forces are equal in magnitude and opposite in direction. Why don't they cancel as a Newton's Third Law pair?",
+    choices: [
+      "They do cancel as a Third Law pair — that's exactly what Third Law pairs are",
+      "They're a Third Law pair, but Third Law pairs only cancel sometimes",
+      "They're not a Third Law pair at all — Third Law pairs act on two different objects, and both of these forces act on the book",
+      "Gravity is not a real force, so there's nothing to compare it to"
+    ],
+    correct: 2,
+    explain: "'Equal and opposite forces cancel' is only true when both forces act on the SAME object — that's a balanced-force (equilibrium) situation, which is what's happening here on the book. A true Newton's Third Law pair acts on two DIFFERENT objects (e.g., book pushes down on table / table pushes up on book) and, precisely because they act on different objects, never cancels anything on either object's own free-body diagram."
+  }
+];
+
+let current = 0;
+let score = 0;
+
+const quizEl = document.getElementById('quiz');
+const progressBar = document.getElementById('progress-bar');
+const summaryEl = document.getElementById('summary');
+
+function renderQuestion() {
+  if (current >= QUESTIONS.length) {
+    finish();
+    return;
+  }
+  const item = QUESTIONS[current];
+  progressBar.style.width = (current / QUESTIONS.length * 100) + '%';
+
+  const card = document.createElement('div');
+  card.className = 'card';
+
+  const qnum = document.createElement('div');
+  qnum.className = 'qnum';
+  qnum.textContent = `Question ${current + 1} of ${QUESTIONS.length}`;
+  card.appendChild(qnum);
+
+  const qtext = document.createElement('div');
+  qtext.className = 'qtext';
+  qtext.textContent = item.q;
+  card.appendChild(qtext);
+
+  const choicesEl = document.createElement('div');
+  choicesEl.className = 'choices';
+
+  const explainEl = document.createElement('div');
+  explainEl.className = 'explain';
+  explainEl.textContent = item.explain;
+
+  item.choices.forEach((choiceText, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.textContent = choiceText;
+    btn.addEventListener('click', () => {
+      const buttons = choicesEl.querySelectorAll('button');
+      buttons.forEach(b => b.disabled = true);
+      if (idx === item.correct) {
+        btn.classList.add('correct');
+        score++;
+      } else {
+        btn.classList.add('incorrect');
+        buttons[item.correct].classList.add('correct');
+      }
+      explainEl.classList.add('show');
+
+      const nextBtn = document.createElement('button');
+      nextBtn.id = 'restart';
+      nextBtn.textContent = current === QUESTIONS.length - 1 ? 'See results' : 'Next question';
+      nextBtn.addEventListener('click', () => {
+        current++;
+        quizEl.innerHTML = '';
+        renderQuestion();
+      });
+      card.appendChild(nextBtn);
+    });
+    choicesEl.appendChild(btn);
+  });
+
+  card.appendChild(choicesEl);
+  card.appendChild(explainEl);
+  quizEl.innerHTML = '';
+  quizEl.appendChild(card);
+}
+
+function finish() {
+  progressBar.style.width = '100%';
+  quizEl.classList.add('hidden');
+  summaryEl.classList.add('show');
+  document.getElementById('score').textContent = `${score} / ${QUESTIONS.length}`;
+  const pct = Math.round(score / QUESTIONS.length * 100);
+  let msg;
+  if (pct >= 80) msg = "Strong grasp of Newton's Laws — you're ready for Circular Motion & Gravitation.";
+  else if (pct >= 60) msg = "Solid start. Review the explanations above and re-read your Cornell notes on Third Law pairs and normal force.";
+  else msg = "Revisit cornell-notes.md and README.md, then retake this quiz before moving on.";
+  document.getElementById('score-msg').textContent = `${pct}% — ${msg}`;
+}
+
+document.getElementById('restart').addEventListener('click', () => {
+  current = 0;
+  score = 0;
+  summaryEl.classList.remove('show');
+  quizEl.classList.remove('hidden');
+  renderQuestion();
+});
+
+renderQuestion();
+</script>
+</body>
+</html>
