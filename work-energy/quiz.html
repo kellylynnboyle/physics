@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work & Energy Quiz — Most Missed Questions</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f7f5;
+    --card: #ffffff;
+    --text: #1f2328;
+    --muted: #57606a;
+    --accent: #2f5fd0;
+    --correct: #1a7f37;
+    --incorrect: #cf222e;
+    --border: #d0d7de;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14181d;
+      --card: #1c2128;
+      --text: #e6edf3;
+      --muted: #9198a1;
+      --accent: #6f9bff;
+      --correct: #3fb950;
+      --incorrect: #ff7b72;
+      --border: #30363d;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 24px 16px 64px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.4rem; margin-bottom: 4px; }
+  .sub { color: var(--muted); margin-bottom: 20px; font-size: 0.95rem; }
+  #progress {
+    height: 8px; background: var(--border); border-radius: 4px; overflow: hidden;
+    margin-bottom: 24px;
+  }
+  #progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width .3s; }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 20px; margin-bottom: 18px;
+  }
+  .qnum { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; }
+  .qtext { font-size: 1.05rem; margin-bottom: 14px; line-height: 1.4; }
+  .choices { display: flex; flex-direction: column; gap: 8px; }
+  button.choice {
+    text-align: left; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border);
+    background: transparent; color: var(--text); cursor: pointer; font-size: 0.95rem;
+  }
+  button.choice:hover:not(:disabled) { border-color: var(--accent); }
+  button.choice:disabled { cursor: default; }
+  button.choice.correct { background: color-mix(in srgb, var(--correct) 18%, transparent); border-color: var(--correct); }
+  button.choice.incorrect { background: color-mix(in srgb, var(--incorrect) 18%, transparent); border-color: var(--incorrect); }
+  .explain {
+    margin-top: 12px; padding: 12px; border-radius: 8px; font-size: 0.9rem;
+    background: color-mix(in srgb, var(--accent) 10%, transparent); border: 1px solid var(--border);
+    display: none;
+  }
+  .explain.show { display: block; }
+  #summary {
+    text-align: center; padding: 28px 20px; display: none;
+  }
+  #summary.show { display: block; }
+  #summary h2 { margin-bottom: 6px; }
+  #score { font-size: 2.2rem; font-weight: 700; color: var(--accent); }
+  button#restart {
+    margin-top: 16px; padding: 10px 20px; border-radius: 8px; border: none;
+    background: var(--accent); color: white; font-size: 0.95rem; cursor: pointer;
+  }
+  #quiz.hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Work &amp; Energy — Most Missed Questions</h1>
+  <p class="sub">10 questions targeting the concepts students get wrong most often. Pick an answer to see immediate feedback and an explanation.</p>
+  <div id="progress"><div id="progress-bar"></div></div>
+
+  <div id="quiz"></div>
+
+  <div id="summary">
+    <h2>Quiz complete</h2>
+    <div id="score">0 / 0</div>
+    <p id="score-msg" class="sub"></p>
+    <button id="restart">Try again</button>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A person carries a box at constant height while walking 10 m horizontally at constant velocity. How much work does the person do against gravity on the box?",
+    choices: ["A positive amount, equal to mgh", "Zero", "A negative amount", "It depends on the box's speed"],
+    correct: 1,
+    explain: "The weight force is vertical, but the displacement is horizontal — the angle between them is 90°, so cosθ = 0 and the work done against gravity is zero. Students often assume any applied force 'counts' as work, but a force perpendicular to displacement never does work."
+  },
+  {
+    q: "A motor does 6000 J of work lifting a load in 3 s. Which set of units correctly labels the work, the rate of doing that work, and the force needed if the load moves 2 m?",
+    choices: [
+      "Work in watts, rate in joules, force in newtons",
+      "Work in joules, rate in watts, force in newtons",
+      "Work in newtons, rate in watts, force in joules",
+      "Work in joules, rate in newtons, force in watts"
+    ],
+    correct: 1,
+    explain: "Work/energy is measured in joules (J), power (the rate of doing work, W/t) is measured in watts (W = J/s), and force is measured in newtons (N). A common error is mislabeling a work value in watts, or dividing by the wrong quantity (time vs. distance) when converting between work and power — keep the three quantities and their units straight."
+  },
+  {
+    q: "A box has both gravity and friction acting on it as it slides down a ramp. Which statement correctly applies the work-energy theorem?",
+    choices: [
+      "The work done by gravity alone equals ΔKE",
+      "The NET work (gravity's work plus friction's work, added together) equals ΔKE",
+      "The work done by friction alone equals ΔKE",
+      "ΔKE equals the work done by whichever force is larger"
+    ],
+    correct: 1,
+    explain: "The work-energy theorem states W_net = ΔKE, where W_net is the sum of the work done by every force acting on the object. Using only one force's work (like gravity alone) when other forces are also acting is a very common error — friction's negative work must be included too."
+  },
+  {
+    q: "A shelf is 2.0 m above the floor and 1.2 m above a tabletop. A book's gravitational PE relative to the floor is different from its PE relative to the tabletop. What does this tell you?",
+    choices: [
+      "One of the two calculations must be wrong",
+      "The PE value depends on the chosen reference height, but the CHANGE in PE between two points does not",
+      "Gravitational PE is not a real physical quantity",
+      "The tabletop must be moving for this to happen"
+    ],
+    correct: 1,
+    explain: "PE = mgh is always measured relative to some chosen reference (h = 0) — so the PE value itself changes if you pick a different reference. What's physically meaningful, and reference-independent, is the CHANGE in PE between two points, since that's what actually converts to or from kinetic energy."
+  },
+  {
+    q: "A pendulum swings with no friction or air resistance. As it swings from its highest point to its lowest point, which statement is correct?",
+    choices: [
+      "KE and PE both increase",
+      "KE and PE both decrease",
+      "KE increases by exactly the amount PE decreases",
+      "KE and PE are unrelated to each other"
+    ],
+    correct: 2,
+    explain: "In a frictionless system, KE + PE = constant, so any energy lost as PE must show up as gained KE (and vice versa) — the two changes are equal in magnitude and opposite in sign. Forgetting to link the two terms, or dropping a sign when relating height dropped to speed gained, is a common error here."
+  },
+  {
+    q: "A block slides down a ramp with friction. A student writes KE_i + PE_i = KE_f + PE_f to solve for the final speed. What's wrong with this equation?",
+    choices: [
+      "Nothing — this equation is always correct",
+      "It's missing a term for energy converted to heat by friction",
+      "KE and PE should be subtracted, not added",
+      "The equation only works if the ramp is frictionless AND massless"
+    ],
+    correct: 1,
+    explain: "When friction (a non-conservative force) is present, mechanical energy is NOT conserved — the correct equation is KE_i + PE_i = KE_f + PE_f + energy lost to friction. Total energy is still conserved, but some of it left the mechanical system as heat, so leaving out the loss term overestimates the final KE or speed."
+  },
+  {
+    q: "As a crate slides across a rough floor, is the work done BY friction on the crate positive, negative, or zero?",
+    choices: [
+      "Positive — friction adds energy to keep contact",
+      "Negative — friction opposes displacement, removing energy from the system",
+      "Zero — friction is a contact force, not a work-doing force",
+      "It depends on the crate's mass"
+    ],
+    correct: 1,
+    explain: "Friction always acts opposite to the direction of displacement, so the angle between friction and displacement is 180° and cosθ = −1: the work done by friction is negative. This represents energy being REMOVED from the mechanical system and converted to heat, not added to it."
+  },
+  {
+    q: "Two workers lift identical 20 kg boxes to the same 2.0 m height. Worker A takes 4.0 s; Worker B takes 12.0 s. Which statement is true?",
+    choices: [
+      "Worker A does more work than Worker B",
+      "Worker A and Worker B do the same work, but Worker A has more power",
+      "Worker B has more power because it took longer",
+      "Work and power are the same thing here, so both workers are equal in every way"
+    ],
+    correct: 1,
+    explain: "Work depends only on force and distance (W = mgh here), so both workers do identical work regardless of time. Power is a RATE, P = W/t, so the worker who does that same work in less time (Worker A) has greater power. Confusing 'more work' with 'more power' is one of the most common errors in this unit."
+  },
+  {
+    q: "An object's speed doubles from 4 m/s to 8 m/s. How does its kinetic energy change?",
+    choices: ["It doubles", "It stays the same", "It quadruples", "It increases by a factor of 8"],
+    correct: 2,
+    explain: "KE = ½mv² depends on v², not v — so doubling the speed multiplies KE by 2² = 4, i.e., it quadruples. A very common error is treating kinetic energy as directly proportional to speed instead of speed squared."
+  },
+  {
+    q: "Two frictionless ramps, one steep and one gently sloped, both start at the same height h and end at the same lower height. A ball is released from rest at the top of each. How do their speeds compare at the bottom?",
+    choices: [
+      "The steeper ramp gives a higher final speed",
+      "The gentler ramp gives a higher final speed",
+      "Both balls reach the same final speed, since height dropped is the same",
+      "Cannot be determined without knowing the ramps' lengths"
+    ],
+    correct: 2,
+    explain: "With no friction, mechanical energy conservation depends only on the height dropped (ΔPE = mgh), not on the shape or length of the path — this is the path independence of gravitational PE. Both ramps convert the same PE into the same KE, so the final speeds are equal, even though the steeper ramp gets there faster."
+  }
+];
+
+let current = 0;
+let score = 0;
+
+const quizEl = document.getElementById('quiz');
+const progressBar = document.getElementById('progress-bar');
+const summaryEl = document.getElementById('summary');
+
+function renderQuestion() {
+  if (current >= QUESTIONS.length) {
+    finish();
+    return;
+  }
+  const item = QUESTIONS[current];
+  progressBar.style.width = (current / QUESTIONS.length * 100) + '%';
+
+  const card = document.createElement('div');
+  card.className = 'card';
+
+  const qnum = document.createElement('div');
+  qnum.className = 'qnum';
+  qnum.textContent = `Question ${current + 1} of ${QUESTIONS.length}`;
+  card.appendChild(qnum);
+
+  const qtext = document.createElement('div');
+  qtext.className = 'qtext';
+  qtext.textContent = item.q;
+  card.appendChild(qtext);
+
+  const choicesEl = document.createElement('div');
+  choicesEl.className = 'choices';
+
+  const explainEl = document.createElement('div');
+  explainEl.className = 'explain';
+  explainEl.textContent = item.explain;
+
+  item.choices.forEach((choiceText, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.textContent = choiceText;
+    btn.addEventListener('click', () => {
+      const buttons = choicesEl.querySelectorAll('button');
+      buttons.forEach(b => b.disabled = true);
+      if (idx === item.correct) {
+        btn.classList.add('correct');
+        score++;
+      } else {
+        btn.classList.add('incorrect');
+        buttons[item.correct].classList.add('correct');
+      }
+      explainEl.classList.add('show');
+
+      const nextBtn = document.createElement('button');
+      nextBtn.id = 'restart';
+      nextBtn.textContent = current === QUESTIONS.length - 1 ? 'See results' : 'Next question';
+      nextBtn.addEventListener('click', () => {
+        current++;
+        quizEl.innerHTML = '';
+        renderQuestion();
+      });
+      card.appendChild(nextBtn);
+    });
+    choicesEl.appendChild(btn);
+  });
+
+  card.appendChild(choicesEl);
+  card.appendChild(explainEl);
+  quizEl.innerHTML = '';
+  quizEl.appendChild(card);
+}
+
+function finish() {
+  progressBar.style.width = '100%';
+  quizEl.classList.add('hidden');
+  summaryEl.classList.add('show');
+  document.getElementById('score').textContent = `${score} / ${QUESTIONS.length}`;
+  const pct = Math.round(score / QUESTIONS.length * 100);
+  let msg;
+  if (pct >= 80) msg = "Strong grasp of work and energy — you're ready for Momentum & Collisions.";
+  else if (pct >= 60) msg = "Solid start. Review the explanations above and re-read your Cornell notes on the work-energy theorem and mechanical energy conservation.";
+  else msg = "Revisit cornell-notes.md and README.md, then retake this quiz before moving on.";
+  document.getElementById('score-msg').textContent = `${pct}% — ${msg}`;
+}
+
+document.getElementById('restart').addEventListener('click', () => {
+  current = 0;
+  score = 0;
+  summaryEl.classList.remove('show');
+  quizEl.classList.remove('hidden');
+  renderQuestion();
+});
+
+renderQuestion();
+</script>
+</body>
+</html>
