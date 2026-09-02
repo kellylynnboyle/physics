@@ -72,20 +72,20 @@ answers with an instructor or the quiz in `quiz.html`.)*
 
 ## Suggested external resources
 
+*(Links verified live and current as of this writing.)*
+
 - **PhET Interactive Simulations (University of Colorado Boulder)** —
-  "Forces and Motion: Basics" simulation: lets students apply forces to
-  objects and see the resulting acceleration, friction, and net-force
-  vectors interactively
-- **The Physics Classroom** — Newton's Laws tutorial, covering all three
-  laws with free-body diagram practice:
-  physicsclassroom.com/class/newtlaws
-- **Khan Academy** — "Forces and Newton's Laws of Motion" unit (videos +
-  practice sets with instant feedback): khanacademy.org, search "Newton's
-  laws physics"
-- **OpenStax College Physics** — the Dynamics: Force and Newton's Laws of
-  Motion chapter, free peer-reviewed textbook chapter with worked
-  examples and end-of-chapter problems
-  (openstax.org/details/books/college-physics-2e)
+  [Forces and Motion: Basics](https://phet.colorado.edu/en/simulations/forces-and-motion-basics):
+  apply forces to objects and see the resulting acceleration, friction,
+  and net-force vectors interactively
+- **The Physics Classroom** — [Newton's Laws tutorial](https://www.physicsclassroom.com/class/newtlaws):
+  covers all three laws, free-body diagrams, and finding net force
+- **Khan Academy** — [Forces and Newton's laws of motion](https://www.khanacademy.org/science/high-school-physics/forces-and-newtons-laws-of-motion):
+  videos and practice sets with instant feedback on inertia, F = ma, and
+  action-reaction pairs
+- **OpenStax College Physics 2e, Chapter 4** — [Introduction to Dynamics: Newton's Laws of Motion](https://openstax.org/books/college-physics-2e/pages/4-introduction-to-dynamics-newtons-laws-of-motion):
+  free, peer-reviewed textbook chapter with worked examples and
+  end-of-chapter problems
 - **YouTube**: Flipping Physics or Professor Dave Explains — short,
   targeted videos on free-body diagrams and Third Law force pairs
 

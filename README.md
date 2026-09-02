@@ -1,8 +1,8 @@
 # 11th Grade Physics — Core Mechanics Learning Project
 
-A self-contained study project covering the five core mechanics topics of a
-standard 11th grade (regular or honors-level, pre-AP/AP-adjacent) physics
-course:
+A self-contained study project for a parent-taught 11th grade physics
+course, covering the five core mechanics topics of a standard 11th grade
+(regular or honors-level, pre-AP/AP-adjacent) course:
 
 1. [Kinematics](kinematics/)
 2. [Projectile Motion](projectile-motion/)

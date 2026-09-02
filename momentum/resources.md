@@ -64,16 +64,21 @@ or the quiz in `quiz.html`.)*
 
 ## Suggested external resources
 
+*(Links verified live and current as of this writing.)*
+
 - **PhET Interactive Simulations (University of Colorado Boulder)** —
-  "Collision Lab": lets students set up 1D and 2D elastic/inelastic
-  collisions and watch momentum and kinetic energy totals update live
-- **The Physics Classroom** — Momentum and Collisions tutorial:
-  physicsclassroom.com/class/momentum
-- **Khan Academy** — "Momentum and impulse" unit (videos + practice sets
-  with instant feedback): khanacademy.org, search "momentum physics"
-- **OpenStax College Physics** — Linear Momentum and Collisions chapter,
-  free peer-reviewed textbook with worked examples and end-of-chapter
-  problems (openstax.org/details/books/college-physics-2e)
+  [Collision Lab](https://phet.colorado.edu/en/simulations/collision-lab):
+  set up 1D and 2D elastic/inelastic collisions and watch momentum and
+  kinetic energy totals update live
+- **The Physics Classroom** — [Momentum, Collisions and Explosions tutorial](https://www.physicsclassroom.com/class/momentum):
+  covers the impulse-momentum theorem, conservation of momentum, and
+  collision/explosion analysis, plus a matching set of [interactive simulations](https://www.physicsclassroom.com/Interactive/Momentum-Collisions-and-Explosions)
+  (Fish Catch, Exploding Carts, Collision Carts)
+- **Khan Academy** — [What are momentum and impulse?](https://www.khanacademy.org/science/strengthened-shs-physics-1/x5eb5cea12d2cf683:kinematics/x5eb5cea12d2cf683:momentum/a/what-are-momentum-and-impulse):
+  article plus videos and practice sets with instant feedback
+- **OpenStax College Physics 2e, Chapter 8** — [Introduction to Linear Momentum and Collisions](https://openstax.org/books/college-physics-2e/pages/8-introduction-to-linear-momentum-and-collisions):
+  free, peer-reviewed textbook chapter with worked examples and
+  end-of-chapter problems
 
 ## Study tips for the most commonly missed question types
 

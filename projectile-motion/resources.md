@@ -66,19 +66,21 @@ in `quiz.html`.)*
 
 ## Suggested external resources
 
+*(Links verified live and current as of this writing.)*
+
 - **PhET Interactive Simulations (University of Colorado Boulder)** —
-  "Projectile Motion" simulation: lets students launch projectiles at any
-  angle/speed/height and see the trajectory, range, and time of flight
-  update live
-- **The Physics Classroom** — Projectile Motion tutorial:
-  physicsclassroom.com/class/vectors, covers horizontal/vertical
-  independence and both symmetric and non-symmetric launches
-- **Khan Academy** — "Two-dimensional motion" unit (videos + practice sets
-  with instant feedback): khanacademy.org, search "2D projectile motion"
-- **OpenStax College Physics** — the projectile motion chapter (part of
-  the two-dimensional kinematics unit), free peer-reviewed textbook with
-  worked examples and end-of-chapter problems
-  (openstax.org/details/books/college-physics-2e)
+  [Projectile Motion](https://phet.colorado.edu/en/simulations/projectile-motion):
+  launch projectiles at any angle/speed/height and see the trajectory,
+  range, and time of flight update live
+- **The Physics Classroom** — [Vectors and Projectiles tutorial](https://www.physicsclassroom.com/class/vectors):
+  covers horizontal/vertical independence and both symmetric and
+  non-symmetric (cliff/table) launches
+- **Khan Academy** — [Projectile motion (2D motion)](https://www.khanacademy.org/science/physics/two-dimensional-motion/two-dimensional-projectile-mot/a/what-is-2d-projectile-motion):
+  articles and videos with instant-feedback practice sets, including a
+  "common mistakes and misconceptions" section worth reading directly
+- **OpenStax College Physics 2e, Chapter 3** — [Introduction to Two-Dimensional Kinematics](https://openstax.org/books/college-physics-2e/pages/3-introduction-to-two-dimensional-kinematics):
+  free, peer-reviewed textbook chapter with worked examples and
+  end-of-chapter problems
 
 ## Study tips for the most commonly missed question types
 

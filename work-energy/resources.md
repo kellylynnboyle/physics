@@ -73,17 +73,21 @@ in `quiz.html`.)*
 
 ## Suggested external resources
 
+*(Links verified live and current as of this writing.)*
+
 - **PhET Interactive Simulations (University of Colorado Boulder)** —
-  "Energy Skate Park" simulation: lets students visualize KE, PE, and
-  thermal energy in real time as a skater moves along different
-  frictionless and friction-enabled tracks
-- **The Physics Classroom** — Work, Energy, and Power tutorial:
-  physicsclassroom.com/class/energy
-- **Khan Academy** — "Work and energy" unit (videos + practice sets with
-  instant feedback): khanacademy.org, search "work and energy physics"
-- **OpenStax College Physics** — Work, Energy, and Energy Resources
-  chapter — free, peer-reviewed textbook chapter with worked examples and
-  end-of-chapter problems (openstax.org/details/books/college-physics-2e)
+  [Energy Skate Park](https://phet.colorado.edu/sims/html/energy-skate-park/latest/energy-skate-park_all.html):
+  visualize KE, PE, and thermal energy in real time as a skater moves
+  along different frictionless and friction-enabled tracks
+- **The Physics Classroom** — [Work, Energy, and Power tutorial](https://www.physicsclassroom.com/class/energy):
+  covers the definition of work, kinetic and potential energy, mechanical
+  energy conservation, and power
+- **Khan Academy** — [Work and energy](https://www.khanacademy.org/science/physics/work-and-energy):
+  videos and practice sets with instant feedback, including the
+  work-energy theorem and energy dissipated by friction
+- **OpenStax College Physics 2e, Chapter 7** — [Introduction to Work, Energy, and Energy Resources](https://openstax.org/books/college-physics-2e/pages/7-introduction-to-work-energy-and-energy-resources):
+  free, peer-reviewed textbook chapter with worked examples and
+  end-of-chapter problems
 
 ## Study tips for the most commonly missed question types
 

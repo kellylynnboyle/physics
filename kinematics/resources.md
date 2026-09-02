@@ -53,16 +53,21 @@ or the quiz in `quiz.html`.)*
 
 ## Suggested external resources
 
-- **Khan Academy** — "One-dimensional motion" unit (videos + practice sets
-  with instant feedback): khanacademy.org, search "1D motion physics"
-- **The Physics Classroom** — Kinematics tutorial and the "Minds On
-  Physics" interactive problem sets: physicsclassroom.com/class/1DKin
+*(Links verified live and current as of this writing.)*
+
+- **The Physics Classroom** — [1D Kinematics tutorial](https://www.physicsclassroom.com/class/1DKin):
+  covers describing motion with words, diagrams, and graphs, plus the
+  kinematic equations and free fall
 - **PhET Interactive Simulations (University of Colorado Boulder)** —
-  "Moving Man" simulation: lets students manipulate position/velocity/
-  acceleration graphs interactively and see the motion play out
-- **OpenStax College Physics, Chapter 2** — free, peer-reviewed textbook
-  chapter with worked examples and end-of-chapter problems
-  (openstax.org/details/books/college-physics-2e)
+  [The Moving Man](https://phet.colorado.edu/en/simulations/moving-man):
+  drag a figure back and forth and watch matching position/velocity/
+  acceleration graphs build live, or set the graphs and watch the motion
+- **Khan Academy** — [One-dimensional motion](https://www.khanacademy.org/science/physics/one-dimensional-motion):
+  videos and practice sets with instant feedback on displacement,
+  velocity, acceleration, and free fall
+- **OpenStax College Physics 2e, Chapter 2** — [Introduction to One-Dimensional Kinematics](https://openstax.org/books/college-physics-2e/pages/2-introduction-to-one-dimensional-kinematics):
+  free, peer-reviewed textbook chapter with worked examples and
+  end-of-chapter problems
 - **YouTube**: Flipping Physics or Professor Dave Explains — short,
   targeted videos on free fall and kinematic equation selection
 
