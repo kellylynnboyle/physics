@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinematics Quiz — Most Missed Questions</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f7f5;
+    --card: #ffffff;
+    --text: #1f2328;
+    --muted: #57606a;
+    --accent: #2f5fd0;
+    --correct: #1a7f37;
+    --incorrect: #cf222e;
+    --border: #d0d7de;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14181d;
+      --card: #1c2128;
+      --text: #e6edf3;
+      --muted: #9198a1;
+      --accent: #6f9bff;
+      --correct: #3fb950;
+      --incorrect: #ff7b72;
+      --border: #30363d;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 24px 16px 64px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.4rem; margin-bottom: 4px; }
+  .sub { color: var(--muted); margin-bottom: 20px; font-size: 0.95rem; }
+  #progress {
+    height: 8px; background: var(--border); border-radius: 4px; overflow: hidden;
+    margin-bottom: 24px;
+  }
+  #progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width .3s; }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 20px; margin-bottom: 18px;
+  }
+  .qnum { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; }
+  .qtext { font-size: 1.05rem; margin-bottom: 14px; line-height: 1.4; }
+  .choices { display: flex; flex-direction: column; gap: 8px; }
+  button.choice {
+    text-align: left; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border);
+    background: transparent; color: var(--text); cursor: pointer; font-size: 0.95rem;
+  }
+  button.choice:hover:not(:disabled) { border-color: var(--accent); }
+  button.choice:disabled { cursor: default; }
+  button.choice.correct { background: color-mix(in srgb, var(--correct) 18%, transparent); border-color: var(--correct); }
+  button.choice.incorrect { background: color-mix(in srgb, var(--incorrect) 18%, transparent); border-color: var(--incorrect); }
+  .explain {
+    margin-top: 12px; padding: 12px; border-radius: 8px; font-size: 0.9rem;
+    background: color-mix(in srgb, var(--accent) 10%, transparent); border: 1px solid var(--border);
+    display: none;
+  }
+  .explain.show { display: block; }
+  #summary {
+    text-align: center; padding: 28px 20px; display: none;
+  }
+  #summary.show { display: block; }
+  #summary h2 { margin-bottom: 6px; }
+  #score { font-size: 2.2rem; font-weight: 700; color: var(--accent); }
+  button#restart {
+    margin-top: 16px; padding: 10px 20px; border-radius: 8px; border: none;
+    background: var(--accent); color: white; font-size: 0.95rem; cursor: pointer;
+  }
+  #quiz.hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Kinematics — Most Missed Questions</h1>
+  <p class="sub">10 questions targeting the concepts students get wrong most often. Pick an answer to see immediate feedback and an explanation.</p>
+  <div id="progress"><div id="progress-bar"></div></div>
+
+  <div id="quiz"></div>
+
+  <div id="summary">
+    <h2>Quiz complete</h2>
+    <div id="score">0 / 0</div>
+    <p id="score-msg" class="sub"></p>
+    <button id="restart">Try again</button>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A person walks 6 m east, then 8 m west. What is their displacement?",
+    choices: ["14 m", "2 m west", "2 m east", "0 m"],
+    correct: 1,
+    explain: "Displacement is a vector: net change in position. 6 m east + 8 m west = 2 m net west (take east as positive: +6 + (-8) = -2, i.e. 2 m west). Distance traveled is 14 m, which is the wrong quantity for this question — this east/west mix-up is the #1 missed kinematics question."
+  },
+  {
+    q: "A ball thrown straight up is at the very top of its path. What are its velocity and acceleration at that instant?",
+    choices: [
+      "v = 0, a = 0",
+      "v = 0, a = -9.8 m/s²",
+      "v = -9.8 m/s, a = 0",
+      "v = 0, a = +9.8 m/s²"
+    ],
+    correct: 1,
+    explain: "Velocity is momentarily zero at the peak (it's changing from up to down), but gravity never turns off — acceleration is still -9.8 m/s² (downward) the entire flight, including at the top. 'v = 0 means a = 0' is the single most common free-fall misconception."
+  },
+  {
+    q: "An object's velocity is negative and its acceleration is also negative. What is happening to its speed?",
+    choices: ["Speed is increasing", "Speed is decreasing", "Speed is constant", "Cannot be determined"],
+    correct: 0,
+    explain: "When velocity and acceleration have the SAME sign, speed increases (they're reinforcing each other), regardless of which direction is 'positive.' Speed decreases only when v and a have opposite signs. Don't assume 'negative acceleration' automatically means slowing down."
+  },
+  {
+    q: "On a position-time graph, what does the slope of the line represent?",
+    choices: ["Acceleration", "Velocity", "Displacement", "Distance"],
+    correct: 1,
+    explain: "Slope of a position-time graph = rise/run = Δposition/Δtime = velocity. (Slope of a velocity-time graph is what gives you acceleration — mixing up these two graphs is a very common error.)"
+  },
+  {
+    q: "On a velocity-time graph, what does the area under the line represent?",
+    choices: ["Velocity", "Acceleration", "Displacement", "Jerk"],
+    correct: 2,
+    explain: "Area under a velocity-time graph = Σ(velocity × time) = displacement. If part of the graph dips below the time-axis (negative velocity), that area subtracts from the total displacement even though the object is still covering distance."
+  },
+  {
+    q: "A car starts from rest and accelerates at 4 m/s² for 6 s. Which kinematic equation is MOST direct for finding the distance traveled?",
+    choices: [
+      "v = v₀ + at",
+      "Δx = v₀t + ½at²",
+      "v² = v₀² + 2aΔx",
+      "Δx = ½(v₀ + v)t (without finding v first)"
+    ],
+    correct: 1,
+    explain: "You're given v₀ (0), a, and t, and asked for Δx — the equation that only involves those four variables (no need to solve for v first) is Δx = v₀t + ½at². Picking an equation that requires an extra step you don't need is the most common source of careless errors on this problem type."
+  },
+  {
+    q: "A ball is dropped (v₀ = 0) from a height and hits the ground after falling for time t. If instead you throw it downward with some initial speed from the same height, how does the fall time compare?",
+    choices: [
+      "Fall time is the same either way",
+      "Fall time is shorter with an initial downward speed",
+      "Fall time is longer with an initial downward speed",
+      "Cannot be compared without knowing the height"
+    ],
+    correct: 1,
+    explain: "Giving the ball extra initial downward velocity means it covers the same distance faster, so it reaches the ground in less time than a ball simply dropped from rest. Students often assume gravity 'dominates' and initial velocity doesn't matter — it does."
+  },
+  {
+    q: "Average speed over a trip equals the magnitude of average velocity ONLY when:",
+    choices: [
+      "The object moves at constant velocity in a straight line the whole time",
+      "The trip is a round trip",
+      "Never — they're always different",
+      "The object accelerates uniformly"
+    ],
+    correct: 0,
+    explain: "Average speed = total distance/total time. Average velocity's magnitude = |total displacement|/total time. These are only guaranteed equal when the path is a straight line with no direction reversal (constant direction), so distance = |displacement| the whole time."
+  },
+  {
+    q: "A stone is thrown straight up and returns to the SAME height it was launched from (no air resistance). Which statement is true?",
+    choices: [
+      "Time going up equals time coming down, and impact speed equals launch speed",
+      "Time going up is longer than time coming down",
+      "Impact speed is less than launch speed because of gravity",
+      "Impact speed is greater than launch speed"
+    ],
+    correct: 0,
+    explain: "By symmetry of free fall (constant a = -g), the up and down halves of the trip are mirror images: equal times and equal speeds (opposite direction) at matching heights. This symmetry only holds if launch and landing heights are equal — a frequently-missed condition."
+  },
+  {
+    q: "Two runners start at the same point. Runner A moves at a constant 5 m/s. Runner B starts from rest and accelerates at 2 m/s². At what time are they moving at the SAME velocity (not necessarily same position)?",
+    choices: ["1.0 s", "2.0 s", "2.5 s", "5.0 s"],
+    correct: 2,
+    explain: "Set velocities equal: 5 = 0 + 2t → t = 2.5 s. A common mistake is confusing 'same velocity' with 'same position' (meeting point) — those are two different questions requiring two different equations, and this question only asks about velocity."
+  }
+];
+
+let current = 0;
+let score = 0;
+
+const quizEl = document.getElementById('quiz');
+const progressBar = document.getElementById('progress-bar');
+const summaryEl = document.getElementById('summary');
+
+function renderQuestion() {
+  if (current >= QUESTIONS.length) {
+    finish();
+    return;
+  }
+  const item = QUESTIONS[current];
+  progressBar.style.width = (current / QUESTIONS.length * 100) + '%';
+
+  const card = document.createElement('div');
+  card.className = 'card';
+
+  const qnum = document.createElement('div');
+  qnum.className = 'qnum';
+  qnum.textContent = `Question ${current + 1} of ${QUESTIONS.length}`;
+  card.appendChild(qnum);
+
+  const qtext = document.createElement('div');
+  qtext.className = 'qtext';
+  qtext.textContent = item.q;
+  card.appendChild(qtext);
+
+  const choicesEl = document.createElement('div');
+  choicesEl.className = 'choices';
+
+  const explainEl = document.createElement('div');
+  explainEl.className = 'explain';
+  explainEl.textContent = item.explain;
+
+  item.choices.forEach((choiceText, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.textContent = choiceText;
+    btn.addEventListener('click', () => {
+      const buttons = choicesEl.querySelectorAll('button');
+      buttons.forEach(b => b.disabled = true);
+      if (idx === item.correct) {
+        btn.classList.add('correct');
+        score++;
+      } else {
+        btn.classList.add('incorrect');
+        buttons[item.correct].classList.add('correct');
+      }
+      explainEl.classList.add('show');
+
+      const nextBtn = document.createElement('button');
+      nextBtn.id = 'restart';
+      nextBtn.textContent = current === QUESTIONS.length - 1 ? 'See results' : 'Next question';
+      nextBtn.addEventListener('click', () => {
+        current++;
+        quizEl.innerHTML = '';
+        renderQuestion();
+      });
+      card.appendChild(nextBtn);
+    });
+    choicesEl.appendChild(btn);
+  });
+
+  card.appendChild(choicesEl);
+  card.appendChild(explainEl);
+  quizEl.innerHTML = '';
+  quizEl.appendChild(card);
+}
+
+function finish() {
+  progressBar.style.width = '100%';
+  quizEl.classList.add('hidden');
+  summaryEl.classList.add('show');
+  document.getElementById('score').textContent = `${score} / ${QUESTIONS.length}`;
+  const pct = Math.round(score / QUESTIONS.length * 100);
+  let msg;
+  if (pct >= 80) msg = "Strong grasp of kinematics — you're ready for Projectile Motion.";
+  else if (pct >= 60) msg = "Solid start. Review the explanations above and re-read your Cornell notes on sign conventions and equation selection.";
+  else msg = "Revisit cornell-notes.md and README.md, then retake this quiz before moving on.";
+  document.getElementById('score-msg').textContent = `${pct}% — ${msg}`;
+}
+
+document.getElementById('restart').addEventListener('click', () => {
+  current = 0;
+  score = 0;
+  summaryEl.classList.remove('show');
+  quizEl.classList.remove('hidden');
+  renderQuestion();
+});
+
+renderQuestion();
+</script>
+</body>
+</html>
