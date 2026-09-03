@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projectile Motion — Most-Missed Questions Quiz</title>
+<style>
+  :root{
+    --bg:#f7f8fb; --card:#ffffff; --text:#1c2230; --muted:#5b6472;
+    --accent:#2f5dd4; --good:#1e8e5a; --bad:#c23b3b; --border:#e2e6ee;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#12151c; --card:#1b2029; --text:#eef1f6; --muted:#9aa4b2;
+      --accent:#6f97f0; --good:#4cc38a; --bad:#f16565; --border:#2a3140; }
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.5;padding:24px 16px 64px;}
+  .wrap{max-width:720px;margin:0 auto;}
+  h1{font-size:1.5rem;margin-bottom:4px;}
+  .sub{color:var(--muted);margin-bottom:24px;}
+  .progress{height:8px;border-radius:99px;background:var(--border);overflow:hidden;margin-bottom:24px;}
+  .progress-bar{height:100%;background:var(--accent);width:0%;transition:width .3s;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+  .qnum{color:var(--accent);font-weight:700;font-size:.85rem;letter-spacing:.03em;margin-bottom:6px;}
+  .qtext{font-weight:600;margin-bottom:14px;}
+  .opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer;}
+  .opt:hover{border-color:var(--accent);}
+  .opt input{margin-top:3px;}
+  .opt.correct{border-color:var(--good);background:color-mix(in srgb, var(--good) 12%, transparent);}
+  .opt.incorrect{border-color:var(--bad);background:color-mix(in srgb, var(--bad) 12%, transparent);}
+  .explain{display:none;margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--bg);border:1px solid var(--border);font-size:.92rem;color:var(--muted);}
+  .explain.show{display:block;}
+  button{background:var(--accent);color:#fff;border:none;padding:12px 20px;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;}
+  button:hover{opacity:.9;}
+  button:disabled{opacity:.5;cursor:not-allowed;}
+  .actions{display:flex;gap:12px;align-items:center;margin-top:8px;}
+  #result{display:none;text-align:center;padding:28px;border-radius:12px;background:var(--card);border:1px solid var(--border);margin-top:16px;}
+  #result h2{margin-top:0;}
+  .scorebig{font-size:2.4rem;font-weight:800;color:var(--accent);}
+  .tag{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--accent);color:#fff;margin-left:8px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Projectile Motion<span class="tag">Most-Missed Quiz</span></h1>
+  <p class="sub">10 questions targeting the concepts students miss most often. Select an answer for each question, then check your results.</p>
+  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+  <div id="quiz"></div>
+  <div class="actions">
+    <button id="submitBtn">Check Answers</button>
+    <button id="retryBtn" style="display:none;background:var(--muted);">Try Again</button>
+  </div>
+  <div id="result">
+    <h2>Your Score</h2>
+    <div class="scorebig" id="scoreText">0 / 10</div>
+    <p id="scoreMsg" style="color:var(--muted);"></p>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A projectile is launched at an angle above the horizontal. At the exact top (peak) of its trajectory, which statement is true?",
+    options: [
+      "Both the horizontal and vertical velocity are zero.",
+      "Vertical velocity is zero, but horizontal velocity is unchanged and nonzero.",
+      "Horizontal velocity is zero, but vertical velocity is at its maximum.",
+      "Both velocity components are at their maximum values."
+    ],
+    correct: 1,
+    explain: "Gravity only acts vertically, so only vᵧ passes through zero at the peak. Horizontal velocity vₓ is unaffected and keeps its launch value — the projectile is moving purely horizontally at that instant, not stopped."
+  },
+  {
+    q: "A ball undergoes projectile motion after being launched at an angle (ignore air resistance). Which best describes its horizontal velocity vₓ during the flight?",
+    options: [
+      "It decreases steadily due to gravity.",
+      "It stays constant for the entire flight.",
+      "It increases as the ball falls back down.",
+      "It is zero except at the instant of launch."
+    ],
+    correct: 1,
+    explain: "With no horizontal forces acting (ignoring air resistance), there is no horizontal acceleration. vₓ = v₀ₓ from launch to landing — only the vertical component changes over time."
+  },
+  {
+    q: "A ball is launched horizontally at 12 m/s from the top of a 20 m cliff. Ignoring air resistance, how long does it take to land?",
+    options: ["1.4 s", "2.0 s", "2.4 s", "4.9 s"],
+    correct: 1,
+    explain: "Fall time depends only on the vertical drop: t = √(2h/g) = √(2·20/9.8) ≈ 2.0 s. The horizontal speed of 12 m/s doesn't enter this calculation at all — it only affects how far the ball travels horizontally in that time."
+  },
+  {
+    q: "Two projectiles are launched at the same speed on level ground, one at 30° and one at 60° above horizontal. How do their ranges compare?",
+    options: [
+      "The 60° projectile travels farther.",
+      "The 30° projectile travels farther.",
+      "They land at the same range.",
+      "Cannot be determined without more information."
+    ],
+    correct: 2,
+    explain: "R = v₀²sin(2θ)/g. Since sin(60°) = sin(120°), the 30° and 60° launches (complementary angles) give the same range — though the 60° launch takes longer and reaches a greater height."
+  },
+  {
+    q: "For a projectile launched on level ground at a fixed speed v₀, at what launch angle is the horizontal range maximized?",
+    options: ["30°", "45°", "60°", "90°"],
+    correct: 1,
+    explain: "R = v₀²sin(2θ)/g is maximized when sin(2θ) = 1, i.e. 2θ = 90°, so θ = 45°. Steeper or flatter angles both reduce the range."
+  },
+  {
+    q: "A cannonball is launched at 40 m/s at 25° above the horizontal. Which pair of expressions correctly gives its initial velocity components?",
+    options: [
+      "v₀ₓ = 40 sin25°, v₀ᵧ = 40 cos25°",
+      "v₀ₓ = 40 cos25°, v₀ᵧ = 40 sin25°",
+      "v₀ₓ = 40 tan25°, v₀ᵧ = 40/tan25°",
+      "v₀ₓ = v₀ᵧ = 40 m/s; the angle only affects direction, not the components"
+    ],
+    correct: 1,
+    explain: "With θ measured from the horizontal, the horizontal component uses cosine (adjacent side) and the vertical component uses sine (opposite side): v₀ₓ = v₀cosθ, v₀ᵧ = v₀sinθ. Mixing these up is one of the most common errors in this unit."
+  },
+  {
+    q: "A projectile is launched on level ground at angle θ with speed v₀. Which factor determines its TOTAL time of flight?",
+    options: [
+      "The horizontal component v₀ₓ only.",
+      "The vertical component v₀ᵧ (and g) only.",
+      "Both components combined equally into a single speed.",
+      "The total launch speed v₀, regardless of angle."
+    ],
+    correct: 1,
+    explain: "t = 2v₀sinθ/g = 2v₀ᵧ/g. Time of flight is governed entirely by how the vertical motion unfolds under gravity; a faster horizontal component changes the range, not the flight time."
+  },
+  {
+    q: "Ignoring air resistance, what shape does a projectile's trajectory trace when launched at an angle to the horizontal?",
+    options: ["A circle", "A straight line", "A parabola", "A hyperbola"],
+    correct: 2,
+    explain: "Combining constant horizontal velocity with constant vertical acceleration produces a parabolic path — this is a direct consequence of x being linear in t while y is quadratic in t."
+  },
+  {
+    q: "A bowling ball and a tennis ball are launched horizontally at the same speed from the same height, with no air resistance. Which lands first?",
+    options: [
+      "The bowling ball, because it's heavier.",
+      "The tennis ball, because it's lighter.",
+      "They land at the same time.",
+      "It depends on how fast they were launched horizontally."
+    ],
+    correct: 2,
+    explain: "Vertical acceleration is -g for every object regardless of mass, just like ordinary free fall. Since both start with v₀ᵧ = 0 from the same height, both take exactly the same time to fall — mass and horizontal speed are both irrelevant here."
+  },
+  {
+    q: "At a certain instant, a projectile has vₓ = 6 m/s and vᵧ = 8 m/s. What is its speed (magnitude of velocity) at that instant?",
+    options: ["14 m/s", "10 m/s", "48 m/s", "2 m/s"],
+    correct: 1,
+    explain: "vₓ and vᵧ are perpendicular vector components, not scalars to add directly. Speed = √(vₓ² + vᵧ²) = √(36 + 64) = √100 = 10 m/s. Simply adding 6 + 8 = 14 m/s is a common but incorrect shortcut."
+  }
+];
+
+const quizEl = document.getElementById('quiz');
+const progressBar = document.getElementById('progressBar');
+let answers = new Array(QUESTIONS.length).fill(null);
+
+function render(){
+  quizEl.innerHTML = QUESTIONS.map((item, qi) => `
+    <div class="card" data-qi="${qi}">
+      <div class="qnum">QUESTION ${qi+1} OF ${QUESTIONS.length}</div>
+      <div class="qtext">${item.q}</div>
+      ${item.options.map((opt, oi) => `
+        <label class="opt" data-oi="${oi}">
+          <input type="radio" name="q${qi}" value="${oi}">
+          <span>${opt}</span>
+        </label>
+      `).join('')}
+      <div class="explain" id="explain-${qi}">${item.explain}</div>
+    </div>
+  `).join('');
+
+  quizEl.querySelectorAll('input[type=radio]').forEach(input => {
+    input.addEventListener('change', e => {
+      const qi = parseInt(e.target.name.slice(1));
+      answers[qi] = parseInt(e.target.value);
+      updateProgress();
+    });
+  });
+}
+
+function updateProgress(){
+  const answered = answers.filter(a => a !== null).length;
+  progressBar.style.width = (answered / QUESTIONS.length * 100) + '%';
+}
+
+document.getElementById('submitBtn').addEventListener('click', () => {
+  let score = 0;
+  QUESTIONS.forEach((item, qi) => {
+    const card = quizEl.querySelector(`[data-qi="${qi}"]`);
+    const opts = card.querySelectorAll('.opt');
+    opts.forEach(o => o.querySelectorAll('input').forEach(i => i.disabled = true));
+    if (answers[qi] === item.correct) score++;
+    opts.forEach((optEl, oi) => {
+      if (oi === item.correct) optEl.classList.add('correct');
+      else if (oi === answers[qi]) optEl.classList.add('incorrect');
+    });
+    document.getElementById('explain-' + qi).classList.add('show');
+  });
+
+  document.getElementById('submitBtn').style.display = 'none';
+  document.getElementById('retryBtn').style.display = 'inline-block';
+  const resultEl = document.getElementById('result');
+  resultEl.style.display = 'block';
+  document.getElementById('scoreText').textContent = `${score} / ${QUESTIONS.length}`;
+  const pct = Math.round(score / QUESTIONS.length * 100);
+  let msg = '';
+  if (pct >= 90) msg = "Excellent! You've got projectile motion down.";
+  else if (pct >= 80) msg = "Solid — mastery level. Review any missed items above.";
+  else if (pct >= 60) msg = "Good progress — re-read the explanations above and revisit the Cornell notes.";
+  else msg = "Keep practicing — review cornell-notes.md and try the practice problems before retaking.";
+  document.getElementById('scoreMsg').textContent = `${pct}% — ${msg}`;
+  resultEl.scrollIntoView({behavior:'smooth', block:'center'});
+});
+
+document.getElementById('retryBtn').addEventListener('click', () => {
+  answers = new Array(QUESTIONS.length).fill(null);
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('submitBtn').style.display = 'inline-block';
+  document.getElementById('retryBtn').style.display = 'none';
+  progressBar.style.width = '0%';
+  render();
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+render();
+</script>
+</body>
+</html>

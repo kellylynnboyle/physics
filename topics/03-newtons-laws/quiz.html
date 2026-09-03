@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newton's Laws — Most-Missed Questions Quiz</title>
+<style>
+  :root{
+    --bg:#f7f8fb; --card:#ffffff; --text:#1c2230; --muted:#5b6472;
+    --accent:#2f5dd4; --good:#1e8e5a; --bad:#c23b3b; --border:#e2e6ee;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#12151c; --card:#1b2029; --text:#eef1f6; --muted:#9aa4b2;
+      --accent:#6f97f0; --good:#4cc38a; --bad:#f16565; --border:#2a3140; }
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.5;padding:24px 16px 64px;}
+  .wrap{max-width:720px;margin:0 auto;}
+  h1{font-size:1.5rem;margin-bottom:4px;}
+  .sub{color:var(--muted);margin-bottom:24px;}
+  .progress{height:8px;border-radius:99px;background:var(--border);overflow:hidden;margin-bottom:24px;}
+  .progress-bar{height:100%;background:var(--accent);width:0%;transition:width .3s;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+  .qnum{color:var(--accent);font-weight:700;font-size:.85rem;letter-spacing:.03em;margin-bottom:6px;}
+  .qtext{font-weight:600;margin-bottom:14px;}
+  .opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer;}
+  .opt:hover{border-color:var(--accent);}
+  .opt input{margin-top:3px;}
+  .opt.correct{border-color:var(--good);background:color-mix(in srgb, var(--good) 12%, transparent);}
+  .opt.incorrect{border-color:var(--bad);background:color-mix(in srgb, var(--bad) 12%, transparent);}
+  .explain{display:none;margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--bg);border:1px solid var(--border);font-size:.92rem;color:var(--muted);}
+  .explain.show{display:block;}
+  button{background:var(--accent);color:#fff;border:none;padding:12px 20px;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;}
+  button:hover{opacity:.9;}
+  button:disabled{opacity:.5;cursor:not-allowed;}
+  .actions{display:flex;gap:12px;align-items:center;margin-top:8px;}
+  #result{display:none;text-align:center;padding:28px;border-radius:12px;background:var(--card);border:1px solid var(--border);margin-top:16px;}
+  #result h2{margin-top:0;}
+  .scorebig{font-size:2.4rem;font-weight:800;color:var(--accent);}
+  .tag{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--accent);color:#fff;margin-left:8px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Newton's Laws<span class="tag">Most-Missed Quiz</span></h1>
+  <p class="sub">10 questions targeting the concepts students miss most often. Select an answer for each question, then check your results.</p>
+  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+  <div id="quiz"></div>
+  <div class="actions">
+    <button id="submitBtn">Check Answers</button>
+    <button id="retryBtn" style="display:none;background:var(--muted);">Try Again</button>
+  </div>
+  <div id="result">
+    <h2>Your Score</h2>
+    <div class="scorebig" id="scoreText">0 / 10</div>
+    <p id="scoreMsg" style="color:var(--muted);"></p>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A hockey puck slides across frictionless ice at a constant 5 m/s. What net force is required to keep it moving at that constant velocity?",
+    options: [
+      "A force equal to the puck's weight, applied in the direction of motion.",
+      "Zero net force — no force is needed to sustain constant-velocity motion.",
+      "A small, steadily decreasing force.",
+      "A force that grows the longer the puck keeps sliding."
+    ],
+    correct: 1,
+    explain: "Newton's First Law: constant velocity (including zero velocity) requires zero net force. Motion doesn't need a sustaining force — only a *change* in motion does. This corrects the common Aristotelian intuition that moving objects need a continuous push."
+  },
+  {
+    q: "A heavier crate needs more applied force than a lighter crate to keep sliding at constant velocity across the same rough floor. Why is this actually true?",
+    options: [
+      "Because heavier objects fundamentally need more force to keep moving, regardless of friction.",
+      "Because the greater weight increases the normal force, which increases the friction force the applied force must balance.",
+      "Because Newton's Second Law requires more force for greater mass even when velocity isn't changing.",
+      "It isn't actually true — the required force is independent of the crate's weight."
+    ],
+    correct: 1,
+    explain: "At constant velocity, net force is still zero, so the applied force must exactly balance friction (f = μN). Since N increases with the crate's weight, friction increases too — the extra force need comes from friction, not from a general rule that 'heavier means more force to move.'"
+  },
+  {
+    q: "A book rests on a table. What is the correct Newton's Third Law action-reaction partner of 'Earth pulls the book down (gravity)'?",
+    options: [
+      "The table pushes up on the book (the normal force).",
+      "The book pushes down on the table.",
+      "The book pulls up on the Earth (gravity, acting on the Earth).",
+      "The book pushes down on the table and the table pushes up on the book, together."
+    ],
+    correct: 2,
+    explain: "Third Law pairs must be the SAME type of force acting on two DIFFERENT objects. Gravity's partner is the book's gravitational pull on the Earth — not the normal force, which is a different force type acting on the same object (the book), and is instead balanced with gravity through Newton's Second Law (equilibrium), not the Third Law."
+  },
+  {
+    q: "A 10 kg block rests on a frictionless ramp inclined at 37° above horizontal. What is the normal force on the block? (g = 9.8 m/s², cos 37° ≈ 0.80)",
+    options: ["98 N", "78 N", "59 N", "118 N"],
+    correct: 1,
+    explain: "On an incline, the normal force balances only the component of gravity perpendicular to the surface: N = mg·cos(θ) = (10)(9.8)(0.80) ≈ 78 N — not the full weight of 98 N. Normal force equals weight only on a flat surface with no other vertical forces."
+  },
+  {
+    q: "A 5.0 kg box sits on a horizontal floor. A person pushes down on the box at an angle, adding a downward vertical force component of 20 N (in addition to the box's weight). What is the normal force from the floor? (g = 9.8 m/s²)",
+    options: ["49 N", "69 N", "29 N", "20 N"],
+    correct: 1,
+    explain: "The normal force must balance ALL vertical forces on the box, not just weight. N = weight + extra downward component = (5.0)(9.8) + 20 = 49 + 20 = 69 N."
+  },
+  {
+    q: "A net force of 24 N acts on a 6.0 kg object. What is its acceleration?",
+    options: ["4.0 m/s²", "144 m/s²", "0.25 m/s²", "18 m/s²"],
+    correct: 0,
+    explain: "From Newton's Second Law, a = F_net / m = 24 N / 6.0 kg = 4.0 m/s²."
+  },
+  {
+    q: "A 20 kg crate sits on a floor with μ_s = 0.5. Someone applies a horizontal force of 80 N, but the crate does not move. What is the magnitude of the static friction force acting on the crate? (g = 9.8 m/s²)",
+    options: ["80 N", "98 N", "0 N", "40 N"],
+    correct: 0,
+    explain: "Static friction is variable — it adjusts to exactly match the applied force up to a maximum of μ_s·N = (0.5)(20)(9.8) ≈ 98 N. Since the crate stays still, static friction must exactly balance the 80 N applied force, not jump to its maximum possible value."
+  },
+  {
+    q: "An astronaut has a mass of 70 kg on Earth. On the Moon (g ≈ 1.6 m/s²), which statement is correct?",
+    options: [
+      "Both mass and weight stay the same as on Earth.",
+      "Mass stays 70 kg, but weight is much less than on Earth.",
+      "Mass decreases on the Moon, but weight stays the same.",
+      "Both mass and weight decrease by the same proportion."
+    ],
+    correct: 1,
+    explain: "Mass is the amount of matter in an object and doesn't depend on gravity — it stays 70 kg anywhere. Weight = mg does depend on local gravity, so on the Moon the astronaut's weight drops to about 1/6 of its Earth value."
+  },
+  {
+    q: "Which of the following describes an object in equilibrium (net force = 0)?",
+    options: [
+      "A car speeding up from a stoplight.",
+      "An elevator moving upward at a constant speed.",
+      "A ball at the very top of its arc in projectile motion.",
+      "A car turning a corner at constant speed."
+    ],
+    correct: 1,
+    explain: "Equilibrium means net force is zero, which describes constant velocity — including an elevator moving at steady speed. It does NOT mean 'at rest': the accelerating car, the ball still under gravity's pull at the top of its arc, and the turning car (centripetal acceleration) are all accelerating, so none of those three are in equilibrium."
+  },
+  {
+    q: "In an Atwood machine, a 3 kg mass and a 5 kg mass hang from a light string over a frictionless, massless pulley. What happens, and why is the resulting acceleration less than g?",
+    options: [
+      "The system accelerates toward the heavier (5 kg) side, at less than g, because the lighter mass's weight partially opposes the heavier mass's weight through the string.",
+      "The system accelerates toward the lighter (3 kg) side because it has less inertia to overcome.",
+      "The system doesn't accelerate at all — the two weights balance to zero net force.",
+      "The system accelerates at exactly g, since gravity acts directly and separately on each mass."
+    ],
+    correct: 0,
+    explain: "The net force on the system is (m2 − m1)g, but the string couples both masses' inertia together, so a = (m2 − m1)g / (m1 + m2) = (5−3)(9.8)/(8) = 2.45 m/s² — much less than g, because the lighter mass's weight, transmitted through the tension, partially cancels the heavier mass's pull rather than the full weight of either mass acting alone."
+  }
+];
+
+const quizEl = document.getElementById('quiz');
+const progressBar = document.getElementById('progressBar');
+let answers = new Array(QUESTIONS.length).fill(null);
+
+function render(){
+  quizEl.innerHTML = QUESTIONS.map((item, qi) => `
+    <div class="card" data-qi="${qi}">
+      <div class="qnum">QUESTION ${qi+1} OF ${QUESTIONS.length}</div>
+      <div class="qtext">${item.q}</div>
+      ${item.options.map((opt, oi) => `
+        <label class="opt" data-oi="${oi}">
+          <input type="radio" name="q${qi}" value="${oi}">
+          <span>${opt}</span>
+        </label>
+      `).join('')}
+      <div class="explain" id="explain-${qi}">${item.explain}</div>
+    </div>
+  `).join('');
+
+  quizEl.querySelectorAll('input[type=radio]').forEach(input => {
+    input.addEventListener('change', e => {
+      const qi = parseInt(e.target.name.slice(1));
+      answers[qi] = parseInt(e.target.value);
+      updateProgress();
+    });
+  });
+}
+
+function updateProgress(){
+  const answered = answers.filter(a => a !== null).length;
+  progressBar.style.width = (answered / QUESTIONS.length * 100) + '%';
+}
+
+document.getElementById('submitBtn').addEventListener('click', () => {
+  let score = 0;
+  QUESTIONS.forEach((item, qi) => {
+    const card = quizEl.querySelector(`[data-qi="${qi}"]`);
+    const opts = card.querySelectorAll('.opt');
+    opts.forEach(o => o.querySelectorAll('input').forEach(i => i.disabled = true));
+    if (answers[qi] === item.correct) score++;
+    opts.forEach((optEl, oi) => {
+      if (oi === item.correct) optEl.classList.add('correct');
+      else if (oi === answers[qi]) optEl.classList.add('incorrect');
+    });
+    document.getElementById('explain-' + qi).classList.add('show');
+  });
+
+  document.getElementById('submitBtn').style.display = 'none';
+  document.getElementById('retryBtn').style.display = 'inline-block';
+  const resultEl = document.getElementById('result');
+  resultEl.style.display = 'block';
+  document.getElementById('scoreText').textContent = `${score} / ${QUESTIONS.length}`;
+  const pct = Math.round(score / QUESTIONS.length * 100);
+  let msg = '';
+  if (pct >= 90) msg = "Excellent! You've got Newton's Laws down.";
+  else if (pct >= 80) msg = "Solid — mastery level. Review any missed items above.";
+  else if (pct >= 60) msg = "Good progress — re-read the explanations above and revisit the Cornell notes.";
+  else msg = "Keep practicing — review cornell-notes.md and try the practice problems before retaking.";
+  document.getElementById('scoreMsg').textContent = `${pct}% — ${msg}`;
+  resultEl.scrollIntoView({behavior:'smooth', block:'center'});
+});
+
+document.getElementById('retryBtn').addEventListener('click', () => {
+  answers = new Array(QUESTIONS.length).fill(null);
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('submitBtn').style.display = 'inline-block';
+  document.getElementById('retryBtn').style.display = 'none';
+  progressBar.style.width = '0%';
+  render();
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+render();
+</script>
+</body>
+</html>

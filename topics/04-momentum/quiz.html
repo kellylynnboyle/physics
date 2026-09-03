@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Momentum — Most-Missed Questions Quiz</title>
+<style>
+  :root{
+    --bg:#f7f8fb; --card:#ffffff; --text:#1c2230; --muted:#5b6472;
+    --accent:#2f5dd4; --good:#1e8e5a; --bad:#c23b3b; --border:#e2e6ee;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#12151c; --card:#1b2029; --text:#eef1f6; --muted:#9aa4b2;
+      --accent:#6f97f0; --good:#4cc38a; --bad:#f16565; --border:#2a3140; }
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.5;padding:24px 16px 64px;}
+  .wrap{max-width:720px;margin:0 auto;}
+  h1{font-size:1.5rem;margin-bottom:4px;}
+  .sub{color:var(--muted);margin-bottom:24px;}
+  .progress{height:8px;border-radius:99px;background:var(--border);overflow:hidden;margin-bottom:24px;}
+  .progress-bar{height:100%;background:var(--accent);width:0%;transition:width .3s;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+  .qnum{color:var(--accent);font-weight:700;font-size:.85rem;letter-spacing:.03em;margin-bottom:6px;}
+  .qtext{font-weight:600;margin-bottom:14px;}
+  .opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer;}
+  .opt:hover{border-color:var(--accent);}
+  .opt input{margin-top:3px;}
+  .opt.correct{border-color:var(--good);background:color-mix(in srgb, var(--good) 12%, transparent);}
+  .opt.incorrect{border-color:var(--bad);background:color-mix(in srgb, var(--bad) 12%, transparent);}
+  .explain{display:none;margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--bg);border:1px solid var(--border);font-size:.92rem;color:var(--muted);}
+  .explain.show{display:block;}
+  button{background:var(--accent);color:#fff;border:none;padding:12px 20px;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;}
+  button:hover{opacity:.9;}
+  button:disabled{opacity:.5;cursor:not-allowed;}
+  .actions{display:flex;gap:12px;align-items:center;margin-top:8px;}
+  #result{display:none;text-align:center;padding:28px;border-radius:12px;background:var(--card);border:1px solid var(--border);margin-top:16px;}
+  #result h2{margin-top:0;}
+  .scorebig{font-size:2.4rem;font-weight:800;color:var(--accent);}
+  .tag{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--accent);color:#fff;margin-left:8px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Momentum<span class="tag">Most-Missed Quiz</span></h1>
+  <p class="sub">10 questions targeting the momentum and collision concepts students miss most often. Select an answer for each question, then check your results.</p>
+  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+  <div id="quiz"></div>
+  <div class="actions">
+    <button id="submitBtn">Check Answers</button>
+    <button id="retryBtn" style="display:none;background:var(--muted);">Try Again</button>
+  </div>
+  <div id="result">
+    <h2>Your Score</h2>
+    <div class="scorebig" id="scoreText">0 / 10</div>
+    <p id="scoreMsg" style="color:var(--muted);"></p>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A ball rolls across a rough floor and gradually slows down due to friction. Is the ball's momentum conserved during this process?",
+    options: [
+      "Yes, momentum is always conserved for any object.",
+      "No — friction is an external force on the ball, so its momentum decreases; conservation of momentum applies to the total momentum of an isolated system, not a single object experiencing outside forces.",
+      "Yes, because momentum can never decrease.",
+      "No, because the ball's mass changes as it slows."
+    ],
+    correct: 1,
+    explain: "Conservation of momentum applies to the total momentum of a closed/isolated system with no net external force. Friction is an external force acting on the ball here, so the ball's own momentum is not conserved."
+  },
+  {
+    q: "Two clay balls collide head-on and stick together, moving off as one combined mass. What type of collision is this?",
+    options: [
+      "Elastic",
+      "Inelastic, but not perfectly inelastic",
+      "Perfectly inelastic",
+      "None of the momentum is conserved"
+    ],
+    correct: 2,
+    explain: "Objects sticking together after a collision and moving with a shared final velocity defines a perfectly inelastic collision — a special case of inelastic collision with the maximum possible kinetic energy loss while momentum is still conserved."
+  },
+  {
+    q: "In a typical car collision where the cars crumple and get damaged, which of the following is conserved?",
+    options: [
+      "Momentum only",
+      "Kinetic energy only",
+      "Both momentum and kinetic energy",
+      "Neither momentum nor kinetic energy"
+    ],
+    correct: 0,
+    explain: "Momentum of an isolated system is conserved in essentially all collisions. Kinetic energy is only conserved in elastic collisions — here, energy is lost to deforming the metal, heat, and sound, making the collision inelastic."
+  },
+  {
+    q: "A 2 kg object moves at +6 m/s (right) and collides head-on with a 3 kg object moving at -4 m/s (left). What is the total momentum of the system before the collision (right = positive)?",
+    options: ["0 kg·m/s", "24 kg·m/s", "12 kg·m/s", "-24 kg·m/s"],
+    correct: 0,
+    explain: "Momentum is a vector — assign signs based on direction before adding. p1 = (2)(6) = +12 kg·m/s, p2 = (3)(-4) = -12 kg·m/s. Total = 12 + (-12) = 0 kg·m/s, not the sum of the magnitudes."
+  },
+  {
+    q: "A 70 kg crash-test dummy's velocity changes by 15 m/s during a collision. If the collision lasts 0.03 s instead of 0.003 s (all else equal), how does the average force on the dummy change?",
+    options: [
+      "It stays the same",
+      "It becomes 10 times smaller",
+      "It becomes 10 times larger",
+      "It becomes 100 times smaller"
+    ],
+    correct: 1,
+    explain: "F = Δp/Δt, and Δp = mΔv = 70 × 15 = 1050 kg·m/s is fixed. Increasing Δt by a factor of 10 decreases the average force by a factor of 10 — exactly why airbags and padding reduce injury."
+  },
+  {
+    q: "A small force of 20 N acts on an object for 5 s. A large force of 200 N acts on a different object for 0.4 s. Which impulse is larger?",
+    options: [
+      "The 200 N force's impulse, because force is bigger",
+      "The 20 N force's impulse, because impulse depends on both force and time",
+      "They are exactly equal",
+      "Cannot be determined without knowing mass"
+    ],
+    correct: 1,
+    explain: "J = FΔt. The 20 N force gives J = 20 × 5 = 100 N·s. The 200 N force gives J = 200 × 0.4 = 80 N·s. Despite being far smaller, the 20 N force delivers a larger impulse because it acts much longer."
+  },
+  {
+    q: "A 1000 kg car moving at 20 m/s collides with a stationary 2000 kg truck, and they lock together (perfectly inelastic). Some students assume the heavier truck 'wins' and barely moves. What actually determines the outcome?",
+    options: [
+      "The truck's greater mass automatically means it barely moves, regardless of momentum",
+      "Conservation of momentum determines the shared final velocity — mass alone doesn't decide the outcome",
+      "The car stops completely because it's lighter",
+      "The final velocity depends only on which vehicle is bigger"
+    ],
+    correct: 1,
+    explain: "The final combined velocity is set by conservation of momentum: v_f = (m1v1 + m2v2)/(m1+m2) = (1000×20 + 0)/3000 ≈ 6.7 m/s in the car's original direction — not by an intuitive sense of which vehicle 'wins'."
+  },
+  {
+    q: "Two ice skaters push off each other on frictionless ice. Can conservation of momentum be used to find their velocities afterward?",
+    options: [
+      "No, because the two skaters have different masses",
+      "Yes — the ice is frictionless, so the skater system experiences no significant net external horizontal force, making it isolated",
+      "No, because pushing off isn't a collision",
+      "Yes, but only if the skaters have equal mass"
+    ],
+    correct: 1,
+    explain: "Conservation of momentum requires no net external force on the system in the direction of interest. With no friction, the skaters push off each other using only internal forces, so the system is isolated and momentum is conserved."
+  },
+  {
+    q: "A 3 kg cart moving at 4 m/s (east) collides and sticks to a stationary 2 kg cart. What is their common velocity immediately after the collision?",
+    options: ["1.2 m/s east", "2.4 m/s east", "4.0 m/s east", "6.0 m/s east"],
+    correct: 1,
+    explain: "Perfectly inelastic collision: v_f = (m1v1 + m2v2)/(m1+m2) = (3×4 + 2×0)/(3+2) = 12/5 = 2.4 m/s east. Momentum is conserved even though kinetic energy is not."
+  },
+  {
+    q: "Which statement correctly distinguishes an elastic collision from a perfectly inelastic collision?",
+    options: [
+      "Elastic collisions conserve only kinetic energy; perfectly inelastic collisions conserve only momentum, and objects always stick together in elastic collisions.",
+      "In an elastic collision, both momentum and kinetic energy are conserved and objects separate; in a perfectly inelastic collision, momentum is conserved but kinetic energy is not, and the objects stick together.",
+      "Both collision types conserve momentum and kinetic energy equally; the only difference is speed.",
+      "Elastic collisions only happen with equal masses, while perfectly inelastic collisions require different masses."
+    ],
+    correct: 1,
+    explain: "Elastic collisions conserve both momentum and kinetic energy, with objects rebounding separately. Perfectly inelastic collisions conserve only momentum (not kinetic energy) and end with the objects moving together as one combined mass."
+  }
+];
+
+const quizEl = document.getElementById('quiz');
+const progressBar = document.getElementById('progressBar');
+let answers = new Array(QUESTIONS.length).fill(null);
+
+function render(){
+  quizEl.innerHTML = QUESTIONS.map((item, qi) => `
+    <div class="card" data-qi="${qi}">
+      <div class="qnum">QUESTION ${qi+1} OF ${QUESTIONS.length}</div>
+      <div class="qtext">${item.q}</div>
+      ${item.options.map((opt, oi) => `
+        <label class="opt" data-oi="${oi}">
+          <input type="radio" name="q${qi}" value="${oi}">
+          <span>${opt}</span>
+        </label>
+      `).join('')}
+      <div class="explain" id="explain-${qi}">${item.explain}</div>
+    </div>
+  `).join('');
+
+  quizEl.querySelectorAll('input[type=radio]').forEach(input => {
+    input.addEventListener('change', e => {
+      const qi = parseInt(e.target.name.slice(1));
+      answers[qi] = parseInt(e.target.value);
+      updateProgress();
+    });
+  });
+}
+
+function updateProgress(){
+  const answered = answers.filter(a => a !== null).length;
+  progressBar.style.width = (answered / QUESTIONS.length * 100) + '%';
+}
+
+document.getElementById('submitBtn').addEventListener('click', () => {
+  let score = 0;
+  QUESTIONS.forEach((item, qi) => {
+    const card = quizEl.querySelector(`[data-qi="${qi}"]`);
+    const opts = card.querySelectorAll('.opt');
+    opts.forEach(o => o.querySelectorAll('input').forEach(i => i.disabled = true));
+    if (answers[qi] === item.correct) score++;
+    opts.forEach((optEl, oi) => {
+      if (oi === item.correct) optEl.classList.add('correct');
+      else if (oi === answers[qi]) optEl.classList.add('incorrect');
+    });
+    document.getElementById('explain-' + qi).classList.add('show');
+  });
+
+  document.getElementById('submitBtn').style.display = 'none';
+  document.getElementById('retryBtn').style.display = 'inline-block';
+  const resultEl = document.getElementById('result');
+  resultEl.style.display = 'block';
+  document.getElementById('scoreText').textContent = `${score} / ${QUESTIONS.length}`;
+  const pct = Math.round(score / QUESTIONS.length * 100);
+  let msg = '';
+  if (pct >= 90) msg = "Excellent! You've got momentum and collisions down.";
+  else if (pct >= 80) msg = "Solid — mastery level. Review any missed items above.";
+  else if (pct >= 60) msg = "Good progress — re-read the explanations above and revisit the Cornell notes.";
+  else msg = "Keep practicing — review cornell-notes.md and try the practice problems before retaking.";
+  document.getElementById('scoreMsg').textContent = `${pct}% — ${msg}`;
+  resultEl.scrollIntoView({behavior:'smooth', block:'center'});
+});
+
+document.getElementById('retryBtn').addEventListener('click', () => {
+  answers = new Array(QUESTIONS.length).fill(null);
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('submitBtn').style.display = 'inline-block';
+  document.getElementById('retryBtn').style.display = 'none';
+  progressBar.style.width = '0%';
+  render();
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+render();
+</script>
+</body>
+</html>

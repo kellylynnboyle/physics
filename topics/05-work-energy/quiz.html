@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work & Energy — Most-Missed Questions Quiz</title>
+<style>
+  :root{
+    --bg:#f7f8fb; --card:#ffffff; --text:#1c2230; --muted:#5b6472;
+    --accent:#2f5dd4; --good:#1e8e5a; --bad:#c23b3b; --border:#e2e6ee;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#12151c; --card:#1b2029; --text:#eef1f6; --muted:#9aa4b2;
+      --accent:#6f97f0; --good:#4cc38a; --bad:#f16565; --border:#2a3140; }
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.5;padding:24px 16px 64px;}
+  .wrap{max-width:720px;margin:0 auto;}
+  h1{font-size:1.5rem;margin-bottom:4px;}
+  .sub{color:var(--muted);margin-bottom:24px;}
+  .progress{height:8px;border-radius:99px;background:var(--border);overflow:hidden;margin-bottom:24px;}
+  .progress-bar{height:100%;background:var(--accent);width:0%;transition:width .3s;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+  .qnum{color:var(--accent);font-weight:700;font-size:.85rem;letter-spacing:.03em;margin-bottom:6px;}
+  .qtext{font-weight:600;margin-bottom:14px;}
+  .opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer;}
+  .opt:hover{border-color:var(--accent);}
+  .opt input{margin-top:3px;}
+  .opt.correct{border-color:var(--good);background:color-mix(in srgb, var(--good) 12%, transparent);}
+  .opt.incorrect{border-color:var(--bad);background:color-mix(in srgb, var(--bad) 12%, transparent);}
+  .explain{display:none;margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--bg);border:1px solid var(--border);font-size:.92rem;color:var(--muted);}
+  .explain.show{display:block;}
+  button{background:var(--accent);color:#fff;border:none;padding:12px 20px;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;}
+  button:hover{opacity:.9;}
+  button:disabled{opacity:.5;cursor:not-allowed;}
+  .actions{display:flex;gap:12px;align-items:center;margin-top:8px;}
+  #result{display:none;text-align:center;padding:28px;border-radius:12px;background:var(--card);border:1px solid var(--border);margin-top:16px;}
+  #result h2{margin-top:0;}
+  .scorebig{font-size:2.4rem;font-weight:800;color:var(--accent);}
+  .tag{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--accent);color:#fff;margin-left:8px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Work & Energy<span class="tag">Most-Missed Quiz</span></h1>
+  <p class="sub">10 questions targeting the concepts students miss most often. Select an answer for each question, then check your results.</p>
+  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+  <div id="quiz"></div>
+  <div class="actions">
+    <button id="submitBtn">Check Answers</button>
+    <button id="retryBtn" style="display:none;background:var(--muted);">Try Again</button>
+  </div>
+  <div id="result">
+    <h2>Your Score</h2>
+    <div class="scorebig" id="scoreText">0 / 10</div>
+    <p id="scoreMsg" style="color:var(--muted);"></p>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A student carries a 50 N bag at a constant height while walking 10 m across a flat hallway. How much work does she do against gravity during this walk?",
+    options: [
+      "500 J",
+      "0 J",
+      "50 J",
+      "Cannot be determined without knowing her speed"
+    ],
+    correct: 1,
+    explain: "Gravity acts straight down, but her displacement is horizontal — the two are perpendicular (θ = 90°), so W = Fd·cos(90°) = 0. No work is done against gravity even though she's clearly exerting effort."
+  },
+  {
+    q: "A weightlifter holds a barbell perfectly still above her head for 30 seconds. In the physics sense of 'work,' how much work is she doing on the barbell during that time?",
+    options: [
+      "A large amount, since holding a heavy weight is difficult",
+      "Zero, because there is no displacement of the barbell",
+      "It depends on how much she is straining",
+      "Work equal to the barbell's weight times 30 seconds"
+    ],
+    correct: 1,
+    explain: "Work requires displacement: W = Fd·cos(θ). Since the barbell isn't moving (d = 0), no physics work is being done on it, regardless of how tiring it feels biologically."
+  },
+  {
+    q: "If you double an object's speed while its mass stays the same, what happens to its kinetic energy?",
+    options: [
+      "It doubles",
+      "It quadruples",
+      "It stays the same",
+      "It increases by a factor of 8"
+    ],
+    correct: 1,
+    explain: "KE = ½mv², so kinetic energy depends on the SQUARE of speed. Doubling v multiplies KE by 2² = 4 — this is why small increases in speed dramatically increase stopping distances and collision energy."
+  },
+  {
+    q: "A 1000 kg car speeds up from 10 m/s to 20 m/s. Using the work-energy theorem, what is the net work done on the car?",
+    options: [
+      "1.5 × 10⁵ J",
+      "5.0 × 10⁴ J",
+      "1.0 × 10⁵ J",
+      "3.0 × 10⁵ J"
+    ],
+    correct: 0,
+    explain: "W_net = ΔKE = ½m(v_f² − v_i²) = ½(1000)(20² − 10²) = ½(1000)(400 − 100) = 150,000 J = 1.5 × 10⁵ J. A common error is forgetting to subtract the initial KE, not just using the final speed."
+  },
+  {
+    q: "A 2 kg ball starts from rest and slides down a frictionless ramp from a height of 5 m. Using conservation of mechanical energy (g = 9.8 m/s²), what is its speed at the bottom?",
+    options: [
+      "9.9 m/s",
+      "49 m/s",
+      "4.95 m/s",
+      "98 m/s"
+    ],
+    correct: 0,
+    explain: "PE_i = KE_f → mgh = ½mv² → v = √(2gh) = √(2 × 9.8 × 5) = √98 ≈ 9.9 m/s. Notice the mass cancels out entirely."
+  },
+  {
+    q: "One ball's gravitational PE is calculated using the floor as the reference height, and another identical ball's PE is calculated using a tabletop as the reference height. What is true about comparing their raw PE values?",
+    options: [
+      "The PE values are directly comparable, since PE is an absolute quantity",
+      "PE values are only meaningful when calculated relative to the SAME reference point",
+      "The ball measured from the tabletop always has zero PE",
+      "Height doesn't affect PE, only mass does"
+    ],
+    correct: 1,
+    explain: "PE = mgh is always relative to a chosen reference level (h = 0). Comparing PE values computed from different references is meaningless — only PE differences using a consistent reference have physical meaning."
+  },
+  {
+    q: "A 40 N force is applied to a crate at an angle of 60° above the direction of motion. The crate moves 5 m horizontally. How much work does this force do on the crate?",
+    options: [
+      "200 J",
+      "100 J",
+      "173 J",
+      "0 J"
+    ],
+    correct: 1,
+    explain: "W = Fd·cos(θ) = (40)(5)(cos 60°) = (40)(5)(0.5) = 100 J. Only the component of force along the direction of displacement contributes — using the full 40 N without the cosine factor gives the common wrong answer of 200 J."
+  },
+  {
+    q: "Which of the following best describes power?",
+    options: [
+      "The total amount of work done on an object",
+      "The rate at which work is done or energy is transferred",
+      "The force exerted on an object",
+      "The total mechanical energy stored in a system"
+    ],
+    correct: 1,
+    explain: "Power P = W/t measures how QUICKLY energy is transferred or work is done, not how much total work is done. Two engines can do the same total work, but the more powerful one does it faster."
+  },
+  {
+    q: "A box slides across a rough floor and gradually comes to rest due to friction. What happened to its kinetic energy?",
+    options: [
+      "It disappeared entirely — energy was not conserved",
+      "It converted into gravitational potential energy",
+      "It converted into heat (thermal energy) due to friction",
+      "It transferred entirely into the floor's kinetic energy"
+    ],
+    correct: 2,
+    explain: "Friction is a non-conservative force that converts mechanical energy into heat (and some sound) at the sliding surfaces. Total energy is still conserved overall — it's only MECHANICAL energy (KE + PE) that decreases."
+  },
+  {
+    q: "A spring with spring constant k = 200 N/m is compressed by 0.10 m from its natural length. How much elastic potential energy is stored in the spring?",
+    options: [
+      "1 J",
+      "2 J",
+      "20 J",
+      "10 J"
+    ],
+    correct: 0,
+    explain: "PE_spring = ½kx² = ½(200)(0.10)² = ½(200)(0.01) = 1 J. A common mistake is forgetting to square x, which would incorrectly give 20 J."
+  }
+];
+
+const quizEl = document.getElementById('quiz');
+const progressBar = document.getElementById('progressBar');
+let answers = new Array(QUESTIONS.length).fill(null);
+
+function render(){
+  quizEl.innerHTML = QUESTIONS.map((item, qi) => `
+    <div class="card" data-qi="${qi}">
+      <div class="qnum">QUESTION ${qi+1} OF ${QUESTIONS.length}</div>
+      <div class="qtext">${item.q}</div>
+      ${item.options.map((opt, oi) => `
+        <label class="opt" data-oi="${oi}">
+          <input type="radio" name="q${qi}" value="${oi}">
+          <span>${opt}</span>
+        </label>
+      `).join('')}
+      <div class="explain" id="explain-${qi}">${item.explain}</div>
+    </div>
+  `).join('');
+
+  quizEl.querySelectorAll('input[type=radio]').forEach(input => {
+    input.addEventListener('change', e => {
+      const qi = parseInt(e.target.name.slice(1));
+      answers[qi] = parseInt(e.target.value);
+      updateProgress();
+    });
+  });
+}
+
+function updateProgress(){
+  const answered = answers.filter(a => a !== null).length;
+  progressBar.style.width = (answered / QUESTIONS.length * 100) + '%';
+}
+
+document.getElementById('submitBtn').addEventListener('click', () => {
+  let score = 0;
+  QUESTIONS.forEach((item, qi) => {
+    const card = quizEl.querySelector(`[data-qi="${qi}"]`);
+    const opts = card.querySelectorAll('.opt');
+    opts.forEach(o => o.querySelectorAll('input').forEach(i => i.disabled = true));
+    if (answers[qi] === item.correct) score++;
+    opts.forEach((optEl, oi) => {
+      if (oi === item.correct) optEl.classList.add('correct');
+      else if (oi === answers[qi]) optEl.classList.add('incorrect');
+    });
+    document.getElementById('explain-' + qi).classList.add('show');
+  });
+
+  document.getElementById('submitBtn').style.display = 'none';
+  document.getElementById('retryBtn').style.display = 'inline-block';
+  const resultEl = document.getElementById('result');
+  resultEl.style.display = 'block';
+  document.getElementById('scoreText').textContent = `${score} / ${QUESTIONS.length}`;
+  const pct = Math.round(score / QUESTIONS.length * 100);
+  let msg = '';
+  if (pct >= 90) msg = "Excellent! You've got work and energy down.";
+  else if (pct >= 80) msg = "Solid — mastery level. Review any missed items above.";
+  else if (pct >= 60) msg = "Good progress — re-read the explanations above and revisit the Cornell notes.";
+  else msg = "Keep practicing — review cornell-notes.md and try the practice problems before retaking.";
+  document.getElementById('scoreMsg').textContent = `${pct}% — ${msg}`;
+  resultEl.scrollIntoView({behavior:'smooth', block:'center'});
+});
+
+document.getElementById('retryBtn').addEventListener('click', () => {
+  answers = new Array(QUESTIONS.length).fill(null);
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('submitBtn').style.display = 'inline-block';
+  document.getElementById('retryBtn').style.display = 'none';
+  progressBar.style.width = '0%';
+  render();
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+render();
+</script>
+</body>
+</html>
