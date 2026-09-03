@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinematics — Most-Missed Questions Quiz</title>
+<style>
+  :root{
+    --bg:#f7f8fb; --card:#ffffff; --text:#1c2230; --muted:#5b6472;
+    --accent:#2f5dd4; --good:#1e8e5a; --bad:#c23b3b; --border:#e2e6ee;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#12151c; --card:#1b2029; --text:#eef1f6; --muted:#9aa4b2;
+      --accent:#6f97f0; --good:#4cc38a; --bad:#f16565; --border:#2a3140; }
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.5;padding:24px 16px 64px;}
+  .wrap{max-width:720px;margin:0 auto;}
+  h1{font-size:1.5rem;margin-bottom:4px;}
+  .sub{color:var(--muted);margin-bottom:24px;}
+  .progress{height:8px;border-radius:99px;background:var(--border);overflow:hidden;margin-bottom:24px;}
+  .progress-bar{height:100%;background:var(--accent);width:0%;transition:width .3s;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+  .qnum{color:var(--accent);font-weight:700;font-size:.85rem;letter-spacing:.03em;margin-bottom:6px;}
+  .qtext{font-weight:600;margin-bottom:14px;}
+  .opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer;}
+  .opt:hover{border-color:var(--accent);}
+  .opt input{margin-top:3px;}
+  .opt.correct{border-color:var(--good);background:color-mix(in srgb, var(--good) 12%, transparent);}
+  .opt.incorrect{border-color:var(--bad);background:color-mix(in srgb, var(--bad) 12%, transparent);}
+  .explain{display:none;margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--bg);border:1px solid var(--border);font-size:.92rem;color:var(--muted);}
+  .explain.show{display:block;}
+  button{background:var(--accent);color:#fff;border:none;padding:12px 20px;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;}
+  button:hover{opacity:.9;}
+  button:disabled{opacity:.5;cursor:not-allowed;}
+  .actions{display:flex;gap:12px;align-items:center;margin-top:8px;}
+  #result{display:none;text-align:center;padding:28px;border-radius:12px;background:var(--card);border:1px solid var(--border);margin-top:16px;}
+  #result h2{margin-top:0;}
+  .scorebig{font-size:2.4rem;font-weight:800;color:var(--accent);}
+  .tag{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--accent);color:#fff;margin-left:8px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Kinematics<span class="tag">Most-Missed Quiz</span></h1>
+  <p class="sub">10 questions targeting the concepts students miss most often. Select an answer for each question, then check your results.</p>
+  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+  <div id="quiz"></div>
+  <div class="actions">
+    <button id="submitBtn">Check Answers</button>
+    <button id="retryBtn" style="display:none;background:var(--muted);">Try Again</button>
+  </div>
+  <div id="result">
+    <h2>Your Score</h2>
+    <div class="scorebig" id="scoreText">0 / 10</div>
+    <p id="scoreMsg" style="color:var(--muted);"></p>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A ball is thrown straight up. At the exact top of its path, which statement is true?",
+    options: [
+      "Both velocity and acceleration are zero.",
+      "Velocity is zero, but acceleration is still -9.8 m/s².",
+      "Velocity is at its maximum, and acceleration is zero.",
+      "Velocity is zero, and acceleration is momentarily undefined."
+    ],
+    correct: 1,
+    explain: "Gravity never switches off — acceleration stays at -g for the entire flight, including the instant velocity passes through zero at the peak."
+  },
+  {
+    q: "A car moving in the negative direction has a negative acceleration. What is happening to its speed?",
+    options: [
+      "It is slowing down.",
+      "It is speeding up.",
+      "It is moving at constant speed.",
+      "Not enough information."
+    ],
+    correct: 1,
+    explain: "When velocity and acceleration have the SAME sign, the object speeds up. Negative acceleration only means 'slowing down' when velocity is positive."
+  },
+  {
+    q: "A hiker walks 3 km east, then 3 km west back to the start. What is the magnitude of her displacement?",
+    options: ["6 km", "3 km", "0 km", "Cannot be determined"],
+    correct: 2,
+    explain: "Displacement depends only on start and end position. Since she returns to her starting point, displacement = 0, even though distance traveled = 6 km."
+  },
+  {
+    q: "On a position-time (x–t) graph, what does the slope of the line represent?",
+    options: ["Acceleration", "Velocity", "Displacement", "Distance"],
+    correct: 1,
+    explain: "Slope of an x–t graph = rise/run = Δx/Δt = velocity. Slope of a v–t graph (not this one) gives acceleration instead."
+  },
+  {
+    q: "On a velocity-time (v–t) graph, what does the AREA under the curve represent?",
+    options: ["Acceleration", "Velocity", "Displacement", "Jerk"],
+    correct: 2,
+    explain: "Area under a v–t graph = Δx (displacement) — this is a very common mix-up with slope, which instead gives acceleration."
+  },
+  {
+    q: "A bowling ball and a feather are dropped together in a vacuum chamber (no air resistance). Which hits the ground first?",
+    options: [
+      "The bowling ball, because it's heavier.",
+      "The feather, because it's lighter.",
+      "They land at the same time.",
+      "It depends on the height they're dropped from."
+    ],
+    correct: 2,
+    explain: "In the absence of air resistance, all objects in free fall accelerate at the same rate g, regardless of mass — they land simultaneously."
+  },
+  {
+    q: "A problem says an object 'starts from rest.' What does this tell you?",
+    options: [
+      "Initial position x₀ = 0",
+      "Initial velocity v₀ = 0",
+      "Acceleration a = 0",
+      "Final velocity v = 0"
+    ],
+    correct: 1,
+    explain: "'Starts from rest' is standard physics phrasing for v₀ = 0. It says nothing about position or acceleration."
+  },
+  {
+    q: "You know an object's initial velocity, final velocity, and acceleration, but NOT the time elapsed or the displacement. Which kinematic equation should you use to find displacement?",
+    options: [
+      "x = x₀ + v₀t + ½at²",
+      "v = v₀ + at",
+      "v² = v₀² + 2a(x − x₀)",
+      "x = x₀ + ½(v₀ + v)t"
+    ],
+    correct: 2,
+    explain: "This is the only one of the four equations that doesn't require time (t) — it directly relates v, v₀, a, and displacement."
+  },
+  {
+    q: "A car's speedometer reads 60 mph the entire trip along a winding mountain road. Is its velocity constant?",
+    options: [
+      "Yes — velocity and speed are the same thing.",
+      "No — velocity also depends on direction, which is changing on the winding road.",
+      "Yes, as long as acceleration is zero.",
+      "No, because speed can never be exactly constant."
+    ],
+    correct: 1,
+    explain: "Constant speed with changing direction means changing velocity (a vector). The car is actually accelerating (centripetally) even at constant speed."
+  },
+  {
+    q: "A ball is dropped from a height and takes 2.0 s to hit the ground. Using a = -9.8 m/s² and v₀ = 0, what is its velocity just before impact?",
+    options: ["-4.9 m/s", "-9.8 m/s", "-19.6 m/s", "-39.2 m/s"],
+    correct: 2,
+    explain: "v = v₀ + at = 0 + (-9.8)(2.0) = -19.6 m/s. A frequent error is forgetting to multiply by t, or mixing up g with g·t."
+  }
+];
+
+const quizEl = document.getElementById('quiz');
+const progressBar = document.getElementById('progressBar');
+let answers = new Array(QUESTIONS.length).fill(null);
+
+function render(){
+  quizEl.innerHTML = QUESTIONS.map((item, qi) => `
+    <div class="card" data-qi="${qi}">
+      <div class="qnum">QUESTION ${qi+1} OF ${QUESTIONS.length}</div>
+      <div class="qtext">${item.q}</div>
+      ${item.options.map((opt, oi) => `
+        <label class="opt" data-oi="${oi}">
+          <input type="radio" name="q${qi}" value="${oi}">
+          <span>${opt}</span>
+        </label>
+      `).join('')}
+      <div class="explain" id="explain-${qi}">${item.explain}</div>
+    </div>
+  `).join('');
+
+  quizEl.querySelectorAll('input[type=radio]').forEach(input => {
+    input.addEventListener('change', e => {
+      const qi = parseInt(e.target.name.slice(1));
+      answers[qi] = parseInt(e.target.value);
+      updateProgress();
+    });
+  });
+}
+
+function updateProgress(){
+  const answered = answers.filter(a => a !== null).length;
+  progressBar.style.width = (answered / QUESTIONS.length * 100) + '%';
+}
+
+document.getElementById('submitBtn').addEventListener('click', () => {
+  let score = 0;
+  QUESTIONS.forEach((item, qi) => {
+    const card = quizEl.querySelector(`[data-qi="${qi}"]`);
+    const opts = card.querySelectorAll('.opt');
+    opts.forEach(o => o.querySelectorAll('input').forEach(i => i.disabled = true));
+    if (answers[qi] === item.correct) score++;
+    opts.forEach((optEl, oi) => {
+      if (oi === item.correct) optEl.classList.add('correct');
+      else if (oi === answers[qi]) optEl.classList.add('incorrect');
+    });
+    document.getElementById('explain-' + qi).classList.add('show');
+  });
+
+  document.getElementById('submitBtn').style.display = 'none';
+  document.getElementById('retryBtn').style.display = 'inline-block';
+  const resultEl = document.getElementById('result');
+  resultEl.style.display = 'block';
+  document.getElementById('scoreText').textContent = `${score} / ${QUESTIONS.length}`;
+  const pct = Math.round(score / QUESTIONS.length * 100);
+  let msg = '';
+  if (pct >= 90) msg = "Excellent! You've got kinematics down.";
+  else if (pct >= 80) msg = "Solid — mastery level. Review any missed items above.";
+  else if (pct >= 60) msg = "Good progress — re-read the explanations above and revisit the Cornell notes.";
+  else msg = "Keep practicing — review cornell-notes.md and try the practice problems before retaking.";
+  document.getElementById('scoreMsg').textContent = `${pct}% — ${msg}`;
+  resultEl.scrollIntoView({behavior:'smooth', block:'center'});
+});
+
+document.getElementById('retryBtn').addEventListener('click', () => {
+  answers = new Array(QUESTIONS.length).fill(null);
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('submitBtn').style.display = 'inline-block';
+  document.getElementById('retryBtn').style.display = 'none';
+  progressBar.style.width = '0%';
+  render();
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+render();
+</script>
+</body>
+</html>
