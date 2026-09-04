@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Newton's Laws Quiz — Most Missed Questions</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 760px; margin: 40px auto; padding: 0 20px; background: #f7f7f5; color: #222; }
+  h1 { font-size: 1.5rem; }
+  p.sub { color: #555; margin-top: -8px; }
+  .question { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 18px 20px; margin-bottom: 16px; }
+  .question h3 { margin-top: 0; font-size: 1.05rem; }
+  label { display: block; padding: 8px 10px; margin: 6px 0; border-radius: 6px; border: 1px solid #e0e0e0; cursor: pointer; }
+  label:hover { background: #f0f4ff; }
+  label.correct { background: #e3f7e8; border-color: #4caf50; }
+  label.incorrect { background: #fdecea; border-color: #e57373; }
+  .explanation { display: none; margin-top: 10px; padding: 10px 12px; background: #fff8e1; border-left: 4px solid #f9a825; border-radius: 4px; font-size: 0.92rem; }
+  .explanation.show { display: block; }
+  button { background: #2d5bff; color: #fff; border: none; padding: 12px 22px; border-radius: 8px; font-size: 1rem; cursor: pointer; margin-top: 10px; }
+  button:hover { background: #1e46d1; }
+  #score { font-size: 1.2rem; font-weight: bold; margin-top: 20px; padding: 14px; border-radius: 8px; background: #eef1ff; display: none; }
+</style>
+</head>
+<body>
+<h1>Newton's Laws — Most Missed Questions</h1>
+<p class="sub">10 questions targeting the mistakes students make most often. Pick an answer for each, then check your results.</p>
+<div id="quiz"></div>
+<button onclick="gradeQuiz()">Check Answers</button>
+<div id="score"></div>
+
+<script>
+const questions = [
+{
+  q: "A book rests on a table. The table pushes up on the book with a normal force equal to the book's weight. Is this pair an example of Newton's Third Law?",
+  choices: [
+    "Yes — weight and normal force are an action-reaction pair.",
+    "No — weight and normal force act on the SAME object (the book) and happen to be equal here; a true 3rd Law pair would be the book pushing down on the table.",
+    "No, because normal force and weight are never equal.",
+    "Yes, because they are equal and opposite in direction."
+  ],
+  correct: 1,
+  explanation: "Third Law pairs act on two DIFFERENT objects. Weight (Earth pulling the book) and normal force (table pushing the book) both act on the book — they're balanced forces in equilibrium, not a 3rd Law pair. The true reaction pair to the normal force is the book pushing down on the table."
+},
+{
+  q: "A truck moving at constant velocity on a straight highway has a net force of:",
+  choices: [
+    "A large forward force to keep it moving.",
+    "Zero — constant velocity means the forces are balanced.",
+    "A force equal to its weight.",
+    "It depends on the truck's speed."
+  ],
+  correct: 1,
+  explanation: "Newton's First/Second Law: constant velocity means zero acceleration, which means zero NET force. The engine's forward force is exactly balanced by friction/air resistance — it doesn't mean there's no force at all, just that they cancel."
+},
+{
+  q: "An astronaut in deep space (no external forces) throws a wrench. What happens to the astronaut?",
+  choices: [
+    "Nothing — no force acts on the astronaut since there's nothing to push against in space.",
+    "The astronaut recoils in the opposite direction of the throw, by Newton's Third Law.",
+    "The astronaut speeds up in the same direction as the throw.",
+    "The astronaut's mass decreases."
+  ],
+  correct: 1,
+  explanation: "By Newton's Third Law, the force the astronaut exerts on the wrench has an equal and opposite reaction force from the wrench on the astronaut, pushing them backward — this is exactly how rockets work in the vacuum of space."
+},
+{
+  q: "A 10 kg object and a 2 kg object are both dropped from the same height (no air resistance). Which one has a greater acceleration?",
+  choices: [
+    "The 10 kg object, because F=ma means more mass needs more force.",
+    "The 2 kg object, because it's lighter.",
+    "They have the same acceleration.",
+    "Cannot be determined without knowing the force."
+  ],
+  correct: 2,
+  explanation: "Free-fall acceleration is g for all masses. Although the 10 kg object needs 5× more gravitational force to fall, it also has 5× more mass, so the ratio F/m = a is identical for both — a classic F=ma trap."
+},
+{
+  q: "A block sits on an incline at angle θ. What is the normal force on the block?",
+  choices: ["N = mg", "N = mg sin θ", "N = mg cos θ", "N = mg tan θ"],
+  correct: 2,
+  explanation: "On an incline, only the component of gravity perpendicular to the surface is balanced by the normal force: N = mg cos θ. The component along the surface, mg sin θ, is what can cause sliding — students very often just write N = mg out of habit."
+},
+{
+  q: "Which of the following best describes the difference between mass and weight?",
+  choices: [
+    "They are the same thing, just measured in different units.",
+    "Mass is the amount of matter in an object (constant); weight is the force of gravity on that mass (mg), which changes with location.",
+    "Weight is constant everywhere; mass changes with gravity.",
+    "Mass is measured in Newtons; weight is measured in kilograms."
+  ],
+  correct: 1,
+  explanation: "Mass is an intrinsic, constant property (kg). Weight = mg is a force (N) and depends on the local gravitational field — the same object weighs less on the Moon but has identical mass there."
+},
+{
+  q: "A box is not moving even though someone is pushing on it. What must be true?",
+  choices: [
+    "No forces are acting on the box.",
+    "Static friction is exactly balancing the applied push, keeping net force at zero.",
+    "The box has no mass.",
+    "Kinetic friction is acting on the box."
+  ],
+  correct: 1,
+  explanation: "As long as the box isn't sliding, friction is static, and it adjusts to match the applied force (up to its maximum μₛN) — keeping net force zero and the box at rest, per Newton's First Law."
+},
+{
+  q: "Once an object starts sliding, is the friction force acting on it typically larger, smaller, or the same as the maximum static friction it took to start moving?",
+  choices: [
+    "Larger — sliding creates more resistance.",
+    "Smaller — kinetic friction (μₖN) is usually less than the maximum static friction (μₛN).",
+    "Exactly the same.",
+    "Friction disappears entirely once sliding starts."
+  ],
+  correct: 1,
+  explanation: "μₖ is typically less than μₛ, which is why it takes a bigger push to START something sliding than it does to KEEP it sliding at constant velocity — a commonly-missed distinction."
+},
+{
+  q: "Two carts, 2 kg and 8 kg, are pushed by the SAME net force. How does the 8 kg cart's acceleration compare to the 2 kg cart's?",
+  choices: [
+    "It's 4 times greater.",
+    "It's the same.",
+    "It's 4 times smaller.",
+    "It's 8 times smaller."
+  ],
+  correct: 2,
+  explanation: "a = F/m. With the same F, acceleration is inversely proportional to mass: the 8 kg cart (4× the mass) has 1/4 the acceleration of the 2 kg cart."
+},
+{
+  q: "A car crashes into a wall and stops suddenly. Passengers without seatbelts keep moving forward and hit the dashboard. Which law explains why the passengers kept moving?",
+  choices: [
+    "Newton's Third Law — the dashboard pushes back on them.",
+    "Newton's First Law — an object in motion stays in motion unless acted on by a net force, and nothing stopped the passenger at the same instant as the car.",
+    "Newton's Second Law only.",
+    "Conservation of momentum only, not Newton's Laws."
+  ],
+  correct: 1,
+  explanation: "This is a textbook First Law (inertia) scenario: the car stops due to the wall's force, but the passenger's body has no force acting on it yet, so it continues moving forward at the pre-crash velocity until something (a seatbelt, airbag, or dashboard) applies a force."
+}
+];
+
+const quizDiv = document.getElementById('quiz');
+questions.forEach((item, i) => {
+  const qDiv = document.createElement('div');
+  qDiv.className = 'question';
+  qDiv.innerHTML = `<h3>${i+1}. ${item.q}</h3>` +
+    item.choices.map((c, j) => `
+      <label>
+        <input type="radio" name="q${i}" value="${j}"> ${c}
+      </label>`).join('') +
+    `<div class="explanation" id="exp${i}">${item.explanation}</div>`;
+  quizDiv.appendChild(qDiv);
+});
+
+function gradeQuiz() {
+  let score = 0;
+  questions.forEach((item, i) => {
+    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+    const labels = document.querySelectorAll(`input[name="q${i}"]`);
+    labels.forEach(input => {
+      const label = input.parentElement;
+      label.classList.remove('correct', 'incorrect');
+      if (parseInt(input.value) === item.correct) label.classList.add('correct');
+    });
+    if (selected) {
+      if (parseInt(selected.value) === item.correct) {
+        score++;
+      } else {
+        selected.parentElement.classList.add('incorrect');
+      }
+    }
+    document.getElementById(`exp${i}`).classList.add('show');
+  });
+  const scoreDiv = document.getElementById('score');
+  scoreDiv.style.display = 'block';
+  scoreDiv.textContent = `Score: ${score} / ${questions.length}` +
+    (score / questions.length >= 0.8 ? '  🎉 Mastery reached!' : '  Review the highlighted explanations above.');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kinematics Quiz — Most Missed Questions</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 760px; margin: 40px auto; padding: 0 20px; background: #f7f7f5; color: #222; }
+  h1 { font-size: 1.5rem; }
+  p.sub { color: #555; margin-top: -8px; }
+  .question { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 18px 20px; margin-bottom: 16px; }
+  .question h3 { margin-top: 0; font-size: 1.05rem; }
+  label { display: block; padding: 8px 10px; margin: 6px 0; border-radius: 6px; border: 1px solid #e0e0e0; cursor: pointer; }
+  label:hover { background: #f0f4ff; }
+  label.correct { background: #e3f7e8; border-color: #4caf50; }
+  label.incorrect { background: #fdecea; border-color: #e57373; }
+  .explanation { display: none; margin-top: 10px; padding: 10px 12px; background: #fff8e1; border-left: 4px solid #f9a825; border-radius: 4px; font-size: 0.92rem; }
+  .explanation.show { display: block; }
+  button { background: #2d5bff; color: #fff; border: none; padding: 12px 22px; border-radius: 8px; font-size: 1rem; cursor: pointer; margin-top: 10px; }
+  button:hover { background: #1e46d1; }
+  #score { font-size: 1.2rem; font-weight: bold; margin-top: 20px; padding: 14px; border-radius: 8px; background: #eef1ff; display: none; }
+</style>
+</head>
+<body>
+<h1>Kinematics — Most Missed Questions</h1>
+<p class="sub">10 questions targeting the mistakes students make most often. Pick an answer for each, then check your results.</p>
+<div id="quiz"></div>
+<button onclick="gradeQuiz()">Check Answers</button>
+<div id="score"></div>
+
+<script>
+const questions = [
+{
+  q: "A runner completes one full lap of a 400 m track and returns to the exact starting point. What is her displacement?",
+  choices: ["400 m", "0 m", "200 m", "800 m"],
+  correct: 1,
+  explanation: "Displacement is the straight-line change in position. Since she ends where she started, displacement = 0 m, even though she ran a distance of 400 m."
+},
+{
+  q: "A ball is thrown straight up. At the very top of its path, which statement is true?",
+  choices: [
+    "Both velocity and acceleration are zero.",
+    "Velocity is zero, and acceleration is zero too because the ball isn't moving.",
+    "Velocity is zero, but acceleration is still −9.8 m/s².",
+    "Velocity is at its maximum, and acceleration is zero."
+  ],
+  correct: 2,
+  explanation: "Gravity never stops acting. Velocity momentarily equals zero at the peak, but acceleration stays at −9.8 m/s² throughout the entire flight."
+},
+{
+  q: "An object has a negative acceleration. What must be true about its motion?",
+  choices: [
+    "It is definitely slowing down.",
+    "It is definitely speeding up.",
+    "It is definitely moving in the negative direction.",
+    "Its velocity is changing in the negative direction — it could be speeding up or slowing down depending on its direction of travel."
+  ],
+  correct: 3,
+  explanation: "Negative acceleration just means Δv is negative. If the object is already moving in the negative direction, negative acceleration means it's speeding up, not slowing down."
+},
+{
+  q: "On a velocity–time graph, what does the area under the curve represent?",
+  choices: ["Acceleration", "Displacement", "Speed", "Jerk"],
+  correct: 1,
+  explanation: "Area under a v–t graph = velocity × time = displacement. The slope of a v–t graph, by contrast, gives acceleration."
+},
+{
+  q: "A car travels 100 m north in 10 s, then 100 m south in 10 s, back to where it started. What is its average velocity for the whole trip?",
+  choices: ["10 m/s", "20 m/s", "0 m/s", "5 m/s"],
+  correct: 2,
+  explanation: "Average velocity = total displacement / total time. Total displacement is 0 (it ends where it started), so average velocity is 0 m/s, even though it was moving the whole time (average speed would be 10 m/s)."
+},
+{
+  q: "Which kinematic equation would you use to find final velocity when you know initial velocity, acceleration, and displacement — but NOT time?",
+  choices: ["v = v₀ + at", "Δx = v₀t + ½at²", "v² = v₀² + 2aΔx", "Δx = ½(v₀ + v)t"],
+  correct: 2,
+  explanation: "v² = v₀² + 2aΔx is the only one of the four kinematic equations that doesn't contain time — pick equations based on which variable is missing."
+},
+{
+  q: "A ball is dropped from rest and a second identical ball is thrown downward with initial speed 5 m/s from the same height, at the same instant. Ignoring air resistance, which ball has the greater acceleration?",
+  choices: ["The dropped ball", "The thrown ball", "They have the same acceleration", "Not enough information"],
+  correct: 2,
+  explanation: "Acceleration due to gravity (≈9.8 m/s²) is the same for both regardless of initial velocity — mass and starting speed don't affect free-fall acceleration."
+},
+{
+  q: "On a position–time (x–t) graph, a horizontal (flat) line means:",
+  choices: [
+    "The object is moving at constant, nonzero velocity.",
+    "The object is at rest — its position isn't changing.",
+    "The object is accelerating.",
+    "The object has zero position."
+  ],
+  correct: 1,
+  explanation: "Slope of an x–t graph is velocity. A flat line has zero slope, so velocity = 0 — the object is stationary at that position, not necessarily at the origin."
+},
+{
+  q: "A car's velocity increases from 0 to 20 m/s in 4 seconds, then stays constant at 20 m/s for the next 4 seconds. Over the full 8 seconds, is the acceleration constant?",
+  choices: [
+    "Yes, acceleration is constant at 5 m/s² the whole time.",
+    "No — acceleration is 5 m/s² for the first 4 s, then 0 m/s² for the next 4 s.",
+    "No — acceleration is always changing continuously.",
+    "Acceleration cannot be determined from this information."
+  ],
+  correct: 1,
+  explanation: "Acceleration is the slope of the v–t graph in each segment. It's a different constant value in each of the two segments, so it is NOT constant across the whole 8 seconds — you must apply kinematic equations separately to each segment."
+},
+{
+  q: "Average speed always equals the magnitude of average velocity. True or false?",
+  choices: ["True, they are always the same by definition.", "False — they're only equal when the motion is entirely in one straight direction without reversing."],
+  correct: 1,
+  explanation: "Average speed uses total distance traveled; average velocity uses net displacement. They match only for one-directional straight-line motion. Any back-and-forth or curved path makes them diverge."
+}
+];
+
+const quizDiv = document.getElementById('quiz');
+questions.forEach((item, i) => {
+  const qDiv = document.createElement('div');
+  qDiv.className = 'question';
+  qDiv.innerHTML = `<h3>${i+1}. ${item.q}</h3>` +
+    item.choices.map((c, j) => `
+      <label>
+        <input type="radio" name="q${i}" value="${j}"> ${c}
+      </label>`).join('') +
+    `<div class="explanation" id="exp${i}">${item.explanation}</div>`;
+  quizDiv.appendChild(qDiv);
+});
+
+function gradeQuiz() {
+  let score = 0;
+  questions.forEach((item, i) => {
+    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+    const labels = document.querySelectorAll(`input[name="q${i}"]`);
+    labels.forEach(input => {
+      const label = input.parentElement;
+      label.classList.remove('correct', 'incorrect');
+      if (parseInt(input.value) === item.correct) label.classList.add('correct');
+    });
+    if (selected) {
+      if (parseInt(selected.value) === item.correct) {
+        score++;
+      } else {
+        selected.parentElement.classList.add('incorrect');
+      }
+    }
+    document.getElementById(`exp${i}`).classList.add('show');
+  });
+  const scoreDiv = document.getElementById('score');
+  scoreDiv.style.display = 'block';
+  scoreDiv.textContent = `Score: ${score} / ${questions.length}` +
+    (score / questions.length >= 0.8 ? '  🎉 Mastery reached!' : '  Review the highlighted explanations above.');
+}
+</script>
+</body>
+</html>

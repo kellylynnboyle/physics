@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Work & Energy Quiz — Most Missed Questions</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 760px; margin: 40px auto; padding: 0 20px; background: #f7f7f5; color: #222; }
+  h1 { font-size: 1.5rem; }
+  p.sub { color: #555; margin-top: -8px; }
+  .question { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 18px 20px; margin-bottom: 16px; }
+  .question h3 { margin-top: 0; font-size: 1.05rem; }
+  label { display: block; padding: 8px 10px; margin: 6px 0; border-radius: 6px; border: 1px solid #e0e0e0; cursor: pointer; }
+  label:hover { background: #f0f4ff; }
+  label.correct { background: #e3f7e8; border-color: #4caf50; }
+  label.incorrect { background: #fdecea; border-color: #e57373; }
+  .explanation { display: none; margin-top: 10px; padding: 10px 12px; background: #fff8e1; border-left: 4px solid #f9a825; border-radius: 4px; font-size: 0.92rem; }
+  .explanation.show { display: block; }
+  button { background: #2d5bff; color: #fff; border: none; padding: 12px 22px; border-radius: 8px; font-size: 1rem; cursor: pointer; margin-top: 10px; }
+  button:hover { background: #1e46d1; }
+  #score { font-size: 1.2rem; font-weight: bold; margin-top: 20px; padding: 14px; border-radius: 8px; background: #eef1ff; display: none; }
+</style>
+</head>
+<body>
+<h1>Work &amp; Energy — Most Missed Questions</h1>
+<p class="sub">10 questions targeting the mistakes students make most often. Pick an answer for each, then check your results.</p>
+<div id="quiz"></div>
+<button onclick="gradeQuiz()">Check Answers</button>
+<div id="score"></div>
+
+<script>
+const questions = [
+{
+  q: "A person carries a heavy bag at constant height across a room. How much work does gravity do on the bag?",
+  choices: [
+    "A large positive amount, since the person is working hard.",
+    "Zero — gravity is perpendicular to the horizontal displacement, so cos 90° = 0.",
+    "A large negative amount.",
+    "It depends on how heavy the bag is."
+  ],
+  correct: 1,
+  explanation: "W = Fd cos θ. Gravity acts straight down while displacement is horizontal, making θ = 90° and cos θ = 0. Feeling tired isn't the same as physics 'work' — no work is done on the bag by gravity here."
+},
+{
+  q: "If you double an object's speed, what happens to its kinetic energy?",
+  choices: ["It doubles.", "It triples.", "It quadruples.", "It stays the same."],
+  correct: 2,
+  explanation: "KE = ½mv². Since KE depends on velocity SQUARED, doubling speed (v → 2v) quadruples KE ((2v)² = 4v²) — this is why stopping distance grows so fast with speed."
+},
+{
+  q: "A spring is compressed by 0.2 m from its natural (equilibrium) length. To calculate PE_spring = ½kx², what should x be?",
+  choices: [
+    "The total length of the compressed spring.",
+    "The spring's natural, uncompressed length.",
+    "0.2 m — the displacement FROM the equilibrium position, not the total spring length.",
+    "Zero, since the spring is compressed, not stretched."
+  ],
+  correct: 2,
+  explanation: "x in the spring PE formula always means the displacement from the spring's natural equilibrium length — compressing OR stretching by that same amount stores the same PE, since x is squared."
+},
+{
+  q: "A ball rolls down a frictionless hill. Which statement about its energy is correct?",
+  choices: [
+    "Both KE and PE increase.",
+    "PE decreases and converts into an equal amount of KE, so total mechanical energy stays constant.",
+    "KE decreases as PE decreases.",
+    "Mechanical energy is lost even without friction."
+  ],
+  correct: 1,
+  explanation: "With no friction or other non-conservative force, mechanical energy (KE + PE) is conserved — PE lost as height decreases is converted exactly into KE gained, not created or destroyed."
+},
+{
+  q: "A skier goes down a hill where friction does −5000 J of work. How should this be handled in an energy conservation equation?",
+  choices: [
+    "It can be ignored since friction is usually small.",
+    "It should be added as extra energy at the bottom.",
+    "It must be subtracted: KE_top + PE_top = KE_bottom + PE_bottom + |work done by friction|.",
+    "Energy conservation cannot be used at all if friction is present."
+  ],
+  correct: 2,
+  explanation: "Mechanical energy still obeys a conservation-style accounting, but you must include energy converted to heat by friction as a 'loss' term on the other side of the equation — mechanical energy isn't destroyed, it's transformed, and friction's contribution must be tracked explicitly."
+},
+{
+  q: "Two motors lift identical 100 kg crates the same 5 m height, but Motor A takes 2 seconds and Motor B takes 10 seconds. Compare the work and power of each.",
+  choices: [
+    "Motor A does more work than Motor B.",
+    "Both motors do the same amount of work, but Motor A has greater power because it did the work faster.",
+    "Motor B has greater power because it took longer.",
+    "Power and work are the same thing here, so both are equal."
+  ],
+  correct: 1,
+  explanation: "Work only depends on force and displacement (W = mgh here), so both motors do the SAME work. Power = W/t, so the motor that does the same work in less time (Motor A) has higher power — power and work are not interchangeable."
+},
+{
+  q: "According to the work-energy theorem, what does the NET work done on an object equal?",
+  choices: [
+    "Its change in momentum.",
+    "Its change in kinetic energy.",
+    "Its change in potential energy.",
+    "Its total displacement."
+  ],
+  correct: 1,
+  explanation: "W_net = ΔKE is the work-energy theorem. Note it's the NET (total) work from all forces combined — not the work from just one individual force — that equals the change in kinetic energy."
+},
+{
+  q: "A car's stopping distance (from braking) when going 60 mph compared to 30 mph is:",
+  choices: [
+    "Twice as long, since speed doubled.",
+    "The same, since brakes provide the same force either way.",
+    "Four times as long, because KE (and therefore the work friction must do to stop it) scales with v².",
+    "Half as long."
+  ],
+  correct: 2,
+  explanation: "Using the work-energy theorem, the friction force does work W = −F·d to remove all the KE = ½mv². Since KE scales with v², doubling speed means 4× the KE to dissipate, requiring roughly 4× the stopping distance for the same braking force — a very commonly underestimated effect."
+},
+{
+  q: "A box is pushed by a force at a 60° angle above the horizontal surface it slides on. To find the work done by this force, you should use:",
+  choices: [
+    "W = F × d (ignore the angle).",
+    "W = F × d × cos(60°), using only the component of force parallel to the displacement.",
+    "W = F × d × sin(60°).",
+    "The angle doesn't matter for calculating work."
+  ],
+  correct: 1,
+  explanation: "W = Fd cos θ, where θ is the angle between the force and the displacement. Only the component of the applied force along the direction of motion (F cos θ) contributes to work — this is one of the most frequently botched setups in work problems."
+},
+{
+  q: "An object's kinetic energy is doing what while a non-conservative force like friction acts on it (with no other forces present)?",
+  choices: [
+    "Staying constant.",
+    "Decreasing, as friction removes mechanical energy from the object and converts it to heat.",
+    "Increasing, as friction adds energy to the object.",
+    "Kinetic energy is unrelated to friction."
+  ],
+  correct: 1,
+  explanation: "Friction is a non-conservative force that does negative work on a moving object, decreasing its KE — the 'lost' energy doesn't disappear, it becomes heat (and sometimes sound), which is why brakes and sliding surfaces heat up."
+}
+];
+
+const quizDiv = document.getElementById('quiz');
+questions.forEach((item, i) => {
+  const qDiv = document.createElement('div');
+  qDiv.className = 'question';
+  qDiv.innerHTML = `<h3>${i+1}. ${item.q}</h3>` +
+    item.choices.map((c, j) => `
+      <label>
+        <input type="radio" name="q${i}" value="${j}"> ${c}
+      </label>`).join('') +
+    `<div class="explanation" id="exp${i}">${item.explanation}</div>`;
+  quizDiv.appendChild(qDiv);
+});
+
+function gradeQuiz() {
+  let score = 0;
+  questions.forEach((item, i) => {
+    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+    const labels = document.querySelectorAll(`input[name="q${i}"]`);
+    labels.forEach(input => {
+      const label = input.parentElement;
+      label.classList.remove('correct', 'incorrect');
+      if (parseInt(input.value) === item.correct) label.classList.add('correct');
+    });
+    if (selected) {
+      if (parseInt(selected.value) === item.correct) {
+        score++;
+      } else {
+        selected.parentElement.classList.add('incorrect');
+      }
+    }
+    document.getElementById(`exp${i}`).classList.add('show');
+  });
+  const scoreDiv = document.getElementById('score');
+  scoreDiv.style.display = 'block';
+  scoreDiv.textContent = `Score: ${score} / ${questions.length}` +
+    (score / questions.length >= 0.8 ? '  🎉 Mastery reached!' : '  Review the highlighted explanations above.');
+}
+</script>
+</body>
+</html>

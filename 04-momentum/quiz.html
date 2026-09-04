@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Momentum Quiz — Most Missed Questions</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 760px; margin: 40px auto; padding: 0 20px; background: #f7f7f5; color: #222; }
+  h1 { font-size: 1.5rem; }
+  p.sub { color: #555; margin-top: -8px; }
+  .question { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 18px 20px; margin-bottom: 16px; }
+  .question h3 { margin-top: 0; font-size: 1.05rem; }
+  label { display: block; padding: 8px 10px; margin: 6px 0; border-radius: 6px; border: 1px solid #e0e0e0; cursor: pointer; }
+  label:hover { background: #f0f4ff; }
+  label.correct { background: #e3f7e8; border-color: #4caf50; }
+  label.incorrect { background: #fdecea; border-color: #e57373; }
+  .explanation { display: none; margin-top: 10px; padding: 10px 12px; background: #fff8e1; border-left: 4px solid #f9a825; border-radius: 4px; font-size: 0.92rem; }
+  .explanation.show { display: block; }
+  button { background: #2d5bff; color: #fff; border: none; padding: 12px 22px; border-radius: 8px; font-size: 1rem; cursor: pointer; margin-top: 10px; }
+  button:hover { background: #1e46d1; }
+  #score { font-size: 1.2rem; font-weight: bold; margin-top: 20px; padding: 14px; border-radius: 8px; background: #eef1ff; display: none; }
+</style>
+</head>
+<body>
+<h1>Momentum — Most Missed Questions</h1>
+<p class="sub">10 questions targeting the mistakes students make most often. Pick an answer for each, then check your results.</p>
+<div id="quiz"></div>
+<button onclick="gradeQuiz()">Check Answers</button>
+<div id="score"></div>
+
+<script>
+const questions = [
+{
+  q: "A ball moving right at 5 m/s bounces off a wall and moves left at 5 m/s. What is the change in its momentum's magnitude (mass = 2 kg)?",
+  choices: ["0 kg·m/s", "10 kg·m/s", "20 kg·m/s", "5 kg·m/s"],
+  correct: 2,
+  explanation: "Momentum is a vector. Initial p = +10 kg·m/s, final p = −10 kg·m/s (direction flipped). Δp = (−10) − (+10) = −20 kg·m/s, magnitude 20 kg·m/s — NOT zero, even though the speed is the same before and after."
+},
+{
+  q: "Why do car airbags and crumple zones reduce injury in a crash?",
+  choices: [
+    "They reduce the change in momentum (Δp) of the passenger.",
+    "They increase the time (Δt) over which momentum changes, which reduces the average force since F = Δp/Δt.",
+    "They eliminate momentum entirely.",
+    "They increase the force needed to stop the passenger."
+  ],
+  correct: 1,
+  explanation: "Δp (going from crash speed to zero) is fixed by the crash. Airbags/crumple zones extend Δt, which — from the impulse-momentum theorem F = Δp/Δt — reduces the average force experienced."
+},
+{
+  q: "Two carts stick together after colliding (perfectly inelastic). Which quantities are conserved?",
+  choices: [
+    "Both momentum and kinetic energy.",
+    "Momentum only — kinetic energy is not conserved (some converts to heat/sound/deformation).",
+    "Kinetic energy only.",
+    "Neither is conserved."
+  ],
+  correct: 1,
+  explanation: "Momentum is conserved in ANY isolated collision. Kinetic energy is only conserved in elastic collisions — in a perfectly inelastic collision, the maximum possible KE is lost (converted to other forms) while momentum stays exactly conserved."
+},
+{
+  q: "A firework at rest explodes into two unequal-mass fragments. What must be true about their momenta immediately after?",
+  choices: [
+    "Both fragments move at the same speed.",
+    "The fragments have equal and opposite momenta (magnitudes equal, directions opposite) — but NOT necessarily equal speeds.",
+    "The heavier fragment must move faster.",
+    "Total momentum after the explosion is nonzero."
+  ],
+  correct: 1,
+  explanation: "Initial momentum was zero, so the vector sum after must also be zero: m₁v₁ = −m₂v₂. Since masses differ, this means the lighter fragment moves faster, not that speeds are equal — only their momenta are equal in magnitude and opposite in direction."
+},
+{
+  q: "A 1000 kg car moving at 10 m/s collides head-on and sticks to a stationary 1000 kg car. What is true about kinetic energy in this collision?",
+  choices: [
+    "It's fully conserved, since momentum is conserved.",
+    "Half the initial KE is lost to deformation/heat/sound, even though momentum is exactly conserved.",
+    "KE doubles after the collision.",
+    "KE conservation isn't relevant to this problem."
+  ],
+  correct: 1,
+  explanation: "This is a perfectly inelastic collision — momentum is conserved (giving a final shared velocity of 5 m/s), but you can show the total KE after (12,500 J) is exactly half the KE before (25,000 J). Momentum conservation does NOT imply KE conservation."
+},
+{
+  q: "On an F–t (force vs. time) graph for a bat hitting a ball, how do you find the impulse delivered?",
+  choices: [
+    "Read the peak force value directly.",
+    "Calculate the area under the F–t curve.",
+    "Find the slope of the F–t curve.",
+    "Multiply the final force by the final time only."
+  ],
+  correct: 1,
+  explanation: "Impulse J = ∫F dt, which graphically is the area under the F–t curve — the same logic as area under a v–t graph giving displacement. This matters because real collision forces are rarely constant."
+},
+{
+  q: "Two pucks collide on a frictionless table, moving off at different angles afterward. How should you apply conservation of momentum?",
+  choices: [
+    "Add up the total speeds before and after and set them equal.",
+    "Apply conservation of momentum separately to the x-components and the y-components of momentum.",
+    "You can't use momentum conservation in 2D, only energy conservation.",
+    "Only the larger puck's momentum needs to be conserved."
+  ],
+  correct: 1,
+  explanation: "Just like decomposing projectile motion into x and y, 2D momentum conservation requires splitting into two independent equations: total pₓ before = total pₓ after, and total pᵧ before = total pᵧ after."
+},
+{
+  q: "Is it possible for total momentum of a system to be conserved even when kinetic energy is lost?",
+  choices: [
+    "No — if KE changes, momentum must also change.",
+    "Yes — momentum conservation only requires no external net force; internal collisions can convert KE to other forms (heat, sound, deformation) while momentum stays exactly the same.",
+    "No, momentum and KE are always conserved or lost together.",
+    "Only in explosions, never in collisions."
+  ],
+  correct: 1,
+  explanation: "Momentum and kinetic energy are governed by different conservation principles. Inelastic collisions are the standard example: momentum is exactly conserved while KE is not — they are independent, not linked quantities."
+},
+{
+  q: "A 0.5 kg ball hits a wall and experiences an average force of 200 N over 0.01 s. What is the magnitude of the impulse delivered to the ball?",
+  choices: ["2 kg·m/s", "20 kg·m/s", "200 kg·m/s", "0.02 kg·m/s"],
+  correct: 0,
+  explanation: "J = FΔt = 200 N × 0.01 s = 2 kg·m/s (equivalently, 2 N·s — impulse and momentum share the same units)."
+},
+{
+  q: "In an ELASTIC collision between two carts, which of the following is true?",
+  choices: [
+    "Only momentum is conserved.",
+    "Only kinetic energy is conserved.",
+    "Both momentum and kinetic energy are conserved.",
+    "Neither is conserved — energy is always lost in real collisions."
+  ],
+  correct: 2,
+  explanation: "Elastic collisions are specifically DEFINED as collisions where both momentum and kinetic energy are conserved — this is what distinguishes them from inelastic collisions, where only momentum is conserved."
+}
+];
+
+const quizDiv = document.getElementById('quiz');
+questions.forEach((item, i) => {
+  const qDiv = document.createElement('div');
+  qDiv.className = 'question';
+  qDiv.innerHTML = `<h3>${i+1}. ${item.q}</h3>` +
+    item.choices.map((c, j) => `
+      <label>
+        <input type="radio" name="q${i}" value="${j}"> ${c}
+      </label>`).join('') +
+    `<div class="explanation" id="exp${i}">${item.explanation}</div>`;
+  quizDiv.appendChild(qDiv);
+});
+
+function gradeQuiz() {
+  let score = 0;
+  questions.forEach((item, i) => {
+    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+    const labels = document.querySelectorAll(`input[name="q${i}"]`);
+    labels.forEach(input => {
+      const label = input.parentElement;
+      label.classList.remove('correct', 'incorrect');
+      if (parseInt(input.value) === item.correct) label.classList.add('correct');
+    });
+    if (selected) {
+      if (parseInt(selected.value) === item.correct) {
+        score++;
+      } else {
+        selected.parentElement.classList.add('incorrect');
+      }
+    }
+    document.getElementById(`exp${i}`).classList.add('show');
+  });
+  const scoreDiv = document.getElementById('score');
+  scoreDiv.style.display = 'block';
+  scoreDiv.textContent = `Score: ${score} / ${questions.length}` +
+    (score / questions.length >= 0.8 ? '  🎉 Mastery reached!' : '  Review the highlighted explanations above.');
+}
+</script>
+</body>
+</html>

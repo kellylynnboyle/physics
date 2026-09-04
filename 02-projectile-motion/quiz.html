@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Projectile Motion Quiz — Most Missed Questions</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 760px; margin: 40px auto; padding: 0 20px; background: #f7f7f5; color: #222; }
+  h1 { font-size: 1.5rem; }
+  p.sub { color: #555; margin-top: -8px; }
+  .question { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 18px 20px; margin-bottom: 16px; }
+  .question h3 { margin-top: 0; font-size: 1.05rem; }
+  label { display: block; padding: 8px 10px; margin: 6px 0; border-radius: 6px; border: 1px solid #e0e0e0; cursor: pointer; }
+  label:hover { background: #f0f4ff; }
+  label.correct { background: #e3f7e8; border-color: #4caf50; }
+  label.incorrect { background: #fdecea; border-color: #e57373; }
+  .explanation { display: none; margin-top: 10px; padding: 10px 12px; background: #fff8e1; border-left: 4px solid #f9a825; border-radius: 4px; font-size: 0.92rem; }
+  .explanation.show { display: block; }
+  button { background: #2d5bff; color: #fff; border: none; padding: 12px 22px; border-radius: 8px; font-size: 1rem; cursor: pointer; margin-top: 10px; }
+  button:hover { background: #1e46d1; }
+  #score { font-size: 1.2rem; font-weight: bold; margin-top: 20px; padding: 14px; border-radius: 8px; background: #eef1ff; display: none; }
+</style>
+</head>
+<body>
+<h1>Projectile Motion — Most Missed Questions</h1>
+<p class="sub">10 questions targeting the mistakes students make most often. Pick an answer for each, then check your results.</p>
+<div id="quiz"></div>
+<button onclick="gradeQuiz()">Check Answers</button>
+<div id="score"></div>
+
+<script>
+const questions = [
+{
+  q: "A ball is launched at an angle above the horizontal. At the very top of its trajectory, which is true?",
+  choices: [
+    "Both vₓ and vᵧ are zero.",
+    "vᵧ = 0, vₓ is unchanged, and acceleration is still −g.",
+    "vₓ = 0, vᵧ is unchanged, and acceleration is zero.",
+    "Velocity and acceleration are both at their maximum."
+  ],
+  correct: 1,
+  explanation: "Only the vertical velocity momentarily reaches zero at the peak. Horizontal velocity never changes (aₓ = 0), and gravity keeps acting downward the whole flight."
+},
+{
+  q: "Two balls are released from the same height at the same instant: one is simply dropped, the other is thrown horizontally at 10 m/s. Which hits the ground first?",
+  choices: ["The dropped ball", "The horizontally thrown ball", "They land at the same time", "Depends on the launch speed"],
+  correct: 2,
+  explanation: "Vertical motion is independent of horizontal motion. Both start with vᵧ = 0 and fall under the same acceleration g, so they hit the ground simultaneously regardless of horizontal speed."
+},
+{
+  q: "A projectile is launched at speed v₀ at angle θ above the horizontal. What is the correct expression for its initial vertical velocity component?",
+  choices: ["v₀", "v₀ cos θ", "v₀ sin θ", "v₀ tan θ"],
+  correct: 2,
+  explanation: "The vertical component uses sine of the launch angle: v₀ᵧ = v₀ sin θ. The horizontal component uses cosine: v₀ₓ = v₀ cos θ."
+},
+{
+  q: "A soccer ball is kicked off the top of a hill and lands at the bottom, which is lower than the launch point. Can you use R = (v₀² sin 2θ)/g to find how far it travels?",
+  choices: [
+    "Yes, the range equation always works for any projectile.",
+    "No — that formula only applies when launch height equals landing height; here you must solve the vertical motion for total time first.",
+    "Yes, as long as you know the launch angle.",
+    "No, because projectile motion doesn't apply when going downhill."
+  ],
+  correct: 1,
+  explanation: "The simplified range formula assumes a symmetric trajectory (equal launch/landing height). When heights differ, find total flight time from the vertical motion equation, then multiply by the constant horizontal velocity."
+},
+{
+  q: "While a projectile is in flight (no air resistance), what happens to its horizontal velocity?",
+  choices: [
+    "It steadily decreases due to gravity.",
+    "It stays exactly constant the whole flight.",
+    "It increases as the object falls.",
+    "It becomes zero at the peak of the trajectory."
+  ],
+  correct: 1,
+  explanation: "Gravity acts only vertically, so horizontal velocity is unaffected — it remains constant throughout the flight as long as air resistance is ignored."
+},
+{
+  q: "A student calculates a projectile's velocity at landing by plugging the full launch speed v₀ directly into v = v₀ + gt for the vertical motion. What's wrong?",
+  choices: [
+    "Nothing is wrong, this is correct.",
+    "They should have used v₀ (the total launch speed) instead of v₀ᵧ (the vertical component) in the vertical equation.",
+    "They should add air resistance.",
+    "The equation should use v₀ₓ instead."
+  ],
+  correct: 1,
+  explanation: "Vertical kinematics equations need the vertical component of velocity, v₀ᵧ = v₀ sin θ — not the full resultant launch speed. Mixing components into the wrong axis is one of the most common projectile-motion errors."
+},
+{
+  q: "For a given launch speed, which launch angle produces the maximum range (equal launch/landing height, no air resistance)?",
+  choices: ["15°", "30°", "45°", "90°"],
+  correct: 2,
+  explanation: "Range is proportional to sin(2θ), which is maximized when 2θ = 90°, i.e., θ = 45°. Angles equally spaced above and below 45° (like 30° and 60°) give the same range."
+},
+{
+  q: "A projectile lands with what vertical speed compared to its launch, if launch and landing heights are equal?",
+  choices: [
+    "Half the launch vertical speed",
+    "The same magnitude as the launch vertical speed, but directed downward instead of upward",
+    "Zero",
+    "It depends on the horizontal speed"
+  ],
+  correct: 1,
+  explanation: "The trajectory is symmetric: the vertical speed on the way down mirrors the vertical speed on the way up at every height, so landing |vᵧ| = launch |vᵧ|, just flipped in direction."
+},
+{
+  q: "Why can horizontal and vertical motion be analyzed completely separately in projectile motion?",
+  choices: [
+    "Because gravity has no horizontal component, so the two directions don't affect each other — they're only linked by sharing the same elapsed time.",
+    "Because horizontal and vertical velocities are always equal.",
+    "Because air resistance cancels out gravity's vertical effect.",
+    "They can't actually be separated; this is a simplification that is usually wrong."
+  ],
+  correct: 0,
+  explanation: "This independence is the core idea of projectile motion: gravity only accelerates the object vertically, so horizontal velocity is unaffected by what's happening vertically, and vice versa. The one shared link is time."
+},
+{
+  q: "A ball is thrown horizontally from a tall building. As it falls, its speed (the magnitude of its total velocity):",
+  choices: [
+    "Stays constant, since horizontal velocity doesn't change.",
+    "Increases, because vertical speed keeps increasing while horizontal speed stays the same, increasing the resultant.",
+    "Decreases as it falls.",
+    "Is undefined until it lands."
+  ],
+  correct: 1,
+  explanation: "Total speed = √(vₓ² + vᵧ²). vₓ stays fixed but |vᵧ| grows due to gravity, so the resultant speed increases throughout the fall, even though horizontal speed alone doesn't change."
+}
+];
+
+const quizDiv = document.getElementById('quiz');
+questions.forEach((item, i) => {
+  const qDiv = document.createElement('div');
+  qDiv.className = 'question';
+  qDiv.innerHTML = `<h3>${i+1}. ${item.q}</h3>` +
+    item.choices.map((c, j) => `
+      <label>
+        <input type="radio" name="q${i}" value="${j}"> ${c}
+      </label>`).join('') +
+    `<div class="explanation" id="exp${i}">${item.explanation}</div>`;
+  quizDiv.appendChild(qDiv);
+});
+
+function gradeQuiz() {
+  let score = 0;
+  questions.forEach((item, i) => {
+    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+    const labels = document.querySelectorAll(`input[name="q${i}"]`);
+    labels.forEach(input => {
+      const label = input.parentElement;
+      label.classList.remove('correct', 'incorrect');
+      if (parseInt(input.value) === item.correct) label.classList.add('correct');
+    });
+    if (selected) {
+      if (parseInt(selected.value) === item.correct) {
+        score++;
+      } else {
+        selected.parentElement.classList.add('incorrect');
+      }
+    }
+    document.getElementById(`exp${i}`).classList.add('show');
+  });
+  const scoreDiv = document.getElementById('score');
+  scoreDiv.style.display = 'block';
+  scoreDiv.textContent = `Score: ${score} / ${questions.length}` +
+    (score / questions.length >= 0.8 ? '  🎉 Mastery reached!' : '  Review the highlighted explanations above.');
+}
+</script>
+</body>
+</html>
