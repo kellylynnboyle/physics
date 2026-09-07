@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work &amp; Energy Quiz — Most Missed Questions</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 760px; margin: 2rem auto; padding: 0 1rem; background: #f7f7fb; color: #1a1a2e; line-height: 1.5; }
+  h1 { font-size: 1.5rem; }
+  p.sub { color: #555; margin-top: -0.5rem; }
+  .question { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
+  .question h3 { margin-top: 0; }
+  label { display: block; padding: 0.4rem 0.6rem; margin: 0.3rem 0; border-radius: 6px; cursor: pointer; border: 1px solid transparent; }
+  label:hover { background: #eef1ff; }
+  .feedback { margin-top: 0.6rem; padding: 0.6rem 0.8rem; border-radius: 6px; display: none; font-size: 0.95rem; }
+  .feedback.correct { background: #e3f7e9; border: 1px solid #79c99e; display: block; }
+  .feedback.incorrect { background: #fdeaea; border: 1px solid #e08a8a; display: block; }
+  button { background: #3949ab; color: #fff; border: none; padding: 0.7rem 1.4rem; border-radius: 8px; font-size: 1rem; cursor: pointer; }
+  button:hover { background: #2c3785; }
+  #score { font-size: 1.2rem; font-weight: bold; margin-top: 1rem; }
+  .locked label { cursor: default; }
+  .locked input { pointer-events: none; }
+</style>
+</head>
+<body>
+
+<h1>Work &amp; Energy — Most Missed Questions</h1>
+<p class="sub">These questions target the conceptual traps students hit most often on this topic. Answer, then click "Check Answers" — explanations appear below each question.</p>
+
+<form id="quiz"></form>
+<button onclick="grade()">Check Answers</button>
+<div id="score"></div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A person holds a 20 kg box perfectly still above their head for 30 seconds, arms shaking with effort. How much work does the person do on the box?",
+    options: [
+      "A large positive amount, proportional to how long they hold it.",
+      "Zero, because the box's displacement is zero.",
+      "A large positive amount, proportional to the box's weight.",
+      "Negative, because they are resisting gravity."
+    ],
+    correct: 1,
+    explain: "Work requires displacement: W = F·d·cos(θ). Since the box never moves, d = 0, so W = 0 no matter how much force is applied or how tired the person gets. Physics \"work\" and everyday \"effort\" are not the same thing — this is the single most common misconception in this unit."
+  },
+  {
+    q: "A person carries a 5 kg bag at a constant height while walking 10 m horizontally at constant velocity. How much work does gravity do on the bag during this walk?",
+    options: [
+      "A positive amount, equal to mgh for the height it's held at.",
+      "A negative amount, since gravity pulls down while the bag moves forward.",
+      "Zero, because gravity acts vertically while the displacement is horizontal.",
+      "It depends on how fast the person walks."
+    ],
+    correct: 2,
+    explain: "Gravity's force is vertical (downward); the bag's displacement is horizontal. The angle between them is 90°, and cos(90°) = 0, so gravity does zero work — regardless of the bag's weight or how far it's carried. Only the force component parallel to the displacement counts."
+  },
+  {
+    q: "A block slides across a table while a normal force N and a kinetic friction force f act on it, along with the block's weight. Which of these forces does zero work on the block as it slides?",
+    options: [
+      "Kinetic friction, because it's small compared to weight.",
+      "The normal force, because it's perpendicular to the block's displacement.",
+      "The block's weight, because the block is moving horizontally at high speed.",
+      "None of them — all forces present do work whenever an object moves."
+    ],
+    correct: 1,
+    explain: "The normal force is always perpendicular to the surface (and thus to the horizontal displacement here), so cos(90°) = 0 and it does zero work. Weight is also perpendicular to horizontal motion and does zero work here too — but friction, which acts along the direction of motion (opposing it), does nonzero (negative) work. A common error is assuming a force does work just because the object is moving."
+  },
+  {
+    q: "A skier starts from rest at the top of a snowy (frictional) slope and skis to the bottom. Which equation correctly relates her energy at the top and bottom?",
+    options: [
+      "KE_top + PE_top = KE_bottom + PE_bottom, since mechanical energy is always conserved.",
+      "KE_top + PE_top + W_friction = KE_bottom + PE_bottom, where W_friction is negative.",
+      "KE_top + PE_top + W_friction = KE_bottom + PE_bottom, where W_friction is positive.",
+      "PE_top = KE_bottom, ignoring friction and initial/final kinetic energy entirely."
+    ],
+    correct: 1,
+    explain: "Mechanical energy is only conserved when exclusively conservative forces act. Friction is non-conservative and removes mechanical energy (converts it to heat), so it must be added to the energy accounting as a negative term: KE_i + PE_i + W_nc = KE_f + PE_f, with W_nc = W_friction < 0. Assuming energy is 'always conserved' is a major misconception whenever friction or air resistance is explicitly present."
+  },
+  {
+    q: "A car decelerates to a stop under constant braking friction while still moving forward. What is the sign of the work done by the braking force, and why?",
+    options: [
+      "Positive, because the brakes are actively doing something to the car.",
+      "Negative, because the friction force from the brakes points opposite the car's forward displacement.",
+      "Zero, because the car eventually stops.",
+      "Positive, because kinetic energy is always positive."
+    ],
+    correct: 1,
+    explain: "The braking friction force points backward (opposing motion) while the car's displacement is forward, so the angle between them is 180° and cos(180°) = −1: the work is negative. This negative work is exactly what removes the car's kinetic energy via the work-energy theorem, W_net = ΔKE, bringing it to a stop. A common error is assigning positive work to any force that's 'doing something' to slow an object, rather than checking the sign against the displacement direction."
+  },
+  {
+    q: "Two identical motors each lift the same 500 kg crate to the same height of 6 m. Motor A takes 10 seconds; Motor B takes 5 seconds. Compare the work done and the power output of the two motors.",
+    options: [
+      "Motor B does more total work than Motor A, since it finishes faster.",
+      "Both motors do the same total work, but Motor B has twice the power output of Motor A.",
+      "Both motors have the same power output, but Motor B does less total work.",
+      "Motor A does more work and more power, since it runs longer."
+    ],
+    correct: 1,
+    explain: "Work done against gravity depends only on mgh (mass, gravity, height) — both motors lift the same crate the same height, so both do identical work, W = mgh. Power is the *rate* of doing that work, P = W/t. Since Motor B does the same work in half the time, its power is double Motor A's. Mixing up 'more power' with 'more energy transferred' is a frequent error — the total energy is the same; only the rate differs."
+  }
+];
+
+const form = document.getElementById('quiz');
+QUESTIONS.forEach((item, i) => {
+  const div = document.createElement('div');
+  div.className = 'question';
+  div.innerHTML = `<h3>Q${i+1}. ${item.q}</h3>` +
+    item.options.map((opt, j) => `
+      <label><input type="radio" name="q${i}" value="${j}"> ${opt}</label>
+    `).join('') +
+    `<div class="feedback" id="fb${i}"></div>`;
+  form.appendChild(div);
+});
+
+function grade() {
+  let score = 0;
+  QUESTIONS.forEach((item, i) => {
+    const selected = form.querySelector(`input[name="q${i}"]:checked`);
+    const fb = document.getElementById(`fb${i}`);
+    form.querySelectorAll(`input[name="q${i}"]`).forEach(inp => inp.closest('.question').classList.add('locked'));
+    if (!selected) {
+      fb.className = 'feedback incorrect';
+      fb.textContent = 'No answer selected. ' + item.explain;
+      return;
+    }
+    const isCorrect = parseInt(selected.value) === item.correct;
+    if (isCorrect) score++;
+    fb.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+    fb.textContent = (isCorrect ? '✓ Correct. ' : '✗ Not quite. ') + item.explain;
+  });
+  document.getElementById('score').textContent = `Score: ${score} / ${QUESTIONS.length}` +
+    (score / QUESTIONS.length >= 0.8 ? '  🎉 You cleared the 80% target!' : '  — review the explanations above and retake.');
+}
+</script>
+
+</body>
+</html>

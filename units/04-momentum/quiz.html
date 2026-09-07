@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Momentum Quiz — Most Missed Questions</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 760px; margin: 2rem auto; padding: 0 1rem; background: #f7f7fb; color: #1a1a2e; line-height: 1.5; }
+  h1 { font-size: 1.5rem; }
+  p.sub { color: #555; margin-top: -0.5rem; }
+  .question { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
+  .question h3 { margin-top: 0; }
+  label { display: block; padding: 0.4rem 0.6rem; margin: 0.3rem 0; border-radius: 6px; cursor: pointer; border: 1px solid transparent; }
+  label:hover { background: #eef1ff; }
+  .feedback { margin-top: 0.6rem; padding: 0.6rem 0.8rem; border-radius: 6px; display: none; font-size: 0.95rem; }
+  .feedback.correct { background: #e3f7e9; border: 1px solid #79c99e; display: block; }
+  .feedback.incorrect { background: #fdeaea; border: 1px solid #e08a8a; display: block; }
+  button { background: #3949ab; color: #fff; border: none; padding: 0.7rem 1.4rem; border-radius: 8px; font-size: 1rem; cursor: pointer; }
+  button:hover { background: #2c3785; }
+  #score { font-size: 1.2rem; font-weight: bold; margin-top: 1rem; }
+  .locked label { cursor: default; }
+  .locked input { pointer-events: none; }
+</style>
+</head>
+<body>
+
+<h1>Momentum — Most Missed Questions</h1>
+<p class="sub">These questions target the conceptual traps students hit most often on this topic. Answer, then click "Check Answers" — explanations appear below each question.</p>
+
+<form id="quiz"></form>
+<button onclick="grade()">Check Answers</button>
+<div id="score"></div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A 2 kg ball moving at 6 m/s collides with a stationary 2 kg ball. After the collision, the balls separate and move apart. Which statement is guaranteed to be true?",
+    options: [
+      "Kinetic energy is conserved, since total momentum is conserved.",
+      "Total momentum is conserved, but kinetic energy is only conserved if the collision is elastic.",
+      "Both momentum and kinetic energy are always conserved in any collision.",
+      "Neither momentum nor kinetic energy is conserved unless the balls stick together."
+    ],
+    correct: 1,
+    explain: "Momentum is ALWAYS conserved for an isolated system, regardless of collision type. Kinetic energy is conserved only in elastic collisions — in inelastic collisions, some KE converts to heat, sound, or deformation. Assuming KE is always conserved is the single most common momentum misconception."
+  },
+  {
+    q: "In a two-car collision, Car A's momentum decreases by 500 kg·m/s. What must be true about the total momentum of the A+B system, assuming no external forces act?",
+    options: [
+      "The total momentum of the system also decreases by 500 kg·m/s.",
+      "Car B's momentum must increase by exactly 500 kg·m/s, keeping the system's total momentum unchanged.",
+      "Car B's momentum is unaffected, since momentum is conserved separately for each car.",
+      "The total momentum cannot be determined without knowing if the collision was elastic."
+    ],
+    correct: 1,
+    explain: "Momentum conservation applies to the TOTAL system, not to each object individually. Individual objects' momenta change during a collision — what stays constant is the sum. If A loses 500 kg·m/s, B must gain exactly 500 kg·m/s so the system total is unchanged."
+  },
+  {
+    q: "Two carts collide and stick together (perfectly inelastic). Which of the following is correct?",
+    options: [
+      "Both momentum and kinetic energy are conserved, since the carts end up moving together.",
+      "Kinetic energy is conserved but momentum is not, since the carts lose their individual velocities.",
+      "Momentum is conserved, but kinetic energy is not — this collision loses the maximum possible KE for the given momentum.",
+      "Neither momentum nor kinetic energy is conserved."
+    ],
+    correct: 2,
+    explain: "Perfectly inelastic collisions conserve momentum (m1v1 + m2v2 = (m1+m2)v_f) but always lose kinetic energy — in fact, sticking together represents the maximum possible KE loss consistent with momentum conservation. Only elastic collisions conserve both quantities."
+  },
+  {
+    q: "A car crashes into a wall. With an airbag, the collision takes 0.15 s instead of 0.02 s without one, but the car's change in momentum (Δp) is the same in both cases. Why does the airbag reduce the force on the passenger?",
+    options: [
+      "The airbag reduces the passenger's change in momentum, so less force is needed.",
+      "Force equals Δp/Δt, so stretching the collision time over a longer Δt for the same Δp lowers the average force.",
+      "The airbag has nothing to do with force — it just cushions the passenger's body.",
+      "The airbag reduces the passenger's mass during the collision."
+    ],
+    correct: 1,
+    explain: "The impulse-momentum theorem gives F = Δp/Δt. Since Δp (the required change in momentum, e.g. from highway speed to zero) is fixed by the crash itself, increasing the collision time Δt directly decreases the average force needed. This is the exact principle behind airbags, crumple zones, and padding."
+  },
+  {
+    q: "A 70 kg person standing at rest on frictionless ice throws a 5 kg medicine ball forward at 8 m/s. What happens to the person?",
+    options: [
+      "Nothing — the person's momentum stays zero since they didn't move before throwing.",
+      "The person recoils backward, since total momentum of the person+ball system must remain zero.",
+      "The person moves forward, in the same direction as the ball.",
+      "The outcome cannot be determined without knowing if the throw was elastic or inelastic."
+    ],
+    correct: 1,
+    explain: "This is an explosion/recoil problem: total momentum starts at zero (both at rest), so it must stay zero afterward. If the ball gains forward momentum, the person must gain exactly equal and opposite (backward) momentum: 0 = m_ball·v_ball + m_person·v_person. Elastic/inelastic classification doesn't apply here — momentum conservation with zero initial momentum is all that's needed."
+  },
+  {
+    q: "Two carts move toward each other head-on: Cart A (3 kg) at +4 m/s and Cart B (2 kg) at −6 m/s. What is the total momentum of the system before the collision?",
+    options: [
+      "24 kg·m/s, since momentum magnitudes always add regardless of direction",
+      "2 kg·m/s, found by averaging the two momenta",
+      "0 kg·m/s, since any two carts moving toward each other always have zero total momentum",
+      "0 kg·m/s, found from p = (3)(4) + (2)(−6) = 12 − 12 = 0 kg·m/s, correctly using signs for opposite directions"
+    ],
+    correct: 3,
+    explain: "Momentum is a vector, so direction matters: p_A = (3 kg)(+4 m/s) = +12 kg·m/s and p_B = (2 kg)(−6 m/s) = −12 kg·m/s. Total = +12 + (−12) = 0 kg·m/s. The momenta happen to cancel exactly here because the magnitudes match, but in general opposite-direction momenta partially cancel via correct signs — they don't simply add as magnitudes, and they don't automatically cancel to zero unless the numbers work out that way."
+  }
+];
+
+const form = document.getElementById('quiz');
+QUESTIONS.forEach((item, i) => {
+  const div = document.createElement('div');
+  div.className = 'question';
+  div.innerHTML = `<h3>Q${i+1}. ${item.q}</h3>` +
+    item.options.map((opt, j) => `
+      <label><input type="radio" name="q${i}" value="${j}"> ${opt}</label>
+    `).join('') +
+    `<div class="feedback" id="fb${i}"></div>`;
+  form.appendChild(div);
+});
+
+function grade() {
+  let score = 0;
+  QUESTIONS.forEach((item, i) => {
+    const selected = form.querySelector(`input[name="q${i}"]:checked`);
+    const fb = document.getElementById(`fb${i}`);
+    form.querySelectorAll(`input[name="q${i}"]`).forEach(inp => inp.closest('.question').classList.add('locked'));
+    if (!selected) {
+      fb.className = 'feedback incorrect';
+      fb.textContent = 'No answer selected. ' + item.explain;
+      return;
+    }
+    const isCorrect = parseInt(selected.value) === item.correct;
+    if (isCorrect) score++;
+    fb.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+    fb.textContent = (isCorrect ? '✓ Correct. ' : '✗ Not quite. ') + item.explain;
+  });
+  document.getElementById('score').textContent = `Score: ${score} / ${QUESTIONS.length}` +
+    (score / QUESTIONS.length >= 0.8 ? '  🎉 You cleared the 80% target!' : '  — review the explanations above and retake.');
+}
+</script>
+
+</body>
+</html>
