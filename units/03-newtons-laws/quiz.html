@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newton's Laws Quiz — Most Missed Questions</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 760px; margin: 2rem auto; padding: 0 1rem; background: #f7f7fb; color: #1a1a2e; line-height: 1.5; }
+  h1 { font-size: 1.5rem; }
+  p.sub { color: #555; margin-top: -0.5rem; }
+  .question { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
+  .question h3 { margin-top: 0; }
+  label { display: block; padding: 0.4rem 0.6rem; margin: 0.3rem 0; border-radius: 6px; cursor: pointer; border: 1px solid transparent; }
+  label:hover { background: #eef1ff; }
+  .feedback { margin-top: 0.6rem; padding: 0.6rem 0.8rem; border-radius: 6px; display: none; font-size: 0.95rem; }
+  .feedback.correct { background: #e3f7e9; border: 1px solid #79c99e; display: block; }
+  .feedback.incorrect { background: #fdeaea; border: 1px solid #e08a8a; display: block; }
+  button { background: #3949ab; color: #fff; border: none; padding: 0.7rem 1.4rem; border-radius: 8px; font-size: 1rem; cursor: pointer; }
+  button:hover { background: #2c3785; }
+  #score { font-size: 1.2rem; font-weight: bold; margin-top: 1rem; }
+  .locked label { cursor: default; }
+  .locked input { pointer-events: none; }
+</style>
+</head>
+<body>
+
+<h1>Newton's Laws — Most Missed Questions</h1>
+<p class="sub">These questions target the conceptual traps students hit most often on this topic. Answer, then click "Check Answers" — explanations appear below each question.</p>
+
+<form id="quiz"></form>
+<button onclick="grade()">Check Answers</button>
+<div id="score"></div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A hammer exerts a force on a nail (action). The nail exerts an equal and opposite force back on the hammer (reaction). Why doesn't this pair of forces cancel out and prevent the nail from moving?",
+    options: [
+      "The forces do cancel, which is why you have to hit the nail many times.",
+      "The reaction force is always slightly smaller than the action force.",
+      "The two forces act on different objects — one on the nail, one on the hammer — so neither object experiences both forces at once.",
+      "The forces only cancel if the hammer is moving faster than the nail."
+    ],
+    correct: 2,
+    explain: "Newton's Third Law pairs always act on two different objects. Forces can only cancel (sum to zero) when they act on the same object. The nail only feels the hammer's force on it, so that single force is free to accelerate the nail — the hammer separately feels the nail's reaction force pushing back on it."
+  },
+  {
+    q: "A 60 kg skier stands on a frictionless slope inclined at 20° from horizontal. What is the normal force on the skier?",
+    options: [
+      "N = mg, the same as if she were standing on flat ground.",
+      "N = mg·cos(20°), which is less than mg.",
+      "N = mg·sin(20°), which is much less than mg.",
+      "N = mg/cos(20°), which is more than mg."
+    ],
+    correct: 1,
+    explain: "The normal force only has to balance the component of gravity perpendicular to the surface, which is mg·cos θ. The mg·sin θ component runs along the slope and is what accelerates her down it — the normal force never has to cancel it. Normal force equals mg only on a flat, non-accelerating surface with no other vertical forces; an incline is exactly the kind of case where that assumption fails."
+  },
+  {
+    q: "A spacecraft is drifting through deep space, far from any planet, moving at a constant 8,000 m/s in a straight line with all engines off. What net force is required to keep it moving at that constant velocity?",
+    options: [
+      "A net force equal to mass times velocity, in the direction of motion.",
+      "A small but nonzero net force, otherwise the ship would gradually stop.",
+      "Zero net force — Newton's First Law says constant-velocity motion continues on its own with no net force needed.",
+      "A net force that increases with speed, to keep overcoming inertia."
+    ],
+    correct: 2,
+    explain: "This is the classic Aristotelian misconception: that motion requires a continuous force to sustain it. Newton's First Law overturns that — an object moving at constant velocity keeps moving that way with exactly zero net force. A net force is only needed to *change* velocity (speed or direction), not to maintain it."
+  },
+  {
+    q: "An astronaut has a mass of 80 kg on Earth. She travels to the Moon, where gravity is about 1/6th as strong. What happens to her mass and her weight?",
+    options: [
+      "Both her mass and her weight decrease to about 1/6th their Earth values.",
+      "Her mass stays 80 kg; her weight decreases to about 1/6th its Earth value.",
+      "Her mass decreases to about 1/6th; her weight stays the same.",
+      "Both stay exactly the same, since mass and weight are the same thing."
+    ],
+    correct: 1,
+    explain: "Mass measures the amount of matter in an object and doesn't depend on location — it stays 80 kg everywhere. Weight is the force of gravity on that mass, W = mg, so it scales directly with local g. On the Moon her weight drops to about 1/6th of its Earth value, but her mass is unchanged."
+  },
+  {
+    q: "A 2 kg bowling ball and a 2 g marble are dropped from the same height in a vacuum (no air resistance). Using F_net = ma, which one hits the ground first?",
+    options: [
+      "The bowling ball, because a heavier object needs a bigger force, so F = ma implies it accelerates faster.",
+      "The marble, because it's lighter and therefore experiences less resistance from its own inertia.",
+      "They land at the same time — a = F_net/m = mg/m = g, and mass cancels out, so gravity gives every object the same acceleration.",
+      "It depends on their exact shapes, since heavier objects always fall faster in real life."
+    ],
+    correct: 2,
+    explain: "The gravitational force on an object is F = mg, so plugging into Newton's Second Law gives a = F_net/m = mg/m = g — the mass cancels completely. Every object in free fall (no air resistance) accelerates at the same rate g, regardless of mass. The error in option 1 comes from stopping halfway through the algebra: yes, a heavier object feels a larger gravitational force, but it also has more inertia (mass) resisting that force, and the two effects exactly cancel."
+  },
+  {
+    q: "A 10 kg crate sits at rest on a floor with μ_s = 0.4 and μ_k = 0.3. You push it horizontally with 30 N, and it does not move. What is the friction force acting on the crate?",
+    options: [
+      "f = μ_s·N = 0.4 × (10 × 9.8) ≈ 39.2 N, since that's the static friction formula.",
+      "f = μ_k·N ≈ 29.4 N, since the crate is in contact with the floor.",
+      "f = 30 N, exactly matching the applied push, because the crate is in equilibrium and isn't sliding.",
+      "f = 0 N, because static objects don't experience friction."
+    ],
+    correct: 2,
+    explain: "Static friction is a self-adjusting force that matches whatever is needed to keep the object from sliding, up to a maximum value of μ_s·N (here, about 39.2 N). Since the crate stays at rest, it's in equilibrium, so friction must exactly balance the 30 N push — no more, no less. The value μ_s·N is only the *maximum* static friction can supply, reached right at the verge of slipping; it is not automatically the friction force in every static case, and it's also wrong to use μ_k, which only applies once the object is actually sliding."
+  }
+];
+
+const form = document.getElementById('quiz');
+QUESTIONS.forEach((item, i) => {
+  const div = document.createElement('div');
+  div.className = 'question';
+  div.innerHTML = `<h3>Q${i+1}. ${item.q}</h3>` +
+    item.options.map((opt, j) => `
+      <label><input type="radio" name="q${i}" value="${j}"> ${opt}</label>
+    `).join('') +
+    `<div class="feedback" id="fb${i}"></div>`;
+  form.appendChild(div);
+});
+
+function grade() {
+  let score = 0;
+  QUESTIONS.forEach((item, i) => {
+    const selected = form.querySelector(`input[name="q${i}"]:checked`);
+    const fb = document.getElementById(`fb${i}`);
+    form.querySelectorAll(`input[name="q${i}"]`).forEach(inp => inp.closest('.question').classList.add('locked'));
+    if (!selected) {
+      fb.className = 'feedback incorrect';
+      fb.textContent = 'No answer selected. ' + item.explain;
+      return;
+    }
+    const isCorrect = parseInt(selected.value) === item.correct;
+    if (isCorrect) score++;
+    fb.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+    fb.textContent = (isCorrect ? '✓ Correct. ' : '✗ Not quite. ') + item.explain;
+  });
+  document.getElementById('score').textContent = `Score: ${score} / ${QUESTIONS.length}` +
+    (score / QUESTIONS.length >= 0.8 ? '  🎉 You cleared the 80% target!' : '  — review the explanations above and retake.');
+}
+</script>
+
+</body>
+</html>
