@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinematics Quiz — Most Missed Questions</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 760px; margin: 2rem auto; padding: 0 1rem; background: #f7f7fb; color: #1a1a2e; line-height: 1.5; }
+  h1 { font-size: 1.5rem; }
+  p.sub { color: #555; margin-top: -0.5rem; }
+  .question { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
+  .question h3 { margin-top: 0; }
+  label { display: block; padding: 0.4rem 0.6rem; margin: 0.3rem 0; border-radius: 6px; cursor: pointer; border: 1px solid transparent; }
+  label:hover { background: #eef1ff; }
+  .feedback { margin-top: 0.6rem; padding: 0.6rem 0.8rem; border-radius: 6px; display: none; font-size: 0.95rem; }
+  .feedback.correct { background: #e3f7e9; border: 1px solid #79c99e; display: block; }
+  .feedback.incorrect { background: #fdeaea; border: 1px solid #e08a8a; display: block; }
+  button { background: #3949ab; color: #fff; border: none; padding: 0.7rem 1.4rem; border-radius: 8px; font-size: 1rem; cursor: pointer; }
+  button:hover { background: #2c3785; }
+  #score { font-size: 1.2rem; font-weight: bold; margin-top: 1rem; }
+  .locked label { cursor: default; }
+  .locked input { pointer-events: none; }
+</style>
+</head>
+<body>
+
+<h1>Kinematics — Most Missed Questions</h1>
+<p class="sub">These questions target the conceptual traps students hit most often on this topic. Answer, then click "Check Answers" — explanations appear below each question.</p>
+
+<form id="quiz"></form>
+<button onclick="grade()">Check Answers</button>
+<div id="score"></div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A car is moving in the negative direction and its acceleration is also negative. What is happening to the car's speed?",
+    options: [
+      "It is slowing down, because negative acceleration always means slowing down.",
+      "It is speeding up, because velocity and acceleration point the same direction.",
+      "Its speed is constant.",
+      "Not enough information."
+    ],
+    correct: 1,
+    explain: "Speed increases when velocity and acceleration point the same way, regardless of sign. Here both are negative, so the object speeds up in the negative direction. \"Negative acceleration = slowing down\" is the #1 kinematics misconception — the sign only tells you direction, not speeding up vs. slowing down."
+  },
+  {
+    q: "A ball thrown straight up reaches the top of its path. At that exact instant, which is true?",
+    options: [
+      "Both velocity and acceleration are zero.",
+      "Velocity is zero; acceleration is zero too, because the ball isn't moving.",
+      "Velocity is zero; acceleration is still −g (nonzero).",
+      "Velocity is nonzero; acceleration is zero."
+    ],
+    correct: 2,
+    explain: "Gravity never switches off. At the apex, velocity momentarily equals zero, but the ball is still accelerating downward at g ≈ 9.8 m/s² — that's exactly why it doesn't stay at the top."
+  },
+  {
+    q: "On a position–time graph, what does the slope at a point represent?",
+    options: [
+      "Acceleration at that point",
+      "Velocity at that point",
+      "Distance traveled up to that point",
+      "Speed only if the object is moving in the positive direction"
+    ],
+    correct: 1,
+    explain: "Slope of x-t = velocity, always (in both directions). Slope of v-t is what gives you acceleration. Mixing these two up is one of the most common graph-reading errors."
+  },
+  {
+    q: "A hiker walks 6 km east, then 6 km west, back to the start, in 3 hours total. What is her average speed and average velocity?",
+    options: [
+      "Speed = 4 km/h, Velocity = 4 km/h",
+      "Speed = 4 km/h, Velocity = 0 km/h",
+      "Speed = 0 km/h, Velocity = 0 km/h",
+      "Speed = 0 km/h, Velocity = 4 km/h"
+    ],
+    correct: 1,
+    explain: "Distance traveled = 12 km, so average speed = 12 km / 3 h = 4 km/h. But displacement = 0 (she ended where she started), so average velocity = 0. Speed and velocity can diverge sharply whenever the path isn't one straight line in one direction."
+  },
+  {
+    q: "An object's velocity–time graph is a straight line sloping downward, crossing from positive velocity, through zero, to negative velocity. What does this describe?",
+    options: [
+      "The object speeds up the whole time.",
+      "The object slows down, stops, then speeds up again moving in the opposite direction — acceleration is constant and negative throughout.",
+      "The object's acceleration changes sign when velocity crosses zero.",
+      "The object is not accelerating when v = 0."
+    ],
+    correct: 1,
+    explain: "A straight-line v-t graph means constant acceleration (constant slope) the entire time — including the instant velocity passes through zero. The object decelerates, momentarily stops, then accelerates in the new direction, all under the same constant acceleration (think: a ball tossed up that comes back down, or a car reversing under constant braking-then-reverse force)."
+  },
+  {
+    q: "A train decelerates from 30 m/s to 10 m/s over 400 m while still moving forward. What is the sign of its acceleration relative to its direction of motion?",
+    options: [
+      "Positive, same direction as velocity",
+      "Negative, opposite direction to velocity",
+      "Zero, because it's still moving",
+      "Cannot be negative since the train is still moving forward"
+    ],
+    correct: 1,
+    explain: "The train is slowing down while moving in the positive direction, so acceleration must point opposite to velocity — negative, if forward is positive. A common error is assuming that because the object is still moving (v ≠ 0), acceleration must be zero or positive."
+  }
+];
+
+const form = document.getElementById('quiz');
+QUESTIONS.forEach((item, i) => {
+  const div = document.createElement('div');
+  div.className = 'question';
+  div.innerHTML = `<h3>Q${i+1}. ${item.q}</h3>` +
+    item.options.map((opt, j) => `
+      <label><input type="radio" name="q${i}" value="${j}"> ${opt}</label>
+    `).join('') +
+    `<div class="feedback" id="fb${i}"></div>`;
+  form.appendChild(div);
+});
+
+function grade() {
+  let score = 0;
+  QUESTIONS.forEach((item, i) => {
+    const selected = form.querySelector(`input[name="q${i}"]:checked`);
+    const fb = document.getElementById(`fb${i}`);
+    form.querySelectorAll(`input[name="q${i}"]`).forEach(inp => inp.closest('.question').classList.add('locked'));
+    if (!selected) {
+      fb.className = 'feedback incorrect';
+      fb.textContent = 'No answer selected. ' + item.explain;
+      return;
+    }
+    const isCorrect = parseInt(selected.value) === item.correct;
+    if (isCorrect) score++;
+    fb.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+    fb.textContent = (isCorrect ? '✓ Correct. ' : '✗ Not quite. ') + item.explain;
+  });
+  document.getElementById('score').textContent = `Score: ${score} / ${QUESTIONS.length}` +
+    (score / QUESTIONS.length >= 0.8 ? '  🎉 You cleared the 80% target!' : '  — review the explanations above and retake.');
+}
+</script>
+
+</body>
+</html>
