@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics 11 — Most-Missed Question Quizzes</title>
+<style>
+  :root {
+    --bg: #f7f8fb;
+    --card: #ffffff;
+    --text: #1c2230;
+    --muted: #5b6478;
+    --border: #e1e4ea;
+    --accent: #3457d5;
+    --accent-soft: #e8edff;
+    --good: #1a7f4e;
+    --good-bg: #e6f6ee;
+    --bad: #b3261e;
+    --bad-bg: #fdeceb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171f;
+      --card: #1c202b;
+      --text: #eceef3;
+      --muted: #9aa2b6;
+      --border: #2c313f;
+      --accent: #7d94ff;
+      --accent-soft: #232c4a;
+      --good: #52c98a;
+      --good-bg: #12301f;
+      --bad: #ff7a72;
+      --bad-bg: #3a1613;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  header {
+    padding: 28px 20px 12px;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; }
+  .subtitle { color: var(--muted); font-size: 0.95rem; margin: 0 0 20px; }
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-width: 780px;
+    margin: 0 auto 16px;
+    padding: 0 20px;
+  }
+  .tab {
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .badge {
+    font-size: 0.7rem;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-radius: 999px;
+    padding: 1px 7px;
+  }
+  .tab.active .badge { background: rgba(255,255,255,0.25); color: #fff; }
+  main {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 16px;
+  }
+  .progress-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .progress-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 18px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.2s ease;
+  }
+  .question { font-size: 1.05rem; font-weight: 600; margin-bottom: 14px; }
+  .misconception-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px 8px;
+    margin-bottom: 12px;
+  }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option {
+    text-align: left;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    padding: 12px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.95rem;
+  }
+  .option:hover:not([disabled]) { border-color: var(--accent); }
+  .option.selected { border-color: var(--accent); background: var(--accent-soft); }
+  .option.correct { border-color: var(--good); background: var(--good-bg); color: var(--good); }
+  .option.incorrect { border-color: var(--bad); background: var(--bad-bg); color: var(--bad); }
+  .option[disabled] { cursor: default; }
+  .feedback {
+    margin-top: 16px;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 0.92rem;
+  }
+  .feedback.good { background: var(--good-bg); color: var(--good); }
+  .feedback.bad { background: var(--bad-bg); color: var(--bad); }
+  .feedback strong { display: block; margin-bottom: 4px; }
+  .actions { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; }
+  button.primary {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  button.primary:disabled { opacity: 0.4; cursor: default; }
+  button.ghost {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  .score-line { color: var(--muted); font-size: 0.85rem; }
+  .results h2 { margin-top: 0; }
+  .weak-list { list-style: none; padding: 0; margin: 12px 0 0; }
+  .weak-list li {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+  }
+  .weak-list li.miss { border-color: var(--bad); background: var(--bad-bg); }
+  .weak-list li.hit { border-color: var(--good); background: var(--good-bg); }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    padding-bottom: 30px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Physics 11 — Most-Missed Question Quizzes</h1>
+  <p class="subtitle">One quiz per unit, built from the concepts students get wrong most often. Retake any quiz as many times as you like — your best score is saved in this browser.</p>
+</header>
+
+<div class="tabs" id="tabs"></div>
+
+<main id="main"></main>
+
+<footer>Progress is saved locally in this browser (localStorage) — it is not shared or uploaded anywhere.</footer>
+
+<script>
+const QUIZZES = {
+  kinematics: {
+    label: "Kinematics",
+    questions: [
+      {
+        q: "A ball is thrown straight up. At the very top of its path, its velocity is zero. What is its acceleration at that instant?",
+        tag: "Zero velocity ≠ zero acceleration",
+        options: [
+          "Zero, since velocity is zero",
+          "9.8 m/s² downward, same as the rest of the flight",
+          "9.8 m/s² upward",
+          "It's undefined at that instant"
+        ],
+        correct: 1,
+        explain: "Gravity acts on the ball the entire flight, including at the peak. Velocity and acceleration are independent — acceleration only becomes zero if the net force becomes zero, which doesn't happen here."
+      },
+      {
+        q: "A hiker walks 3 km east, then 3 km west back to the start. What is the hiker's displacement?",
+        tag: "Distance vs. displacement",
+        options: [
+          "6 km",
+          "3 km",
+          "0 km",
+          "Cannot be determined"
+        ],
+        correct: 2,
+        explain: "Displacement depends only on start and end position. Since the hiker ends where they started, displacement is 0 km — even though the distance traveled is 6 km."
+      },
+      {
+        q: "On a position-time graph, a curve is bending downward (concave down) while still increasing. What does that tell you about the velocity?",
+        tag: "Reading motion graphs",
+        options: [
+          "Velocity is constant",
+          "Velocity is positive but decreasing",
+          "Velocity is negative",
+          "Position is decreasing"
+        ],
+        correct: 1,
+        explain: "The slope of a position-time graph is velocity. A curve that's still rising but becoming less steep means velocity is positive but getting smaller — the object is slowing down while still moving forward."
+      },
+      {
+        q: "An object has a negative acceleration. What must be true about its motion?",
+        tag: "Sign of acceleration ≠ speeding up/down",
+        options: [
+          "It is definitely slowing down",
+          "It is definitely speeding up",
+          "It's slowing down if moving in the positive direction, speeding up if moving in the negative direction",
+          "It must be moving in the negative direction"
+        ],
+        correct: 2,
+        explain: "Whether an object speeds up or slows down depends on whether acceleration and velocity point the same way (speeding up) or opposite ways (slowing down) — not on the sign of acceleration alone."
+      },
+      {
+        q: "Which kinematic equation should you use to find final velocity when you know initial velocity, acceleration, and displacement, but NOT time?",
+        tag: "Choosing the right equation",
+        options: [
+          "v = v₀ + at",
+          "Δx = v₀t + ½at²",
+          "v² = v₀² + 2aΔx",
+          "Δx = ½(v₀ + v)t"
+        ],
+        correct: 2,
+        explain: "v² = v₀² + 2aΔx is the only one of the four standard kinematic equations that doesn't include time — exactly what's needed when time isn't given or asked for."
+      },
+      {
+        q: "On a velocity-time graph, what does the area under the curve represent?",
+        tag: "Graph area vs. slope",
+        options: [
+          "Acceleration",
+          "Displacement",
+          "Speed",
+          "Jerk (rate of change of acceleration)"
+        ],
+        correct: 1,
+        explain: "Area under a v-t graph = displacement, because displacement is the accumulation (integral) of velocity over time. Slope of a v-t graph, by contrast, gives acceleration."
+      },
+      {
+        q: "A stone is dropped (not thrown) from a bridge. Using an up-positive sign convention, what are its initial velocity and acceleration?",
+        tag: "Free-fall sign convention",
+        options: [
+          "v₀ = 0, a = +9.8 m/s²",
+          "v₀ = 0, a = −9.8 m/s²",
+          "v₀ = −9.8 m/s², a = 0",
+          "v₀ = +9.8 m/s², a = −9.8 m/s²"
+        ],
+        correct: 1,
+        explain: "\"Dropped\" means it starts at rest, so v₀ = 0. Gravity pulls downward, which is negative in an up-positive convention, so a = −9.8 m/s² throughout the fall."
+      },
+      {
+        q: "A car travels 100 m in the first 5 s and 100 m in the next 5 s at a higher constant speed. Is the car's acceleration constant over the full 10 s?",
+        tag: "Constant acceleration is an assumption, not a given",
+        options: [
+          "Yes, because total distance is proportional to total time",
+          "No — equal distances in equal time intervals with different speeds means the motion changed abruptly, not smoothly",
+          "Yes, because average velocity is the same in both intervals",
+          "Cannot be determined without more information"
+        ],
+        correct: 1,
+        explain: "If speed changed between two constant-speed phases, there's a jump — not the smooth, constant acceleration the standard kinematic equations assume. Don't reach for those equations across a segment where acceleration isn't constant."
+      }
+    ]
+  },
+  projectile: {
+    label: "Projectile Motion",
+    questions: [
+      {
+        q: "A projectile is launched at an angle above the horizontal. What happens to its horizontal velocity during flight (ignoring air resistance)?",
+        tag: "Independence of axes",
+        options: [
+          "It decreases steadily due to gravity",
+          "It stays constant throughout the flight",
+          "It becomes zero at the peak",
+          "It increases as the projectile falls"
+        ],
+        correct: 1,
+        explain: "Gravity acts only vertically. With no air resistance, there's no horizontal force at all, so horizontal velocity never changes — including at the peak, where only vertical velocity is momentarily zero."
+      },
+      {
+        q: "A heavy shot put and a light tennis ball are launched with the same velocity and angle (no air resistance). Which lands farther away?",
+        tag: "Mass doesn't affect trajectory shape",
+        options: [
+          "The shot put, because it's heavier",
+          "The tennis ball, because it's lighter",
+          "They land in the same place",
+          "It depends on their exact masses"
+        ],
+        correct: 2,
+        explain: "Without air resistance, gravitational acceleration is the same for all masses, and mass doesn't appear in the range equation. Same launch speed and angle → same range, regardless of mass."
+      },
+      {
+        q: "At the highest point of a projectile's trajectory, which statement is true?",
+        tag: "Velocity vs. acceleration at the peak",
+        options: [
+          "Both velocity and acceleration are zero",
+          "Velocity is zero; acceleration is still 9.8 m/s² downward",
+          "Vertical velocity is zero, but acceleration is also zero",
+          "Horizontal velocity is zero, but vertical velocity is at its maximum"
+        ],
+        correct: 1,
+        explain: "Only the vertical component of velocity is zero at the peak (horizontal velocity is unchanged and nonzero). Gravity keeps acting the whole time, so vertical acceleration remains −9.8 m/s²."
+      },
+      {
+        q: "A ball is launched from a cliff edge horizontally. Is the time it takes to hit the ground equal to half the total time of a similar ball launched upward at an angle and landing at the same height it started?",
+        tag: "Time-to-peak ≠ half of flight time when heights differ",
+        options: [
+          "Yes, this relationship always holds",
+          "No — the \"time to peak = half of total flight time\" rule only applies when launch height equals landing height",
+          "Yes, but only if launched at 45°",
+          "No, because horizontal launches don't have a peak"
+        ],
+        correct: 1,
+        explain: "The symmetry that makes time-up equal time-down only holds when the projectile lands at the same height it launched from. A projectile launched horizontally off a cliff lands lower than it started, so that symmetry doesn't apply."
+      },
+      {
+        q: "For a projectile launched and landing at the same height, which launch angle produces the greatest range (ignoring air resistance)?",
+        tag: "Range vs. launch angle",
+        options: [
+          "15°",
+          "45°",
+          "60°",
+          "90°"
+        ],
+        correct: 1,
+        explain: "Range ∝ sin(2θ), which is maximized when 2θ = 90°, i.e., θ = 45°. At 90° (straight up) the range is actually zero."
+      },
+      {
+        q: "A projectile is launched at 30° and another at 60°, both at the same speed, landing at the same height they launched from. How do their ranges compare?",
+        tag: "Complementary angles give equal range",
+        options: [
+          "The 60° launch goes twice as far",
+          "The 30° launch goes farther",
+          "They travel the same horizontal range",
+          "There's no way to compare them without more data"
+        ],
+        correct: 2,
+        explain: "30° and 60° are complementary angles (they add to 90°), and sin(2×30°) = sin(60°) = sin(120°) = sin(2×60°), so they produce equal ranges — just with different flight times and max heights."
+      },
+      {
+        q: "During the rising part of a projectile's flight, what is the direction of its acceleration relative to its velocity?",
+        tag: "Acceleration direction throughout flight",
+        options: [
+          "In the same direction as velocity",
+          "Opposite to the vertical component of velocity, and always straight down",
+          "Perpendicular to velocity at all times",
+          "Zero, since the object is still moving up"
+        ],
+        correct: 1,
+        explain: "Acceleration due to gravity always points straight down at 9.8 m/s², regardless of the direction of motion. While rising, this opposes the vertical velocity component (slowing it); while falling, it adds to it (speeding it up)."
+      },
+      {
+        q: "A ball rolls off a table with only horizontal velocity. Compared to a ball dropped straight down from the same height at the same instant, which hits the floor first?",
+        tag: "Vertical motion is independent of horizontal motion",
+        options: [
+          "The rolled ball, because it has more total velocity",
+          "The dropped ball, because it has no horizontal distance to cover",
+          "They hit at the same time",
+          "It depends on the table's height"
+        ],
+        correct: 2,
+        explain: "Vertical motion depends only on the vertical component of velocity and gravity. Both balls start with zero vertical velocity and fall under the same acceleration, so they take the same time to reach the floor, regardless of horizontal motion."
+      }
+    ]
+  },
+  newton: {
+    label: "Newton's Laws",
+    questions: [
+      {
+        q: "A hockey puck slides across frictionless ice at constant velocity. What net force is acting on it?",
+        tag: "1st Law: constant velocity needs no net force",
+        options: [
+          "A force equal to its weight, pushing it forward",
+          "Zero net force",
+          "A small force just enough to overcome its own inertia",
+          "A force that decreases over time"
+        ],
+        correct: 1,
+        explain: "Newton's 1st law: an object in motion stays in motion at constant velocity unless acted on by a net force. Constant velocity means zero acceleration, which means zero net force — no force is needed to \"keep it going.\""
+      },
+      {
+        q: "A book rests on a table. The table pushes up on the book with a normal force, and gravity pulls the book down. Is this pair a Newton's 3rd Law action-reaction pair?",
+        tag: "3rd law pairs act on different objects",
+        options: [
+          "Yes, they are equal and opposite, so they must be a 3rd law pair",
+          "No — a 3rd law pair must act on two different objects; these two forces both act on the book",
+          "Yes, but only because the book isn't accelerating",
+          "No, because normal force is always larger than gravity"
+        ],
+        correct: 1,
+        explain: "Normal force and gravity both act ON the book — that makes them a balanced pair (1st law/equilibrium), not a 3rd law pair. The true 3rd law partner of gravity-on-book is the book's gravitational pull on Earth; the partner of the table's normal force on the book is the book pushing down on the table."
+      },
+      {
+        q: "A 10 kg box sits on a ramp inclined at 30°. Is the normal force on the box equal to its full weight (mg)?",
+        tag: "Normal force isn't always equal to weight",
+        options: [
+          "Yes, normal force always equals weight",
+          "No — on an incline, normal force equals only the component of weight perpendicular to the surface (mg cos θ)",
+          "No, normal force is always greater than weight on an incline",
+          "Normal force is zero on any incline"
+        ],
+        correct: 1,
+        explain: "Normal force adjusts to balance only the force pressing into the surface. On an incline, that's the component of gravity perpendicular to the surface, mg cos θ — less than the full weight mg."
+      },
+      {
+        q: "What's the difference between mass and weight?",
+        tag: "Mass vs. weight",
+        options: [
+          "They're the same thing, just measured in different units",
+          "Mass is the amount of matter/inertia (constant); weight is the gravitational force on that mass (depends on local gravity)",
+          "Weight is constant everywhere; mass changes with gravity",
+          "Mass is measured in Newtons; weight is measured in kilograms"
+        ],
+        correct: 1,
+        explain: "Mass (kg) doesn't change based on location. Weight (N) = mass × local gravitational acceleration, so the same object weighs less on the Moon but has exactly the same mass there as on Earth."
+      },
+      {
+        q: "Can the kinetic friction force on a sliding object ever exceed the maximum static friction force for the same surfaces?",
+        tag: "Static vs. kinetic friction",
+        options: [
+          "Yes, kinetic friction is always larger",
+          "No — kinetic friction is generally less than or equal to the maximum static friction",
+          "They're always exactly equal",
+          "It depends only on the object's speed, with no upper limit"
+        ],
+        correct: 1,
+        explain: "Maximum static friction is generally greater than or equal to kinetic friction for the same pair of surfaces — this is why it typically takes more force to start something sliding than to keep it sliding."
+      },
+      {
+        q: "A rocket expels exhaust gas downward at high speed, propelling itself upward. Which law best explains this, and what is the reaction force?",
+        tag: "3rd Law application",
+        options: [
+          "1st Law — the rocket has inertia so it keeps moving",
+          "2nd Law — F = ma explains the rocket's acceleration but not the propulsion mechanism itself",
+          "3rd Law — the rocket pushes the exhaust gas down; the exhaust gas pushes the rocket up, with equal magnitude",
+          "None of the laws apply in the vacuum of space"
+        ],
+        correct: 2,
+        explain: "Newton's 3rd law: the rocket exerts a force on the exhaust gas (pushing it out and down); the exhaust gas exerts an equal and opposite force on the rocket (pushing it up). This works even in a vacuum, since it doesn't require air to push against."
+      },
+      {
+        q: "A 70 kg person stands on a scale inside an elevator accelerating upward. Compared to standing still, what does the scale read?",
+        tag: "Normal force in an accelerating frame",
+        options: [
+          "Less than their actual weight",
+          "Exactly their actual weight, since normal force always equals weight",
+          "More than their actual weight, because normal force must now also provide the upward acceleration",
+          "Zero, because they're accelerating"
+        ],
+        correct: 2,
+        explain: "By Newton's 2nd law, F_net = ma. For the person to accelerate upward, normal force must exceed weight: N − mg = ma, so N = mg + ma > mg. The scale reads this larger normal force."
+      },
+      {
+        q: "Which pair below is a correct Newton's 3rd law action-reaction pair?",
+        tag: "Identifying valid 3rd law pairs",
+        options: [
+          "Gravity on a falling apple, and the normal force of the ground on the apple",
+          "The engine's forward thrust on a car, and the car's friction force backward from the road",
+          "A swimmer's hand pushing water backward, and the water pushing the swimmer's hand forward",
+          "A box's weight, and the tension holding it up"
+        ],
+        correct: 2,
+        explain: "A valid 3rd law pair involves the same type of force between exactly two objects, in opposite directions: swimmer pushes water backward, water pushes swimmer forward — same interaction, opposite objects. The other options pair unrelated forces acting on the same object, which is not a 3rd law pair."
+      }
+    ]
+  },
+  momentum: {
+    label: "Momentum",
+    questions: [
+      {
+        q: "In an elastic collision between two carts, what quantities are conserved?",
+        tag: "Elastic vs. inelastic: what's conserved",
+        options: [
+          "Only momentum",
+          "Only kinetic energy",
+          "Both momentum and kinetic energy",
+          "Neither — energy is always lost in a collision"
+        ],
+        correct: 2,
+        explain: "Elastic collisions conserve both total momentum AND total kinetic energy. This is the defining feature that distinguishes them from inelastic collisions, where only momentum is conserved."
+      },
+      {
+        q: "Two carts stick together after colliding (a perfectly inelastic collision). Is kinetic energy conserved in this collision?",
+        tag: "KE is not automatically conserved",
+        options: [
+          "Yes, kinetic energy is always conserved in any collision",
+          "No — some kinetic energy converts to heat, sound, and deformation, even though momentum is still conserved",
+          "Only if the carts have equal mass",
+          "Only if they were moving in the same direction beforehand"
+        ],
+        correct: 1,
+        explain: "Momentum conservation holds for any collision (as long as the system is isolated), but kinetic energy is only conserved in elastic collisions. In a perfectly inelastic collision, the maximum possible kinetic energy is lost to other forms."
+      },
+      {
+        q: "A 1000 kg car moving at 10 m/s east collides head-on with a 1000 kg car moving at 10 m/s west. What is the total momentum of the system just before the collision?",
+        tag: "Sign/direction in momentum addition",
+        options: [
+          "20,000 kg·m/s east",
+          "20,000 kg·m/s west",
+          "0 kg·m/s",
+          "10,000 kg·m/s east"
+        ],
+        correct: 2,
+        explain: "Momentum is a vector. Taking east as positive: (1000)(10) + (1000)(−10) = 0. The two momenta are equal in magnitude but opposite in direction, so they cancel exactly."
+      },
+      {
+        q: "A 2 kg object moving at 1 m/s and a 1 kg object moving at 3 m/s — which has more momentum?",
+        tag: "Momentum depends on both mass and velocity",
+        options: [
+          "The 2 kg object, because it's heavier",
+          "The 1 kg object, because p = (1)(3) = 3 kg·m/s is greater than (2)(1) = 2 kg·m/s",
+          "They have equal momentum",
+          "Momentum can't be compared between different masses"
+        ],
+        correct: 1,
+        explain: "Momentum is mass × velocity, not mass alone. Being heavier doesn't guarantee more momentum — a lighter, faster object can have more momentum than a heavier, slower one."
+      },
+      {
+        q: "What is impulse, and how does it relate to force?",
+        tag: "Impulse vs. force",
+        options: [
+          "Impulse is the same thing as force, just a different name",
+          "Impulse is force divided by time",
+          "Impulse is force multiplied by the time it acts, and equals the change in momentum",
+          "Impulse only applies to collisions, not to any other force"
+        ],
+        correct: 2,
+        explain: "Impulse J = F·Δt = Δp. It's a distinct quantity from force (measured in N·s, same as kg·m/s) — the same impulse can come from a large force over a short time or a small force over a long time."
+      },
+      {
+        q: "Why do padded dashboards and airbags reduce injury in a crash, compared to a rigid dashboard?",
+        tag: "Impulse-momentum theorem application",
+        options: [
+          "They reduce the total change in momentum of the passenger",
+          "They increase the time over which the passenger's momentum changes, reducing the average force (same Δp, longer Δt → smaller F)",
+          "They eliminate momentum entirely during the crash",
+          "They have nothing to do with momentum — it's purely a comfort feature"
+        ],
+        correct: 1,
+        explain: "The passenger's change in momentum (Δp) is roughly the same either way — from crash speed to a stop. But padding and airbags extend the time (Δt) over which that change happens, which reduces the average force (F = Δp/Δt), reducing injury."
+      },
+      {
+        q: "A stationary 5 kg object explodes into two 2.5 kg pieces. One piece flies off at 6 m/s to the right. What must be true of the other piece?",
+        tag: "Conservation of momentum in explosions",
+        options: [
+          "It also moves at 6 m/s to the right",
+          "It moves at 6 m/s to the left, so total momentum stays zero",
+          "It stays at rest",
+          "Its velocity cannot be determined from momentum alone"
+        ],
+        correct: 1,
+        explain: "Total momentum before the explosion is zero (object at rest). Since momentum is conserved, the momenta of the two pieces after must sum to zero. With equal masses, the second piece must move at equal speed in the opposite direction: 6 m/s left."
+      },
+      {
+        q: "A ball rolls across a rough (frictional) floor and collides with another ball. If you try to apply conservation of momentum to just the two-ball system, what should you watch out for?",
+        tag: "External forces break the isolated-system assumption",
+        options: [
+          "Nothing — momentum conservation always applies regardless of friction",
+          "Friction from the floor is an external force on the system, so total momentum of the two balls alone is not exactly conserved during that interval",
+          "Momentum conservation only fails for elastic collisions",
+          "Friction only matters if the balls have different masses"
+        ],
+        correct: 1,
+        explain: "Conservation of momentum applies to an isolated system — one with no net external force. Floor friction acts on the balls from outside the two-ball system, so unless it's negligible over the timescale considered, momentum of just the two balls isn't perfectly conserved."
+      }
+    ]
+  },
+  energy: {
+    label: "Work & Energy",
+    questions: [
+      {
+        q: "A person carries a heavy bag while walking at constant height across a flat floor. How much work does gravity do on the bag?",
+        tag: "Zero work: force ⊥ displacement",
+        options: [
+          "A large positive amount, since the bag is heavy",
+          "Zero, because gravity acts vertically while the displacement is horizontal (perpendicular)",
+          "A negative amount, since the person is doing work against gravity",
+          "It depends on how far they walk"
+        ],
+        correct: 1,
+        explain: "Work = F·d·cos θ. Gravity points straight down; the bag's displacement is horizontal, so θ = 90° and cos 90° = 0. No work is done by gravity here, even though a force is present and the person gets tired."
+      },
+      {
+        q: "A crate slides across a floor and friction acts on it the whole time. What sign is the work done by friction?",
+        tag: "Sign of work depends on force vs. motion direction",
+        options: [
+          "Positive, because friction is a force",
+          "Negative, because friction opposes the direction of motion",
+          "Zero, friction never does work",
+          "It depends on the crate's mass"
+        ],
+        correct: 1,
+        explain: "Friction acts opposite to the direction of motion (θ = 180°), so cos θ = −1, making the work done by friction negative — it removes kinetic energy from the object, converting it to heat."
+      },
+      {
+        q: "Is total mechanical energy (KE + PE) always conserved during a block sliding down a ramp?",
+        tag: "Mechanical energy conservation requires no non-conservative forces",
+        options: [
+          "Yes, mechanical energy is always conserved in every situation",
+          "Only if the ramp is frictionless — otherwise some mechanical energy converts to heat via friction",
+          "No, mechanical energy is never conserved for a sliding object",
+          "Only if the block is moving at constant speed"
+        ],
+        correct: 1,
+        explain: "Conservation of mechanical energy (KE₁+PE₁ = KE₂+PE₂) only holds when no non-conservative forces (like friction or air resistance) do work on the system. On a frictional ramp, some mechanical energy is lost to heat, so you must include that loss explicitly."
+      },
+      {
+        q: "What's the difference between work and power?",
+        tag: "Work vs. power vs. force",
+        options: [
+          "They're the same quantity with different names",
+          "Work is energy transferred (Joules); power is the rate at which that energy is transferred (Watts = J/s)",
+          "Power is measured in Newtons; work is measured in Joules",
+          "Work depends on time; power does not"
+        ],
+        correct: 1,
+        explain: "Work (J) measures total energy transferred by a force over some displacement. Power (W) measures how fast that transfer happens: P = W/t. The same work done faster means more power, not more work."
+      },
+      {
+        q: "What is the correct formula for kinetic energy?",
+        tag: "KE formula — common formula slip-ups",
+        options: [
+          "KE = mv",
+          "KE = mv²",
+          "KE = ½mv²",
+          "KE = ½mv"
+        ],
+        correct: 2,
+        explain: "Kinetic energy is KE = ½mv². A common error is dropping the ½ or using v instead of v² — both change the answer significantly, especially at higher speeds since KE scales with the square of velocity."
+      },
+      {
+        q: "According to the work-energy theorem, what does the NET work done on an object equal?",
+        tag: "Work-energy theorem",
+        options: [
+          "The object's total momentum",
+          "The object's change in kinetic energy (ΔKE)",
+          "The object's change in potential energy",
+          "The total power delivered to the object"
+        ],
+        correct: 1,
+        explain: "The work-energy theorem states W_net = ΔKE. It relates the net work from all forces combined to how much an object's kinetic energy changes — regardless of the path taken or how many individual forces contributed."
+      },
+      {
+        q: "A ball rolls down a frictionless hill and its speed doubles. By what factor does its kinetic energy change?",
+        tag: "KE scales with v², not v",
+        options: [
+          "It also doubles (×2)",
+          "It quadruples (×4)",
+          "It stays the same",
+          "It increases by a factor of 8"
+        ],
+        correct: 1,
+        explain: "Since KE = ½mv², doubling v means KE scales with v² = (2)² = 4. Kinetic energy quadruples, not doubles — a frequent source of error since many other quantities (like momentum) DO scale linearly with v."
+      },
+      {
+        q: "A block slides down a ramp with friction and reaches the bottom slower than a frictionless prediction suggests. Where did the \"missing\" mechanical energy go?",
+        tag: "Non-conservative forces don't destroy energy — they convert it",
+        options: [
+          "It simply disappeared — energy isn't always conserved",
+          "It converted into heat (and some sound) due to friction between the block and ramp — total energy is still conserved, just not mechanical energy alone",
+          "It transferred entirely into the ramp's potential energy",
+          "The block gained extra momentum instead"
+        ],
+        correct: 1,
+        explain: "Total energy (including heat) is always conserved. Friction converts some of the block's mechanical energy into thermal energy and sound rather than destroying it — that's why mechanical energy alone (KE + PE) is not conserved when non-conservative forces act."
+      }
+    ]
+  }
+};
+
+const state = {};
+let currentTopic = null;
+
+function loadProgress(topicKey) {
+  try {
+    const raw = localStorage.getItem("physics11-quiz-" + topicKey);
+    return raw ? JSON.parse(raw) : { bestScore: null, attempts: 0 };
+  } catch (e) {
+    return { bestScore: null, attempts: 0 };
+  }
+}
+
+function saveProgress(topicKey, progress) {
+  try {
+    localStorage.setItem("physics11-quiz-" + topicKey, JSON.stringify(progress));
+  } catch (e) { /* localStorage unavailable — progress just won't persist */ }
+}
+
+function renderTabs() {
+  const tabsEl = document.getElementById("tabs");
+  tabsEl.innerHTML = "";
+  Object.keys(QUIZZES).forEach(key => {
+    const progress = loadProgress(key);
+    const btn = document.createElement("button");
+    btn.className = "tab" + (key === currentTopic ? " active" : "");
+    const bestText = progress.bestScore === null ? "" : `<span class="badge">${progress.bestScore}%</span>`;
+    btn.innerHTML = `${QUIZZES[key].label} ${bestText}`;
+    btn.onclick = () => { startQuiz(key); };
+    tabsEl.appendChild(btn);
+  });
+}
+
+function startQuiz(topicKey) {
+  currentTopic = topicKey;
+  state[topicKey] = {
+    order: shuffledIndices(QUIZZES[topicKey].questions.length),
+    index: 0,
+    answers: [],
+    answered: false
+  };
+  renderTabs();
+  renderQuestion();
+}
+
+function shuffledIndices(n) {
+  const arr = Array.from({ length: n }, (_, i) => i);
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function renderQuestion() {
+  const topic = QUIZZES[currentTopic];
+  const s = state[currentTopic];
+  const main = document.getElementById("main");
+
+  if (s.index >= s.order.length) {
+    renderResults();
+    return;
+  }
+
+  const qIndex = s.order[s.index];
+  const q = topic.questions[qIndex];
+  const pct = Math.round((s.index / s.order.length) * 100);
+
+  main.innerHTML = `
+    <div class="card">
+      <div class="progress-row">
+        <span>${topic.label} — Question ${s.index + 1} of ${s.order.length}</span>
+        <span class="score-line">Score so far: ${s.answers.filter(a => a.correct).length}/${s.answers.length}</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="misconception-tag">Targets: ${q.tag}</div>
+      <div class="question">${q.q}</div>
+      <div class="options" id="options"></div>
+      <div id="feedback"></div>
+      <div class="actions">
+        <button class="ghost" id="restartBtn">Restart quiz</button>
+        <button class="primary" id="nextBtn" disabled>Next question</button>
+      </div>
+    </div>
+  `;
+
+  const optionsEl = document.getElementById("options");
+  q.options.forEach((opt, i) => {
+    const b = document.createElement("button");
+    b.className = "option";
+    b.textContent = opt;
+    b.onclick = () => selectAnswer(i);
+    optionsEl.appendChild(b);
+  });
+
+  document.getElementById("nextBtn").onclick = () => {
+    s.index += 1;
+    renderQuestion();
+  };
+  document.getElementById("restartBtn").onclick = () => startQuiz(currentTopic);
+}
+
+function selectAnswer(choiceIndex) {
+  const topic = QUIZZES[currentTopic];
+  const s = state[currentTopic];
+  if (s.answered) return;
+  s.answered = true;
+
+  const qIndex = s.order[s.index];
+  const q = topic.questions[qIndex];
+  const isCorrect = choiceIndex === q.correct;
+  s.answers.push({ qIndex, correct: isCorrect, tag: q.tag });
+
+  const optionButtons = document.querySelectorAll("#options .option");
+  optionButtons.forEach((b, i) => {
+    b.setAttribute("disabled", "true");
+    if (i === q.correct) b.classList.add("correct");
+    if (i === choiceIndex && i !== q.correct) b.classList.add("incorrect");
+  });
+
+  const feedback = document.getElementById("feedback");
+  feedback.innerHTML = `
+    <div class="feedback ${isCorrect ? "good" : "bad"}">
+      <strong>${isCorrect ? "Correct!" : "Not quite."}</strong>
+      ${q.explain}
+    </div>
+  `;
+
+  document.getElementById("nextBtn").removeAttribute("disabled");
+  document.getElementById("nextBtn").onclick = () => {
+    s.index += 1;
+    s.answered = false;
+    renderQuestion();
+  };
+}
+
+function renderResults() {
+  const topic = QUIZZES[currentTopic];
+  const s = state[currentTopic];
+  const correctCount = s.answers.filter(a => a.correct).length;
+  const total = s.answers.length;
+  const pct = Math.round((correctCount / total) * 100);
+
+  const progress = loadProgress(currentTopic);
+  progress.attempts += 1;
+  if (progress.bestScore === null || pct > progress.bestScore) {
+    progress.bestScore = pct;
+  }
+  saveProgress(currentTopic, progress);
+  renderTabs();
+
+  const missed = s.answers.filter(a => !a.correct);
+  const hit = s.answers.filter(a => a.correct);
+
+  const main = document.getElementById("main");
+  main.innerHTML = `
+    <div class="card results">
+      <h2>${topic.label} — Results: ${correctCount}/${total} (${pct}%)</h2>
+      <p class="score-line">Best score this browser: ${progress.bestScore}% across ${progress.attempts} attempt(s). ${pct >= 80 ? "Nice work — you've hit the 80% target for this unit!" : "Aim for 80%+ — review the weak spots below, then retake."}</p>
+      ${missed.length ? `
+        <h3>Weak spots to review</h3>
+        <ul class="weak-list">
+          ${missed.map(m => `<li class="miss">${m.tag}</li>`).join("")}
+        </ul>
+      ` : `<p>No missed concepts this attempt — great job!</p>`}
+      ${hit.length ? `
+        <h3>Concepts you've got solid</h3>
+        <ul class="weak-list">
+          ${hit.map(m => `<li class="hit">${m.tag}</li>`).join("")}
+        </ul>
+      ` : ""}
+      <div class="actions">
+        <button class="ghost" id="retryBtn">Retake this quiz</button>
+        <button class="primary" id="anotherBtn">Choose another unit</button>
+      </div>
+    </div>
+  `;
+  document.getElementById("retryBtn").onclick = () => startQuiz(currentTopic);
+  document.getElementById("anotherBtn").onclick = () => {
+    main.innerHTML = `<div class="card"><p>Pick a unit tab above to begin.</p></div>`;
+  };
+}
+
+renderTabs();
+document.getElementById("main").innerHTML = `<div class="card"><p>Pick a unit tab above to begin a quiz. Each quiz targets the concepts students miss most often on that topic, with instant feedback and explanations.</p></div>`;
+startQuiz(Object.keys(QUIZZES)[0]);
+</script>
+</body>
+</html>
