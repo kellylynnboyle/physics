@@ -50,6 +50,8 @@ By the end of this unit, students will be able to:
 - Khan Academy: "Momentum and impulse" unit
 - The Physics Classroom: [Momentum and Its Conservation](https://www.physicsclassroom.com/class/momentum) tutorial
 - OpenStax *Physics*, Chapter "Linear Momentum and Collisions"
+- **IXL practice (for review):**
+  [Conservation of momentum](https://www.ixl.com/science/physics/conservation-of-momentum)
 
 ## Practice Problems
 

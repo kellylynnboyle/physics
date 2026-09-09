@@ -133,3 +133,4 @@ assessment.
 - **Video:** The Organic Chemistry Tutor (YouTube) — worked problem sets for every topic below
 - **Simulations:** [PhET Interactive Simulations](https://phet.colorado.edu/) (University of Colorado Boulder) — free, browser-based, listed per-unit below
 - **Practice bank:** The Physics Classroom ([physicsclassroom.com](https://www.physicsclassroom.com/)) — concept builders and mastery-based practice per topic
+- **IXL Physics** ([ixl.com/science/physics](https://www.ixl.com/science/physics)) — standing recommendation for review: each unit below links the specific IXL skills that match it, drawn from IXL's Physics skill plan (sections D–H cover this project's five units)

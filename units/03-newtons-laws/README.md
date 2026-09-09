@@ -54,6 +54,10 @@ By the end of this unit, students will be able to:
 - Khan Academy: "Forces and Newton's laws of motion" unit
 - The Physics Classroom: [Newton's Laws](https://www.physicsclassroom.com/class/newtlaws) tutorial
 - OpenStax *Physics*, Chapter "Newton's Laws of Motion"
+- **IXL practice (for review):**
+  [Newton's laws of motion](https://www.ixl.com/science/physics/newtons-laws-of-motion) ·
+  [Newton's first law of motion](https://www.ixl.com/science/physics/newtons-first-law-of-motion) ·
+  [Newton's second law of motion](https://www.ixl.com/science/physics/newtons-second-law-of-motion)
 
 ## Practice Problems
 

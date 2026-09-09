@@ -48,6 +48,9 @@ By the end of this unit, students will be able to:
 - Khan Academy: "Two-dimensional motion" unit
 - The Physics Classroom: [Projectile Motion](https://www.physicsclassroom.com/class/vectors) tutorial
 - OpenStax *Physics*, Chapter "Motion in Two Dimensions"
+- **IXL practice (for review):**
+  [Solve projectile motion problems given components of velocity](https://www.ixl.com/science/physics/solve-projectile-motion-problems-given-components-of-velocity) ·
+  [Solve projectile motion problems given magnitude and direction of velocity](https://www.ixl.com/science/physics/solve-projectile-motion-problems-given-magnitude-and-direction-of-velocity)
 
 ## Practice Problems
 

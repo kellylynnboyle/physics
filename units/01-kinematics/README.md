@@ -59,6 +59,11 @@ By the end of this unit, students will be able to:
 - The Physics Classroom: [1-D Kinematics](https://www.physicsclassroom.com/class/1DKin) tutorial
   and Concept Builders
 - OpenStax *Physics*, Chapter "Motion in One Dimension"
+- **IXL practice (for review):**
+  [Distance and displacement in one dimension](https://www.ixl.com/science/physics/distance-and-displacement-in-one-dimension) ·
+  [Speed and velocity in one dimension](https://www.ixl.com/science/physics/speed-and-velocity-in-one-dimension) ·
+  [Acceleration in one dimension](https://www.ixl.com/science/physics/acceleration-in-one-dimension) ·
+  [Solve problems using kinematic equations](https://www.ixl.com/science/physics/solve-problems-using-kinematic-equations)
 
 ## Practice Problems
 

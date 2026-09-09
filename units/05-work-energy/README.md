@@ -51,6 +51,10 @@ By the end of this unit, students will be able to:
 - Khan Academy: "Work and energy" unit
 - The Physics Classroom: [Work, Energy, and Power](https://www.physicsclassroom.com/class/energy) tutorial
 - OpenStax *Physics*, Chapter "Work, Energy, and Energy Resources"
+- **IXL practice (for review):**
+  [Calculate work](https://www.ixl.com/science/physics/calculate-work) ·
+  [Conservation of mechanical energy](https://www.ixl.com/science/physics/conservation-of-mechanical-energy) ·
+  [Calculate work from force-displacement graphs](https://www.ixl.com/science/physics/calculate-work-from-force-displacement-graphs)
 
 ## Practice Problems
 
