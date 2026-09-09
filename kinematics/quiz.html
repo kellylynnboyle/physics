@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinematics Quiz — Commonly Missed Questions</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --card: #ffffff; --text: #1f2430; --muted: #5b6270;
+    --accent: #2b6cb0; --good: #2f855a; --bad: #c53030; --border: #e2e2e0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #14161a; --card: #1e2126; --text: #e7e9ee; --muted: #9aa1ad;
+      --accent: #6ea8dc; --good: #6fcf97; --bad: #f28b82; --border: #30343c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding: 24px 16px 64px; }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.4rem; margin-bottom: 4px; }
+  p.sub { color: var(--muted); margin-top: 0; }
+  .scorebar { position: sticky; top: 0; background: var(--bg); padding: 10px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border); margin-bottom: 20px; z-index: 5; }
+  .score { font-weight: 600; }
+  .bar { flex: 1; height: 8px; background: var(--border); border-radius: 4px;
+    margin: 0 16px; overflow: hidden; }
+  .bar-fill { height: 100%; background: var(--accent); width: 0%; transition: width .3s; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 20px; margin-bottom: 16px; }
+  .qtext { font-weight: 600; margin-bottom: 12px; line-height: 1.4; }
+  .opt { display: block; width: 100%; text-align: left; padding: 10px 14px;
+    margin-bottom: 8px; border: 1px solid var(--border); border-radius: 8px;
+    background: transparent; color: var(--text); cursor: pointer; font-size: 0.95rem; }
+  .opt:hover:not([disabled]) { border-color: var(--accent); }
+  .opt.correct { border-color: var(--good); background: color-mix(in srgb, var(--good) 15%, transparent); }
+  .opt.incorrect { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 15%, transparent); }
+  .opt[disabled] { cursor: default; opacity: 0.85; }
+  .explain { display: none; margin-top: 10px; padding: 10px 12px; border-radius: 8px;
+    background: var(--bg); border: 1px solid var(--border); font-size: 0.9rem; color: var(--muted); }
+  .explain.show { display: block; }
+  .footer { text-align: center; margin-top: 28px; }
+  button.restart { padding: 10px 20px; border-radius: 8px; border: 1px solid var(--accent);
+    background: transparent; color: var(--accent); cursor: pointer; font-size: 0.95rem; }
+  .result { text-align: center; font-size: 1.1rem; font-weight: 600; margin-top: 18px; display: none; }
+  .result.show { display: block; }
+  .tag { display: inline-block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: .04em;
+    color: var(--muted); margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Kinematics — Commonly Missed Questions</h1>
+  <p class="sub">10 questions targeting the mistakes students make most often on this unit. Click an answer to check it — mastery target is 80% (8/10).</p>
+  <div class="scorebar">
+    <span class="score">Score: <span id="scoreNum">0</span>/<span id="scoreTotal">0</span></span>
+    <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+    <span id="answeredNum">0/10 answered</span>
+  </div>
+  <div id="quiz"></div>
+  <div class="result" id="result"></div>
+  <div class="footer"><button class="restart" onclick="restart()">Restart Quiz</button></div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    tag: "Sign conventions",
+    q: "A car moving in the positive direction has a negative acceleration. What is happening to the car?",
+    options: [
+      "It must be slowing down",
+      "It must be speeding up",
+      "It is slowing down, or speeding up in the negative direction — it depends on its current velocity's sign, not the acceleration's sign alone",
+      "It is definitely at rest"
+    ],
+    correct: 2,
+    explain: "An object slows down when velocity and acceleration have opposite signs, and speeds up when they have the same sign. A negative acceleration only means 'slowing down' if the object is currently moving in the positive direction; if it's already moving in the negative direction, the same negative acceleration makes it speed up."
+  },
+  {
+    tag: "Free fall / peak velocity",
+    q: "A ball is thrown straight up. At the exact top of its path, what are its velocity and acceleration?",
+    options: [
+      "Velocity = 0, acceleration = 0",
+      "Velocity = 0, acceleration = −9.8 m/s²",
+      "Velocity = −9.8 m/s, acceleration = 0",
+      "Both velocity and acceleration are undefined at the peak"
+    ],
+    correct: 1,
+    explain: "Velocity is momentarily zero at the peak (it's switching from positive to negative), but gravity never stops acting — acceleration is −9.8 m/s² throughout the entire flight, including at the very top."
+  },
+  {
+    tag: "Graph interpretation",
+    q: "On a velocity-time graph, what does the AREA between the curve and the time axis represent?",
+    options: [
+      "Acceleration",
+      "Displacement",
+      "Speed",
+      "Jerk (rate of change of acceleration)"
+    ],
+    correct: 1,
+    explain: "Area under a v-t graph = displacement. (Slope of a v-t graph, by contrast, gives acceleration — a very common mix-up.)"
+  },
+  {
+    tag: "Average velocity vs. speed",
+    q: "A runner jogs 400 m around a track and ends up back at the starting line after 100 s. What are her average speed and average velocity?",
+    options: [
+      "Average speed = 4 m/s, average velocity = 4 m/s",
+      "Average speed = 4 m/s, average velocity = 0 m/s",
+      "Average speed = 0 m/s, average velocity = 0 m/s",
+      "Average speed = 0 m/s, average velocity = 4 m/s"
+    ],
+    correct: 1,
+    explain: "Average speed uses total DISTANCE (400 m / 100 s = 4 m/s). Average velocity uses total DISPLACEMENT, and since she ends where she started, displacement = 0, so average velocity = 0 m/s."
+  },
+  {
+    tag: "When equations apply",
+    q: "You're told a rocket's acceleration is changing every second as it burns fuel. Can you use Δx = v₀t + ½at² directly across the whole burn?",
+    options: [
+      "Yes, it always works for any motion",
+      "No — the kinematics equations only apply during intervals of constant acceleration",
+      "Yes, but only if you know the final velocity",
+      "No, that equation is only for free fall"
+    ],
+    correct: 1,
+    explain: "The three kinematics equations are derived assuming constant acceleration. If acceleration is changing, you'd need calculus (or to break the motion into small constant-acceleration intervals) — you can't apply the equation across a changing-acceleration interval directly."
+  },
+  {
+    tag: "Distance vs. displacement",
+    q: "A hiker walks 3 km east, then 1 km west. What is her total distance traveled and her displacement?",
+    options: [
+      "Distance = 2 km, displacement = 2 km east",
+      "Distance = 4 km, displacement = 2 km east",
+      "Distance = 4 km, displacement = 4 km east",
+      "Distance = 2 km, displacement = 4 km east"
+    ],
+    correct: 1,
+    explain: "Distance is the total path length: 3 km + 1 km = 4 km. Displacement is start-to-end straight-line change in position: 3 km east − 1 km east = 2 km east."
+  },
+  {
+    tag: "Sign convention & direction reversal",
+    q: "A ball rolls up a ramp, momentarily stops, then rolls back down. If 'up the ramp' is positive, what is the sign of its acceleration during the entire motion (ignoring friction)?",
+    options: [
+      "Positive while going up, negative while coming down",
+      "Negative the entire time — it never changes sign",
+      "Zero the entire time",
+      "Positive the entire time"
+    ],
+    correct: 1,
+    explain: "Gravity's component along the ramp points down the ramp the whole time, so acceleration is constant and negative throughout — even while the ball is still moving up the ramp (which is why it's slowing down on the way up)."
+  },
+  {
+    tag: "Graph interpretation",
+    q: "A position-time graph shows a straight, non-horizontal line. What does this tell you about the object's motion?",
+    options: [
+      "It is accelerating uniformly",
+      "It is moving at constant, nonzero velocity",
+      "It is at rest",
+      "It is in free fall"
+    ],
+    correct: 1,
+    explain: "A straight line on a position-time graph means constant slope, and slope of an x-t graph is velocity — so a straight non-horizontal line means constant, nonzero velocity (zero acceleration). A curved x-t graph would indicate acceleration."
+  },
+  {
+    tag: "Equation selection",
+    q: "You know an object's initial velocity, acceleration, and displacement, but NOT the time elapsed, and you need to find its final velocity. Which equation should you use?",
+    options: [
+      "v = v₀ + at",
+      "Δx = v₀t + ½at²",
+      "v² = v₀² + 2aΔx",
+      "You cannot solve this without knowing time first"
+    ],
+    correct: 2,
+    explain: "v² = v₀² + 2aΔx is the one equation that doesn't include time at all — exactly what's needed when time is unknown and not requested."
+  },
+  {
+    tag: "Free fall & mass",
+    q: "A 2 kg rock and a 20 kg rock are dropped from the same height at the same time (ignore air resistance). Which hits the ground first?",
+    options: [
+      "The 20 kg rock, because it's heavier",
+      "The 2 kg rock, because it's lighter",
+      "They land at the same time",
+      "It depends on their exact shapes, regardless of air resistance"
+    ],
+    correct: 2,
+    explain: "In free fall (no air resistance), all objects accelerate at the same rate g = 9.8 m/s², regardless of mass. Both rocks hit the ground simultaneously."
+  }
+];
+
+let selected = new Array(QUESTIONS.length).fill(null);
+
+function render() {
+  const quiz = document.getElementById('quiz');
+  quiz.innerHTML = '';
+  QUESTIONS.forEach((item, qi) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    const tag = document.createElement('div');
+    tag.className = 'tag';
+    tag.textContent = item.tag;
+    card.appendChild(tag);
+    const qtext = document.createElement('div');
+    qtext.className = 'qtext';
+    qtext.textContent = (qi + 1) + '. ' + item.q;
+    card.appendChild(qtext);
+    item.options.forEach((opt, oi) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.textContent = opt;
+      if (selected[qi] !== null) {
+        btn.disabled = true;
+        if (oi === item.correct) btn.classList.add('correct');
+        else if (oi === selected[qi]) btn.classList.add('incorrect');
+      }
+      btn.onclick = () => { selected[qi] = oi; render(); };
+      card.appendChild(btn);
+    });
+    const ex = document.createElement('div');
+    ex.className = 'explain' + (selected[qi] !== null ? ' show' : '');
+    ex.textContent = item.explain;
+    card.appendChild(ex);
+    quiz.appendChild(card);
+  });
+  updateScore();
+}
+
+function updateScore() {
+  const answered = selected.filter(s => s !== null).length;
+  const correct = selected.filter((s, i) => s === QUESTIONS[i].correct).length;
+  document.getElementById('scoreNum').textContent = correct;
+  document.getElementById('scoreTotal').textContent = QUESTIONS.length;
+  document.getElementById('answeredNum').textContent = answered + '/' + QUESTIONS.length + ' answered';
+  document.getElementById('barFill').style.width = (correct / QUESTIONS.length * 100) + '%';
+  const result = document.getElementById('result');
+  if (answered === QUESTIONS.length) {
+    const pct = Math.round(correct / QUESTIONS.length * 100);
+    result.classList.add('show');
+    result.textContent = pct >= 80
+      ? `You scored ${pct}%. Mastery reached — nice work!`
+      : `You scored ${pct}%. Review the explanations above and try again — aim for 80%+.`;
+  } else {
+    result.classList.remove('show');
+  }
+}
+
+function restart() {
+  selected = new Array(QUESTIONS.length).fill(null);
+  render();
+}
+
+render();
+</script>
+</body>
+</html>

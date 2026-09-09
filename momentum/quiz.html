@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Momentum Quiz — Commonly Missed Questions</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --card: #ffffff; --text: #1f2430; --muted: #5b6270;
+    --accent: #2b6cb0; --good: #2f855a; --bad: #c53030; --border: #e2e2e0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #14161a; --card: #1e2126; --text: #e7e9ee; --muted: #9aa1ad;
+      --accent: #6ea8dc; --good: #6fcf97; --bad: #f28b82; --border: #30343c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding: 24px 16px 64px; }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.4rem; margin-bottom: 4px; }
+  p.sub { color: var(--muted); margin-top: 0; }
+  .scorebar { position: sticky; top: 0; background: var(--bg); padding: 10px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border); margin-bottom: 20px; z-index: 5; }
+  .score { font-weight: 600; }
+  .bar { flex: 1; height: 8px; background: var(--border); border-radius: 4px;
+    margin: 0 16px; overflow: hidden; }
+  .bar-fill { height: 100%; background: var(--accent); width: 0%; transition: width .3s; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 20px; margin-bottom: 16px; }
+  .qtext { font-weight: 600; margin-bottom: 12px; line-height: 1.4; }
+  .opt { display: block; width: 100%; text-align: left; padding: 10px 14px;
+    margin-bottom: 8px; border: 1px solid var(--border); border-radius: 8px;
+    background: transparent; color: var(--text); cursor: pointer; font-size: 0.95rem; }
+  .opt:hover:not([disabled]) { border-color: var(--accent); }
+  .opt.correct { border-color: var(--good); background: color-mix(in srgb, var(--good) 15%, transparent); }
+  .opt.incorrect { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 15%, transparent); }
+  .opt[disabled] { cursor: default; opacity: 0.85; }
+  .explain { display: none; margin-top: 10px; padding: 10px 12px; border-radius: 8px;
+    background: var(--bg); border: 1px solid var(--border); font-size: 0.9rem; color: var(--muted); }
+  .explain.show { display: block; }
+  .footer { text-align: center; margin-top: 28px; }
+  button.restart { padding: 10px 20px; border-radius: 8px; border: 1px solid var(--accent);
+    background: transparent; color: var(--accent); cursor: pointer; font-size: 0.95rem; }
+  .result { text-align: center; font-size: 1.1rem; font-weight: 600; margin-top: 18px; display: none; }
+  .result.show { display: block; }
+  .tag { display: inline-block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: .04em;
+    color: var(--muted); margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Momentum — Commonly Missed Questions</h1>
+  <p class="sub">10 questions targeting the mistakes students make most often on this unit. Click an answer to check it — mastery target is 80% (8/10).</p>
+  <div class="scorebar">
+    <span class="score">Score: <span id="scoreNum">0</span>/<span id="scoreTotal">0</span></span>
+    <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+    <span id="answeredNum">0/10 answered</span>
+  </div>
+  <div id="quiz"></div>
+  <div class="result" id="result"></div>
+  <div class="footer"><button class="restart" onclick="restart()">Restart Quiz</button></div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    tag: "Momentum as a vector",
+    q: "A 2 kg cart moves right at 3 m/s and collides head-on with a 2 kg cart moving left at 3 m/s. What is the total momentum of the system just before the collision?",
+    options: [
+      "12 kg·m/s (adding magnitudes)",
+      "0 kg·m/s (they cancel, since momentum is a vector)",
+      "6 kg·m/s to the right",
+      "It cannot be determined without knowing what happens after the collision"
+    ],
+    correct: 1,
+    explain: "Momentum is a vector. Choosing right as positive: p = (2)(3) + (2)(−3) = 6 − 6 = 0 kg·m/s. Adding magnitudes without regard to direction (getting 12) is the most common error in head-on momentum problems."
+  },
+  {
+    tag: "Elastic vs. inelastic",
+    q: "In an INELASTIC collision (not perfectly inelastic — the objects don't stick), which quantities are conserved?",
+    options: [
+      "Both momentum and kinetic energy",
+      "Momentum only — kinetic energy is not conserved",
+      "Kinetic energy only — momentum is not conserved",
+      "Neither is conserved"
+    ],
+    correct: 1,
+    explain: "Momentum is conserved in ALL collisions within an isolated system, elastic or not. Kinetic energy is only guaranteed to be conserved in elastic collisions — in inelastic collisions, some KE converts to heat, sound, or deformation."
+  },
+  {
+    tag: "Explosions and energy",
+    q: "A firework at rest explodes into fragments. The total momentum after the explosion is still zero (vector sum), yet the total kinetic energy of the fragments is clearly greater than zero. Is this a contradiction?",
+    options: [
+      "Yes — if KE increases, momentum can't be conserved",
+      "No — momentum conservation and energy conservation are separate laws; the explosion's chemical energy converts to kinetic energy while momentum stays balanced because the fragments fly apart in directions that sum to zero",
+      "No, because fireworks don't actually conserve momentum",
+      "Yes, this only makes sense if some fragments have negative mass"
+    ],
+    correct: 1,
+    explain: "Momentum conservation only requires the VECTOR sum of momenta to stay the same — it says nothing about energy. The stored chemical energy in the firework converts into kinetic energy of the fragments, while their momenta (vectors, in different directions) still sum to the original zero."
+  },
+  {
+    tag: "When conservation applies",
+    q: "A hockey puck slides across ice and gradually slows due to friction with the ice. Is the puck's momentum conserved during this slide?",
+    options: [
+      "Yes, momentum is always conserved for any single object",
+      "No — friction is an external force acting on the puck over that time, so its momentum is not conserved during the slide (it decreases)",
+      "Yes, because ice is frictionless",
+      "It depends on the puck's mass"
+    ],
+    correct: 1,
+    explain: "Conservation of momentum applies to an ISOLATED SYSTEM with no net external force. A single puck sliding with friction is NOT isolated — the ice exerts an external friction force on it, continuously reducing its momentum. (Conservation of momentum is typically applied to the brief instant of a COLLISION between two objects, where the huge internal collision force dwarfs external forces like friction.)"
+  },
+  {
+    tag: "Perfectly inelastic collisions",
+    q: "A 3 kg cart moving at 6 m/s collides with a stationary 9 kg cart and they stick together. Do they move off at 6/2 = 3 m/s afterward (since it's a simple average)?",
+    options: [
+      "Yes, sticking collisions always average the initial velocities",
+      "No — you must use conservation of momentum, m₁v₁ = (m₁+m₂)v_f, which gives a different answer here since the masses are unequal",
+      "Yes, but only because one cart started at rest",
+      "No, because perfectly inelastic collisions never conserve momentum"
+    ],
+    correct: 1,
+    explain: "The final velocity is NOT a simple average unless masses happen to be equal. Correctly: (3)(6) + (9)(0) = (3+9)v_f → 18 = 12v_f → v_f = 1.5 m/s. Averaging velocities ignores mass entirely and gives a wrong answer whenever masses differ."
+  },
+  {
+    tag: "Impulse-momentum theorem",
+    q: "Why do airbags reduce injury in a crash, given that the change in momentum of the passenger is roughly the same with or without one?",
+    options: [
+      "Airbags reduce the passenger's momentum change, which is why they help",
+      "Airbags increase the time (Δt) over which the momentum change happens, which reduces the average force (since Δp = FΔt) for the same Δp",
+      "Airbags have nothing to do with force — they just cushion for comfort",
+      "Airbags increase the force to stop the passenger faster"
+    ],
+    correct: 1,
+    explain: "The impulse-momentum theorem, J = FΔt = Δp, shows that for a fixed Δp (the passenger must still stop), a LONGER Δt means a SMALLER average force. Airbags extend the stopping time, which reduces peak force on the body — not the total momentum change itself."
+  },
+  {
+    tag: "Equal mass elastic collision",
+    q: "In a head-on ELASTIC collision between a moving object and a stationary object of EQUAL mass, what happens?",
+    options: [
+      "They stick together and move off with the average velocity",
+      "The velocities are exchanged: the moving object stops, and the previously stationary object moves off with the first object's original velocity",
+      "Both objects move off at half the original speed",
+      "The moving object bounces straight back at the same speed"
+    ],
+    correct: 1,
+    explain: "This is a special, well-known result for equal-mass elastic collisions: the objects exchange velocities exactly. It's NOT a general rule for all collisions — it only applies when masses are equal AND the collision is elastic (KE conserved)."
+  },
+  {
+    tag: "Momentum vs. force",
+    q: "A 0.5 kg ball hits a wall at 10 m/s and bounces back at 8 m/s, all in 0.02 s. What is the magnitude of the impulse delivered to the ball, and why isn't it based on speed alone?",
+    options: [
+      "1 kg·m/s, using |10 − 8| since both speeds are in the 'same direction' along the wall-normal",
+      "9 kg·m/s, because you must account for the direction reversal: Δp = m(v_f − v_i) = 0.5(−8 − 10) = −9 kg·m/s, magnitude 9 kg·m/s",
+      "5 kg·m/s, the average of before and after momentum",
+      "0.1 kg·m/s"
+    ],
+    correct: 1,
+    explain: "Since the ball reverses direction, v_i and v_f have opposite signs. Taking toward-the-wall as positive: Δp = m·v_f − m·v_i = (0.5)(−8) − (0.5)(10) = −4 − 5 = −9 kg·m/s. Forgetting the sign flip on a bounce-back is a very common impulse-momentum error."
+  },
+  {
+    tag: "Isolated systems",
+    q: "For conservation of momentum to apply cleanly to a two-cart collision on a track, what condition must approximately hold?",
+    options: [
+      "The carts must have equal mass",
+      "The collision must be elastic",
+      "The net EXTERNAL force on the two-cart system (e.g., friction, applied pushes) must be negligible during the collision",
+      "The carts must be moving at the same speed before colliding"
+    ],
+    correct: 2,
+    explain: "Momentum conservation requires an isolated system — negligible net external force during the interaction. It does NOT require equal masses, equal speeds, or an elastic collision; those are separate, unrelated conditions."
+  },
+  {
+    tag: "KE not conserved in inelastic collisions",
+    q: "A 1000 kg car moving at 10 m/s crashes into a stationary 1000 kg car and they lock together, moving off at 5 m/s. Compare the kinetic energy before and after.",
+    options: [
+      "KE is the same before and after, since momentum was conserved",
+      "KE after is greater than KE before",
+      "KE after is less than KE before — energy was converted to heat, sound, and deformation of the cars",
+      "KE cannot be compared without knowing the collision duration"
+    ],
+    correct: 2,
+    explain: "KE_before = ½(1000)(10²) = 50,000 J. KE_after = ½(2000)(5²) = 25,000 J. Momentum was conserved (10,000 = 10,000 kg·m/s), but half the kinetic energy was lost to deformation/heat/sound — exactly what we expect for a perfectly inelastic collision."
+  }
+];
+
+let selected = new Array(QUESTIONS.length).fill(null);
+
+function render() {
+  const quiz = document.getElementById('quiz');
+  quiz.innerHTML = '';
+  QUESTIONS.forEach((item, qi) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    const tag = document.createElement('div');
+    tag.className = 'tag';
+    tag.textContent = item.tag;
+    card.appendChild(tag);
+    const qtext = document.createElement('div');
+    qtext.className = 'qtext';
+    qtext.textContent = (qi + 1) + '. ' + item.q;
+    card.appendChild(qtext);
+    item.options.forEach((opt, oi) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.textContent = opt;
+      if (selected[qi] !== null) {
+        btn.disabled = true;
+        if (oi === item.correct) btn.classList.add('correct');
+        else if (oi === selected[qi]) btn.classList.add('incorrect');
+      }
+      btn.onclick = () => { selected[qi] = oi; render(); };
+      card.appendChild(btn);
+    });
+    const ex = document.createElement('div');
+    ex.className = 'explain' + (selected[qi] !== null ? ' show' : '');
+    ex.textContent = item.explain;
+    card.appendChild(ex);
+    quiz.appendChild(card);
+  });
+  updateScore();
+}
+
+function updateScore() {
+  const answered = selected.filter(s => s !== null).length;
+  const correct = selected.filter((s, i) => s === QUESTIONS[i].correct).length;
+  document.getElementById('scoreNum').textContent = correct;
+  document.getElementById('scoreTotal').textContent = QUESTIONS.length;
+  document.getElementById('answeredNum').textContent = answered + '/' + QUESTIONS.length + ' answered';
+  document.getElementById('barFill').style.width = (correct / QUESTIONS.length * 100) + '%';
+  const result = document.getElementById('result');
+  if (answered === QUESTIONS.length) {
+    const pct = Math.round(correct / QUESTIONS.length * 100);
+    result.classList.add('show');
+    result.textContent = pct >= 80
+      ? `You scored ${pct}%. Mastery reached — nice work!`
+      : `You scored ${pct}%. Review the explanations above and try again — aim for 80%+.`;
+  } else {
+    result.classList.remove('show');
+  }
+}
+
+function restart() {
+  selected = new Array(QUESTIONS.length).fill(null);
+  render();
+}
+
+render();
+</script>
+</body>
+</html>

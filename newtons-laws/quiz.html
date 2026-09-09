@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newton's Laws Quiz — Commonly Missed Questions</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --card: #ffffff; --text: #1f2430; --muted: #5b6270;
+    --accent: #2b6cb0; --good: #2f855a; --bad: #c53030; --border: #e2e2e0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #14161a; --card: #1e2126; --text: #e7e9ee; --muted: #9aa1ad;
+      --accent: #6ea8dc; --good: #6fcf97; --bad: #f28b82; --border: #30343c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding: 24px 16px 64px; }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.4rem; margin-bottom: 4px; }
+  p.sub { color: var(--muted); margin-top: 0; }
+  .scorebar { position: sticky; top: 0; background: var(--bg); padding: 10px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border); margin-bottom: 20px; z-index: 5; }
+  .score { font-weight: 600; }
+  .bar { flex: 1; height: 8px; background: var(--border); border-radius: 4px;
+    margin: 0 16px; overflow: hidden; }
+  .bar-fill { height: 100%; background: var(--accent); width: 0%; transition: width .3s; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 20px; margin-bottom: 16px; }
+  .qtext { font-weight: 600; margin-bottom: 12px; line-height: 1.4; }
+  .opt { display: block; width: 100%; text-align: left; padding: 10px 14px;
+    margin-bottom: 8px; border: 1px solid var(--border); border-radius: 8px;
+    background: transparent; color: var(--text); cursor: pointer; font-size: 0.95rem; }
+  .opt:hover:not([disabled]) { border-color: var(--accent); }
+  .opt.correct { border-color: var(--good); background: color-mix(in srgb, var(--good) 15%, transparent); }
+  .opt.incorrect { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 15%, transparent); }
+  .opt[disabled] { cursor: default; opacity: 0.85; }
+  .explain { display: none; margin-top: 10px; padding: 10px 12px; border-radius: 8px;
+    background: var(--bg); border: 1px solid var(--border); font-size: 0.9rem; color: var(--muted); }
+  .explain.show { display: block; }
+  .footer { text-align: center; margin-top: 28px; }
+  button.restart { padding: 10px 20px; border-radius: 8px; border: 1px solid var(--accent);
+    background: transparent; color: var(--accent); cursor: pointer; font-size: 0.95rem; }
+  .result { text-align: center; font-size: 1.1rem; font-weight: 600; margin-top: 18px; display: none; }
+  .result.show { display: block; }
+  .tag { display: inline-block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: .04em;
+    color: var(--muted); margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Newton's Laws — Commonly Missed Questions</h1>
+  <p class="sub">10 questions targeting the mistakes students make most often on this unit. Click an answer to check it — mastery target is 80% (8/10).</p>
+  <div class="scorebar">
+    <span class="score">Score: <span id="scoreNum">0</span>/<span id="scoreTotal">0</span></span>
+    <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+    <span id="answeredNum">0/10 answered</span>
+  </div>
+  <div id="quiz"></div>
+  <div class="result" id="result"></div>
+  <div class="footer"><button class="restart" onclick="restart()">Restart Quiz</button></div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    tag: "Newton's 3rd Law",
+    q: "A book rests on a table. The table pushes up on the book with a normal force. What is the Newton's 3rd law reaction pair to this force?",
+    options: [
+      "Gravity pulling the book down",
+      "The book pushing down on the table",
+      "The table pushing down on the floor",
+      "There is no reaction pair for a normal force"
+    ],
+    correct: 1,
+    explain: "3rd law pairs always involve the SAME TWO objects with forces swapped: 'table pushes up on book' pairs with 'book pushes down on table.' Gravity pulling the book down is a different force entirely (paired with the book pulling Earth up), and it happens to balance the normal force in this case — but that balancing is Newton's 1st/2nd law equilibrium, not a 3rd law pair."
+  },
+  {
+    tag: "1st Law / equilibrium",
+    q: "A car cruises at a constant 60 mph on a straight, level highway. What is the net force acting on the car?",
+    options: [
+      "A large net force in the forward direction, to keep it moving",
+      "Zero net force",
+      "A net force equal to the car's weight",
+      "It's impossible to know without more information"
+    ],
+    correct: 1,
+    explain: "Constant velocity (even a large, nonzero one) means zero acceleration, which by Newton's 2nd law means zero NET force. The engine's forward force and the combined resistive forces (friction, air drag) are equal and opposite, canceling out — that's different from there being no forces at all."
+  },
+  {
+    tag: "Normal force ≠ weight",
+    q: "A person stands on a scale inside an elevator that is accelerating upward. Compared to their true weight, what does the scale read?",
+    options: [
+      "Exactly their true weight, since scales always read weight",
+      "Less than their true weight",
+      "More than their true weight",
+      "Zero, because they're inside a moving elevator"
+    ],
+    correct: 2,
+    explain: "The scale reads the normal force, not weight directly. N = m(g + a) when accelerating upward, which is greater than mg. This is a classic case where normal force ≠ weight — only true on a level, non-accelerating surface with no other vertical forces."
+  },
+  {
+    tag: "Free fall & mass",
+    q: "Why do a bowling ball and a tennis ball fall at the same acceleration in a vacuum, even though the bowling ball weighs much more?",
+    options: [
+      "They don't — the bowling ball falls faster",
+      "The bowling ball has more force (weight) pulling it down, but also more mass (inertia) resisting acceleration, and the two effects exactly cancel: a = F/m = mg/m = g",
+      "Both are wrong — mass and weight are actually the same thing",
+      "Air resistance affects both equally, so it doesn't matter"
+    ],
+    correct: 1,
+    explain: "Newton's 2nd law gives a = F_net/m. For free fall, F_net = mg, so a = mg/m = g — mass cancels out algebraically. The heavier object needs more force to accelerate it, and gravity conveniently supplies exactly that much more force, in proportion to mass."
+  },
+  {
+    tag: "Free-body diagrams",
+    q: "A box is being pushed across a rough floor at a constant velocity by a horizontal force. What must be true about the applied force and friction force?",
+    options: [
+      "The applied force must be greater than friction, since the box is moving",
+      "The applied force must equal the friction force in magnitude, since velocity is constant (zero net force)",
+      "Friction must be zero if the box is moving",
+      "There's not enough information to compare them"
+    ],
+    correct: 1,
+    explain: "Constant velocity means zero acceleration, which means zero net force. So the horizontal applied force and the (kinetic) friction force must be equal in magnitude and opposite in direction — a common point of confusion, since students often assume 'moving' automatically implies a net forward force."
+  },
+  {
+    tag: "Friction and contact area",
+    q: "You have a brick that can rest on its large face or its small face, with the same total weight either way. Does the friction force change depending on which face touches the ground (same μ)?",
+    options: [
+      "Yes — the larger face has more contact area and therefore more friction",
+      "No — friction depends on the normal force and μ, not contact area, so it's the same either way",
+      "Yes, but only if the surface is rough",
+      "No, because friction is always zero for a stationary object"
+    ],
+    correct: 1,
+    explain: "Friction force = μN. Since the brick's weight (and therefore N, on a flat surface) doesn't change based on orientation, the maximum friction force is the same regardless of which face is down — contact area does not appear in the friction equation."
+  },
+  {
+    tag: "Net force vs. velocity direction",
+    q: "A ball is tossed straight up and is momentarily moving upward. In what direction is the net force on it at that instant?",
+    options: [
+      "Upward, in the same direction it's moving",
+      "Downward — gravity is the only force acting, regardless of the ball's direction of motion",
+      "Zero, since it's in the air with nothing touching it",
+      "Sideways, due to air resistance"
+    ],
+    correct: 1,
+    explain: "An object's velocity direction and the net force direction on it don't have to match. While rising, the ball moves up but the net force (gravity) points down the entire time — this is exactly what decelerates it. Confusing 'direction of motion' with 'direction of net force' is a very common Newton's Laws mistake."
+  },
+  {
+    tag: "Applying F = ma",
+    q: "A 4 kg block is on a horizontal floor. Three forces act on it: 20 N right, 8 N left, and its weight/normal force pair (which cancel vertically). What is the block's acceleration?",
+    options: [
+      "5 m/s² right (using only the 20 N force)",
+      "3 m/s² right (using the net horizontal force of 12 N)",
+      "7 m/s² right (adding both forces together)",
+      "2 m/s² left"
+    ],
+    correct: 1,
+    explain: "You must use the NET force: 20 N right − 8 N left = 12 N net right. a = F_net/m = 12/4 = 3 m/s² right. Using only one force (like the 20 N) and ignoring the opposing 8 N is a common error — always sum ALL forces before applying F = ma."
+  },
+  {
+    tag: "Rocket propulsion (3rd Law)",
+    q: "How does a rocket accelerate in the vacuum of space, where there's no air to 'push off' of?",
+    options: [
+      "It can't — rockets don't work in a vacuum",
+      "It pushes exhaust gas backward, and by Newton's 3rd law, the exhaust pushes the rocket forward with an equal and opposite force — no air is needed",
+      "It uses the vacuum itself as something to push against",
+      "It relies on the gravity of nearby planets to accelerate"
+    ],
+    correct: 1,
+    explain: "Rockets don't push against air — they push against their own expelled propellant. By Newton's 3rd law, if the rocket exerts a backward force on the exhaust gas, the exhaust gas exerts an equal, forward force on the rocket. This works even better in a vacuum, since there's no air resistance to fight."
+  },
+  {
+    tag: "Normal force on an incline",
+    q: "A block sits on a frictionless incline at angle θ. What is the normal force on the block, compared to its weight mg?",
+    options: [
+      "N = mg, same as on a flat surface",
+      "N = mg cos(θ), which is less than mg",
+      "N = mg sin(θ), which is less than mg",
+      "N = mg / cos(θ), which is more than mg"
+    ],
+    correct: 1,
+    explain: "On an incline, only the component of gravity perpendicular to the surface is balanced by the normal force: N = mg cos(θ). Since cos(θ) < 1 for any incline angle greater than 0°, N is always less than the full weight mg — a direct example of normal force ≠ weight."
+  }
+];
+
+let selected = new Array(QUESTIONS.length).fill(null);
+
+function render() {
+  const quiz = document.getElementById('quiz');
+  quiz.innerHTML = '';
+  QUESTIONS.forEach((item, qi) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    const tag = document.createElement('div');
+    tag.className = 'tag';
+    tag.textContent = item.tag;
+    card.appendChild(tag);
+    const qtext = document.createElement('div');
+    qtext.className = 'qtext';
+    qtext.textContent = (qi + 1) + '. ' + item.q;
+    card.appendChild(qtext);
+    item.options.forEach((opt, oi) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.textContent = opt;
+      if (selected[qi] !== null) {
+        btn.disabled = true;
+        if (oi === item.correct) btn.classList.add('correct');
+        else if (oi === selected[qi]) btn.classList.add('incorrect');
+      }
+      btn.onclick = () => { selected[qi] = oi; render(); };
+      card.appendChild(btn);
+    });
+    const ex = document.createElement('div');
+    ex.className = 'explain' + (selected[qi] !== null ? ' show' : '');
+    ex.textContent = item.explain;
+    card.appendChild(ex);
+    quiz.appendChild(card);
+  });
+  updateScore();
+}
+
+function updateScore() {
+  const answered = selected.filter(s => s !== null).length;
+  const correct = selected.filter((s, i) => s === QUESTIONS[i].correct).length;
+  document.getElementById('scoreNum').textContent = correct;
+  document.getElementById('scoreTotal').textContent = QUESTIONS.length;
+  document.getElementById('answeredNum').textContent = answered + '/' + QUESTIONS.length + ' answered';
+  document.getElementById('barFill').style.width = (correct / QUESTIONS.length * 100) + '%';
+  const result = document.getElementById('result');
+  if (answered === QUESTIONS.length) {
+    const pct = Math.round(correct / QUESTIONS.length * 100);
+    result.classList.add('show');
+    result.textContent = pct >= 80
+      ? `You scored ${pct}%. Mastery reached — nice work!`
+      : `You scored ${pct}%. Review the explanations above and try again — aim for 80%+.`;
+  } else {
+    result.classList.remove('show');
+  }
+}
+
+function restart() {
+  selected = new Array(QUESTIONS.length).fill(null);
+  render();
+}
+
+render();
+</script>
+</body>
+</html>

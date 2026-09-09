@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work &amp; Energy Quiz — Commonly Missed Questions</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --card: #ffffff; --text: #1f2430; --muted: #5b6270;
+    --accent: #2b6cb0; --good: #2f855a; --bad: #c53030; --border: #e2e2e0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #14161a; --card: #1e2126; --text: #e7e9ee; --muted: #9aa1ad;
+      --accent: #6ea8dc; --good: #6fcf97; --bad: #f28b82; --border: #30343c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding: 24px 16px 64px; }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.4rem; margin-bottom: 4px; }
+  p.sub { color: var(--muted); margin-top: 0; }
+  .scorebar { position: sticky; top: 0; background: var(--bg); padding: 10px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border); margin-bottom: 20px; z-index: 5; }
+  .score { font-weight: 600; }
+  .bar { flex: 1; height: 8px; background: var(--border); border-radius: 4px;
+    margin: 0 16px; overflow: hidden; }
+  .bar-fill { height: 100%; background: var(--accent); width: 0%; transition: width .3s; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 20px; margin-bottom: 16px; }
+  .qtext { font-weight: 600; margin-bottom: 12px; line-height: 1.4; }
+  .opt { display: block; width: 100%; text-align: left; padding: 10px 14px;
+    margin-bottom: 8px; border: 1px solid var(--border); border-radius: 8px;
+    background: transparent; color: var(--text); cursor: pointer; font-size: 0.95rem; }
+  .opt:hover:not([disabled]) { border-color: var(--accent); }
+  .opt.correct { border-color: var(--good); background: color-mix(in srgb, var(--good) 15%, transparent); }
+  .opt.incorrect { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 15%, transparent); }
+  .opt[disabled] { cursor: default; opacity: 0.85; }
+  .explain { display: none; margin-top: 10px; padding: 10px 12px; border-radius: 8px;
+    background: var(--bg); border: 1px solid var(--border); font-size: 0.9rem; color: var(--muted); }
+  .explain.show { display: block; }
+  .footer { text-align: center; margin-top: 28px; }
+  button.restart { padding: 10px 20px; border-radius: 8px; border: 1px solid var(--accent);
+    background: transparent; color: var(--accent); cursor: pointer; font-size: 0.95rem; }
+  .result { text-align: center; font-size: 1.1rem; font-weight: 600; margin-top: 18px; display: none; }
+  .result.show { display: block; }
+  .tag { display: inline-block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: .04em;
+    color: var(--muted); margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Work &amp; Energy — Commonly Missed Questions</h1>
+  <p class="sub">10 questions targeting the mistakes students make most often on this unit. Click an answer to check it — mastery target is 80% (8/10).</p>
+  <div class="scorebar">
+    <span class="score">Score: <span id="scoreNum">0</span>/<span id="scoreTotal">0</span></span>
+    <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+    <span id="answeredNum">0/10 answered</span>
+  </div>
+  <div id="quiz"></div>
+  <div class="result" id="result"></div>
+  <div class="footer"><button class="restart" onclick="restart()">Restart Quiz</button></div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    tag: "Work with an angle",
+    q: "A person pulls a sled with a rope at 40° above horizontal, moving the sled 10 m horizontally with 50 N of tension. What angle should be used in W = Fd cos θ?",
+    options: [
+      "0°, since the sled moves horizontally",
+      "40°, the angle between the tension force and the horizontal displacement",
+      "50°, the complement of the rope angle",
+      "90°, since tension has a vertical component"
+    ],
+    correct: 1,
+    explain: "θ in W = Fd cos θ is the angle BETWEEN the force and the displacement — here, between the 50 N tension (pointing 40° above horizontal) and the sled's horizontal displacement. So θ = 40°, giving W = 50 × 10 × cos(40°) ≈ 383 J."
+  },
+  {
+    tag: "Zero-work forces",
+    q: "A waiter carries a tray of food at constant height across a room at constant velocity. Does the vertical support force from the waiter's hand do work on the tray?",
+    options: [
+      "Yes, a large amount, since it takes effort to hold the tray",
+      "No — the support force is perpendicular to the tray's horizontal displacement, so it does zero work",
+      "Yes, because the tray has weight",
+      "It depends on how heavy the tray is"
+    ],
+    correct: 1,
+    explain: "Physics 'work' requires a force component ALONG the direction of displacement. Since the tray moves horizontally and the support force is vertical (perpendicular to motion), that force does zero work — even though it takes real physiological effort to hold the tray up (a common point of confusion between 'work' in physics vs. everyday language)."
+  },
+  {
+    tag: "Kinetic energy and direction",
+    q: "Car A moves north at 20 m/s and Car B (same mass) moves south at 20 m/s. How do their kinetic energies compare?",
+    options: [
+      "Car A has more KE, since north is 'positive'",
+      "Car B has more KE, since it's moving in the negative direction",
+      "They have exactly the same kinetic energy",
+      "It's impossible to compare without a reference point"
+    ],
+    correct: 2,
+    explain: "KE = ½mv² depends on speed SQUARED, and squaring removes any sign/direction information. Same mass and same speed (regardless of direction) means identical kinetic energy — KE is a scalar with no direction at all."
+  },
+  {
+    tag: "Reference point for PE",
+    q: "Why is gravitational potential energy (PE = mgh) considered meaningful only as a difference (ΔPE), not as an absolute value?",
+    options: [
+      "Because PE only exists during motion",
+      "Because 'h' depends on an arbitrarily chosen reference height — only the CHANGE in height (and therefore PE) has physical meaning for energy transfer",
+      "Because PE is always negative",
+      "Because gravitational PE doesn't actually exist"
+    ],
+    correct: 1,
+    explain: "You could measure h from the floor, from sea level, or from the center of the Earth — each gives a different PE value for the same object in the same position. What matters physically (for energy conservation problems) is always the CHANGE in PE between two points, which is independent of where you set h = 0."
+  },
+  {
+    tag: "Work-energy theorem",
+    q: "A box has three forces acting on it: an applied force doing +40 J of work, friction doing −15 J of work, and gravity/normal force doing 0 J combined. What is the box's change in kinetic energy?",
+    options: [
+      "+40 J, using only the applied force",
+      "+25 J, using the NET work from all forces (40 − 15 = 25 J)",
+      "−15 J, using only friction",
+      "0 J, since the forces are in different directions"
+    ],
+    correct: 1,
+    explain: "The work-energy theorem states W_net = ΔKE, where W_net is the sum of work done by ALL forces, not just one. Here, W_net = 40 + (−15) + 0 = 25 J, so ΔKE = +25 J. Using only the applied force's work (ignoring friction) is a very common error."
+  },
+  {
+    tag: "Conservation of energy with friction",
+    q: "A skier slides down a slope with noticeable friction. Can you use KE_i + PE_i = KE_f + PE_f directly to find her final speed?",
+    options: [
+      "Yes, mechanical energy is always conserved regardless of friction",
+      "No — friction is a non-conservative force that removes mechanical energy as heat; you must use KE_i + PE_i = KE_f + PE_f + |W_friction|",
+      "No, because energy conservation never applies to real-world problems",
+      "Yes, but only if you double the friction force"
+    ],
+    correct: 1,
+    explain: "Mechanical energy (KE + PE) is only conserved when non-conservative forces (like friction, air resistance) do zero work. With friction present, some mechanical energy converts irreversibly to heat, so you need to explicitly subtract the energy lost: KE_i + PE_i = KE_f + PE_f + |W_friction|."
+  },
+  {
+    tag: "Work vs. power",
+    q: "Two workers each lift an identical 50 kg crate to the same height. Worker A takes 10 s; Worker B takes 2 s. Compare the work done and the power output of each.",
+    options: [
+      "Worker B does more work, since they're faster",
+      "Both do the same amount of work, but Worker B has greater power output, since power = work/time",
+      "Worker A does more work, since they took longer",
+      "Both do the same work AND the same power, since the crate and height are identical"
+    ],
+    correct: 1,
+    explain: "Work only depends on force and displacement (W = mgh here), which is identical for both — same crate, same height. But power = W/t, so the worker who did it faster (Worker B, 2 s) has a HIGHER power output for the same amount of work/energy transferred."
+  },
+  {
+    tag: "Perpendicular forces do no work",
+    q: "A satellite orbits Earth in a stable circular orbit. Does Earth's gravity do work on the satellite as it orbits?",
+    options: [
+      "Yes, a large amount, since gravity is a strong force at that distance",
+      "No — in a circular orbit, gravity (centripetal force) is always perpendicular to the satellite's velocity/displacement, so it does zero work",
+      "Yes, because the satellite is moving very fast",
+      "It depends on the satellite's mass"
+    ],
+    correct: 1,
+    explain: "In a circular orbit, the gravitational force always points toward the center, perpendicular to the satellite's instantaneous velocity (which is tangential). Since W = Fd cos(90°) = 0, gravity does zero work on the satellite, which is why its speed (and KE) stays constant in a stable circular orbit."
+  },
+  {
+    tag: "Sign of work",
+    q: "A ball is thrown upward and is still rising. What is the sign of the work done by gravity on the ball during this rising phase?",
+    options: [
+      "Positive, because gravity is 'helping' the ball move",
+      "Negative, because gravity points opposite to the ball's (upward) displacement during this phase",
+      "Zero, because gravity is constant",
+      "Undefined until the ball starts falling"
+    ],
+    correct: 1,
+    explain: "While rising, the ball's displacement is upward but gravity points downward — the angle between them is 180°, so cos(180°) = −1, making the work negative. This negative work is exactly what removes kinetic energy from the ball as it decelerates on the way up."
+  },
+  {
+    tag: "Applying energy conservation correctly",
+    q: "A 2 kg ball is dropped from 5 m above the ground (no air resistance). Using energy conservation with the ground as the reference height (h = 0), what is its speed just before impact?",
+    options: [
+      "≈ 9.9 m/s, from mgh = ½mv², giving v = √(2gh)",
+      "≈ 4.95 m/s, from mgh = mv²",
+      "≈ 49 m/s, forgetting to take the square root",
+      "It cannot be found without knowing the mass"
+    ],
+    correct: 0,
+    explain: "mgh = ½mv² → v = √(2gh) = √(2 × 9.8 × 5) ≈ √98 ≈ 9.9 m/s. Note the mass actually cancels out entirely — a common 'trick' in free-fall energy problems, similar to how mass cancels in free-fall acceleration."
+  }
+];
+
+let selected = new Array(QUESTIONS.length).fill(null);
+
+function render() {
+  const quiz = document.getElementById('quiz');
+  quiz.innerHTML = '';
+  QUESTIONS.forEach((item, qi) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    const tag = document.createElement('div');
+    tag.className = 'tag';
+    tag.textContent = item.tag;
+    card.appendChild(tag);
+    const qtext = document.createElement('div');
+    qtext.className = 'qtext';
+    qtext.textContent = (qi + 1) + '. ' + item.q;
+    card.appendChild(qtext);
+    item.options.forEach((opt, oi) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.textContent = opt;
+      if (selected[qi] !== null) {
+        btn.disabled = true;
+        if (oi === item.correct) btn.classList.add('correct');
+        else if (oi === selected[qi]) btn.classList.add('incorrect');
+      }
+      btn.onclick = () => { selected[qi] = oi; render(); };
+      card.appendChild(btn);
+    });
+    const ex = document.createElement('div');
+    ex.className = 'explain' + (selected[qi] !== null ? ' show' : '');
+    ex.textContent = item.explain;
+    card.appendChild(ex);
+    quiz.appendChild(card);
+  });
+  updateScore();
+}
+
+function updateScore() {
+  const answered = selected.filter(s => s !== null).length;
+  const correct = selected.filter((s, i) => s === QUESTIONS[i].correct).length;
+  document.getElementById('scoreNum').textContent = correct;
+  document.getElementById('scoreTotal').textContent = QUESTIONS.length;
+  document.getElementById('answeredNum').textContent = answered + '/' + QUESTIONS.length + ' answered';
+  document.getElementById('barFill').style.width = (correct / QUESTIONS.length * 100) + '%';
+  const result = document.getElementById('result');
+  if (answered === QUESTIONS.length) {
+    const pct = Math.round(correct / QUESTIONS.length * 100);
+    result.classList.add('show');
+    result.textContent = pct >= 80
+      ? `You scored ${pct}%. Mastery reached — nice work!`
+      : `You scored ${pct}%. Review the explanations above and try again — aim for 80%+.`;
+  } else {
+    result.classList.remove('show');
+  }
+}
+
+function restart() {
+  selected = new Array(QUESTIONS.length).fill(null);
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
