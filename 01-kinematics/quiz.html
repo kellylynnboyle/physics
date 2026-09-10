@@ -1,0 +1,388 @@
+<title>Kinematics Quiz</title>
+<style>
+  :root {
+    --bg: #f4f6f8;
+    --card-bg: #ffffff;
+    --text: #1b232c;
+    --muted: #55606b;
+    --border: #d7dde3;
+    --accent: #2b5faa;
+    --correct-bg: #d9f2df;
+    --correct-border: #2e9e52;
+    --incorrect-bg: #fbdede;
+    --incorrect-border: #c93f3f;
+    --explain-bg: #eef3f9;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    margin: 0;
+    padding: 24px 16px 64px;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    margin: 0 0 4px;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    margin: 0 0 20px;
+    font-size: 0.95rem;
+  }
+
+  .scoreboard {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  #score {
+    font-weight: 600;
+    font-size: 1.05rem;
+  }
+
+  button {
+    font: inherit;
+    cursor: pointer;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    padding: 8px 14px;
+  }
+
+  #restartBtn {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+
+  #restartBtn:hover { opacity: 0.9; }
+
+  .question-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px 18px;
+    margin-bottom: 18px;
+  }
+
+  .q-number {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .q-text {
+    font-weight: 600;
+    margin: 0 0 12px;
+    font-size: 1.02rem;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .option {
+    text-align: left;
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #fbfcfd;
+    color: var(--text);
+    font-size: 0.95rem;
+  }
+
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+  }
+
+  .option:disabled {
+    cursor: default;
+  }
+
+  .option.correct {
+    background: var(--correct-bg);
+    border-color: var(--correct-border);
+    font-weight: 600;
+  }
+
+  .option.incorrect {
+    background: var(--incorrect-bg);
+    border-color: var(--incorrect-border);
+  }
+
+  .explanation {
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: var(--explain-bg);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    font-size: 0.92rem;
+    color: var(--text);
+    display: none;
+  }
+
+  .explanation.show {
+    display: block;
+  }
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 24px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14181d;
+      --card-bg: #1e242b;
+      --text: #eef1f4;
+      --muted: #9aa5b1;
+      --border: #313a44;
+      --accent: #6ea3e8;
+      --correct-bg: #163a25;
+      --correct-border: #3fbf6a;
+      --incorrect-bg: #401f1f;
+      --incorrect-border: #e06060;
+      --explain-bg: #202a35;
+    }
+    .option { background: #232a32; color: var(--text); }
+    #restartBtn { color: #0b1116; }
+  }
+</style>
+
+<div class="container">
+  <h1>Kinematics Quiz</h1>
+  <p class="subtitle">Test your understanding of 1D motion, kinematic equations, and common misconceptions. Click an answer to see immediate feedback.</p>
+
+  <div class="scoreboard">
+    <div id="score">Score: 0/10</div>
+    <button id="restartBtn">Restart Quiz</button>
+  </div>
+
+  <div id="quiz"></div>
+
+  <footer>Kinematics Unit — Practice Quiz</footer>
+</div>
+
+<script>
+  var questions = [
+    {
+      text: "A hiker walks 8 m east, then walks 3 m back west. What is the magnitude of the hiker's displacement, and what is the total distance traveled?",
+      options: [
+        "Displacement = 11 m, Distance = 11 m",
+        "Displacement = 5 m, Distance = 11 m",
+        "Displacement = 11 m, Distance = 5 m",
+        "Displacement = 5 m, Distance = 5 m"
+      ],
+      correct: 1,
+      explanation: "Displacement is the net change in position: 8 m east minus 3 m west = 5 m east. Distance is the total path length walked, regardless of direction: 8 m + 3 m = 11 m. Distance and displacement are only equal when motion never reverses direction."
+    },
+    {
+      text: "An object moving in the negative direction has a negative acceleration applied to it. What happens to its speed?",
+      options: [
+        "It slows down, because negative acceleration always means slowing down",
+        "It speeds up, because velocity and acceleration have the same sign",
+        "It stays exactly the same",
+        "It's impossible to tell without more information"
+      ],
+      correct: 1,
+      explanation: "Whether an object speeds up or slows down depends on whether velocity and acceleration share the same sign, not on the sign of acceleration alone. Here both are negative, so the object speeds up in the negative direction — negative acceleration does not automatically mean 'slowing down.'"
+    },
+    {
+      text: "A ball is thrown straight up. At the exact top of its flight, its velocity is 0 m/s. What is its acceleration at that instant?",
+      options: [
+        "0 m/s², since velocity is zero",
+        "Approximately 9.8 m/s², directed downward",
+        "Approximately 9.8 m/s², directed upward",
+        "Undefined, because velocity and acceleration can't both exist at once"
+      ],
+      correct: 1,
+      explanation: "Acceleration due to gravity acts on the ball throughout its entire flight, including the instant its velocity is zero at the peak. Zero velocity means the object is momentarily at rest, not that its motion has stopped changing — the ball is still accelerating downward at g ≈ 9.8 m/s²."
+    },
+    {
+      text: "On a position-time graph, what physical quantity does the slope of the line represent?",
+      options: [
+        "Acceleration",
+        "Displacement",
+        "Velocity",
+        "Distance traveled"
+      ],
+      correct: 2,
+      explanation: "The slope of a position-time graph equals velocity (change in position over change in time). Acceleration is read from the slope of a velocity-time graph instead, or from the curvature of the position-time graph — not directly from a position-time graph's slope."
+    },
+    {
+      text: "On a velocity-time graph, what does the area between the curve and the time axis represent?",
+      options: [
+        "Acceleration",
+        "Displacement",
+        "Average velocity",
+        "Instantaneous velocity"
+      ],
+      correct: 1,
+      explanation: "The area under a velocity-time graph equals the displacement over that time interval. This is different from the slope of the same graph, which equals acceleration — mixing these two up is one of the most common graph-reading errors in kinematics."
+    },
+    {
+      text: "A 2 kg bowling ball and a 2 g marble are dropped from the same height at the same time, with air resistance assumed negligible. Which hits the ground first?",
+      options: [
+        "The bowling ball, because it is heavier",
+        "The marble, because it is lighter and more aerodynamic",
+        "They hit at the same time, because free-fall acceleration doesn't depend on mass",
+        "It depends on the exact shapes of the two objects"
+      ],
+      correct: 2,
+      explanation: "Ignoring air resistance, all objects in free fall accelerate downward at the same rate, g ≈ 9.8 m/s², regardless of mass. The bowling ball and marble would hit the ground at the same time. Everyday observations of heavy objects 'falling faster' are due to air resistance, not gravity itself."
+    },
+    {
+      text: "A car travels at a constant 25 m/s in a straight line with no friction or air resistance to overcome. According to kinematics and Newton's first law, what net force is required to sustain this constant velocity?",
+      options: [
+        "A large forward force, proportional to the car's speed",
+        "A small constant force, just enough to keep it moving",
+        "Zero net force, since acceleration is zero",
+        "A force that increases the longer the car travels at that speed"
+      ],
+      correct: 2,
+      explanation: "Constant velocity means zero acceleration, and zero acceleration means zero net force is required to maintain it. This is a common misconception — people often assume motion itself requires a sustaining force, but only a change in velocity (acceleration) requires a net force."
+    },
+    {
+      text: "A car starts from rest and accelerates at a constant 4 m/s² for 5 seconds. Using v = v0 + a t, what is its final velocity?",
+      options: [
+        "9 m/s",
+        "20 m/s",
+        "1.25 m/s",
+        "45 m/s"
+      ],
+      correct: 1,
+      explanation: "Using v = v0 + a t with v0 = 0, a = 4 m/s², and t = 5 s: v = 0 + (4)(5) = 20 m/s. This equation directly relates final velocity to initial velocity, constant acceleration, and elapsed time."
+    },
+    {
+      text: "A rock is dropped from rest and falls for 3 seconds before hitting the ground (ignore air resistance, use g = 9.8 m/s²). Using x = x0 + v0 t + (1/2) a t^2, how far did it fall?",
+      options: [
+        "29.4 m",
+        "14.7 m",
+        "44.1 m",
+        "88.2 m"
+      ],
+      correct: 2,
+      explanation: "With v0 = 0 and a = 9.8 m/s² (magnitude), the fall distance is x = 0 + 0(3) + (1/2)(9.8)(3^2) = (1/2)(9.8)(9) = 44.1 m. This is the standard constant-acceleration position equation applied to free fall."
+    },
+    {
+      text: "A cyclist moving at 6 m/s accelerates at a constant 2 m/s² over a displacement of 16 m. Using v^2 = v0^2 + 2 a (x - x0), what is the cyclist's final velocity?",
+      options: [
+        "8 m/s",
+        "10 m/s",
+        "64 m/s",
+        "100 m/s"
+      ],
+      correct: 1,
+      explanation: "Using v^2 = v0^2 + 2 a (x - x0): v^2 = 6^2 + 2(2)(16) = 36 + 64 = 100, so v = sqrt(100) = 10 m/s. This equation is useful whenever time isn't given or needed — only velocities, acceleration, and displacement."
+    }
+  ];
+
+  var answered = new Array(questions.length).fill(false);
+  var score = 0;
+
+  var quizEl = document.getElementById("quiz");
+  var scoreEl = document.getElementById("score");
+  var restartBtn = document.getElementById("restartBtn");
+
+  function updateScore() {
+    scoreEl.textContent = "Score: " + score + "/" + questions.length;
+  }
+
+  function renderQuiz() {
+    quizEl.innerHTML = "";
+    questions.forEach(function (q, qIndex) {
+      var card = document.createElement("div");
+      card.className = "question-card";
+
+      var num = document.createElement("div");
+      num.className = "q-number";
+      num.textContent = "Question " + (qIndex + 1) + " of " + questions.length;
+      card.appendChild(num);
+
+      var qText = document.createElement("p");
+      qText.className = "q-text";
+      qText.textContent = q.text;
+      card.appendChild(qText);
+
+      var optsWrap = document.createElement("div");
+      optsWrap.className = "options";
+
+      var explanationEl = document.createElement("div");
+      explanationEl.className = "explanation";
+      explanationEl.textContent = q.explanation;
+
+      q.options.forEach(function (optText, optIndex) {
+        var btn = document.createElement("button");
+        btn.className = "option";
+        btn.type = "button";
+        btn.textContent = optText;
+        btn.addEventListener("click", function () {
+          if (answered[qIndex]) return;
+          answered[qIndex] = true;
+
+          var allBtns = optsWrap.querySelectorAll(".option");
+          allBtns.forEach(function (b, i) {
+            b.disabled = true;
+            if (i === q.correct) {
+              b.classList.add("correct");
+            } else if (i === optIndex) {
+              b.classList.add("incorrect");
+            }
+          });
+
+          if (optIndex === q.correct) {
+            score += 1;
+            updateScore();
+          }
+
+          explanationEl.classList.add("show");
+        });
+        optsWrap.appendChild(btn);
+      });
+
+      card.appendChild(optsWrap);
+      card.appendChild(explanationEl);
+      quizEl.appendChild(card);
+    });
+  }
+
+  function restartQuiz() {
+    answered = new Array(questions.length).fill(false);
+    score = 0;
+    updateScore();
+    renderQuiz();
+  }
+
+  restartBtn.addEventListener("click", restartQuiz);
+
+  updateScore();
+  renderQuiz();
+</script>

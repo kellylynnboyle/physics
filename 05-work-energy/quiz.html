@@ -1,0 +1,453 @@
+<title>Work and Energy Quiz</title>
+<style>
+  :root {
+    --bg: #f4f6f8;
+    --card-bg: #ffffff;
+    --text: #1c2733;
+    --muted: #55606b;
+    --border: #d7dde3;
+    --accent: #2c5fa8;
+    --correct-bg: #e3f6e8;
+    --correct-border: #2e9e4f;
+    --correct-text: #1e6b34;
+    --incorrect-bg: #fdeaea;
+    --incorrect-border: #c94141;
+    --incorrect-text: #9b2b2b;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    padding: 24px 16px 64px;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: var(--muted);
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+  }
+
+  .scoreboard {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    padding: 10px 0;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+    z-index: 5;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+
+  .question-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
+  }
+
+  .question-text {
+    font-weight: 600;
+    margin-bottom: 12px;
+    font-size: 1.02rem;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .option-btn {
+    text-align: left;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fafbfc;
+    color: var(--text);
+    font-size: 0.98rem;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+
+  .option-btn:hover:not(:disabled) {
+    background: #eef2f6;
+    border-color: var(--accent);
+  }
+
+  .option-btn:disabled {
+    cursor: default;
+  }
+
+  .option-btn.correct {
+    background: var(--correct-bg);
+    border-color: var(--correct-border);
+    color: var(--correct-text);
+    font-weight: 600;
+  }
+
+  .option-btn.incorrect {
+    background: var(--incorrect-bg);
+    border-color: var(--incorrect-border);
+    color: var(--incorrect-text);
+    font-weight: 600;
+  }
+
+  .explanation {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    background: #f1f4f7;
+    border: 1px solid var(--border);
+    display: none;
+  }
+
+  .explanation.show {
+    display: block;
+  }
+
+  .explanation.correct-note {
+    background: var(--correct-bg);
+    border-color: var(--correct-border);
+    color: var(--correct-text);
+  }
+
+  .explanation.incorrect-note {
+    background: var(--incorrect-bg);
+    border-color: var(--incorrect-border);
+    color: var(--incorrect-text);
+  }
+
+  .controls {
+    text-align: center;
+    margin-top: 24px;
+  }
+
+  #restart-btn {
+    background: var(--accent);
+    color: #ffffff;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  #restart-btn:hover {
+    background: #234d8a;
+  }
+
+  #final-message {
+    text-align: center;
+    font-weight: 600;
+    margin-top: 12px;
+    font-size: 1.05rem;
+    min-height: 1.4em;
+  }
+
+  @media (max-width: 480px) {
+    h1 {
+      font-size: 1.35rem;
+    }
+    .question-card {
+      padding: 14px 14px;
+    }
+  }
+</style>
+
+<div class="container">
+  <h1>Work and Energy Quiz</h1>
+  <p class="subtitle">10 questions on work, kinetic energy, potential energy, conservation of energy, and power.</p>
+  <div class="scoreboard" id="scoreboard">Score: 0/10</div>
+  <div id="quiz-root"></div>
+  <div class="controls">
+    <button id="restart-btn">Restart Quiz</button>
+    <div id="final-message"></div>
+  </div>
+</div>
+
+<script>
+  var questions = [
+    {
+      text: "You stand still holding a 20 kg box at chest height for two full minutes without moving. How much work do you do on the box during that time?",
+      options: [
+        "Zero, because there is no displacement of the box",
+        "A large amount, because you are exerting a lot of force",
+        "It depends on how tired you feel afterward",
+        "Work equal to the box's weight times two minutes"
+      ],
+      correct: 0,
+      explanations: [
+        "Correct. Work requires displacement in the direction of the force. Since the box never moves, no work is done on it, no matter how much effort or force is involved.",
+        "Not quite. Applying force alone does not mean work is done — the box must actually move for work to occur.",
+        "Not quite. Physical fatigue is not the same as physics 'work.' Work depends only on force and displacement, not on how tiring the task feels.",
+        "Not quite. That expression mixes force with time instead of displacement, and there is no displacement here at all."
+      ]
+    },
+    {
+      text: "A student carries a backpack at a perfectly constant height while walking horizontally across a flat courtyard. How much work does gravity do on the backpack during this walk?",
+      options: [
+        "A large negative amount, since gravity is always pulling down",
+        "Zero, because gravity is perpendicular to the horizontal displacement",
+        "A large positive amount, proportional to the distance walked",
+        "It cannot be determined without knowing the walking speed"
+      ],
+      correct: 1,
+      explanations: [
+        "Not quite. Gravity's direction doesn't automatically mean negative work — what matters is the angle between the force and the displacement.",
+        "Correct. Gravity acts straight down while the displacement is horizontal, so the angle between them is 90 degrees. Since cos(90 degrees) = 0, gravity does zero work here.",
+        "Not quite. Positive work would require a displacement component in the direction of gravity (downward), which is not happening here.",
+        "Not quite. Speed affects kinetic energy and power, but the work done by a force depends on force, displacement, and the angle between them, not on speed."
+      ]
+    },
+    {
+      text: "Two machines each do 600 J of work lifting identical crates. Machine A finishes in 3 seconds; Machine B finishes in 12 seconds. Which statement is correct?",
+      options: [
+        "Machine A did more work than Machine B",
+        "Machine B has more energy than Machine A",
+        "Machine A has a higher power output than Machine B",
+        "Power, work, and energy all describe the exact same thing here"
+      ],
+      correct: 2,
+      explanations: [
+        "Not quite. Both machines did the same 600 J of work — only the time taken differs.",
+        "Not quite. 'Energy' isn't the right comparison here; both machines transferred the same amount of energy (600 J) as work.",
+        "Correct. Power = work / time. Machine A: 600 J / 3 s = 200 W. Machine B: 600 J / 12 s = 50 W. Same work, but Machine A delivers it faster, so it has higher power.",
+        "Not quite. Work, energy, and power are related but distinct: work and energy are both measured in joules, while power measures the rate of energy transfer in watts."
+      ]
+    },
+    {
+      text: "A rolling ball experiences friction from the floor as it slows down. A student says, 'The friction force does negative work on the ball, which must be a mistake because work can't be negative.' What is wrong with this statement?",
+      options: [
+        "Nothing is wrong; negative work is indeed impossible in physics",
+        "The student is right that this is an error, since friction should do zero work",
+        "Negative work is a valid result meaning the force removes energy from the object, opposing its motion",
+        "Friction can only do positive work, never negative"
+      ],
+      correct: 2,
+      explanations: [
+        "Not quite. Negative work is a real and common physical result, not an impossible one.",
+        "Not quite. Friction acting opposite to the ball's motion is exactly a case where negative work should be expected, not an error.",
+        "Correct. Negative work occurs when a force acts opposite to the direction of displacement, and it means the force takes energy away from the object. Friction slowing down a rolling ball is a classic example.",
+        "Not quite. Friction typically opposes motion, so it commonly does negative work on a moving object; it is not restricted to positive work."
+      ]
+    },
+    {
+      text: "A wooden block slides across a rough table and slows to a stop because of friction. What happens to its mechanical energy, and to the total energy of the system?",
+      options: [
+        "Mechanical energy is destroyed completely; total energy decreases too",
+        "Mechanical energy decreases, but it's converted to thermal energy (heat) and sound, so total energy is still conserved",
+        "Mechanical energy stays constant because energy is always conserved",
+        "Total energy is only conserved when there is no friction present"
+      ],
+      correct: 1,
+      explanations: [
+        "Not quite. Energy is never destroyed in this process; it's transformed into another form.",
+        "Correct. Friction converts the block's kinetic (mechanical) energy into thermal energy in the table and block surfaces, plus some sound. Mechanical energy decreases, but total energy — including that heat — remains conserved.",
+        "Not quite. Mechanical energy (KE + PE) does decrease here because friction is a non-conservative force removing it from the mechanical 'budget.'",
+        "Not quite. Total energy is always conserved, with or without friction — friction just moves energy into a different, less obviously 'useful' form (heat)."
+      ]
+    },
+    {
+      text: "A 2 kg book sits on a shelf. One student measures its potential energy relative to the floor and gets 39.2 J. Another student measures its potential energy relative to the ceiling (above the shelf) and gets a negative value. Who is correct?",
+      options: [
+        "Only the student who got a positive number is correct",
+        "Both can be correct, because potential energy is always measured relative to a chosen reference point",
+        "Only the student who got the negative number is correct, since PE relative to a higher point is more accurate",
+        "Neither is correct, because potential energy must always be a positive absolute quantity"
+      ],
+      correct: 1,
+      explanations: [
+        "Not quite. There's nothing wrong with the negative value — it simply reflects a different, equally valid choice of reference height.",
+        "Correct. Gravitational potential energy is always defined relative to some chosen reference height. Different reference points give different numerical values for PE, but changes in PE between two points remain consistent.",
+        "Not quite. Neither reference point is inherently 'more accurate' — both are valid choices, just with different zero levels.",
+        "Not quite. Potential energy is not an absolute quantity; it depends entirely on the reference level you choose, and can be negative relative to some references."
+      ]
+    },
+    {
+      text: "A car's speed increases from 15 m/s to 30 m/s (it doubles). How does its kinetic energy change, assuming its mass stays the same?",
+      options: [
+        "It doubles as well, since KE scales directly with speed",
+        "It stays the same, since only mass affects kinetic energy",
+        "It quadruples, since KE depends on the square of speed",
+        "It triples, matching the increase in speed plus one"
+      ],
+      correct: 2,
+      explanations: [
+        "Not quite. KE = (1/2) m v², where speed is squared, not directly proportional — so doubling speed does more than double KE.",
+        "Not quite. Kinetic energy depends on both mass and speed; speed has an especially strong effect since it is squared.",
+        "Correct. Since KE = (1/2) m v², doubling v means v² increases by a factor of 4 (2² = 4), so kinetic energy quadruples.",
+        "Not quite. There is no such 'plus one' relationship — the correct scaling comes directly from squaring the velocity term."
+      ]
+    },
+    {
+      text: "A 1000 kg compact car travels at 25 m/s, while a 20,000 kg loaded truck travels at 3 m/s. Which vehicle has more kinetic energy?",
+      options: [
+        "The truck, because it has far more mass",
+        "The car, because kinetic energy depends heavily on velocity squared",
+        "They must have exactly equal kinetic energy",
+        "Mass is the only factor that matters for kinetic energy, so the truck automatically wins"
+      ],
+      correct: 1,
+      explanations: [
+        "Not quite. Even though the truck is much heavier, kinetic energy also depends on velocity squared, which can outweigh a mass difference.",
+        "Correct. Car: KE = 0.5 x 1000 x 25^2 = 312,500 J. Truck: KE = 0.5 x 20000 x 3^2 = 90,000 J. The much faster car actually has more kinetic energy despite its smaller mass, since velocity is squared in the formula.",
+        "Not quite. Plugging in the numbers shows they are not equal — the car's higher speed gives it substantially more kinetic energy.",
+        "Not quite. Kinetic energy depends on both mass and velocity squared; assuming mass alone determines the answer ignores the strong effect of speed."
+      ]
+    },
+    {
+      text: "A crane applies a net upward force to lift a crate, increasing its speed from 2 m/s to 6 m/s while it rises. Which equation directly relates the net work done on the crate to this speed change?",
+      options: [
+        "P = W / t",
+        "PE = m g h",
+        "W_net = delta KE (the work-energy theorem)",
+        "W = F d cos(theta), solved only for the force of gravity"
+      ],
+      correct: 2,
+      explanations: [
+        "Not quite. That is the definition of power, which involves time, not a direct link between work and a change in speed.",
+        "Not quite. That equation describes potential energy from height, not the relationship between net work and kinetic energy change.",
+        "Correct. The work-energy theorem states that the net work done on an object equals its change in kinetic energy, which directly connects the crate's change in speed to the total work done on it by all forces combined.",
+        "Not quite. That version only accounts for gravity's work, not the net work from all forces (including the crane's lifting force) needed to explain the speed change."
+      ]
+    },
+    {
+      text: "A skater with negligible friction glides down a frictionless ramp from height h and reaches the bottom with some speed v. Which statement correctly uses conservation of mechanical energy?",
+      options: [
+        "KE at the top plus PE at the top equals KE at the bottom plus PE at the bottom",
+        "KE at the bottom must always equal zero since the skater started at rest",
+        "PE is destroyed as the skater descends, converting into nothing measurable",
+        "Mechanical energy conservation only applies if the skater's mass is unknown"
+      ],
+      correct: 0,
+      explanations: [
+        "Correct. This is exactly the statement of conservation of mechanical energy: KE_i + PE_i = KE_f + PE_f. As the skater descends, potential energy converts into kinetic energy, and (with no friction) their sum stays constant.",
+        "Not quite. The skater started at rest at the top (KE_i = 0), but by the bottom, they are moving, so KE at the bottom is not zero.",
+        "Not quite. Potential energy isn't destroyed — with no friction, it converts entirely into kinetic energy, which is measurable as the skater's speed increases.",
+        "Not quite. Conservation of mechanical energy applies regardless of whether mass is known; in fact, mass often cancels out of these problems entirely."
+      ]
+    }
+  ];
+
+  var selectedAnswers = new Array(questions.length).fill(null);
+  var score = 0;
+
+  var quizRoot = document.getElementById("quiz-root");
+  var scoreboard = document.getElementById("scoreboard");
+  var restartBtn = document.getElementById("restart-btn");
+  var finalMessage = document.getElementById("final-message");
+
+  function renderQuiz() {
+    quizRoot.innerHTML = "";
+    questions.forEach(function (q, qIndex) {
+      var card = document.createElement("div");
+      card.className = "question-card";
+
+      var qText = document.createElement("div");
+      qText.className = "question-text";
+      qText.textContent = (qIndex + 1) + ". " + q.text;
+      card.appendChild(qText);
+
+      var optionsWrap = document.createElement("div");
+      optionsWrap.className = "options";
+
+      q.options.forEach(function (optionText, optIndex) {
+        var btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.type = "button";
+        btn.textContent = optionText;
+        btn.setAttribute("data-question", qIndex);
+        btn.setAttribute("data-option", optIndex);
+        btn.addEventListener("click", function () {
+          handleAnswer(qIndex, optIndex);
+        });
+        optionsWrap.appendChild(btn);
+      });
+
+      card.appendChild(optionsWrap);
+
+      var explanation = document.createElement("div");
+      explanation.className = "explanation";
+      explanation.id = "explanation-" + qIndex;
+      card.appendChild(explanation);
+
+      quizRoot.appendChild(card);
+    });
+    updateScoreboard();
+    finalMessage.textContent = "";
+  }
+
+  function handleAnswer(qIndex, optIndex) {
+    if (selectedAnswers[qIndex] !== null) {
+      return;
+    }
+    selectedAnswers[qIndex] = optIndex;
+
+    var isCorrect = optIndex === questions[qIndex].correct;
+    if (isCorrect) {
+      score += 1;
+    }
+
+    var buttons = document.querySelectorAll('.option-btn[data-question="' + qIndex + '"]');
+    buttons.forEach(function (btn) {
+      var thisOptIndex = parseInt(btn.getAttribute("data-option"), 10);
+      btn.disabled = true;
+      if (thisOptIndex === questions[qIndex].correct) {
+        btn.classList.add("correct");
+      } else if (thisOptIndex === optIndex) {
+        btn.classList.add("incorrect");
+      }
+    });
+
+    var explanationEl = document.getElementById("explanation-" + qIndex);
+    explanationEl.textContent = questions[qIndex].explanations[optIndex];
+    explanationEl.classList.add("show");
+    explanationEl.classList.add(isCorrect ? "correct-note" : "incorrect-note");
+
+    updateScoreboard();
+
+    var answeredCount = selectedAnswers.filter(function (a) {
+      return a !== null;
+    }).length;
+    if (answeredCount === questions.length) {
+      finalMessage.textContent = "Quiz complete! Final score: " + score + "/" + questions.length + ".";
+    }
+  }
+
+  function updateScoreboard() {
+    scoreboard.textContent = "Score: " + score + "/" + questions.length;
+  }
+
+  function restartQuiz() {
+    selectedAnswers = new Array(questions.length).fill(null);
+    score = 0;
+    renderQuiz();
+  }
+
+  restartBtn.addEventListener("click", restartQuiz);
+
+  renderQuiz();
+</script>

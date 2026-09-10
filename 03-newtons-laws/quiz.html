@@ -1,0 +1,379 @@
+<title>Newton's Laws Quiz</title>
+<style>
+  :root {
+    --bg: #f4f6f8;
+    --card-bg: #ffffff;
+    --text: #1a1f27;
+    --muted: #55606b;
+    --accent: #2a5cbf;
+    --correct-bg: #e3f7e6;
+    --correct-border: #2f9e44;
+    --incorrect-bg: #fdecec;
+    --incorrect-border: #c92a2a;
+    --option-border: #cfd6dd;
+    --option-hover: #eef2f7;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    padding: 24px 16px 60px;
+  }
+
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: var(--muted);
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+  }
+
+  .score-bar {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    padding: 10px 0;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.05rem;
+    z-index: 10;
+  }
+
+  .question-card {
+    background: var(--card-bg);
+    border: 1px solid var(--option-border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .question-number {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 6px;
+  }
+
+  .question-text {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .option {
+    text-align: left;
+    background: var(--card-bg);
+    border: 1px solid var(--option-border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.98rem;
+    cursor: pointer;
+    color: var(--text);
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+
+  .option:hover:not(:disabled) {
+    background: var(--option-hover);
+  }
+
+  .option:disabled {
+    cursor: default;
+  }
+
+  .option.correct {
+    background: var(--correct-bg);
+    border-color: var(--correct-border);
+    font-weight: 600;
+  }
+
+  .option.incorrect {
+    background: var(--incorrect-bg);
+    border-color: var(--incorrect-border);
+    font-weight: 600;
+  }
+
+  .explanation {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-left: 4px solid var(--accent);
+    background: #eef3fb;
+    border-radius: 6px;
+    font-size: 0.92rem;
+    color: var(--text);
+  }
+
+  .controls {
+    text-align: center;
+    margin-top: 24px;
+  }
+
+  button.restart {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  button.restart:hover {
+    filter: brightness(0.92);
+  }
+
+  .final-banner {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 18px;
+    padding: 12px;
+    border-radius: 8px;
+    background: #eef3fb;
+  }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 1.35rem; }
+    .question-card { padding: 14px 14px; }
+    .question-text { font-size: 1rem; }
+  }
+</style>
+
+<div class="container">
+  <h1>Newton's Laws of Motion Quiz</h1>
+  <p class="subtitle">10 questions on inertia, force, mass, friction, and free-body reasoning</p>
+  <div class="score-bar" id="scoreBar">Score: 0/10</div>
+  <div id="finalBanner"></div>
+  <div id="quiz"></div>
+  <div class="controls">
+    <button class="restart" id="restartBtn">Restart Quiz</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var questions = [
+    {
+      text: "A hockey puck slides across frictionless ice at constant velocity with no one touching it. What keeps it moving at that constant velocity?",
+      options: [
+        "Nothing needs to keep it moving — no net force is required to maintain constant velocity.",
+        "The push from the player's stick continues to act on it the whole time.",
+        "The ice itself exerts a small forward force to sustain the motion.",
+        "Air pressure behind the puck keeps pushing it forward."
+      ],
+      correct: 0,
+      explanation: "This is Newton's First Law: an object in motion stays in motion at constant velocity unless acted on by a net external force. A common misconception is thinking a continuous force is needed just to keep something moving — it's only needed to change motion or overcome resistance like friction."
+    },
+    {
+      text: "A 4 kg object experiences a net force of 12 N. What is its acceleration?",
+      options: [
+        "0.33 m/s²",
+        "3 m/s²",
+        "16 m/s²",
+        "48 m/s²"
+      ],
+      correct: 1,
+      explanation: "Using F_net = m a, a = F_net / m = 12 N / 4 kg = 3 m/s². This is a direct application of Newton's Second Law."
+    },
+    {
+      text: "A swimmer pushes backward against the water to move forward. Which statement correctly describes the action-reaction pair involved?",
+      options: [
+        "The swimmer's push and the water's push act on the swimmer, so they cancel out.",
+        "The swimmer pushes the water backward, and the water pushes the swimmer forward with equal force — the two forces act on different objects and do not cancel.",
+        "Only the swimmer exerts a force; the water does not push back.",
+        "The reaction force is weaker than the action force because water is less dense than the swimmer."
+      ],
+      correct: 1,
+      explanation: "Newton's Third Law pairs always act on two different objects — here, the swimmer and the water — so the forces never cancel each other. Each force only affects the object it acts on: the water's reaction force propels the swimmer forward."
+    },
+    {
+      text: "An astronaut has a mass of 70 kg on Earth. What happens to her mass and weight when she travels to the Moon, where gravity is weaker?",
+      options: [
+        "Both her mass and weight decrease.",
+        "Her mass decreases but her weight stays the same.",
+        "Her mass stays the same (still 70 kg) but her weight decreases because W = m g and g is smaller on the Moon.",
+        "Her weight stays the same because weight is a property of the object, not the location."
+      ],
+      correct: 2,
+      explanation: "Mass measures the amount of matter in an object and does not change with location, while weight (W = m g) depends on local gravitational strength. On the Moon, g is smaller, so her weight decreases even though her mass is unchanged."
+    },
+    {
+      text: "On a frictionless, flat road, a heavy truck and a light car are both moving at the same constant velocity. According to Newton's laws, which vehicle needs a larger continuous force to maintain that constant velocity?",
+      options: [
+        "The truck, because it has more mass.",
+        "The car, because it has less mass and therefore less inertia.",
+        "Neither — no net force is required to maintain constant velocity regardless of mass.",
+        "Both need equal forces proportional to their weights."
+      ],
+      correct: 2,
+      explanation: "This targets a classic misconception: mass affects how much force is needed to change velocity (via F = m a), but Newton's First Law says no net force at all is needed to sustain constant velocity, regardless of how heavy an object is."
+    },
+    {
+      text: "A box sits on a ramp inclined at 30°. Which statement about the normal force on the box is correct?",
+      options: [
+        "The normal force always equals the box's weight, no matter the surface.",
+        "The normal force is perpendicular to the incline and is less than the box's full weight because part of gravity acts along the incline's surface.",
+        "The normal force is zero on any incline.",
+        "The normal force points straight up regardless of the incline's angle."
+      ],
+      correct: 1,
+      explanation: "The normal force always acts perpendicular to the contact surface, not necessarily straight up. On an incline, only part of the weight is directed into the surface, so the normal force is smaller than the object's full weight — the normal force does not always equal weight."
+    },
+    {
+      text: "A 6 kg crate sits on a floor with a coefficient of static friction of 0.5. If a horizontal force of 20 N is applied and the crate does not move, what is the static friction force acting on it?",
+      options: [
+        "0 N, since the crate isn't moving.",
+        "29.4 N, the maximum possible static friction.",
+        "20 N, exactly matching the applied force to keep the crate at rest.",
+        "It cannot be determined without knowing the crate's velocity."
+      ],
+      correct: 2,
+      explanation: "Static friction is not a fixed value — it adjusts to match the applied force, up to a maximum of μ_s N (here, 0.5 × 6 kg × 9.8 m/s² = 29.4 N). Since 20 N is below that maximum, static friction equals exactly 20 N to keep the crate in equilibrium."
+    },
+    {
+      text: "A book rests motionless on a table. A student says, 'No forces are acting on the book since it isn't moving.' What is the correct interpretation?",
+      options: [
+        "The student is correct — a motionless object has no forces acting on it.",
+        "The student is wrong — gravity and the normal force are both acting on the book, but they balance so the net force is zero (equilibrium).",
+        "Only gravity acts on the book, and it is too weak to cause visible motion.",
+        "Forces only exist while an object is accelerating."
+      ],
+      correct: 1,
+      explanation: "\"No motion\" means the net force is zero (equilibrium), not that no forces are present. The book has gravity pulling it down and the normal force from the table pushing up; these two forces are equal and opposite, balancing to a net force of zero."
+    },
+    {
+      text: "A person stands on a scale inside an elevator that is accelerating upward. What happens to the scale reading (the normal force) compared to the person's actual weight?",
+      options: [
+        "The reading equals the person's weight exactly, since normal force always equals weight.",
+        "The reading is less than the person's weight because upward acceleration reduces normal force.",
+        "The reading is greater than the person's weight because the normal force must supply extra upward force to accelerate the person upward.",
+        "The reading drops to zero because acceleration cancels weight."
+      ],
+      correct: 2,
+      explanation: "The normal force does not always equal weight. When accelerating upward, Newton's Second Law requires N − W = m a, so N = W + m a, meaning the scale reads more than the person's actual weight."
+    },
+    {
+      text: "A crate is sliding across a warehouse floor and gradually slowing down due to friction. Once it stops completely, what happens to the friction force acting on it (assuming no other horizontal forces)?",
+      options: [
+        "Kinetic friction continues to act on the crate even after it stops.",
+        "Once the crate stops and no applied force pushes it, the friction present is static friction, and since there is no applied horizontal force, it is zero — friction does not act as a fixed nonzero value regardless of situation.",
+        "The friction force stays exactly equal to what the kinetic friction force was while it was sliding.",
+        "Friction force is always equal to μ_s N whether or not the object is moving or being pushed."
+      ],
+      correct: 1,
+      explanation: "Kinetic friction only applies while surfaces are sliding relative to each other. Once the crate is at rest with no applied horizontal force, there's nothing for static friction to resist, so the friction force is zero — friction is not some fixed value independent of the situation."
+    }
+  ];
+
+  var score = 0;
+  var answered = new Array(questions.length).fill(false);
+
+  var quizEl = document.getElementById('quiz');
+  var scoreBar = document.getElementById('scoreBar');
+  var restartBtn = document.getElementById('restartBtn');
+  var finalBanner = document.getElementById('finalBanner');
+
+  function updateScoreBar() {
+    scoreBar.textContent = 'Score: ' + score + '/' + questions.length;
+  }
+
+  function checkAllAnswered() {
+    var allDone = answered.every(function (a) { return a; });
+    if (allDone) {
+      finalBanner.innerHTML = '<div class="final-banner">Quiz complete! Final score: ' + score + '/' + questions.length + '</div>';
+    } else {
+      finalBanner.innerHTML = '';
+    }
+  }
+
+  function renderQuiz() {
+    quizEl.innerHTML = '';
+    questions.forEach(function (q, qIndex) {
+      var card = document.createElement('div');
+      card.className = 'question-card';
+
+      var numberEl = document.createElement('div');
+      numberEl.className = 'question-number';
+      numberEl.textContent = 'Question ' + (qIndex + 1) + ' of ' + questions.length;
+      card.appendChild(numberEl);
+
+      var textEl = document.createElement('div');
+      textEl.className = 'question-text';
+      textEl.textContent = q.text;
+      card.appendChild(textEl);
+
+      var optionsEl = document.createElement('div');
+      optionsEl.className = 'options';
+
+      var explanationEl = document.createElement('div');
+      explanationEl.className = 'explanation';
+      explanationEl.style.display = 'none';
+      explanationEl.textContent = q.explanation;
+
+      q.options.forEach(function (optionText, oIndex) {
+        var btn = document.createElement('button');
+        btn.className = 'option';
+        btn.textContent = optionText;
+        btn.addEventListener('click', function () {
+          if (answered[qIndex]) return;
+          answered[qIndex] = true;
+
+          var allButtons = optionsEl.querySelectorAll('.option');
+          allButtons.forEach(function (b) { b.disabled = true; });
+
+          if (oIndex === q.correct) {
+            btn.classList.add('correct');
+            score += 1;
+          } else {
+            btn.classList.add('incorrect');
+            allButtons[q.correct].classList.add('correct');
+          }
+
+          explanationEl.style.display = 'block';
+          updateScoreBar();
+          checkAllAnswered();
+        });
+        optionsEl.appendChild(btn);
+      });
+
+      card.appendChild(optionsEl);
+      card.appendChild(explanationEl);
+      quizEl.appendChild(card);
+    });
+  }
+
+  function restartQuiz() {
+    score = 0;
+    answered = new Array(questions.length).fill(false);
+    finalBanner.innerHTML = '';
+    updateScoreBar();
+    renderQuiz();
+  }
+
+  restartBtn.addEventListener('click', restartQuiz);
+
+  updateScoreBar();
+  renderQuiz();
+})();
+</script>
