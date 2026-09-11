@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work & Energy Quiz</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<div class="quiz-wrap">
+  <a class="quiz-nav" href="README.md">&larr; Back to Unit 5: Work &amp; Energy</a>
+  <div id="quiz"></div>
+</div>
+
+<script src="../assets/quiz.js"></script>
+<script>
+var questions = [
+  {
+    question: "A waiter carries a tray of food at constant height across a room. How much work does the waiter's upward supporting force do on the tray?",
+    choices: ["A large positive amount, since it takes effort to hold the tray up", "Zero, because the supporting force is perpendicular to the horizontal displacement", "A negative amount, since the waiter gets tired", "Cannot be determined without the tray's mass"],
+    correct: 1,
+    misconception: "Students often equate physical effort/fatigue with physics 'work.'",
+    explanation: "Work = Fd cos θ. The supporting force is vertical, but the tray's displacement is horizontal, so θ = 90° and cos(90°) = 0. No work is done on the tray by that force, regardless of how tired the waiter gets."
+  },
+  {
+    question: "You push against a heavy wall as hard as you can, but it doesn't move at all. How much work do you do on the wall?",
+    choices: ["A large amount, proportional to how hard you pushed", "Zero, since there is no displacement", "Negative work", "It depends on how long you push"],
+    correct: 1,
+    misconception: "Students often assume applying force alone constitutes work, even without any resulting motion.",
+    explanation: "Work requires displacement: W = Fd cos θ. If d = 0 (the wall doesn't move), then W = 0, no matter how much force you apply or how long you push."
+  },
+  {
+    question: "A ball rolls down a frictionless hill. As it descends, what happens to its total mechanical energy (KE + PE)?",
+    choices: ["It increases", "It decreases", "It stays constant — PE converts to KE", "It becomes zero at the bottom"],
+    correct: 2,
+    misconception: "Students sometimes think total mechanical energy changes just because KE and PE are changing individually.",
+    explanation: "With no friction or other non-conservative forces, total mechanical energy is conserved: as the ball loses height (PE decreases), it gains exactly that much KE. The total (KE + PE) stays constant throughout."
+  },
+  {
+    question: "A sled slides down a snowy hill with friction and comes to rest at the bottom on flat ground. What happened to its initial gravitational potential energy?",
+    choices: [
+      "It disappeared — energy was destroyed",
+      "It converted entirely back into potential energy at the bottom",
+      "It converted into kinetic energy and then into thermal energy (heat) via friction",
+      "It was never real to begin with"
+    ],
+    correct: 2,
+    misconception: "Students often say energy is 'lost' as if it vanishes, rather than describing where it actually went.",
+    explanation: "Energy is always conserved overall. The sled's initial PE converted first partly into KE (motion) and then, through friction, into thermal energy — heating the snow and the sled's runners — plus some sound. None of the energy was destroyed."
+  },
+  {
+    question: "Two identical motors lift the same crate to the same height, but Motor A takes 4 seconds and Motor B takes 8 seconds. Compare the work and power of each.",
+    choices: [
+      "Motor A does more work and has more power",
+      "Motor A and Motor B do the same work, but Motor A has more power",
+      "Motor A and Motor B do the same work and have the same power",
+      "Motor B has more power because it ran longer"
+    ],
+    correct: 1,
+    misconception: "Students often confuse work (total energy transferred) with power (rate of energy transfer) and assume 'longer = more.'",
+    explanation: "Work only depends on force and displacement (same crate, same height ⇒ same work, W = mgh). Power = W/t, so the motor that does the same work in less time (Motor A) has greater power, even though the work done is identical."
+  },
+  {
+    question: "A spring is compressed to twice its original compression distance (x → 2x). How does its elastic potential energy change?",
+    choices: ["It doubles", "It quadruples", "It stays the same", "It is cut in half"],
+    correct: 1,
+    misconception: "Students often assume PE_s scales linearly with x, forgetting the equation is quadratic.",
+    explanation: "PE_s = ½kx². Since x is squared, doubling x quadruples the potential energy: ½k(2x)² = 4(½kx²)."
+  },
+  {
+    question: "A ball is thrown upward and comes back down to the same height it was thrown from (ignore air resistance). Compare its kinetic energy at launch to its kinetic energy when it returns to that same height.",
+    choices: ["KE at return is greater", "KE at return is less", "KE at return equals KE at launch", "Cannot be determined"],
+    correct: 2,
+    misconception: "Students sometimes think energy 'runs out' on the way up and doesn't fully return.",
+    explanation: "With no air resistance, mechanical energy is conserved. Since the ball returns to the same height, PE is the same at both points, so KE must also be the same at both points (same speed, opposite direction)."
+  },
+  {
+    question: "A 2 kg object and a 4 kg object are both lifted the same height h at constant velocity. Which requires more work?",
+    choices: ["The 2 kg object", "The 4 kg object, because W = mgh depends on mass", "Both require the same work", "Neither requires any work, since velocity is constant"],
+    correct: 1,
+    misconception: "Some students think 'constant velocity' means 'zero net force, so zero work' — but the lifting force still does positive work against gravity, it just isn't causing acceleration.",
+    explanation: "W = Fd = mgh to lift against gravity at constant velocity. Since the heavier object has greater weight (mg), lifting it the same height requires more work, even though both move at constant velocity (net force is zero, but the applied force alone still does work against gravity)."
+  }
+];
+
+PhysicsQuiz(
+  "quiz",
+  "Unit 5 Quiz — Work & Energy",
+  "8 questions built from the mistakes past students make most often. Select an answer for each, then click Check All Answers.",
+  questions
+);
+</script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinematics Quiz</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<div class="quiz-wrap">
+  <a class="quiz-nav" href="README.md">&larr; Back to Unit 1: Kinematics</a>
+  <div id="quiz"></div>
+</div>
+
+<script src="../assets/quiz.js"></script>
+<script>
+var questions = [
+  {
+    question: "A car travels 50 m east, then 50 m west, back to its starting point, in 20 s. What is its average velocity?",
+    choices: ["5.0 m/s east", "5.0 m/s, direction undefined", "0 m/s", "2.5 m/s west"],
+    correct: 2,
+    misconception: "Students often average the speeds of the two legs instead of using total displacement.",
+    explanation: "Average velocity = total displacement / total time. Since the car returns to its starting point, displacement = 0, so average velocity = 0 m/s (average speed, however, is 100 m / 20 s = 5.0 m/s)."
+  },
+  {
+    question: "A ball thrown straight up is at the very top of its path. Which statement is correct?",
+    choices: [
+      "Velocity = 0 and acceleration = 0",
+      "Velocity = 0 and acceleration = −g",
+      "Velocity is at its maximum and acceleration = −g",
+      "Velocity = 0 and acceleration is momentarily undefined"
+    ],
+    correct: 1,
+    misconception: "Many students assume acceleration must be zero wherever velocity is zero.",
+    explanation: "Velocity and acceleration are independent. Gravity acts the entire flight, so acceleration stays at −g even at the instant velocity passes through zero."
+  },
+  {
+    question: "An object's velocity is negative and its acceleration is positive. What is happening to its speed?",
+    choices: ["Speeding up", "Slowing down", "Constant speed", "Cannot be determined"],
+    correct: 1,
+    misconception: "Students often assume 'positive acceleration' always means 'speeding up.'",
+    explanation: "When velocity and acceleration have opposite signs, the object is decelerating (slowing down), regardless of which direction is labeled positive."
+  },
+  {
+    question: "On a velocity–time graph, what does the area between the line and the time axis represent?",
+    choices: ["Acceleration", "Displacement", "Speed", "Position"],
+    correct: 1,
+    misconception: "Students frequently confuse the slope and the area of a v–t graph.",
+    explanation: "Area under a v–t graph gives displacement (slope of a v-t graph gives acceleration; slope of a position-time graph gives velocity)."
+  },
+  {
+    question: "Two balls, one twice as heavy as the other, are dropped from the same height at the same time (no air resistance). Which hits the ground first?",
+    choices: ["The heavier ball", "The lighter ball", "They land at the same time", "Depends on their sizes"],
+    correct: 2,
+    misconception: "The classic 'heavier objects fall faster' misconception (Aristotelian intuition).",
+    explanation: "In free fall without air resistance, acceleration (g) is the same for all masses, so both balls land simultaneously."
+  },
+  {
+    question: "A car accelerates uniformly from rest. Which kinematic equation lets you find its displacement if you know acceleration and time, but not final velocity?",
+    choices: ["v = v₀ + at", "Δx = v₀t + ½at²", "v² = v₀² + 2aΔx", "Δx = ½(v₀ + v)t"],
+    correct: 1,
+    misconception: "Students often grab the first formula they memorized instead of checking which variable is missing.",
+    explanation: "Δx = v₀t + ½at² is the only one of the four that does not require the final velocity v."
+  },
+  {
+    question: "A position–time graph is a straight, downward-sloping line. What does this tell you about the object's motion?",
+    choices: [
+      "It is speeding up while moving in the negative direction",
+      "It is at rest",
+      "It is moving in the negative direction at a constant velocity",
+      "It is accelerating in the positive direction"
+    ],
+    correct: 2,
+    misconception: "A straight line on a position-time graph is sometimes mistaken for 'no motion' or for acceleration.",
+    explanation: "A straight line means constant slope, so constant velocity. A downward slope just means the velocity is negative (moving in the negative direction) — there's no curvature, so no acceleration."
+  },
+  {
+    question: "A stone is thrown straight up. Compare its acceleration on the way up to its acceleration on the way down.",
+    choices: [
+      "Upward acceleration is negative, downward acceleration is positive",
+      "Acceleration is the same (−g) the entire time, both up and down",
+      "Acceleration is zero on the way up, −g on the way down",
+      "Acceleration reverses direction exactly at the peak"
+    ],
+    correct: 1,
+    misconception: "Students often think gravity 'switches on' only after the object starts falling.",
+    explanation: "Gravity acts continuously on the stone throughout the entire flight. Acceleration stays constant at −g (downward) both going up and coming down — only the velocity changes sign."
+  }
+];
+
+PhysicsQuiz(
+  "quiz",
+  "Unit 1 Quiz — Kinematics",
+  "8 questions built from the mistakes past students make most often. Select an answer for each, then click Check All Answers.",
+  questions
+);
+</script>
+</body>
+</html>

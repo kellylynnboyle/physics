@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projectile Motion Quiz</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<div class="quiz-wrap">
+  <a class="quiz-nav" href="README.md">&larr; Back to Unit 2: Projectile Motion</a>
+  <div id="quiz"></div>
+</div>
+
+<script src="../assets/quiz.js"></script>
+<script>
+var questions = [
+  {
+    question: "A projectile is launched at an angle above the horizontal. At the very top of its trajectory, what is true about its velocity?",
+    choices: [
+      "Velocity is zero",
+      "Vertical velocity is zero, but horizontal velocity is unchanged and nonzero",
+      "Both horizontal and vertical velocity are zero",
+      "Horizontal velocity is zero, vertical velocity is at a maximum"
+    ],
+    correct: 1,
+    misconception: "Students often assume the projectile 'stops' at the peak the way a ball thrown straight up does.",
+    explanation: "Only the vertical component (v_y) becomes zero at the peak. The horizontal component (vₓ) never changes during flight, so the object is still moving horizontally at the top."
+  },
+  {
+    question: "A ball is launched horizontally off a cliff, and at the same instant a second identical ball is simply dropped from the same height. Which ball hits the ground first (ignore air resistance)?",
+    choices: ["The launched ball, because it has extra speed", "The dropped ball, because it falls straight down", "They land at the same time", "It depends on the launch speed"],
+    correct: 2,
+    misconception: "Students often think a faster horizontal launch speed makes an object fall more slowly, or that the ball 'has to travel farther so it takes longer.'",
+    explanation: "Vertical motion is independent of horizontal motion. Both balls start with v_y = 0 and accelerate downward at the same g, so they hit the ground at the same time regardless of horizontal speed."
+  },
+  {
+    question: "What causes the horizontal velocity of a projectile to change during flight (ignoring air resistance)?",
+    choices: ["Gravity slows it down gradually", "Nothing — horizontal velocity is constant", "It decreases at the same rate as vertical velocity", "It increases as the object falls"],
+    correct: 1,
+    misconception: "Students often apply gravity's effect to both directions instead of just the vertical direction.",
+    explanation: "Gravity acts only vertically. With no air resistance, there is no horizontal force, so horizontal velocity (vₓ) stays exactly constant for the entire flight."
+  },
+  {
+    question: "A projectile is launched at 30° and another at 60°, both at the same speed, on level ground. How do their ranges compare?",
+    choices: ["The 60° launch travels farther", "The 30° launch travels farther", "Their ranges are equal", "Cannot be determined without more information"],
+    correct: 2,
+    misconception: "Students assume a steeper angle always means a longer or shorter range, rather than recognizing complementary-angle symmetry.",
+    explanation: "30° and 60° are complementary angles (they sum to 90°). Since R = v²sin(2θ)/g, and sin(60°) = sin(120°), both launches produce the same range — though the 60° shot goes higher and stays airborne longer."
+  },
+  {
+    question: "Which launch angle gives the maximum range on level ground, for a fixed launch speed?",
+    choices: ["30°", "45°", "60°", "90°"],
+    correct: 1,
+    misconception: "Some students guess 90° (straight up) thinking 'higher must mean farther.'",
+    explanation: "45° maximizes sin(2θ) at its peak value of 1, giving the maximum possible range. 90° actually gives zero range — the object goes straight up and comes straight back down."
+  },
+  {
+    question: "To find the total time a projectile spends in the air (launch and landing at the same height), which motion do you analyze?",
+    choices: ["The horizontal motion only", "The vertical motion only", "You need both simultaneously in one equation", "Total speed at launch"],
+    correct: 1,
+    misconception: "Students sometimes try to use the horizontal range and horizontal velocity to find time, when angle/height data is really a vertical-motion problem.",
+    explanation: "Time of flight is entirely determined by the vertical motion (how long it takes gravity to bring v_y back to its landing value). Horizontal motion only tells you how far it travels, not how long it takes."
+  },
+  {
+    question: "A projectile is launched at an angle. Compared to its launch speed, how does its landing speed compare (same launch and landing height, no air resistance)?",
+    choices: ["Landing speed is greater", "Landing speed is smaller", "Landing speed equals launch speed", "Landing speed is always zero"],
+    correct: 2,
+    misconception: "Students often think the object 'loses energy' or slows down permanently after reaching the peak.",
+    explanation: "By the symmetry of projectile motion (and conservation of energy when launch height = landing height), the speed magnitude at landing equals the speed magnitude at launch — only the vertical direction has reversed."
+  },
+  {
+    question: "A projectile is launched at 20 m/s entirely horizontally. Which equation correctly finds its horizontal velocity component?",
+    choices: ["vₓ = 20 cos θ, where θ is the launch angle from horizontal", "vₓ = 20 sin θ, where θ is the launch angle from horizontal", "vₓ = 20, since the entire launch speed is horizontal", "vₓ = 20 − gt"],
+    correct: 2,
+    misconception: "Students sometimes apply the cos/sin decomposition even when the launch angle is already 0° (purely horizontal).",
+    explanation: "When launched horizontally, θ = 0°, so cos(0°) = 1 and the entire 20 m/s is the horizontal component: vₓ = 20 m/s, and the initial v_y = 0."
+  }
+];
+
+PhysicsQuiz(
+  "quiz",
+  "Unit 2 Quiz — Projectile Motion",
+  "8 questions built from the mistakes past students make most often. Select an answer for each, then click Check All Answers.",
+  questions
+);
+</script>
+</body>
+</html>

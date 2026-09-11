@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Momentum Quiz</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<div class="quiz-wrap">
+  <a class="quiz-nav" href="README.md">&larr; Back to Unit 4: Momentum</a>
+  <div id="quiz"></div>
+</div>
+
+<script src="../assets/quiz.js"></script>
+<script>
+var questions = [
+  {
+    question: "In a car crash, is kinetic energy conserved?",
+    choices: ["Yes, kinetic energy is always conserved in any collision", "No — some kinetic energy converts to heat, sound, and deformation, but momentum is still conserved", "No, and momentum is also not conserved", "It depends only on the speed of the cars"],
+    correct: 1,
+    misconception: "Students often assume every conservation law that applies to momentum also applies to kinetic energy.",
+    explanation: "Momentum is conserved in essentially every isolated collision, but kinetic energy is only conserved in elastic collisions. A car crash is inelastic — kinetic energy converts into crumpling metal, heat, and sound."
+  },
+  {
+    question: "Two skaters, initially at rest, push off each other. What is the total momentum of the two-skater system immediately after the push?",
+    choices: ["Equal to the sum of their individual momenta, which is a large positive number", "Zero — total momentum is conserved from the initial value of zero", "Depends on which skater is heavier", "Cannot be determined"],
+    correct: 1,
+    misconception: "Students sometimes think each skater 'has their own momentum budget' rather than recognizing the conserved quantity is the SYSTEM total.",
+    explanation: "The system starts with zero total momentum (both at rest). Since no external horizontal force acts, total momentum stays zero — the two skaters' momenta after the push are equal in magnitude and opposite in direction, summing to zero."
+  },
+  {
+    question: "A large truck and a small car, both traveling at the same speed, collide head-on. Which vehicle experiences the greater impulse?",
+    choices: ["The car, since it's lighter", "The truck, since it's heavier", "Both vehicles experience impulses equal in magnitude (opposite in direction)", "Neither experiences an impulse"],
+    correct: 2,
+    misconception: "Students often assume the heavier vehicle 'delivers more force/impulse' than it 'receives.'",
+    explanation: "By Newton's third law, the forces (and therefore impulses, since they act over the same contact time) that the truck and car exert on each other are equal in magnitude and opposite in direction — regardless of mass. Mass affects how much each vehicle's velocity changes, not the impulse each receives from the other."
+  },
+  {
+    question: "Why do airbags reduce injury in a crash, in terms of impulse and momentum?",
+    choices: [
+      "They reduce the total change in momentum of the passenger",
+      "They increase the time over which the passenger's momentum changes, reducing the average force",
+      "They eliminate momentum entirely",
+      "They convert momentum directly into heat before impact"
+    ],
+    correct: 1,
+    misconception: "Students sometimes think airbags work by reducing Δp, rather than by stretching out Δt.",
+    explanation: "The passenger's change in momentum (Δp) during a crash is basically fixed by the crash itself. Airbags don't change Δp — they increase the time (Δt) over which that momentum change happens, which reduces the average force (since F = Δp/Δt)."
+  },
+  {
+    question: "A 2 kg cart moving at 4 m/s collides and sticks to a stationary 2 kg cart. What is the resulting velocity?",
+    choices: ["4 m/s", "2 m/s", "8 m/s", "0 m/s"],
+    correct: 1,
+    misconception: "Students often forget to divide by the new combined mass after a perfectly inelastic collision.",
+    explanation: "Conservation of momentum: m₁v₁ = (m₁+m₂)v_f → 2(4) = 4(v_f) → v_f = 2 m/s. The combined mass is now 4 kg, so the momentum is 'spread' across more mass, halving the velocity."
+  },
+  {
+    question: "A ball bounces off a wall and rebounds with the same speed it hit the wall. Has its momentum changed?",
+    choices: ["No, since speed is unchanged", "Yes — momentum is a vector, and its direction reversed, so Δp ≠ 0", "No, momentum only depends on speed, not direction", "Cannot be determined without knowing the mass"],
+    correct: 1,
+    misconception: "Students often treat momentum like a scalar (speed-based) quantity and conclude 'same speed = same momentum.'",
+    explanation: "Momentum is a vector. Even though speed is unchanged, velocity reversed direction, so momentum went from +mv to −mv — a real, nonzero change in momentum, which is why the wall must have exerted an impulse on the ball."
+  },
+  {
+    question: "Which of these quantities is conserved in EVERY type of collision (elastic, inelastic, and perfectly inelastic), assuming the system is isolated?",
+    choices: ["Kinetic energy", "Momentum", "Both momentum and kinetic energy", "Neither"],
+    correct: 1,
+    misconception: "Students often default to assuming kinetic energy is always conserved because it's the more familiar 'energy is conserved' idea.",
+    explanation: "Momentum is conserved in every isolated collision, no exceptions. Kinetic energy is only conserved in the special case of an elastic collision."
+  },
+  {
+    question: "A bullet is fired from a gun. The gun recoils backward. Which best explains this using momentum?",
+    choices: [
+      "The gun experiences a separate force unrelated to the bullet",
+      "The system (gun + bullet) starts at zero total momentum; as the bullet gains forward momentum, the gun must gain equal and opposite momentum to keep the total at zero",
+      "The recoil is caused by air resistance pushing back on the gun",
+      "Recoil only happens if the gun is heavier than the bullet"
+    ],
+    correct: 1,
+    misconception: "Students sometimes explain recoil vaguely as 'equal and opposite force' without connecting it to conservation of the system's total momentum.",
+    explanation: "Before firing, total momentum of the gun+bullet system is zero. After firing, the bullet has forward momentum, so for total momentum to remain zero, the gun must recoil with equal and opposite momentum — this also follows directly from Newton's third law on the internal explosive force."
+  }
+];
+
+PhysicsQuiz(
+  "quiz",
+  "Unit 4 Quiz — Momentum",
+  "8 questions built from the mistakes past students make most often. Select an answer for each, then click Check All Answers.",
+  questions
+);
+</script>
+</body>
+</html>

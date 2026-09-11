@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newton's Laws Quiz</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<div class="quiz-wrap">
+  <a class="quiz-nav" href="README.md">&larr; Back to Unit 3: Newton's Laws</a>
+  <div id="quiz"></div>
+</div>
+
+<script src="../assets/quiz.js"></script>
+<script>
+var questions = [
+  {
+    question: "A car moves at a constant 60 km/h on a straight, flat highway. What is the net force acting on it?",
+    choices: ["A large forward force, to keep it moving", "Zero net force", "A force equal to its weight", "It depends on the car's mass only"],
+    correct: 1,
+    misconception: "Students often think a continuous forward force is required just to keep something moving at constant velocity ('impetus' thinking).",
+    explanation: "Constant velocity means zero acceleration, so by ΣF = ma, the net force must be zero. The engine's forward force is exactly balanced by air resistance and rolling friction."
+  },
+  {
+    question: "A book rests on a table. The book pushes down on the table with a force equal to its weight. What is the Newton's third law reaction pair to this force?",
+    choices: [
+      "The table pushing up on the book (normal force)",
+      "Gravity pulling down on the book",
+      "The table pushing up on the ground",
+      "The book's weight pulling down on the table"
+    ],
+    correct: 0,
+    misconception: "Students often pair the book's weight (gravity) with the normal force, since they're equal in this scenario — but they are two separate forces on the same object, not a third-law pair.",
+    explanation: "The true third-law pair to 'book pushes down on table' is 'table pushes up on book' (same two objects, forces swapped, equal magnitude, opposite direction). Weight and normal force just happen to be equal here because the book is in equilibrium — they are NOT a third-law pair (they both act on the book, not on two different objects)."
+  },
+  {
+    question: "Two skaters push off each other on frictionless ice. Skater A (50 kg) and Skater B (100 kg) push apart. How do the forces they exert on each other compare?",
+    choices: [
+      "Skater A exerts twice the force, since they're lighter",
+      "Skater B exerts twice the force, since they're heavier",
+      "The forces are equal in magnitude on each skater",
+      "Neither force can be determined without knowing their accelerations"
+    ],
+    correct: 2,
+    misconception: "Students often assume the heavier or 'stronger' person exerts more force during a push-off.",
+    explanation: "By Newton's third law, the force Skater A exerts on Skater B is always equal in magnitude (and opposite in direction) to the force Skater B exerts on Skater A — regardless of mass. Mass only affects the resulting acceleration of each skater (the lighter skater accelerates more)."
+  },
+  {
+    question: "A box sits on an incline and does not slide. Which statement about the normal force on the box is correct?",
+    choices: [
+      "Normal force always equals the box's weight, mg",
+      "Normal force is less than mg, because it only balances part of gravity's effect (the component perpendicular to the incline)",
+      "Normal force is greater than mg on an incline",
+      "There is no normal force on an incline"
+    ],
+    correct: 1,
+    misconception: "Students very often default to 'normal force = mg' regardless of the situation.",
+    explanation: "Normal force balances only the component of gravity perpendicular to the surface (mg cos θ on a frictionless incline), not the full weight. Normal force equals mg only when the surface is horizontal and there are no other vertical forces."
+  },
+  {
+    question: "A 2 kg object needs 6 N of net force to accelerate at 3 m/s². If a 12 N force is applied, but the object still only accelerates at 3 m/s², what must be true?",
+    choices: [
+      "Newton's Second Law is being violated",
+      "There must be another opposing force of 6 N (e.g., friction), making the net force still 6 N",
+      "The object's mass must have doubled",
+      "This is impossible under any circumstances"
+    ],
+    correct: 1,
+    misconception: "Students often use the applied force directly in F=ma instead of the net force.",
+    explanation: "F = ma requires the NET force. If 12 N is applied but acceleration only corresponds to 6 N of net force, an opposing force (like 6 N of friction) must be canceling part of the applied force."
+  },
+  {
+    question: "An object is in 'equilibrium.' What does this mean?",
+    choices: [
+      "No forces are acting on it at all",
+      "It must be at rest",
+      "The net force on it is zero (it may be at rest OR moving at constant velocity)",
+      "All forces on it are equal to its weight"
+    ],
+    correct: 2,
+    misconception: "Students often equate 'equilibrium' with 'at rest,' forgetting constant-velocity motion also counts.",
+    explanation: "Equilibrium means net force = 0, which includes both objects at rest (static equilibrium) and objects moving at constant velocity (dynamic equilibrium)."
+  },
+  {
+    question: "You are pushing a heavy box that refuses to move. You push harder and harder, and it still doesn't slide. What is happening to the friction force during this time?",
+    choices: [
+      "Friction stays constant no matter what you do",
+      "Static friction increases to match your applied force, up to its maximum value",
+      "There is no friction until the box starts moving",
+      "Kinetic friction is acting the whole time"
+    ],
+    correct: 1,
+    misconception: "Students often think friction is a single fixed value rather than a force that adjusts (up to a limit) to prevent motion.",
+    explanation: "Static friction is a 'reactive' force — it increases to match the applied force (keeping net force at zero) up to its maximum value, f_s,max = μ_s F_N. Only once your applied force exceeds that maximum does the box start to slide."
+  },
+  {
+    question: "An astronaut's mass is 80 kg on Earth. What is their mass on the Moon, where gravity is about 1/6 of Earth's?",
+    choices: ["About 13.3 kg", "80 kg — mass doesn't change", "480 kg", "Cannot be determined without knowing their weight"],
+    correct: 1,
+    misconception: "Students frequently confuse mass (amount of matter, constant) with weight (force of gravity, location-dependent).",
+    explanation: "Mass is an intrinsic property of an object and does not change with location. Only weight (F_g = mg) changes, because g is different on the Moon. The astronaut's mass is still 80 kg; only their weight becomes about 1/6 of what it is on Earth."
+  }
+];
+
+PhysicsQuiz(
+  "quiz",
+  "Unit 3 Quiz — Newton's Laws",
+  "8 questions built from the mistakes past students make most often. Select an answer for each, then click Check All Answers.",
+  questions
+);
+</script>
+</body>
+</html>
