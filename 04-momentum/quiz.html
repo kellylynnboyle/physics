@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Momentum Quiz — Most Missed Questions</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<h1>Unit 4: Momentum — Most-Missed Questions</h1>
+<p class="quiz-subtitle">Click an answer to check it. These are the question types students get wrong most often on this unit.</p>
+<div id="quiz"></div>
+
+<script src="../assets/quiz.js"></script>
+<script>
+const QUIZ_DATA = [
+  {
+    tag: "Sign Convention",
+    question: "A 0.2 kg ball moving right at 5 m/s bounces straight back (left) at 5 m/s after hitting a wall. What is its change in momentum?",
+    options: ["0 kg·m/s", "1 kg·m/s", "2 kg·m/s", "-1 kg·m/s (in the direction of motion)"],
+    correct: 2,
+    explanation: "Taking right as positive: p_initial = 0.2 × 5 = 1 kg·m/s. p_final = 0.2 × (−5) = −1 kg·m/s. Δp = p_final − p_initial = −1 − 1 = −2 kg·m/s, so the magnitude of the change is 2 kg·m/s. A common mistake is assuming momentum is unchanged because speed didn't change — but direction did, so momentum (a vector) changed a lot."
+  },
+  {
+    tag: "Elastic vs. Inelastic",
+    question: "Two carts collide and stick together, moving off with a common velocity. What is conserved in this collision?",
+    options: [
+      "Both momentum and kinetic energy",
+      "Momentum only — kinetic energy is not conserved",
+      "Kinetic energy only",
+      "Neither is conserved"
+    ],
+    correct: 1,
+    explanation: "This is a perfectly inelastic collision (objects stick together). Momentum is always conserved in an isolated system, but kinetic energy is lost — transformed into heat, sound, and deformation — in any inelastic collision."
+  },
+  {
+    tag: "System vs. Individual Object",
+    question: "During a car crash between two vehicles, is each individual car's momentum conserved?",
+    options: [
+      "Yes, each car's momentum stays the same",
+      "No — each car's momentum changes, but the TOTAL momentum of the two-car system is conserved",
+      "Only the heavier car's momentum is conserved",
+      "Momentum conservation doesn't apply to car crashes"
+    ],
+    correct: 1,
+    explanation: "Conservation of momentum applies to the total momentum of a closed system, not to each object individually. Each car's momentum changes significantly during the crash — that's exactly what a collision is — but the sum before equals the sum after."
+  },
+  {
+    tag: "Impulse-Momentum Theorem",
+    question: "Why do airbags and crumple zones reduce injury in a car crash, given that the car's change in momentum (Δp) is basically fixed by the crash speed?",
+    options: [
+      "They reduce the mass of the car during the crash",
+      "They increase the time (Δt) over which the momentum change happens, which reduces the average force",
+      "They eliminate the impulse entirely",
+      "They increase the force to stop the car faster"
+    ],
+    correct: 1,
+    explanation: "Since J = FΔt = Δp, and Δp is fixed by how fast the car was going, stretching out the collision time (Δt) via airbags/crumple zones reduces the average force (F = Δp/Δt) experienced by passengers — the same momentum change, spread over more time, means less force."
+  },
+  {
+    tag: "Setting Up Conservation",
+    question: "A 1000 kg car moving at 15 m/s rear-ends a stationary 1200 kg car, and the two lock together (perfectly inelastic). What equation correctly finds their common final velocity v?",
+    options: [
+      "1000 × 15 = 1200 × v",
+      "(1000 × 15) + (1200 × 0) = (1000 + 1200) × v",
+      "1000 × 15 + 1200 × 15 = (1000 + 1200) × v",
+      "1000 × 15 = (1000 + 1200) × 15"
+    ],
+    correct: 1,
+    explanation: "Conservation of momentum: total momentum before = total momentum after. The moving car contributes 1000 × 15, and the stationary car contributes 1200 × 0 (it's at rest). After they lock together, the combined mass (1000+1200) moves at the common final velocity v."
+  },
+  {
+    tag: "Elastic Collision Outcomes",
+    question: "A moving cart elastically collides with an identical, stationary cart of the same mass. What happens?",
+    options: [
+      "They stick together and move off at half the original speed",
+      "The moving cart stops completely, and the previously stationary cart moves off with the first cart's original velocity",
+      "Both carts move off together at the same reduced speed",
+      "The moving cart bounces straight back at the same speed"
+    ],
+    correct: 1,
+    explanation: "For an elastic, equal-mass, head-on collision where one object is initially at rest, the incoming object stops completely and transfers all of its velocity (and kinetic energy) to the target object — a classic result worth memorizing, often demonstrated with a Newton's cradle."
+  },
+  {
+    tag: "Momentum Is a Vector",
+    question: "Two objects have the same mass and the same speed, but travel in opposite directions. Compared to each other, their momenta are:",
+    options: [
+      "Identical in every way",
+      "Equal in magnitude but opposite in direction",
+      "Different in magnitude but same direction",
+      "Both zero, since they cancel"
+    ],
+    correct: 1,
+    explanation: "Momentum depends on direction as well as magnitude. Equal mass and equal speed give equal magnitude of momentum, but opposite directions of travel mean the momentum vectors point opposite ways — they do NOT individually become zero; they'd only sum to zero if added together."
+  }
+];
+
+renderQuiz('quiz', QUIZ_DATA);
+</script>
+</body>
+</html>

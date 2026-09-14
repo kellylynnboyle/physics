@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kinematics Quiz — Most Missed Questions</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<h1>Unit 1: Kinematics — Most-Missed Questions</h1>
+<p class="quiz-subtitle">Click an answer to check it. These are the question types students get wrong most often on this unit.</p>
+<div id="quiz"></div>
+
+<script src="../assets/quiz.js"></script>
+<script>
+const QUIZ_DATA = [
+  {
+    tag: "Distance vs. Displacement",
+    question: "A runner goes 400 m around a track and ends up back at the starting line. What is her displacement?",
+    options: ["400 m", "0 m", "200 m", "Cannot be determined"],
+    correct: 1,
+    explanation: "Displacement is the straight-line change in position from start to finish. Since she ends where she started, displacement = 0 m, even though she ran a distance of 400 m."
+  },
+  {
+    tag: "Sign of Acceleration",
+    question: "A car is moving in the negative direction and slowing down. What is the sign of its acceleration?",
+    options: ["Negative", "Positive", "Zero", "Depends on the car's speed"],
+    correct: 1,
+    explanation: "Slowing down means velocity and acceleration point in opposite directions. Since velocity is negative, acceleration must be positive — 'negative acceleration' does NOT always mean slowing down."
+  },
+  {
+    tag: "Graph Reading",
+    question: "On a velocity-time graph, a straight diagonal line with constant positive slope represents:",
+    options: [
+      "Constant velocity",
+      "Constant, non-zero acceleration",
+      "Increasing acceleration",
+      "The object is at rest"
+    ],
+    correct: 1,
+    explanation: "The slope of a v-t graph is acceleration. A straight line means the slope (acceleration) is constant — the velocity itself is changing steadily, not staying constant."
+  },
+  {
+    tag: "Graph Reading",
+    question: "The area under a velocity-time graph between two times represents:",
+    options: ["Acceleration", "Speed", "Displacement", "Jerk"],
+    correct: 2,
+    explanation: "Area under a v-t curve = Δx (displacement). This is one of the most-tested graph relationships — don't confuse it with the slope, which gives acceleration."
+  },
+  {
+    tag: "Free Fall",
+    question: "A ball is thrown straight up. What is its acceleration at the very top of its path, the instant its velocity is zero?",
+    options: ["Zero", "9.8 m/s² downward", "9.8 m/s² upward", "Undefined, since velocity is zero"],
+    correct: 1,
+    explanation: "Velocity being momentarily zero does not mean acceleration is zero. Gravity acts the entire flight, so acceleration is a constant 9.8 m/s² downward throughout — including at the peak."
+  },
+  {
+    tag: "Choosing the Right Equation",
+    question: "You know initial velocity, acceleration, and displacement, but not time or final velocity, and you need final velocity. Which kinematic equation should you use?",
+    options: ["v = v₀ + at", "Δx = v₀t + ½at²", "v² = v₀² + 2aΔx", "Δx = ((v₀+v)/2)t"],
+    correct: 2,
+    explanation: "v² = v₀² + 2aΔx is the only one of the four kinematic equations that does not contain time — exactly what's needed when t is unknown and not being solved for."
+  },
+  {
+    tag: "Average vs. Instantaneous",
+    question: "A car's speedometer reads 60 km/h at a specific moment. This is an example of:",
+    options: ["Average velocity", "Average speed", "Instantaneous speed", "Displacement"],
+    correct: 2,
+    explanation: "A speedometer reading is the speed at that exact instant — instantaneous speed — not an average over some time interval."
+  },
+  {
+    tag: "Units & Setup",
+    question: "A problem gives initial velocity in km/h and time in seconds, and asks for displacement in meters. What should you do first?",
+    options: [
+      "Plug the numbers directly into the kinematic equations",
+      "Convert km/h to m/s before doing any calculation",
+      "Convert seconds to hours",
+      "Ignore units since physics equations don't care about them"
+    ],
+    correct: 1,
+    explanation: "Kinematic equations require consistent SI units. Mixing km/h with seconds and meters produces a wrong numeric answer even if the equation and algebra are correct."
+  }
+];
+
+renderQuiz('quiz', QUIZ_DATA);
+</script>
+</body>
+</html>

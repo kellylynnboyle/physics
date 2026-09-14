@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projectile Motion Quiz — Most Missed Questions</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<h1>Unit 2: Projectile Motion — Most-Missed Questions</h1>
+<p class="quiz-subtitle">Click an answer to check it. These are the question types students get wrong most often on this unit.</p>
+<div id="quiz"></div>
+
+<script src="../assets/quiz.js"></script>
+<script>
+const QUIZ_DATA = [
+  {
+    tag: "Component Velocity",
+    question: "A projectile is launched at 20 m/s at 30° above horizontal. What happens to its horizontal velocity during flight (ignoring air resistance)?",
+    options: [
+      "It decreases steadily due to gravity",
+      "It stays constant the entire flight",
+      "It increases as the object falls",
+      "It becomes zero at the peak"
+    ],
+    correct: 1,
+    explanation: "Gravity acts only vertically, so horizontal velocity (vₓ = v₀ cos θ) never changes during flight — it stays constant from launch to landing."
+  },
+  {
+    tag: "At the Peak",
+    question: "At the highest point of a projectile's trajectory (launched at an angle, not straight up), which statement is true?",
+    options: [
+      "Both velocity and acceleration are zero",
+      "Velocity is zero, but acceleration is 9.8 m/s² downward",
+      "Vertical velocity is zero, but horizontal velocity and downward acceleration are both nonzero",
+      "Acceleration is zero, but velocity is at its maximum"
+    ],
+    correct: 2,
+    explanation: "Only the vertical component of velocity is zero at the peak. The object still moves horizontally, and gravity (9.8 m/s² downward) never stops acting — it's what curves the path back down."
+  },
+  {
+    tag: "Range Formula Misuse",
+    question: "A ball rolls off a table 1.0 m high with a horizontal speed of 4 m/s. Which formula should you use to find how far it lands from the table?",
+    options: [
+      "R = v₀² sin(2θ) / g",
+      "R = 2v₀ sin θ / g",
+      "Find time to fall using y = ½gt², then multiply by horizontal speed",
+      "R = v₀² / g"
+    ],
+    correct: 2,
+    explanation: "The standard range formula (R = v₀² sin(2θ)/g) only works when launch and landing heights are equal. Here the ball starts above the ground, so you must find the fall time from the height first, then use x = vₓ·t."
+  },
+  {
+    tag: "Time of Flight",
+    question: "A projectile is launched and lands at the same height. If its time to reach maximum height is 1.5 s, what is its total time of flight?",
+    options: ["1.5 s", "3.0 s", "0.75 s", "It cannot be determined without launch angle"],
+    correct: 1,
+    explanation: "For symmetric launch/landing heights, the trajectory is symmetric in time: time up = time down. Total flight time is simply double the time to reach the peak."
+  },
+  {
+    tag: "Maximum Range Angle",
+    question: "Launched at the same speed on level ground, which angle produces the greatest range?",
+    options: ["30°", "45°", "60°", "90°"],
+    correct: 1,
+    explanation: "Range is proportional to sin(2θ), which is maximized when 2θ = 90°, i.e., θ = 45°. (30° and 60° actually give the same range as each other — but less than 45°.)"
+  },
+  {
+    tag: "Complementary Angles",
+    question: "A ball launched at 30° and another launched at 60° (same initial speed, level ground) will:",
+    options: [
+      "Land at the same spot, but the 60° ball spends more time in the air and goes higher",
+      "Land at the same spot with identical time of flight",
+      "The 60° ball lands farther away",
+      "The 30° ball lands farther away"
+    ],
+    correct: 0,
+    explanation: "30° and 60° are complementary angles, so sin(2θ) is the same for both — equal range. But the steeper 60° launch has a larger vertical velocity component, so it reaches greater height and stays airborne longer."
+  },
+  {
+    tag: "Vector Components",
+    question: "A ball is launched at 15 m/s at 40° above horizontal. What is its initial vertical velocity component?",
+    options: ["15 × cos 40°", "15 × sin 40°", "15 ÷ sin 40°", "15 × tan 40°"],
+    correct: 1,
+    explanation: "The vertical component uses sine of the launch angle: v_y₀ = v₀ sin θ = 15 × sin 40°. The horizontal component uses cosine instead (a very common mix-up)."
+  },
+  {
+    tag: "Minimum Speed",
+    question: "During a projectile's flight (launched at an angle, not straight up or down), when is its overall speed at a minimum?",
+    options: [
+      "At launch",
+      "Halfway through the flight, in time",
+      "At the peak of the trajectory",
+      "Right before landing"
+    ],
+    correct: 2,
+    explanation: "Speed = √(vₓ² + v_y²). Since vₓ is constant and v_y is smallest (zero) at the peak, total speed is at its minimum there — equal to vₓ alone."
+  }
+];
+
+renderQuiz('quiz', QUIZ_DATA);
+</script>
+</body>
+</html>

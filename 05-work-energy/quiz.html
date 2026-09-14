@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Work &amp; Energy Quiz — Most Missed Questions</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<h1>Unit 5: Work &amp; Energy — Most-Missed Questions</h1>
+<p class="quiz-subtitle">Click an answer to check it. These are the question types students get wrong most often on this unit.</p>
+<div id="quiz"></div>
+
+<script src="../assets/quiz.js"></script>
+<script>
+const QUIZ_DATA = [
+  {
+    tag: "Work = 0",
+    question: "A person carries a 10 kg bag at constant height across a flat room at constant velocity. How much work does the carrying force (the upward force of their arm) do on the bag?",
+    options: [
+      "A large positive amount, since they're exerting effort the whole time",
+      "Zero, because the carrying force is vertical while the displacement is horizontal",
+      "A negative amount, since gravity is pulling down on the bag",
+      "It depends on how far they walk"
+    ],
+    correct: 1,
+    explanation: "W = Fd cos θ. The carrying force is vertical (upward) but the bag's displacement is horizontal, so θ = 90° and cos 90° = 0. No work is done by the carrying force, no matter how tiring it feels — physics 'work' requires a force component along the direction of motion."
+  },
+  {
+    tag: "KE ∝ v²",
+    question: "If a car's speed doubles, how does its kinetic energy change?",
+    options: ["It doubles", "It triples", "It quadruples", "It stays the same"],
+    correct: 2,
+    explanation: "KE = ½mv², so kinetic energy depends on the SQUARE of speed. Doubling speed (v → 2v) means KE scales by 2² = 4 — kinetic energy quadruples, not doubles."
+  },
+  {
+    tag: "Conservation with Friction",
+    question: "A box slides down a ROUGH ramp (friction present). Which equation correctly relates its energy at the top and bottom?",
+    options: [
+      "KE_top + PE_top = KE_bottom + PE_bottom",
+      "KE_top + PE_top = KE_bottom + PE_bottom + energy lost to friction",
+      "PE_top = KE_bottom (ignore initial KE and friction)",
+      "Energy conservation cannot be used if friction is present"
+    ],
+    correct: 1,
+    explanation: "Mechanical energy conservation (KE_i + PE_i = KE_f + PE_f) only holds without non-conservative forces. With friction present, you must add the energy dissipated as heat to the final side of the equation — energy overall is still conserved, just not all of it stays 'mechanical.'"
+  },
+  {
+    tag: "Work vs. Power",
+    question: "Two motors lift identical 50 kg crates to the same height of 4 m. Motor A takes 2 s; Motor B takes 8 s. Which statement is correct?",
+    options: [
+      "Motor A does more work than Motor B",
+      "Motor A and Motor B do the same work, but Motor A has more power",
+      "Motor B has more power, since it ran longer",
+      "Work and power are the same thing here"
+    ],
+    correct: 1,
+    explanation: "Work depends only on force and displacement (W = mgh here), which is identical for both crates — same work. Power is work divided by time (P = W/t), so the motor that did the same work in less time (Motor A) has more power."
+  },
+  {
+    tag: "Negative Work",
+    question: "A box slides across a floor and friction acts on it. What is the sign of the work done BY friction on the box?",
+    options: [
+      "Always positive",
+      "Always negative, since friction opposes the box's displacement",
+      "Zero, because friction isn't a real force",
+      "It depends on the box's mass"
+    ],
+    correct: 1,
+    explanation: "Friction acts opposite to the direction of motion (opposite to displacement), so the angle between the friction force and displacement is 180°, and cos 180° = −1. Work done by friction on a moving object is always negative — it removes kinetic energy from the system."
+  },
+  {
+    tag: "Work-Energy Theorem",
+    question: "A net force does 200 J of work on a 4 kg object initially at rest. What is its final speed?",
+    options: ["10 m/s", "50 m/s", "√50 m/s ≈ 7.07 m/s", "100 m/s"],
+    correct: 0,
+    explanation: "By the work-energy theorem, W_net = ΔKE = ½mv_f² − 0 (starts at rest). So 200 = ½(4)v_f² → v_f² = 100 → v_f = 10 m/s. A common mistake is forgetting to solve for v after finding v² (leaving the answer as √100 unsimplified, or as v² instead of v)."
+  },
+  {
+    tag: "Choosing a Reference Height",
+    question: "A ball's gravitational PE is calculated as zero at the table top instead of the floor. Does this affect the physics of the problem?",
+    options: [
+      "Yes, it changes the ball's actual energy and its final speed",
+      "No — only CHANGES in PE matter physically; the reference height is an arbitrary choice as long as it's used consistently",
+      "Yes, because PE must always be measured from the floor",
+      "No, because gravitational PE doesn't depend on height at all"
+    ],
+    correct: 1,
+    explanation: "PE = mgh is always relative to a chosen zero point. Any consistent choice of reference height gives the same physical answers (like final speed), because only the CHANGE in PE (ΔPE) has physical meaning in the energy equations — the absolute value of PE at any one point is not itself meaningful."
+  },
+  {
+    tag: "Spring PE",
+    question: "A spring with k = 100 N/m is compressed 0.2 m. If it is instead compressed 0.4 m (double the distance), how does its stored elastic potential energy change?",
+    options: ["Doubles", "Triples", "Quadruples", "Stays the same"],
+    correct: 2,
+    explanation: "PE_spring = ½kx², so like kinetic energy, it depends on the SQUARE of the displacement. Doubling the compression distance (x → 2x) quadruples the stored potential energy."
+  }
+];
+
+renderQuiz('quiz', QUIZ_DATA);
+</script>
+</body>
+</html>

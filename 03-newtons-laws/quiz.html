@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Newton's Laws Quiz — Most Missed Questions</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<h1>Unit 3: Newton's Laws — Most-Missed Questions</h1>
+<p class="quiz-subtitle">Click an answer to check it. These are the question types students get wrong most often on this unit.</p>
+<div id="quiz"></div>
+
+<script src="../assets/quiz.js"></script>
+<script>
+const QUIZ_DATA = [
+  {
+    tag: "Third Law Pairs",
+    question: "A book rests on a table. The table pushes up on the book (normal force) and gravity pulls the book down (weight). Is this pair an example of Newton's third law?",
+    options: [
+      "Yes — they're equal and opposite, so they must be a third-law pair",
+      "No — they act on the same object (the book) and are two different types of force; a true third-law pair would be the book pushing down on the table",
+      "Yes, but only if the book is accelerating",
+      "No, because normal force and weight are never equal"
+    ],
+    correct: 1,
+    explanation: "Being equal and opposite is not enough to make a pair a Newton's-third-law pair — they must act on two DIFFERENT objects and be the SAME type of force. Weight and normal force are different force types acting on the same object; they balance by coincidence (equilibrium), not by the third law."
+  },
+  {
+    tag: "Mass vs. Weight",
+    question: "An astronaut has a mass of 80 kg on Earth. What is her mass on the Moon, where gravity is about 1/6th of Earth's?",
+    options: ["80 kg", "13.3 kg", "480 kg", "It depends on her weight on the Moon"],
+    correct: 0,
+    explanation: "Mass is an intrinsic property of matter and does not change with location. Only her weight (a force, F = mg) would decrease on the Moon — her mass stays 80 kg."
+  },
+  {
+    tag: "Constant Velocity ⇒ Equilibrium",
+    question: "A car drives at a constant 100 km/h in a straight line. What is the net force acting on it?",
+    options: [
+      "A large net force in the forward direction, to maintain speed",
+      "Zero — all forces (engine thrust, friction, air resistance) balance",
+      "Zero, because the car has no forces acting on it at all",
+      "A net force equal to the car's weight"
+    ],
+    correct: 1,
+    explanation: "Constant velocity means zero acceleration, so by Newton's second law, net force is zero. This does NOT mean no forces are acting — engine force, friction, and air resistance are all present and exactly balance out."
+  },
+  {
+    tag: "Normal Force ≠ Weight",
+    question: "A 10 kg box sits on the floor of an elevator accelerating upward at 2 m/s². What is the normal force on the box? (g = 9.8 m/s²)",
+    options: ["98 N", "78 N", "118 N", "20 N"],
+    correct: 2,
+    explanation: "N − mg = ma, so N = m(g + a) = 10 × (9.8 + 2) = 118 N. Because the elevator accelerates upward, the normal force must be GREATER than the box's weight (98 N) — normal force is not automatically equal to mg."
+  },
+  {
+    tag: "Static vs. Kinetic Friction",
+    question: "You push a heavy crate with increasing force, but it doesn't move yet. As your push increases (while the crate stays still), what happens to the static friction force?",
+    options: [
+      "It stays constant, equal to μ_s N",
+      "It increases to match your applied force, up to its maximum value",
+      "It decreases as your force increases",
+      "It is zero until the crate starts moving"
+    ],
+    correct: 1,
+    explanation: "Static friction is a 'response' force — it adjusts to exactly match the applied force (keeping the object in equilibrium) up to a maximum value of μ_s N. Only once your push exceeds that maximum does the crate start to slide."
+  },
+  {
+    tag: "Inertia",
+    question: "A car stops suddenly and a passenger without a seatbelt lurches forward. What causes this?",
+    options: [
+      "A forward force pushes the passenger from behind",
+      "The passenger's body continues moving forward due to inertia while the car decelerates",
+      "Air pressure pushes the passenger forward",
+      "The brakes create a forward reaction force on the passenger"
+    ],
+    correct: 1,
+    explanation: "By Newton's first law, the passenger's body keeps moving at its original velocity (inertia) unless a net force acts on it. The car decelerates, but without a seatbelt providing a backward force on the passenger, their body keeps moving forward relative to the car — no forward force is actually needed to explain this."
+  },
+  {
+    tag: "F = ma with Multiple Forces",
+    question: "A 4 kg block is pushed with 20 N to the right while friction of 4 N acts to the left. What is the block's acceleration?",
+    options: ["5 m/s²", "6 m/s²", "4 m/s²", "1 m/s²"],
+    correct: 3,
+    explanation: "Net force = 20 N − 4 N = 16 N. Acceleration = F_net / m = 16 / 4 = 4 m/s². A common mistake is dividing the applied force alone (20 N) by mass and forgetting to subtract friction first."
+  },
+  {
+    tag: "Heavier ≠ Faster Falling",
+    question: "A bowling ball and a tennis ball are dropped from the same height in a vacuum (no air resistance). Which hits the ground first?",
+    options: [
+      "The bowling ball, because it's heavier",
+      "The tennis ball, because it's lighter",
+      "They hit at the same time",
+      "It depends on their exact masses"
+    ],
+    correct: 2,
+    explanation: "In free fall, acceleration due to gravity (g) is the same for all masses — heavier objects have more force pulling them down, but also proportionally more inertia (mass) resisting acceleration, so the effects cancel. Without air resistance, all objects fall at the same rate."
+  }
+];
+
+renderQuiz('quiz', QUIZ_DATA);
+</script>
+</body>
+</html>
