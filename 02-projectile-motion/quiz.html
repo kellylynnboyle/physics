@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projectile Motion Quiz — Most Often Missed Questions</title>
+<style>
+  :root{
+    --bg:#f7f8fb; --card:#ffffff; --ink:#1c1f26; --muted:#5b6270;
+    --accent:#2954d6; --good:#1a8a4a; --bad:#c62839; --border:#e2e5ec;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);padding:24px 16px 60px;}
+  .wrap{max-width:720px;margin:0 auto;}
+  h1{font-size:1.5rem;margin-bottom:4px;}
+  .sub{color:var(--muted);margin-bottom:24px;font-size:.95rem;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;
+        padding:20px;margin-bottom:16px;}
+  .qnum{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+  .qtext{font-size:1.05rem;margin-bottom:14px;line-height:1.45;}
+  .choice{display:block;width:100%;text-align:left;padding:10px 14px;margin-bottom:8px;
+          border:1px solid var(--border);border-radius:8px;background:#fafbfd;cursor:pointer;
+          font-size:.97rem;color:var(--ink);}
+  .choice:hover{border-color:var(--accent);}
+  .choice.correct{border-color:var(--good);background:#e9f7ef;}
+  .choice.incorrect{border-color:var(--bad);background:#fbeaec;}
+  .choice[disabled]{cursor:default;}
+  .explain{display:none;margin-top:10px;padding:10px 12px;border-radius:8px;
+           background:#eef1f8;font-size:.92rem;line-height:1.45;}
+  .explain.show{display:block;}
+  .footer{position:sticky;bottom:0;background:var(--bg);padding-top:12px;}
+  .scorebox{background:var(--card);border:1px solid var(--border);border-radius:12px;
+            padding:20px;text-align:center;}
+  .scorebox h2{margin:0 0 8px;}
+  button.primary{background:var(--accent);color:#fff;border:none;border-radius:8px;
+                  padding:10px 18px;font-size:.95rem;cursor:pointer;}
+  button.primary:disabled{opacity:.4;cursor:not-allowed;}
+  .progress{font-size:.85rem;color:var(--muted);margin-bottom:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Projectile Motion — Interactive Quiz</h1>
+  <p class="sub">10 questions targeting the mistakes students make most often on this topic. Pick an answer to see immediate feedback and an explanation.</p>
+  <div class="progress" id="progress"></div>
+  <div id="quiz"></div>
+  <div class="footer">
+    <div class="scorebox" id="scorebox" style="display:none;">
+      <h2 id="scoreText"></h2>
+      <p id="scoreMsg" style="color:var(--muted);"></p>
+      <button class="primary" onclick="location.reload()">Retake Quiz</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "At the very peak of a projectile's trajectory, which statement is true?",
+    choices: ["Both velocity components are zero", "Vertical velocity is zero, horizontal velocity is unchanged", "Horizontal velocity is zero, vertical velocity is unchanged", "Acceleration is zero"],
+    correct: 1,
+    explain: "Only the vertical velocity component reaches zero at the peak. Horizontal velocity never changes during the flight, and the object is still moving forward at the peak — it's not momentarily at rest."
+  },
+  {
+    q: "A projectile launched at 30° and one launched at 60° (same speed, same height) will have:",
+    choices: ["The 60° projectile travels farther", "The 30° projectile travels farther", "Both travel the same horizontal range", "Not enough information"],
+    correct: 2,
+    explain: "30° and 60° are complementary angles (sum to 90°), so sin(2×30°) = sin(60°) = sin(2×60°) = sin(120°) — they produce identical ranges on level ground, even though their trajectories look very different (one high and short-range-looking, one low and flat)."
+  },
+  {
+    q: "A ball rolls off a table horizontally. Compared to an identical ball simply dropped from the same table at the same instant, which hits the ground first?",
+    choices: ["The rolling ball, because it has more speed", "The dropped ball, because it falls straight down", "They hit at the same time", "Depends on the horizontal speed"],
+    correct: 2,
+    explain: "Vertical motion is completely independent of horizontal motion. Both balls start with v₀ᵧ = 0 and experience the same downward acceleration g, so they fall — and land — in exactly the same amount of time, regardless of horizontal speed."
+  },
+  {
+    q: "When resolving an initial velocity v₀ launched at angle θ above horizontal, which is the vertical component?",
+    choices: ["v₀ cos θ", "v₀ sin θ", "v₀ tan θ", "v₀ / sin θ"],
+    correct: 1,
+    explain: "With θ measured from the horizontal, the vertical component is v₀ sin θ and the horizontal component is v₀ cos θ. Swapping sin and cos is one of the most common errors in this unit — always sketch the triangle rather than memorizing blindly."
+  },
+  {
+    q: "A cannonball is fired horizontally off a cliff. Which equation correctly finds the time it takes to hit the ground below?",
+    choices: ["t = v₀/g, using the horizontal launch speed", "h = ½gt², solved for t, using only the height and g", "t = v₀ₓ · h", "Time cannot be found without the landing horizontal distance"],
+    correct: 1,
+    explain: "Because the initial vertical velocity is zero for a horizontal launch, the fall time depends ONLY on the height and g — not on how fast it was launched horizontally. Many students try to fold the horizontal speed into this calculation, but the two axes are independent."
+  },
+  {
+    q: "Why is the acceleration during projectile motion NOT zero at the top of the arc?",
+    choices: [
+      "Because gravity acts continuously on the object throughout the entire flight, regardless of its velocity",
+      "Because horizontal velocity is still changing at that point",
+      "Because air resistance is greatest at the peak",
+      "It IS zero at the top, since velocity is momentarily zero there"
+    ],
+    correct: 0,
+    explain: "This mirrors the classic free-fall misconception from Topic 1. Gravity is a constant downward force (and acceleration) the entire flight. Vertical velocity happens to be zero at the peak, but acceleration is never zero — it's what causes the velocity to keep changing right through that instant."
+  },
+  {
+    q: "A projectile is launched from a height above the ground and lands at a LOWER height than it launched (e.g., off a cliff). Which approach is correct for finding total flight time?",
+    choices: [
+      "T = 2v₀sinθ/g, same as the level-ground formula",
+      "Set up y(t) = y₀ + v₀ᵧt − ½gt² with the actual landing height, and solve the resulting quadratic for t",
+      "Time of flight cannot be calculated if launch and landing heights differ",
+      "Use only the range formula and ignore height"
+    ],
+    correct: 1,
+    explain: "The symmetric formula T = 2v₀sinθ/g only works when launch and landing heights are EQUAL. When they differ, you must solve the full quadratic position equation for the actual landing height — a step many students skip, incorrectly applying the level-ground shortcut."
+  },
+  {
+    q: "During the descending half of a projectile's flight (level launch/landing), how does the horizontal velocity compare to the ascending half?",
+    choices: ["It's the same", "It's greater", "It's smaller", "It reverses direction"],
+    correct: 0,
+    explain: "Horizontal velocity is constant for the ENTIRE flight — ascending or descending doesn't matter. Only the vertical velocity component changes (decreasing to zero, then increasing in magnitude downward)."
+  },
+  {
+    q: "What does the SHAPE of a projectile's trajectory (plotting height vs. horizontal distance) look like, and why?",
+    choices: [
+      "A straight line, because velocity components are constant",
+      "A parabola, because position in y is a quadratic function of position in x once time is eliminated",
+      "A circle, because the object returns to the same height it started",
+      "It depends entirely on the launch angle and cannot be generalized"
+    ],
+    correct: 1,
+    explain: "Since x = v₀ₓt (linear in t) and y = v₀ᵧt − ½gt² (quadratic in t), eliminating t between the two produces y as a quadratic function of x — a parabola. This holds for any launch angle greater than 0° and less than 90°."
+  },
+  {
+    q: "A student calculates a projectile's range using R = v₀²sin(2θ)/g for a ball launched from a 2 m platform landing on the ground (0 m). What's wrong?",
+    choices: [
+      "Nothing — the formula always works",
+      "The formula assumes equal launch and landing height, which isn't the case here",
+      "The formula should use sin(θ) instead of sin(2θ)",
+      "The formula only works for angles above 45°"
+    ],
+    correct: 1,
+    explain: "The compact range formula R = v₀²sin(2θ)/g is derived assuming the projectile lands at the same height it launched from. Since this launch is from an elevated platform to ground level, that assumption is violated — the general quadratic approach must be used instead, and will give a LARGER range than the naive formula suggests."
+  }
+];
+
+let current = 0, score = 0;
+const quizEl = document.getElementById('quiz');
+const progressEl = document.getElementById('progress');
+
+function render() {
+  if (current >= QUESTIONS.length) {
+    quizEl.innerHTML = '';
+    const box = document.getElementById('scorebox');
+    box.style.display = 'block';
+    const pct = Math.round((score / QUESTIONS.length) * 100);
+    document.getElementById('scoreText').textContent = `Score: ${score} / ${QUESTIONS.length} (${pct}%)`;
+    document.getElementById('scoreMsg').textContent = pct >= 80
+      ? "Nice work — you've hit the mastery bar for this topic. Log this score in PROGRESS_TRACKER.md."
+      : "Review the explanations above and revisit cornell-notes.md before retaking — 80% is the mastery target.";
+    progressEl.textContent = '';
+    return;
+  }
+  progressEl.textContent = `Question ${current + 1} of ${QUESTIONS.length} · Score so far: ${score}`;
+  const item = QUESTIONS[current];
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="qnum">Question ${current + 1}</div>
+    <div class="qtext">${item.q}</div>
+    <div class="choices"></div>
+    <div class="explain" id="explain"></div>
+  `;
+  const choicesEl = card.querySelector('.choices');
+  item.choices.forEach((choice, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.textContent = choice;
+    btn.onclick = () => selectAnswer(i, item, card);
+    choicesEl.appendChild(btn);
+  });
+  quizEl.innerHTML = '';
+  quizEl.appendChild(card);
+}
+
+function selectAnswer(i, item, card) {
+  const buttons = card.querySelectorAll('.choice');
+  buttons.forEach((b, idx) => {
+    b.disabled = true;
+    if (idx === item.correct) b.classList.add('correct');
+    else if (idx === i) b.classList.add('incorrect');
+  });
+  if (i === item.correct) score++;
+  const explainEl = card.querySelector('#explain');
+  explainEl.textContent = item.explain;
+  explainEl.classList.add('show');
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'primary';
+  nextBtn.style.marginTop = '14px';
+  nextBtn.textContent = current === QUESTIONS.length - 1 ? 'See Score' : 'Next Question';
+  nextBtn.onclick = () => { current++; render(); };
+  card.appendChild(nextBtn);
+}
+
+render();
+</script>
+</body>
+</html>

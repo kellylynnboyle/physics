@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work &amp; Energy Quiz — Most Often Missed Questions</title>
+<style>
+  :root{
+    --bg:#f7f8fb; --card:#ffffff; --ink:#1c1f26; --muted:#5b6270;
+    --accent:#2954d6; --good:#1a8a4a; --bad:#c62839; --border:#e2e5ec;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);padding:24px 16px 60px;}
+  .wrap{max-width:720px;margin:0 auto;}
+  h1{font-size:1.5rem;margin-bottom:4px;}
+  .sub{color:var(--muted);margin-bottom:24px;font-size:.95rem;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;
+        padding:20px;margin-bottom:16px;}
+  .qnum{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+  .qtext{font-size:1.05rem;margin-bottom:14px;line-height:1.45;}
+  .choice{display:block;width:100%;text-align:left;padding:10px 14px;margin-bottom:8px;
+          border:1px solid var(--border);border-radius:8px;background:#fafbfd;cursor:pointer;
+          font-size:.97rem;color:var(--ink);}
+  .choice:hover{border-color:var(--accent);}
+  .choice.correct{border-color:var(--good);background:#e9f7ef;}
+  .choice.incorrect{border-color:var(--bad);background:#fbeaec;}
+  .choice[disabled]{cursor:default;}
+  .explain{display:none;margin-top:10px;padding:10px 12px;border-radius:8px;
+           background:#eef1f8;font-size:.92rem;line-height:1.45;}
+  .explain.show{display:block;}
+  .footer{position:sticky;bottom:0;background:var(--bg);padding-top:12px;}
+  .scorebox{background:var(--card);border:1px solid var(--border);border-radius:12px;
+            padding:20px;text-align:center;}
+  .scorebox h2{margin:0 0 8px;}
+  button.primary{background:var(--accent);color:#fff;border:none;border-radius:8px;
+                  padding:10px 18px;font-size:.95rem;cursor:pointer;}
+  button.primary:disabled{opacity:.4;cursor:not-allowed;}
+  .progress{font-size:.85rem;color:var(--muted);margin-bottom:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Work &amp; Energy — Interactive Quiz</h1>
+  <p class="sub">10 questions targeting the mistakes students make most often on this topic. Pick an answer to see immediate feedback and an explanation.</p>
+  <div class="progress" id="progress"></div>
+  <div id="quiz"></div>
+  <div class="footer">
+    <div class="scorebox" id="scorebox" style="display:none;">
+      <h2 id="scoreText"></h2>
+      <p id="scoreMsg" style="color:var(--muted);"></p>
+      <button class="primary" onclick="location.reload()">Retake Quiz</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A person holds a heavy bag stationary at arm's length for 30 seconds. How much work do they do on the bag?",
+    choices: ["A lot, because they're exerting a large force the whole time", "Zero, because the bag doesn't move (no displacement)", "It depends on how tired they get", "Equal to the bag's weight times 30 seconds"],
+    correct: 1,
+    explain: "Work requires DISPLACEMENT: W = Fd·cosθ. With zero displacement, work is exactly zero, regardless of how much force is applied or for how long — even though it's physically tiring. This is one of the most common misconceptions because everyday language uses 'work' very differently than physics does."
+  },
+  {
+    q: "A person carries a bag at constant height while walking horizontally at constant velocity. How much work does GRAVITY do on the bag during this walk?",
+    choices: ["A large positive amount, since gravity is always acting", "Zero, because gravity is perpendicular to the horizontal displacement", "A large negative amount", "It depends on the person's walking speed"],
+    correct: 1,
+    explain: "Gravity acts straight down; the bag's displacement is horizontal. The angle between them is 90°, and cos(90°) = 0, so W = Fd·cos(90°) = 0. This is the 'forgetting the cosθ factor' trap in its purest form — a force can be present and doing NO work if it's perpendicular to the motion."
+  },
+  {
+    q: "The work–energy theorem states that the NET work done on an object equals:",
+    choices: ["Its change in momentum", "Its change in kinetic energy", "Its change in potential energy", "The force applied times its mass"],
+    correct: 1,
+    explain: "W_net = ΔKE — this is the work-energy theorem. A common error is confusing this with the impulse-momentum theorem (J = Δp) from the momentum unit; they look structurally similar but relate different quantities (work→KE vs. impulse→momentum)."
+  },
+  {
+    q: "A ball rolls down a frictionless ramp and a second identical ball falls straight down from the same height. Which ball has more kinetic energy at the bottom/at ground level?",
+    choices: ["The one that fell straight down, since gravity acts more directly", "The one that rolled down the ramp, since it travels a longer path", "They have the same kinetic energy, since both fell the same height with no friction", "Cannot be determined without knowing the ramp's angle"],
+    correct: 2,
+    explain: "Gravitational PE (mgh) depends only on the height dropped, not the path taken (gravity is a conservative force). With no friction, all of that PE converts to KE in both cases, so both balls arrive with equal kinetic energy and equal speed — even though the ramp-ball takes a longer path and more time."
+  },
+  {
+    q: "A box slides across a rough floor and comes to a stop due to friction. What happened to its kinetic energy?",
+    choices: [
+      "It simply disappeared — energy was destroyed",
+      "It converted into heat (and some sound), via the negative work done by friction — total energy is still conserved",
+      "It converted entirely into potential energy",
+      "It transferred to the floor's kinetic energy"
+    ],
+    correct: 1,
+    explain: "Energy is never destroyed — the box's mechanical energy (KE here) converts into thermal energy (heat, from friction) and a small amount of sound. Students often think of energy conservation as being violated whenever friction is involved, but total energy (mechanical + thermal + etc.) is always conserved; it's only MECHANICAL energy that can decrease."
+  },
+  {
+    q: "Two engines lift identical crates to the same height. Engine A takes 5 seconds, Engine B takes 10 seconds. Compare the WORK done and the POWER used by each.",
+    choices: [
+      "Engine A does more work; power is equal",
+      "Both do the same amount of work; Engine A uses more power (does it faster)",
+      "Engine B uses more power because it runs longer",
+      "Work and power are the same thing here"
+    ],
+    correct: 1,
+    explain: "Work only depends on force and displacement (here, both lift the same crate the same height, so W = mgh is identical for both). Power = Work/time, so the engine that does the SAME work in LESS time (Engine A) has the HIGHER power — a very common mix-up is thinking 'longer time = more power,' which is backwards."
+  },
+  {
+    q: "A spring is compressed to store elastic potential energy. If you compress it TWICE as far (double x), how does the stored PE change?",
+    choices: ["It doubles", "It quadruples", "It stays the same", "It's cut in half"],
+    correct: 1,
+    explain: "PE_spring = ½kx² — energy depends on x SQUARED, not x directly. Doubling x quadruples the stored energy (2² = 4). Students often assume a linear relationship (like with gravitational PE = mgh, which IS linear in h), but spring PE is quadratic in displacement."
+  },
+  {
+    q: "In a roller coaster with no friction, the car reaches its maximum speed at:",
+    choices: ["The top of the first hill", "The lowest point of the track (where PE is at its minimum)", "Wherever the track is steepest", "Speed stays constant throughout"],
+    correct: 1,
+    explain: "By conservation of mechanical energy, KE + PE stays constant. KE is largest exactly where PE is smallest — the lowest point of the track — since energy 'converted' from PE flows entirely into KE there (assuming no friction losses)."
+  },
+  {
+    q: "A crate is pushed 4 m by a 30 N force applied at a 60° angle above horizontal. What is the correct work calculation?",
+    choices: [
+      "W = 30 × 4 = 120 J (ignore the angle)",
+      "W = 30 × 4 × cos(60°) = 60 J",
+      "W = 30 × 4 × sin(60°) = 103.9 J",
+      "W = 30 × 4 × tan(60°)"
+    ],
+    correct: 1,
+    explain: "W = Fd·cosθ, using the COSINE of the angle BETWEEN the force and the displacement direction — here the displacement is horizontal, so θ = 60° is the correct angle to use with cosine. A common error is either dropping the angle entirely, or using sine instead of cosine (which would be appropriate if you needed the perpendicular component instead of the parallel one)."
+  },
+  {
+    q: "An object's kinetic energy depends on its velocity. If the object's speed doubles, its kinetic energy:",
+    choices: ["Doubles", "Quadruples", "Stays the same", "Increases by a factor of 8"],
+    correct: 1,
+    explain: "KE = ½mv² — kinetic energy scales with the SQUARE of velocity, just like spring PE scales with the square of displacement. Doubling speed quadruples KE (2² = 4). This is also why braking distance/energy dissipation scales so sharply with speed — a frequent point of confusion carried over from the Kinematics unit."
+  }
+];
+
+let current = 0, score = 0;
+const quizEl = document.getElementById('quiz');
+const progressEl = document.getElementById('progress');
+
+function render() {
+  if (current >= QUESTIONS.length) {
+    quizEl.innerHTML = '';
+    const box = document.getElementById('scorebox');
+    box.style.display = 'block';
+    const pct = Math.round((score / QUESTIONS.length) * 100);
+    document.getElementById('scoreText').textContent = `Score: ${score} / ${QUESTIONS.length} (${pct}%)`;
+    document.getElementById('scoreMsg').textContent = pct >= 80
+      ? "Nice work — you've hit the mastery bar for this topic. Log this score in PROGRESS_TRACKER.md."
+      : "Review the explanations above and revisit cornell-notes.md before retaking — 80% is the mastery target.";
+    progressEl.textContent = '';
+    return;
+  }
+  progressEl.textContent = `Question ${current + 1} of ${QUESTIONS.length} · Score so far: ${score}`;
+  const item = QUESTIONS[current];
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="qnum">Question ${current + 1}</div>
+    <div class="qtext">${item.q}</div>
+    <div class="choices"></div>
+    <div class="explain" id="explain"></div>
+  `;
+  const choicesEl = card.querySelector('.choices');
+  item.choices.forEach((choice, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.textContent = choice;
+    btn.onclick = () => selectAnswer(i, item, card);
+    choicesEl.appendChild(btn);
+  });
+  quizEl.innerHTML = '';
+  quizEl.appendChild(card);
+}
+
+function selectAnswer(i, item, card) {
+  const buttons = card.querySelectorAll('.choice');
+  buttons.forEach((b, idx) => {
+    b.disabled = true;
+    if (idx === item.correct) b.classList.add('correct');
+    else if (idx === i) b.classList.add('incorrect');
+  });
+  if (i === item.correct) score++;
+  const explainEl = card.querySelector('#explain');
+  explainEl.textContent = item.explain;
+  explainEl.classList.add('show');
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'primary';
+  nextBtn.style.marginTop = '14px';
+  nextBtn.textContent = current === QUESTIONS.length - 1 ? 'See Score' : 'Next Question';
+  nextBtn.onclick = () => { current++; render(); };
+  card.appendChild(nextBtn);
+}
+
+render();
+</script>
+</body>
+</html>

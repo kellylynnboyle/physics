@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinematics Quiz — Most Often Missed Questions</title>
+<style>
+  :root{
+    --bg:#f7f8fb; --card:#ffffff; --ink:#1c1f26; --muted:#5b6270;
+    --accent:#2954d6; --good:#1a8a4a; --bad:#c62839; --border:#e2e5ec;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);padding:24px 16px 60px;}
+  .wrap{max-width:720px;margin:0 auto;}
+  h1{font-size:1.5rem;margin-bottom:4px;}
+  .sub{color:var(--muted);margin-bottom:24px;font-size:.95rem;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;
+        padding:20px;margin-bottom:16px;}
+  .qnum{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+  .qtext{font-size:1.05rem;margin-bottom:14px;line-height:1.45;}
+  .choice{display:block;width:100%;text-align:left;padding:10px 14px;margin-bottom:8px;
+          border:1px solid var(--border);border-radius:8px;background:#fafbfd;cursor:pointer;
+          font-size:.97rem;color:var(--ink);}
+  .choice:hover{border-color:var(--accent);}
+  .choice.correct{border-color:var(--good);background:#e9f7ef;}
+  .choice.incorrect{border-color:var(--bad);background:#fbeaec;}
+  .choice[disabled]{cursor:default;}
+  .explain{display:none;margin-top:10px;padding:10px 12px;border-radius:8px;
+           background:#eef1f8;font-size:.92rem;line-height:1.45;}
+  .explain.show{display:block;}
+  .footer{position:sticky;bottom:0;background:var(--bg);padding-top:12px;}
+  .scorebox{background:var(--card);border:1px solid var(--border);border-radius:12px;
+            padding:20px;text-align:center;}
+  .scorebox h2{margin:0 0 8px;}
+  button.primary{background:var(--accent);color:#fff;border:none;border-radius:8px;
+                  padding:10px 18px;font-size:.95rem;cursor:pointer;}
+  button.primary:disabled{opacity:.4;cursor:not-allowed;}
+  .progress{font-size:.85rem;color:var(--muted);margin-bottom:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Kinematics — Interactive Quiz</h1>
+  <p class="sub">10 questions targeting the mistakes students make most often on this topic. Pick an answer to see immediate feedback and an explanation.</p>
+  <div class="progress" id="progress"></div>
+  <div id="quiz"></div>
+  <div class="footer">
+    <div class="scorebox" id="scorebox" style="display:none;">
+      <h2 id="scoreText"></h2>
+      <p id="scoreMsg" style="color:var(--muted);"></p>
+      <button class="primary" onclick="location.reload()">Retake Quiz</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A car moving in the positive direction has a negative acceleration. What is happening to the car?",
+    choices: ["It is speeding up", "It is slowing down", "It is moving at constant speed", "It has stopped permanently"],
+    correct: 1,
+    explain: "Velocity is positive, acceleration is negative — opposite signs mean the object is slowing down. This is one of the most common sign-confusion errors: students often assume 'negative acceleration' always means 'speeding up in the negative direction' without checking the velocity's sign first."
+  },
+  {
+    q: "A ball thrown straight up is momentarily at rest at the top of its path. What is its acceleration at that instant?",
+    choices: ["Zero", "9.8 m/s², directed downward", "9.8 m/s², directed upward", "It cannot be determined"],
+    correct: 1,
+    explain: "This is the single most common free-fall misconception. Velocity = 0 does NOT mean acceleration = 0. Gravity acts continuously; acceleration stays −g the entire flight, including at the peak."
+  },
+  {
+    q: "An object travels in a circle and returns to its exact starting point. What is its displacement?",
+    choices: ["Equal to the distance traveled", "Zero", "Negative", "Cannot be zero if distance traveled is nonzero"],
+    correct: 1,
+    explain: "Displacement only depends on start and end position. If they're the same point, displacement is zero — no matter how far the object actually traveled (distance)."
+  },
+  {
+    q: "On a velocity–time graph, what does the AREA under the curve represent?",
+    choices: ["Acceleration", "Displacement", "Speed", "Jerk"],
+    correct: 1,
+    explain: "Area under a v-t graph = displacement (this comes from Δx = v·t generalized to changing v). Students frequently confuse this with the SLOPE of a v-t graph, which is acceleration instead."
+  },
+  {
+    q: "On a position–time graph, what does the SLOPE represent?",
+    choices: ["Acceleration", "Displacement", "Velocity", "Distance"],
+    correct: 2,
+    explain: "Slope of a position-time graph is the rate of change of position — that's velocity. A common mix-up is swapping this with the v-t graph rule (where slope = acceleration)."
+  },
+  {
+    q: "A stone is dropped (not thrown) from a cliff. Which kinematic equation setup is correct for finding how long it falls, using down as positive?",
+    choices: [
+      "Δx = v₀t + ½at², with v₀ = 0",
+      "Δx = v₀t + ½at², with v₀ equal to the impact velocity",
+      "v = v₀ + at, solved for Δx directly",
+      "Δx = ½at² is never valid for free fall"
+    ],
+    correct: 0,
+    explain: "'Dropped' means initial velocity is zero — a detail students often skip past. With v₀ = 0, Δx = ½at² is the correct simplified form."
+  },
+  {
+    q: "A car speeds up from 0 to 20 m/s in 5 s, then travels at a constant 20 m/s for another 5 s. What is a common mistake when finding total distance?",
+    choices: [
+      "Using the same kinematic equation for the whole 10 s as one stage",
+      "Splitting the motion into two stages and adding the distances",
+      "Using the average velocity method for the first stage",
+      "Using v² = v₀² + 2aΔx for the first stage"
+    ],
+    correct: 0,
+    explain: "Kinematic equations assume CONSTANT acceleration throughout the interval used. Because acceleration changes (from 4 m/s² to 0 m/s²) partway through, the motion must be split into two separate stages, each solved on its own, then the distances added."
+  },
+  {
+    q: "Which pair of variables lets you use the equation v² = v₀² + 2aΔx most directly, i.e., which variable is this equation missing?",
+    choices: ["Displacement (Δx)", "Time (t)", "Final velocity (v)", "Acceleration (a)"],
+    correct: 1,
+    explain: "v² = v₀² + 2aΔx is the one kinematic equation that doesn't include time — useful when time isn't given or asked for. Picking the equation that's missing the unknown-and-unneeded variable is the fastest way to solve kinematics problems without extra algebra."
+  },
+  {
+    q: "Two runners start at the same point. Runner A moves at constant 5 m/s. Runner B starts from rest and accelerates at 2 m/s². What mistake do students commonly make when finding when B catches A?",
+    choices: [
+      "Assuming B catches A the instant their velocities are equal",
+      "Setting the two position equations equal to each other and solving for t",
+      "Recognizing B's velocity will keep increasing past A's",
+      "Using different time variables for A and B in the same equation"
+    ],
+    correct: 0,
+    explain: "Equal VELOCITY doesn't mean equal POSITION. B catching up to A means their positions (displacements) are equal, not their speeds — the two runners' velocities are equal only at the moment B's speed happens to match A's, which is unrelated to whether B has caught up yet."
+  },
+  {
+    q: "Average speed over a trip is defined as:",
+    choices: [
+      "Displacement divided by total time",
+      "Total distance traveled divided by total time",
+      "The average of the initial and final velocity, always",
+      "Final velocity divided by time"
+    ],
+    correct: 1,
+    explain: "Average SPEED uses total distance (always positive, scalar). Average VELOCITY uses displacement (can be zero or negative). These are only numerically equal when motion never changes direction — a distinction many students miss on round-trip problems."
+  }
+];
+
+let current = 0, score = 0;
+const quizEl = document.getElementById('quiz');
+const progressEl = document.getElementById('progress');
+
+function render() {
+  if (current >= QUESTIONS.length) {
+    quizEl.innerHTML = '';
+    const box = document.getElementById('scorebox');
+    box.style.display = 'block';
+    const pct = Math.round((score / QUESTIONS.length) * 100);
+    document.getElementById('scoreText').textContent = `Score: ${score} / ${QUESTIONS.length} (${pct}%)`;
+    document.getElementById('scoreMsg').textContent = pct >= 80
+      ? "Nice work — you've hit the mastery bar for this topic. Log this score in PROGRESS_TRACKER.md."
+      : "Review the explanations above and revisit cornell-notes.md before retaking — 80% is the mastery target.";
+    progressEl.textContent = '';
+    return;
+  }
+  progressEl.textContent = `Question ${current + 1} of ${QUESTIONS.length} · Score so far: ${score}`;
+  const item = QUESTIONS[current];
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="qnum">Question ${current + 1}</div>
+    <div class="qtext">${item.q}</div>
+    <div class="choices"></div>
+    <div class="explain" id="explain"></div>
+  `;
+  const choicesEl = card.querySelector('.choices');
+  item.choices.forEach((choice, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.textContent = choice;
+    btn.onclick = () => selectAnswer(i, item, card);
+    choicesEl.appendChild(btn);
+  });
+  quizEl.innerHTML = '';
+  quizEl.appendChild(card);
+}
+
+function selectAnswer(i, item, card) {
+  const buttons = card.querySelectorAll('.choice');
+  buttons.forEach((b, idx) => {
+    b.disabled = true;
+    if (idx === item.correct) b.classList.add('correct');
+    else if (idx === i) b.classList.add('incorrect');
+  });
+  if (i === item.correct) score++;
+  const explainEl = card.querySelector('#explain');
+  explainEl.textContent = item.explain;
+  explainEl.classList.add('show');
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'primary';
+  nextBtn.style.marginTop = '14px';
+  nextBtn.textContent = current === QUESTIONS.length - 1 ? 'See Score' : 'Next Question';
+  nextBtn.onclick = () => { current++; render(); };
+  card.appendChild(nextBtn);
+}
+
+render();
+</script>
+</body>
+</html>

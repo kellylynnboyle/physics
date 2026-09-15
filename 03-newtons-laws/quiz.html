@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newton's Laws Quiz — Most Often Missed Questions</title>
+<style>
+  :root{
+    --bg:#f7f8fb; --card:#ffffff; --ink:#1c1f26; --muted:#5b6270;
+    --accent:#2954d6; --good:#1a8a4a; --bad:#c62839; --border:#e2e5ec;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);padding:24px 16px 60px;}
+  .wrap{max-width:720px;margin:0 auto;}
+  h1{font-size:1.5rem;margin-bottom:4px;}
+  .sub{color:var(--muted);margin-bottom:24px;font-size:.95rem;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;
+        padding:20px;margin-bottom:16px;}
+  .qnum{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+  .qtext{font-size:1.05rem;margin-bottom:14px;line-height:1.45;}
+  .choice{display:block;width:100%;text-align:left;padding:10px 14px;margin-bottom:8px;
+          border:1px solid var(--border);border-radius:8px;background:#fafbfd;cursor:pointer;
+          font-size:.97rem;color:var(--ink);}
+  .choice:hover{border-color:var(--accent);}
+  .choice.correct{border-color:var(--good);background:#e9f7ef;}
+  .choice.incorrect{border-color:var(--bad);background:#fbeaec;}
+  .choice[disabled]{cursor:default;}
+  .explain{display:none;margin-top:10px;padding:10px 12px;border-radius:8px;
+           background:#eef1f8;font-size:.92rem;line-height:1.45;}
+  .explain.show{display:block;}
+  .footer{position:sticky;bottom:0;background:var(--bg);padding-top:12px;}
+  .scorebox{background:var(--card);border:1px solid var(--border);border-radius:12px;
+            padding:20px;text-align:center;}
+  .scorebox h2{margin:0 0 8px;}
+  button.primary{background:var(--accent);color:#fff;border:none;border-radius:8px;
+                  padding:10px 18px;font-size:.95rem;cursor:pointer;}
+  button.primary:disabled{opacity:.4;cursor:not-allowed;}
+  .progress{font-size:.85rem;color:var(--muted);margin-bottom:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Newton's Laws — Interactive Quiz</h1>
+  <p class="sub">10 questions targeting the mistakes students make most often on this topic. Pick an answer to see immediate feedback and an explanation.</p>
+  <div class="progress" id="progress"></div>
+  <div id="quiz"></div>
+  <div class="footer">
+    <div class="scorebox" id="scorebox" style="display:none;">
+      <h2 id="scoreText"></h2>
+      <p id="scoreMsg" style="color:var(--muted);"></p>
+      <button class="primary" onclick="location.reload()">Retake Quiz</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A hockey puck slides across frictionless ice at constant velocity. What net force is acting on it?",
+    choices: ["A force equal to its weight, pushing it forward", "Zero net force", "A small force just enough to keep it moving", "It depends on the puck's speed"],
+    correct: 1,
+    explain: "This is the classic First Law misconception (rooted in Aristotelian physics): motion does NOT require a continuing force. Constant velocity means zero acceleration, which by ΣF=ma means zero NET force — even though the puck keeps moving indefinitely."
+  },
+  {
+    q: "A table pushes up on a book resting on it. What is the Newton's-third-law reaction force to this?",
+    choices: ["Gravity pulling the book down", "The book pushing down on the table", "The normal force balancing gravity", "There is no reaction force in this case"],
+    correct: 1,
+    explain: "Third-law pairs always act on TWO DIFFERENT objects and involve the SAME TYPE of interaction. 'Table pushes up on book' pairs with 'book pushes down on table' (both are the normal contact force, reversed). 'Gravity pulls book down' is a completely different force (gravitational, not contact) that happens to act on the book too — it is NOT the reaction pair, even though it's a very common wrong answer."
+  },
+  {
+    q: "Why don't the two forces in a Newton's-third-law pair cancel each other out?",
+    choices: [
+      "They do cancel out — that's why objects are often in equilibrium",
+      "They act on two different objects, so they can't add together to give zero net force on any single object",
+      "They only cancel if the objects have equal mass",
+      "They cancel only in the horizontal direction"
+    ],
+    correct: 1,
+    explain: "Net force is only meaningful for a single object — you sum the forces acting ON that one object. Third-law pairs act on different objects entirely, so they never appear together in the same ΣF = ma equation and therefore can never cancel each other."
+  },
+  {
+    q: "An astronaut on the Moon has the same mass as on Earth but weighs less. Why?",
+    choices: [
+      "Mass decreases on the Moon due to lower gravity",
+      "Weight depends on local gravitational acceleration (W=mg), while mass is an intrinsic, unchanging property of the object",
+      "The astronaut's body loses matter during the trip",
+      "Weight and mass are actually the same thing, just measured differently"
+    ],
+    correct: 1,
+    explain: "Mass is a measure of the amount of matter (and resistance to acceleration) — it doesn't change with location. Weight is the gravitational FORCE on that mass, W = mg, and changes because the Moon's g (~1.6 m/s²) is about 1/6th of Earth's."
+  },
+  {
+    q: "A heavier box requires more applied force to push across a frictionless floor at constant velocity than a lighter box. True or false?",
+    choices: ["True — heavier objects always need more force to move", "False — on a frictionless surface, zero net force is needed to maintain ANY constant velocity, regardless of mass", "True, but only if the boxes start from rest", "False, because friction always exists in real life"],
+    correct: 1,
+    explain: "This tests the First Law misconception again, dressed differently: 'heavier things need more force to keep moving.' On a frictionless surface, maintaining constant velocity (any mass) needs zero net force. The confusion usually comes from mixing this up with the force needed to ACCELERATE a heavier object, which does require more force (F=ma), or with real-world friction, which does scale with weight."
+  },
+  {
+    q: "A box sits still on a ramp because static friction holds it in place. As you slowly increase the ramp's angle right up to the point just before the box starts sliding, what happens to the static friction force?",
+    choices: [
+      "It stays constant the whole time",
+      "It increases, matching the increasing component of gravity along the ramp, up to its maximum value",
+      "It decreases as the angle increases",
+      "It is always equal to μ_s × N regardless of whether the box is moving"
+    ],
+    correct: 1,
+    explain: "Static friction is NOT a fixed value — it adjusts to exactly balance the applied force (here, gravity's component along the ramp) up to a maximum of μ_s·N. Only AT that maximum does the formula f_s,max = μ_s·N apply; below the max, static friction can be anything from 0 up to that ceiling. Many students treat μ_s·N as the friction force at all times, which is only true right at the verge of slipping."
+  },
+  {
+    q: "In an elevator accelerating UPWARD, a passenger's apparent weight (what a scale would read) is:",
+    choices: ["Less than their true weight (mg)", "Greater than their true weight (mg)", "Exactly equal to their true weight", "Zero"],
+    correct: 1,
+    explain: "Using ΣF=ma with up as positive: N − mg = ma, so N = mg + ma, which is GREATER than mg when accelerating upward. Students often intuitively expect this correctly, but frequently mix up the sign when the elevator accelerates downward instead, where N = mg − ma is LESS than true weight."
+  },
+  {
+    q: "Two blocks connected by a string are pulled across a frictionless table by a force on the front block. Compared to the front block, the tension pulling the back block forward is:",
+    choices: [
+      "Always equal to the applied force",
+      "Less than the applied force, and determines the back block's acceleration via its own ΣF=ma equation",
+      "Greater than the applied force",
+      "Impossible to determine without knowing the string's mass"
+    ],
+    correct: 1,
+    explain: "The tension is an internal force between the two blocks — it equals the applied force only if you (incorrectly) skip analyzing each block separately. Correctly, you must write ΣF=ma for EACH block: for the back block, tension alone equals its mass times the (shared) system acceleration, which is generally less than the total applied force analyzed on the front block alone."
+  },
+  {
+    q: "A car is in free fall (e.g., dropped, or in a plunging elevator with a broken cable) with a scale underneath a passenger. What does the scale read?",
+    choices: ["The passenger's full weight (mg)", "Zero — the scale reads apparent weightlessness", "A negative number", "It depends on the car's speed"],
+    correct: 1,
+    explain: "In free fall, both the passenger and the scale accelerate downward together at exactly g, so there is no compression force between them — the normal force (and thus the scale reading) is zero, even though true gravitational weight (mg) is unchanged and nonzero. This is genuine 'apparent weightlessness,' the same effect astronauts experience in orbit."
+  },
+  {
+    q: "A car rounds a flat, unbanked curve at constant speed without skidding. What provides the centripetal force?",
+    choices: [
+      "The engine's forward driving force",
+      "Static friction between the tires and the road, directed toward the center of the curve",
+      "The car's own inertia",
+      "Air resistance"
+    ],
+    correct: 1,
+    explain: "Even though the car isn't sliding, static friction is what supplies the sideways (centripetal) force needed to curve the car's path — a common point of confusion since students associate friction only with resisting sliding, not with enabling turning. If this friction is exceeded (e.g., on ice), the car skids outward off its intended path."
+  }
+];
+
+let current = 0, score = 0;
+const quizEl = document.getElementById('quiz');
+const progressEl = document.getElementById('progress');
+
+function render() {
+  if (current >= QUESTIONS.length) {
+    quizEl.innerHTML = '';
+    const box = document.getElementById('scorebox');
+    box.style.display = 'block';
+    const pct = Math.round((score / QUESTIONS.length) * 100);
+    document.getElementById('scoreText').textContent = `Score: ${score} / ${QUESTIONS.length} (${pct}%)`;
+    document.getElementById('scoreMsg').textContent = pct >= 80
+      ? "Nice work — you've hit the mastery bar for this topic. Log this score in PROGRESS_TRACKER.md."
+      : "Review the explanations above and revisit cornell-notes.md before retaking — 80% is the mastery target.";
+    progressEl.textContent = '';
+    return;
+  }
+  progressEl.textContent = `Question ${current + 1} of ${QUESTIONS.length} · Score so far: ${score}`;
+  const item = QUESTIONS[current];
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="qnum">Question ${current + 1}</div>
+    <div class="qtext">${item.q}</div>
+    <div class="choices"></div>
+    <div class="explain" id="explain"></div>
+  `;
+  const choicesEl = card.querySelector('.choices');
+  item.choices.forEach((choice, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.textContent = choice;
+    btn.onclick = () => selectAnswer(i, item, card);
+    choicesEl.appendChild(btn);
+  });
+  quizEl.innerHTML = '';
+  quizEl.appendChild(card);
+}
+
+function selectAnswer(i, item, card) {
+  const buttons = card.querySelectorAll('.choice');
+  buttons.forEach((b, idx) => {
+    b.disabled = true;
+    if (idx === item.correct) b.classList.add('correct');
+    else if (idx === i) b.classList.add('incorrect');
+  });
+  if (i === item.correct) score++;
+  const explainEl = card.querySelector('#explain');
+  explainEl.textContent = item.explain;
+  explainEl.classList.add('show');
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'primary';
+  nextBtn.style.marginTop = '14px';
+  nextBtn.textContent = current === QUESTIONS.length - 1 ? 'See Score' : 'Next Question';
+  nextBtn.onclick = () => { current++; render(); };
+  card.appendChild(nextBtn);
+}
+
+render();
+</script>
+</body>
+</html>
