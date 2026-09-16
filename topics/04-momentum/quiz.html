@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Momentum Quiz — Most Missed Questions</title>
+<style>
+  :root {
+    --bg: #f4f6f9;
+    --card-bg: #ffffff;
+    --text: #1f2937;
+    --muted: #5b6472;
+    --border: #d7dce3;
+    --accent: #2f5fa3;
+    --accent-dark: #1f3f6e;
+    --correct-bg: #e6f6ea;
+    --correct-border: #2f9e50;
+    --wrong-bg: #fbe9e9;
+    --wrong-border: #c0392b;
+    --focus: #2f5fa3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding: 16px;
+  }
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-size: 1.5rem;
+    margin: 0 0 6px 0;
+    color: var(--accent-dark);
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+  .scoreboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 16px;
+    margin: 16px 0;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 18px 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .q-number {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 999px;
+    width: 26px;
+    height: 26px;
+    line-height: 26px;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-right: 8px;
+  }
+  .q-text {
+    font-weight: 600;
+    font-size: 1.02rem;
+    margin: 0 0 12px 0;
+  }
+  fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+  legend {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .option {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .option:hover {
+    border-color: var(--accent);
+  }
+  .option input[type="radio"] {
+    margin-right: 10px;
+    accent-color: var(--accent);
+  }
+  .option.disabled {
+    cursor: default;
+  }
+  .option.correct-answer {
+    background: var(--correct-bg);
+    border-color: var(--correct-border);
+  }
+  .option.wrong-answer {
+    background: var(--wrong-bg);
+    border-color: var(--wrong-border);
+  }
+  .feedback {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    display: none;
+  }
+  .feedback.show {
+    display: block;
+  }
+  .feedback.correct {
+    background: var(--correct-bg);
+    border: 1px solid var(--correct-border);
+    color: #1e5b30;
+  }
+  .feedback.incorrect {
+    background: var(--wrong-bg);
+    border: 1px solid var(--wrong-border);
+    color: #7c2318;
+  }
+  .feedback strong {
+    display: block;
+    margin-bottom: 3px;
+  }
+  .summary {
+    background: var(--card-bg);
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    display: none;
+  }
+  .summary.show {
+    display: block;
+  }
+  .summary h2 {
+    margin-top: 0;
+    color: var(--accent-dark);
+  }
+  .summary .big-score {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin: 6px 0;
+  }
+  .encourage {
+    font-size: 1.02rem;
+    margin: 10px 0 16px;
+  }
+  button {
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: var(--accent);
+    color: #fff;
+  }
+  button:hover {
+    background: var(--accent-dark);
+  }
+  button:focus-visible,
+  .option input:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .reset-row {
+    text-align: center;
+    margin: 20px 0 8px;
+  }
+  #progressText {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  @media (max-width: 480px) {
+    h1 { font-size: 1.25rem; }
+    .card { padding: 14px 14px 12px; }
+    .q-text { font-size: 0.98rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Momentum Quiz — Most Missed Questions</h1>
+    <p class="subtitle">10 questions on momentum, impulse, and collisions. Pick one answer per question to see instant feedback.</p>
+  </header>
+
+  <div class="scoreboard">
+    <span>Score: <span id="scoreDisplay">0</span> / <span id="answeredDisplay">0</span></span>
+    <span id="progressText">&nbsp;(10 questions total)</span>
+  </div>
+
+  <form id="quizForm"></form>
+
+  <div class="summary" id="summary">
+    <h2>Quiz Complete</h2>
+    <div class="big-score" id="finalScore">0 / 10</div>
+    <p class="encourage" id="encourageText"></p>
+  </div>
+
+  <div class="reset-row">
+    <button type="button" id="resetBtn">Reset Quiz</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var questions = [
+    {
+      q: "A 0.50 kg cart moving at 4 m/s collides and sticks to a stationary 1.5 kg cart. Which statement is correct about kinetic energy in this collision?",
+      options: [
+        "KE is conserved because momentum is conserved",
+        "KE is NOT conserved, even though momentum is conserved",
+        "Neither momentum nor KE is conserved",
+        "KE is conserved but momentum is not"
+      ],
+      correct: 1,
+      explain: "Momentum is always conserved in an isolated system, but kinetic energy is only conserved in elastic collisions. This is a perfectly inelastic collision (they stick together), so KE is lost to heat/sound/deformation while momentum stays conserved. The trap is assuming 'conserved system' automatically means KE is conserved too."
+    },
+    {
+      q: "A large truck moving slowly collides with a small car moving quickly in the opposite direction. Which object 'wins' and continues moving forward?",
+      options: [
+        "The truck always continues forward because it has more mass",
+        "The car always continues forward because it has more speed",
+        "Whichever object had the larger magnitude of momentum before the collision determines the direction of motion afterward",
+        "They always end up moving at the same speed as before the collision"
+      ],
+      correct: 2,
+      explain: "Mass alone doesn't decide the outcome — momentum (mass × velocity) does. A fast, light object can have more momentum than a slow, heavy one. You must actually calculate and compare signed momenta, not just assume the heavier object dominates."
+    },
+    {
+      q: "In a 1D collision, Cart A (2 kg) moves right at 3 m/s and Cart B (2 kg) moves left at 3 m/s. If right is positive, what is the total momentum of the system before the collision?",
+      options: [
+        "12 kg·m/s",
+        "0 kg·m/s",
+        "6 kg·m/s",
+        "-12 kg·m/s"
+      ],
+      correct: 1,
+      explain: "Momentum is a vector, so Cart A's momentum (+6 kg·m/s) and Cart B's momentum (-6 kg·m/s) must be added with signs, giving a total of 0 kg·m/s. Forgetting the negative sign for leftward motion is the most common mistake here — adding magnitudes instead of signed values gives the wrong answer of 12."
+    },
+    {
+      q: "A ball receives an impulse of +8 N·s while moving in the positive direction. What does this impulse do to the ball's momentum?",
+      options: [
+        "It always increases the ball's speed",
+        "It changes the ball's momentum by +8 kg·m/s in the positive direction, which could mean speeding up, slowing down, or reversing direction depending on the ball's initial momentum",
+        "It has no effect unless the ball is already at rest",
+        "It only affects the ball's mass, not its velocity"
+      ],
+      correct: 1,
+      explain: "Impulse equals the change in momentum (J = Δp), not the final velocity directly. A +8 kg·m/s change could speed up a ball already moving positive, slow down or reverse a ball moving negative, or launch a ball from rest — you must add it to the initial momentum, not assume it simply 'speeds things up.'"
+    },
+    {
+      q: "Object X has mass 10 kg and speed 2 m/s. Object Y has mass 2 kg and speed 8 m/s. Which object has more momentum?",
+      options: [
+        "Object Y, because it has more speed",
+        "Object X, because p = mv gives it 20 kg·m/s versus Object Y's 16 kg·m/s",
+        "Both have equal momentum",
+        "Cannot be determined without more information"
+      ],
+      correct: 1,
+      explain: "You must calculate p = mv for both, not just compare mass or speed alone: Object X = 10 kg × 2 m/s = 20 kg·m/s, Object Y = 2 kg × 8 m/s = 16 kg·m/s. Object X has more momentum even though Object Y is faster — a common trap is assuming 'more speed' automatically means 'more momentum.'"
+    },
+    {
+      q: "Two identical clay balls collide head-on with equal and opposite velocities and stick together. What is the correct way to describe this collision?",
+      options: [
+        "Elastic collision, because the balls have equal mass",
+        "Perfectly inelastic collision, because the objects stick together and move with one common final velocity",
+        "Elastic collision, because momentum is conserved",
+        "Inelastic collision, because they bounce apart afterward"
+      ],
+      correct: 1,
+      explain: "'Sticking together' with one shared final velocity is the defining feature of a perfectly inelastic collision, regardless of the masses being equal. Elastic collisions involve objects bouncing apart while conserving KE — momentum being conserved does NOT by itself make a collision elastic, since momentum is conserved in every isolated collision type."
+    },
+    {
+      q: "In a conservation of momentum problem, 'total momentum before equals total momentum after' means:",
+      options: [
+        "Every object must have the same speed before and after the collision",
+        "The vector sum of all momenta before the collision equals the vector sum of all momenta after, even if individual objects speed up, slow down, or change direction",
+        "The total speed of the system stays constant",
+        "All objects must be moving in the same direction before and after"
+      ],
+      correct: 1,
+      explain: "Conservation of momentum is about the vector SUM staying constant — individual objects can dramatically change speed or direction as long as the overall vector sum balances out. Thinking it means each object's motion looks the same 'before and after' is a common misreading of the law."
+    },
+    {
+      q: "During a car crash, an airbag increases the time over which a passenger's momentum changes to zero. Since the impulse (change in momentum) is the same with or without the airbag, why does the airbag reduce injury?",
+      options: [
+        "The airbag reduces the total impulse delivered to the passenger",
+        "The airbag increases Δt, and since F = Δp/Δt, a longer Δt produces a smaller average force for the same impulse",
+        "The airbag increases the passenger's mass, reducing momentum",
+        "The airbag has no real effect on force, only on comfort"
+      ],
+      correct: 1,
+      explain: "The impulse (Δp) needed to stop the passenger is fixed by their mass and speed — the airbag doesn't reduce it. What changes is Δt: spreading the same impulse over more time (F = Δp/Δt) lowers the peak force on the body. A common error is thinking the airbag somehow reduces the impulse itself."
+    },
+    {
+      q: "Two billiard balls of equal mass collide elastically. Ball 1 moving at 5 m/s strikes stationary Ball 2, and afterward Ball 1 is at rest. What must be true about Ball 2's velocity for this to be a valid elastic collision?",
+      options: [
+        "Ball 2 must move at exactly 5 m/s so that both momentum and kinetic energy are conserved",
+        "Ball 2 can move at any speed, as long as total momentum is conserved",
+        "Ball 2 must remain at rest, since Ball 1 stopped",
+        "Ball 2's speed doesn't matter as long as it moves in the same direction Ball 1 was going"
+      ],
+      correct: 0,
+      explain: "An elastic collision must conserve BOTH momentum and kinetic energy, not just one. Momentum conservation alone would allow other speeds, but requiring KE to also be conserved pins down Ball 2's velocity at exactly 5 m/s (a classic equal-mass elastic collision 'transfers' all motion to the target ball). Checking momentum only is a common shortcut that misses the KE requirement."
+    },
+    {
+      q: "A 3 kg object moving at 4 m/s collides perfectly inelastically with a stationary 1 kg object. What is the correct equation setup to find the final combined velocity?",
+      options: [
+        "3(4) = (3)(v_f) — only the moving object's mass matters",
+        "3(4) + 1(0) = (3 + 1)(v_f), solved for one shared final velocity because the objects stick together",
+        "3(4) = 1(v_f), since momentum transfers entirely to the stationary object",
+        "(3)(4) = (1)(v_f) + (3)(v_f), treating the objects as separate after collision"
+      ],
+      correct: 1,
+      explain: "In a perfectly inelastic collision, the objects stick together and share ONE final velocity, so the correct setup is m1v1i + m2v2i = (m1+m2)vf. A common mistake is keeping the masses separate on the right side (as if they still move independently) or forgetting to include the stationary object's mass in the combined final mass."
+    }
+  ];
+
+  var state = {
+    answered: new Array(questions.length).fill(false),
+    correctCount: 0
+  };
+
+  var formEl = document.getElementById("quizForm");
+  var scoreDisplay = document.getElementById("scoreDisplay");
+  var answeredDisplay = document.getElementById("answeredDisplay");
+  var summaryEl = document.getElementById("summary");
+  var finalScoreEl = document.getElementById("finalScore");
+  var encourageTextEl = document.getElementById("encourageText");
+  var resetBtn = document.getElementById("resetBtn");
+
+  function buildQuiz() {
+    formEl.innerHTML = "";
+    questions.forEach(function (item, qIndex) {
+      var card = document.createElement("div");
+      card.className = "card";
+      card.id = "card-" + qIndex;
+
+      var qText = document.createElement("p");
+      qText.className = "q-text";
+      var badge = document.createElement("span");
+      badge.className = "q-number";
+      badge.textContent = String(qIndex + 1);
+      qText.appendChild(badge);
+      qText.appendChild(document.createTextNode(item.q));
+      card.appendChild(qText);
+
+      var fs = document.createElement("fieldset");
+      var legend = document.createElement("legend");
+      legend.textContent = "Question " + (qIndex + 1);
+      fs.appendChild(legend);
+
+      item.options.forEach(function (optText, optIndex) {
+        var label = document.createElement("label");
+        label.className = "option";
+        label.id = "opt-" + qIndex + "-" + optIndex;
+
+        var input = document.createElement("input");
+        input.type = "radio";
+        input.name = "q" + qIndex;
+        input.value = String(optIndex);
+        input.addEventListener("change", function () {
+          handleAnswer(qIndex, optIndex);
+        });
+
+        label.appendChild(input);
+        label.appendChild(document.createTextNode(optText));
+        fs.appendChild(label);
+      });
+
+      card.appendChild(fs);
+
+      var feedback = document.createElement("div");
+      feedback.className = "feedback";
+      feedback.id = "feedback-" + qIndex;
+      card.appendChild(feedback);
+
+      formEl.appendChild(card);
+    });
+  }
+
+  function handleAnswer(qIndex, chosenIndex) {
+    if (state.answered[qIndex]) return;
+    state.answered[qIndex] = true;
+
+    var item = questions[qIndex];
+    var isCorrect = chosenIndex === item.correct;
+    if (isCorrect) state.correctCount++;
+
+    for (var i = 0; i < item.options.length; i++) {
+      var optLabel = document.getElementById("opt-" + qIndex + "-" + i);
+      var input = optLabel.querySelector("input");
+      input.disabled = true;
+      optLabel.classList.add("disabled");
+      if (i === item.correct) {
+        optLabel.classList.add("correct-answer");
+      } else if (i === chosenIndex) {
+        optLabel.classList.add("wrong-answer");
+      }
+    }
+
+    var feedback = document.getElementById("feedback-" + qIndex);
+    feedback.classList.add("show");
+    feedback.classList.add(isCorrect ? "correct" : "incorrect");
+    feedback.innerHTML = "<strong>" + (isCorrect ? "Correct!" : "Not quite.") + "</strong>" + item.explain;
+
+    updateScoreboard();
+
+    if (state.answered.every(function (a) { return a; })) {
+      showSummary();
+    }
+  }
+
+  function updateScoreboard() {
+    var answeredCount = state.answered.filter(function (a) { return a; }).length;
+    scoreDisplay.textContent = String(state.correctCount);
+    answeredDisplay.textContent = String(answeredCount);
+  }
+
+  function showSummary() {
+    var total = questions.length;
+    finalScoreEl.textContent = state.correctCount + " / " + total;
+
+    var msg;
+    if (state.correctCount === total) {
+      msg = "Perfect score! You've clearly got momentum, impulse, and collisions locked down.";
+    } else if (state.correctCount >= total * 0.8) {
+      msg = "Great work — you're right at or above the 80% proficiency bar. Review the missed explanations to lock in mastery.";
+    } else if (state.correctCount >= total * 0.6) {
+      msg = "Solid effort. You understand the basics, but revisit the vector nature of momentum and the elastic vs. inelastic distinction.";
+    } else {
+      msg = "This is a good starting point. Re-read the Cornell Notes on impulse-momentum theorem and conservation of momentum, then try again.";
+    }
+    encourageTextEl.textContent = msg;
+    summaryEl.classList.add("show");
+    summaryEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function resetQuiz() {
+    state.answered = new Array(questions.length).fill(false);
+    state.correctCount = 0;
+    summaryEl.classList.remove("show");
+    updateScoreboard();
+    buildQuiz();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  resetBtn.addEventListener("click", resetQuiz);
+
+  buildQuiz();
+  updateScoreboard();
+})();
+</script>
+</body>
+</html>
