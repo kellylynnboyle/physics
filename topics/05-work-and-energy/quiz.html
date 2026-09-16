@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work and Energy Quiz — Most Missed Questions</title>
+<style>
+  :root {
+    --bg: #f4f6f9;
+    --card-bg: #ffffff;
+    --text: #1c2733;
+    --muted: #5b6b7c;
+    --accent: #2454a6;
+    --accent-dark: #163a73;
+    --correct-bg: #e3f6e8;
+    --correct-border: #2f9e52;
+    --wrong-bg: #fdeceb;
+    --wrong-border: #d0453a;
+    --border: #d7dee6;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding-bottom: 90px;
+  }
+  header {
+    background: var(--accent-dark);
+    color: #fff;
+    padding: 24px 16px 20px;
+    text-align: center;
+  }
+  header h1 {
+    margin: 0 0 6px;
+    font-size: 1.5rem;
+  }
+  header p {
+    margin: 0;
+    color: #d7e4f5;
+    font-size: 0.95rem;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+  }
+  .question-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 18px 16px;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .question-title {
+    font-weight: 600;
+    margin: 0 0 4px;
+    font-size: 1.02rem;
+  }
+  .question-number {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+  }
+  fieldset {
+    border: none;
+    margin: 10px 0 0;
+    padding: 0;
+  }
+  legend {
+    position: absolute;
+    left: -9999px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .option:hover {
+    background: #eef2f8;
+  }
+  .option input[type="radio"] {
+    margin-top: 3px;
+    accent-color: var(--accent);
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+  }
+  .option label {
+    cursor: pointer;
+    flex: 1;
+  }
+  .option.correct {
+    background: var(--correct-bg);
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong-bg);
+    border-color: var(--wrong-border);
+  }
+  .option.disabled {
+    cursor: default;
+  }
+  .feedback {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    display: none;
+  }
+  .feedback.show {
+    display: block;
+  }
+  .feedback.correct-fb {
+    background: var(--correct-bg);
+    color: #1c5a30;
+    border: 1px solid var(--correct-border);
+  }
+  .feedback.wrong-fb {
+    background: var(--wrong-bg);
+    color: #7a231c;
+    border: 1px solid var(--wrong-border);
+  }
+  .scorebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-top: 1px solid var(--border);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.08);
+    flex-wrap: wrap;
+  }
+  .scorebar .score-text {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  button {
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 9px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+  }
+  button:hover {
+    background: var(--accent-dark);
+    border-color: var(--accent-dark);
+  }
+  button:focus-visible, .option input:focus-visible {
+    outline: 3px solid #ffb703;
+    outline-offset: 2px;
+  }
+  .summary {
+    background: var(--card-bg);
+    border: 2px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    display: none;
+  }
+  .summary.show {
+    display: block;
+  }
+  .summary h2 {
+    margin-top: 0;
+  }
+  .summary .big-score {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--accent-dark);
+    margin: 6px 0;
+  }
+  .summary p.msg {
+    font-size: 1rem;
+    color: var(--muted);
+  }
+  @media (max-width: 480px) {
+    header h1 { font-size: 1.25rem; }
+    .question-card { padding: 14px; }
+    .scorebar { flex-direction: column; align-items: stretch; }
+    .scorebar button { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Work and Energy Quiz</h1>
+  <p>Most Missed Questions — test yourself on the common traps</p>
+</header>
+
+<main>
+  <div class="summary" id="summary">
+    <h2>Quiz Complete</h2>
+    <div class="big-score" id="finalScore">0 / 10</div>
+    <p class="msg" id="finalMsg"></p>
+  </div>
+
+  <div id="quiz"></div>
+</main>
+
+<div class="scorebar">
+  <div class="score-text">Score: <span id="liveScore">0</span> / <span id="liveTotal">10</span> answered: <span id="liveAnswered">0</span>/10</div>
+  <button id="resetBtn" type="button">Reset Quiz</button>
+</div>
+
+<script>
+(function () {
+  var questions = [
+    {
+      q: "A person carries a 10 kg box at a constant height, walking horizontally across a flat room at constant velocity. How much work does the person do AGAINST GRAVITY while carrying the box?",
+      options: [
+        "A large positive amount, since holding the box up requires effort",
+        "Zero, because the supporting force is vertical and the displacement is horizontal",
+        "A negative amount, since gravity pulls down on the box",
+        "It depends on how fast the person walks"
+      ],
+      correct: 1,
+      explain: "The force holding the box up is vertical, but the displacement is horizontal, so the angle between them is 90° and cos(90°) = 0 — no work is done against gravity. It feels tiring, but physics work requires a force component along the direction of motion; effort alone (option A) is a common trap."
+    },
+    {
+      q: "Which of these is the correct SI unit for WORK?",
+      options: ["Watt (W)", "Joule (J)", "Newton (N)", "Newton-second (N·s)"],
+      correct: 1,
+      explain: "Work and all forms of energy are measured in joules (J). The watt is the unit of power (a rate), and mixing up joules with watts is one of the most common unit errors on this topic."
+    },
+    {
+      q: "A box is pulled with a 100 N force directed 60° above the horizontal, causing it to slide 5 m horizontally. How much work does this force do on the box?",
+      options: ["500 J", "250 J", "433 J", "50 J"],
+      correct: 1,
+      explain: "W = Fd cos θ = 100 × 5 × cos(60°) = 100 × 5 × 0.5 = 250 J. Forgetting the cos θ term gives the trap answer 500 J, and swapping cos for sin gives the trap answer 433 J — always project the force onto the displacement direction."
+    },
+    {
+      q: "Car A has a mass of 2000 kg and moves at 10 m/s. Car B has a mass of 1000 kg and moves at 20 m/s. Which car has more kinetic energy?",
+      options: [
+        "Car A, because it is heavier",
+        "Car B, because kinetic energy depends on velocity squared",
+        "They have exactly the same kinetic energy",
+        "Cannot be determined without knowing the road conditions"
+      ],
+      correct: 1,
+      explain: "KE_A = ½(2000)(10)² = 100,000 J, but KE_B = ½(1000)(20)² = 200,000 J. Even though Car B is lighter, its speed is doubled, and since KE depends on v² (not mass), Car B has twice the kinetic energy. Assuming the heavier object always wins (option A) ignores the squared velocity term."
+    },
+    {
+      q: "Which formula should you use to calculate the potential energy stored in a stretched bowstring pulled back before releasing an arrow?",
+      options: ["PE = mgh", "PE = ½kx²", "PE = ½mv²", "PE = Fd"],
+      correct: 1,
+      explain: "A stretched bowstring is an elastic system, so PE = ½kx² (elastic potential energy) applies, using the string's displacement from its natural length. PE = mgh (gravitational potential energy) is a common trap because students associate the drawn-back distance with 'height,' but it applies only to objects raised against gravity."
+    },
+    {
+      q: "A skateboarder rolls down a ramp that has a rough, high-friction surface. Compared to an identical but frictionless ramp of the same height, the skateboarder's speed at the bottom will be...",
+      options: [
+        "The same, because mechanical energy is always conserved",
+        "Slower, because some mechanical energy is converted to heat by friction",
+        "Faster, because friction adds energy to the system",
+        "Impossible to determine from the information given"
+      ],
+      correct: 1,
+      explain: "Mechanical energy is only conserved when no non-conservative forces (like friction) act. On the rough ramp, some of the initial gravitational PE is converted to heat instead of KE, so the skateboarder arrives at the bottom slower. Assuming mechanical energy is 'always' conserved (option A) is a very common misconception."
+    },
+    {
+      q: "Two workers lift identical 50 kg boxes to the same height of 2 m. Worker 1 takes 4 seconds; Worker 2 takes 8 seconds. Which statement is correct?",
+      options: [
+        "Worker 1 does more total work than Worker 2",
+        "They do the same amount of work, but Worker 1 has more power",
+        "Worker 2 has more power because he took more time",
+        "They have the same power since the work done is equal"
+      ],
+      correct: 1,
+      explain: "Since both boxes have the same mass and are lifted the same height, both workers do the same amount of work (W = mgh). But power is work divided by time (P = W/t), so Worker 1, who did the work faster, has a greater power output. Confusing 'more time' with 'more power' (option C) mixes up the rate with the amount."
+    },
+    {
+      q: "A pendulum swings back and forth, momentarily stopping at its highest point on each side before reversing direction. At that exact highest point, what is the pendulum bob's kinetic energy?",
+      options: [
+        "Maximum, since it's still moving through the swing",
+        "Half of its maximum value",
+        "Zero, because its velocity is momentarily zero at that instant",
+        "Cannot be determined without knowing the pendulum's mass"
+      ],
+      correct: 2,
+      explain: "At the exact highest point of the swing, the bob's velocity is momentarily zero as it changes direction, so KE = ½mv² = 0 at that instant — all the mechanical energy is gravitational PE there. Thinking the bob still has 'some' KE because it's 'in motion overall' (options A or B) ignores that velocity itself is zero at that single instant."
+    },
+    {
+      q: "A 5 kg object, initially at rest, has 40 J of net work done on it. What is its final speed?",
+      options: ["2 m/s", "4 m/s", "8 m/s", "16 m/s"],
+      correct: 1,
+      explain: "By the work-energy theorem, W_net = ΔKE = ½mv² − 0, so 40 = ½(5)v², giving v² = 16 and v = 4 m/s. Forgetting to take the square root (leaving v² = 16 as the answer, trap: 16 m/s) or making an arithmetic slip (trap: 8 m/s) are common errors here."
+    },
+    {
+      q: "A box is pushed across a rough floor at constant velocity. The applied force does +300 J of work on the box, while friction does −300 J of work on it over the same distance. What is the net work done, and what does this tell you about the box's kinetic energy?",
+      options: [
+        "Net work = 600 J, so kinetic energy increases",
+        "Net work = 0 J, so kinetic energy stays the same",
+        "Net work = −300 J, so kinetic energy decreases",
+        "Net work = 300 J, so kinetic energy increases"
+      ],
+      correct: 1,
+      explain: "Net work is the sum of all work done: 300 J + (−300 J) = 0 J. By the work-energy theorem, W_net = ΔKE, so zero net work means no change in kinetic energy — consistent with the box moving at constant velocity. Adding the magnitudes instead of their signs (trap: 600 J) ignores that friction's work is negative."
+    }
+  ];
+
+  var quizEl = document.getElementById('quiz');
+  var liveScoreEl = document.getElementById('liveScore');
+  var liveAnsweredEl = document.getElementById('liveAnswered');
+  var summaryEl = document.getElementById('summary');
+  var finalScoreEl = document.getElementById('finalScore');
+  var finalMsgEl = document.getElementById('finalMsg');
+  var resetBtn = document.getElementById('resetBtn');
+
+  var state = {
+    score: 0,
+    answered: 0
+  };
+
+  function buildQuiz() {
+    quizEl.innerHTML = '';
+    questions.forEach(function (item, qIndex) {
+      var card = document.createElement('div');
+      card.className = 'question-card';
+      card.setAttribute('data-qindex', qIndex);
+
+      var num = document.createElement('span');
+      num.className = 'question-number';
+      num.textContent = 'Question ' + (qIndex + 1) + ' of ' + questions.length;
+      card.appendChild(num);
+
+      var title = document.createElement('p');
+      title.className = 'question-title';
+      title.textContent = item.q;
+      card.appendChild(title);
+
+      var fieldset = document.createElement('fieldset');
+      var legend = document.createElement('legend');
+      legend.textContent = item.q;
+      fieldset.appendChild(legend);
+
+      item.options.forEach(function (optText, optIndex) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'option';
+
+        var input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'q' + qIndex;
+        input.id = 'q' + qIndex + '_o' + optIndex;
+        input.value = optIndex;
+
+        var label = document.createElement('label');
+        label.setAttribute('for', input.id);
+        label.textContent = optText;
+
+        wrapper.appendChild(input);
+        wrapper.appendChild(label);
+        fieldset.appendChild(wrapper);
+
+        input.addEventListener('change', function () {
+          handleAnswer(qIndex, optIndex, card, fieldset, item);
+        });
+      });
+
+      card.appendChild(fieldset);
+
+      var feedback = document.createElement('div');
+      feedback.className = 'feedback';
+      feedback.id = 'feedback' + qIndex;
+      card.appendChild(feedback);
+
+      quizEl.appendChild(card);
+    });
+  }
+
+  function handleAnswer(qIndex, chosenIndex, card, fieldset, item) {
+    if (card.getAttribute('data-answered') === 'true') return;
+    card.setAttribute('data-answered', 'true');
+
+    var options = fieldset.querySelectorAll('.option');
+    var inputs = fieldset.querySelectorAll('input[type="radio"]');
+    inputs.forEach(function (inp) { inp.disabled = true; });
+
+    var isCorrect = chosenIndex === item.correct;
+
+    options.forEach(function (opt, i) {
+      opt.classList.add('disabled');
+      if (i === item.correct) {
+        opt.classList.add('correct');
+      }
+      if (i === chosenIndex && !isCorrect) {
+        opt.classList.add('wrong');
+      }
+    });
+
+    var feedback = document.getElementById('feedback' + qIndex);
+    feedback.classList.add('show');
+    feedback.classList.add(isCorrect ? 'correct-fb' : 'wrong-fb');
+    feedback.textContent = (isCorrect ? 'Correct! ' : 'Not quite. ') + item.explain;
+
+    state.answered += 1;
+    if (isCorrect) state.score += 1;
+
+    updateScoreBar();
+
+    if (state.answered === questions.length) {
+      showSummary();
+    }
+  }
+
+  function updateScoreBar() {
+    liveScoreEl.textContent = state.score;
+    liveAnsweredEl.textContent = state.answered;
+  }
+
+  function showSummary() {
+    finalScoreEl.textContent = state.score + ' / ' + questions.length;
+    var msg;
+    if (state.score === questions.length) {
+      msg = "Perfect score! You've clearly got the tricky traps figured out — nice work.";
+    } else if (state.score >= 8) {
+      msg = "Great job! You have a strong grasp of work and energy — review the ones you missed and you're set.";
+    } else if (state.score >= 6) {
+      msg = "Good effort! You understand the basics — revisit the explanations above to clear up the common traps.";
+    } else if (state.score >= 4) {
+      msg = "You're on your way, but several misconceptions tripped you up. Reread the explanations and try again.";
+    } else {
+      msg = "This topic needs more review. Go back through the Key Concepts and Cornell Notes, then retake the quiz.";
+    }
+    finalMsgEl.textContent = msg;
+    summaryEl.classList.add('show');
+  }
+
+  function resetQuiz() {
+    state.score = 0;
+    state.answered = 0;
+    updateScoreBar();
+    summaryEl.classList.remove('show');
+    buildQuiz();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  resetBtn.addEventListener('click', resetQuiz);
+
+  document.getElementById('liveTotal').textContent = questions.length;
+  buildQuiz();
+})();
+</script>
+</body>
+</html>
