@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinematics Quiz — Most Missed Questions</title>
+<style>
+  :root {
+    --bg: #f4f6f9;
+    --card-bg: #ffffff;
+    --text: #1a1f2b;
+    --muted: #5a6373;
+    --accent: #2452a3;
+    --correct-bg: #d4f7dc;
+    --correct-border: #2e9e4f;
+    --wrong-bg: #fbdada;
+    --wrong-border: #c0392b;
+    --option-border: #cdd4e0;
+    --option-hover: #eaf0fb;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+  header {
+    text-align: center;
+    padding: 20px 8px 8px;
+  }
+  h1 {
+    font-size: 1.5rem;
+    margin: 0 0 6px;
+    color: var(--accent);
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0 0 12px;
+  }
+  .scorebar {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    padding: 10px 0;
+    z-index: 5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    border-bottom: 1px solid #dde3ec;
+  }
+  .score-pill {
+    background: var(--accent);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.95rem;
+  }
+  .question-card {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 18px;
+    margin: 16px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .q-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0 0 12px;
+  }
+  .q-number {
+    color: var(--accent);
+    margin-right: 6px;
+  }
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1.5px solid var(--option-border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.98rem;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .option:hover {
+    background: var(--option-hover);
+  }
+  .option input[type="radio"] {
+    margin-top: 3px;
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+  }
+  .option.correct {
+    background: var(--correct-bg);
+    border-color: var(--correct-border);
+    font-weight: 600;
+  }
+  .option.wrong {
+    background: var(--wrong-bg);
+    border-color: var(--wrong-border);
+  }
+  .option.disabled {
+    cursor: default;
+  }
+  .explanation {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: #eef2f8;
+    border-left: 4px solid var(--accent);
+    border-radius: 6px;
+    font-size: 0.92rem;
+    color: var(--text);
+    display: none;
+  }
+  .explanation.show {
+    display: block;
+  }
+  .controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 24px 0 40px;
+    flex-wrap: wrap;
+  }
+  button {
+    font-size: 1rem;
+    padding: 12px 22px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  #submitBtn {
+    background: var(--accent);
+    color: #fff;
+  }
+  #submitBtn:disabled {
+    background: #9aa8c4;
+    cursor: not-allowed;
+  }
+  #resetBtn {
+    background: #e2e6ee;
+    color: var(--text);
+  }
+  #resultsPanel {
+    display: none;
+    text-align: center;
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 24px;
+    margin: 16px 0 30px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  #resultsPanel.show {
+    display: block;
+  }
+  .final-score {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 6px 0;
+  }
+  .encouragement {
+    font-size: 1.05rem;
+    margin-top: 8px;
+  }
+  @media (max-width: 480px) {
+    h1 { font-size: 1.25rem; }
+    .q-title { font-size: 1rem; }
+    .option { font-size: 0.92rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Kinematics Quiz — Most Missed Questions</h1>
+    <p class="subtitle">10 questions targeting the trickiest kinematics misconceptions. Pick an answer to see instant feedback.</p>
+  </header>
+
+  <div class="scorebar">
+    <span class="score-pill">Score: <span id="liveScore">0</span> / <span id="answeredCount">0</span> answered</span>
+  </div>
+
+  <div id="quizContainer"></div>
+
+  <div class="controls">
+    <button id="submitBtn" disabled>Submit / Show Results</button>
+    <button id="resetBtn">Reset Quiz</button>
+  </div>
+
+  <div id="resultsPanel">
+    <h2>Your Results</h2>
+    <div class="final-score"><span id="finalScore">0</span> / 10</div>
+    <p class="encouragement" id="encouragement"></p>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "A car moves in the negative direction and is slowing down. What is true about its acceleration?",
+    options: [
+      "Acceleration is negative",
+      "Acceleration is positive",
+      "Acceleration is zero",
+      "Acceleration is undefined"
+    ],
+    correct: 1,
+    explain: "The car's velocity is negative but shrinking in magnitude, meaning it's moving toward zero — that requires a positive acceleration. The trap is assuming 'slowing down' always means negative acceleration; it depends on the direction of motion, not just the word 'slowing.'"
+  },
+  {
+    q: "On a velocity-time graph, what does the slope of the line represent?",
+    options: [
+      "Displacement",
+      "Distance",
+      "Acceleration",
+      "Average speed"
+    ],
+    correct: 2,
+    explain: "Slope on a velocity-time graph is the rate of change of velocity, which is acceleration. A common mix-up is confusing this with the area under the curve, which actually represents displacement."
+  },
+  {
+    q: "On a velocity-time graph, what does the area under the curve represent?",
+    options: [
+      "Acceleration",
+      "Displacement",
+      "Velocity",
+      "Jerk (rate of change of acceleration)"
+    ],
+    correct: 1,
+    explain: "The area between the velocity curve and the time axis equals displacement, since velocity × time gives a distance-like quantity. Students often swap this with slope, which gives acceleration instead."
+  },
+  {
+    q: "A runner sprints 100 m east then jogs back 40 m west. What is the runner's total distance and displacement?",
+    options: [
+      "Distance = 60 m, Displacement = 100 m east",
+      "Distance = 140 m, Displacement = 60 m east",
+      "Distance = 100 m, Displacement = 60 m east",
+      "Distance = 140 m, Displacement = 140 m east"
+    ],
+    correct: 1,
+    explain: "Distance is the total path length: 100 m + 40 m = 140 m. Displacement is the net change in position: 100 m east − 40 m west = 60 m east. The trap is treating distance and displacement as always equal, which is only true for one-directional motion."
+  },
+  {
+    q: "A ball is thrown straight up. At the very top of its path, which statement is correct?",
+    options: [
+      "Both velocity and acceleration are zero",
+      "Velocity is zero, acceleration is 9.8 m/s² downward",
+      "Velocity is nonzero, acceleration is zero",
+      "Velocity is zero, acceleration is zero, then it 'restarts' falling"
+    ],
+    correct: 1,
+    explain: "At the peak, velocity momentarily equals zero, but gravity never stops acting — acceleration remains a constant 9.8 m/s² downward the entire flight. The classic trap is assuming zero velocity means zero acceleration at that instant."
+  },
+  {
+    q: "An object starts from rest and accelerates uniformly. Which kinematic equation lets you find displacement using only acceleration and time (no initial velocity needed)?",
+    options: [
+      "Δx = v₀t + ½at²",
+      "Δx = ½at²",
+      "v = v₀ + at",
+      "v² = v₀² + 2aΔx"
+    ],
+    correct: 1,
+    explain: "Since v₀ = 0, the v₀t term in Δx = v₀t + ½at² drops out entirely, leaving Δx = ½at². A common error is keeping a 'v₀t' term out of habit even when v₀ is explicitly zero, which inflates the answer."
+  },
+  {
+    q: "Which position-time graph shape represents constant, nonzero velocity?",
+    options: [
+      "A horizontal straight line",
+      "A straight diagonal line",
+      "A curve that gets steeper over time",
+      "A curve that gets flatter over time"
+    ],
+    correct: 1,
+    explain: "A straight diagonal line has constant slope, meaning constant velocity. A horizontal line means the object isn't moving at all (velocity = 0), which students sometimes confuse with 'constant velocity.'"
+  },
+  {
+    q: "Which velocity-time graph shape represents constant, nonzero acceleration?",
+    options: [
+      "A horizontal straight line",
+      "A straight diagonal line",
+      "A curve that flattens toward a horizontal line",
+      "A curve that oscillates up and down"
+    ],
+    correct: 1,
+    explain: "A straight diagonal line on a velocity-time graph has constant slope, which means constant acceleration. A horizontal line on THIS graph actually means zero acceleration (constant velocity) — mixing up position-time and velocity-time graph shapes is a very common error."
+  },
+  {
+    q: "A ball is dropped from rest and falls for 2 seconds before hitting the ground. What is its velocity just before impact? (use g = 9.8 m/s²)",
+    options: [
+      "9.8 m/s",
+      "19.6 m/s",
+      "4.9 m/s",
+      "39.2 m/s"
+    ],
+    correct: 1,
+    explain: "Using v = v₀ + at with v₀ = 0: v = (9.8 m/s²)(2 s) = 19.6 m/s. A frequent mistake is using g = 9.8 m/s² as if it were the final velocity itself, forgetting to multiply by time."
+  },
+  {
+    q: "A car travels 100 m in 20 s, but its speed varies throughout the trip — fast at first, then slow. What does dividing 100 m by 20 s give you?",
+    options: [
+      "The car's instantaneous speed at t = 20 s",
+      "The car's maximum speed during the trip",
+      "The car's average speed over the whole trip",
+      "The car's acceleration"
+    ],
+    correct: 2,
+    explain: "Total distance divided by total time gives average speed over the interval — it tells you nothing about the speed at any single moment. The trap is treating this calculated value as the instantaneous speed at the end of the trip, which it is not unless speed happened to be constant."
+  }
+];
+
+let selected = new Array(questions.length).fill(null);
+let answered = new Array(questions.length).fill(false);
+let score = 0;
+
+const quizContainer = document.getElementById('quizContainer');
+const liveScoreEl = document.getElementById('liveScore');
+const answeredCountEl = document.getElementById('answeredCount');
+const submitBtn = document.getElementById('submitBtn');
+const resetBtn = document.getElementById('resetBtn');
+const resultsPanel = document.getElementById('resultsPanel');
+const finalScoreEl = document.getElementById('finalScore');
+const encouragementEl = document.getElementById('encouragement');
+
+function buildQuiz() {
+  quizContainer.innerHTML = '';
+  questions.forEach((item, qIndex) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = 'card-' + qIndex;
+
+    const title = document.createElement('p');
+    title.className = 'q-title';
+    title.innerHTML = '<span class="q-number">Q' + (qIndex + 1) + '.</span>' + item.q;
+    card.appendChild(title);
+
+    const optWrap = document.createElement('div');
+    optWrap.className = 'options';
+
+    item.options.forEach((optText, oIndex) => {
+      const label = document.createElement('label');
+      label.className = 'option';
+      label.id = 'q' + qIndex + '-opt' + oIndex;
+
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.name = 'q' + qIndex;
+      input.value = oIndex;
+      input.addEventListener('change', () => handleAnswer(qIndex, oIndex));
+
+      const span = document.createElement('span');
+      span.textContent = optText;
+
+      label.appendChild(input);
+      label.appendChild(span);
+      optWrap.appendChild(label);
+    });
+
+    card.appendChild(optWrap);
+
+    const explain = document.createElement('div');
+    explain.className = 'explanation';
+    explain.id = 'explain-' + qIndex;
+    explain.textContent = item.explain;
+    card.appendChild(explain);
+
+    quizContainer.appendChild(card);
+  });
+}
+
+function handleAnswer(qIndex, oIndex) {
+  if (answered[qIndex]) return;
+  answered[qIndex] = true;
+  selected[qIndex] = oIndex;
+
+  const correctIndex = questions[qIndex].correct;
+  if (oIndex === correctIndex) {
+    score++;
+  }
+
+  for (let i = 0; i < questions[qIndex].options.length; i++) {
+    const optEl = document.getElementById('q' + qIndex + '-opt' + i);
+    const input = optEl.querySelector('input');
+    input.disabled = true;
+    optEl.classList.add('disabled');
+    if (i === correctIndex) {
+      optEl.classList.add('correct');
+    } else if (i === oIndex) {
+      optEl.classList.add('wrong');
+    }
+  }
+
+  document.getElementById('explain-' + qIndex).classList.add('show');
+
+  updateScoreBar();
+}
+
+function updateScoreBar() {
+  const answeredCount = answered.filter(Boolean).length;
+  liveScoreEl.textContent = score;
+  answeredCountEl.textContent = answeredCount;
+  submitBtn.disabled = answeredCount < questions.length;
+}
+
+function showResults() {
+  resultsPanel.classList.add('show');
+  finalScoreEl.textContent = score;
+
+  let msg;
+  if (score === 10) {
+    msg = "Perfect score! You've got 1D kinematics locked down — even the sign-convention traps didn't get you.";
+  } else if (score >= 8) {
+    msg = "Great work! You have a strong grasp of kinematics. Review any misses and you're at mastery level.";
+  } else if (score >= 6) {
+    msg = "Solid effort — you understand the basics. Revisit the graph slope/area rules and sign conventions to close the gap.";
+  } else if (score >= 4) {
+    msg = "You're building understanding, but a few core misconceptions are tripping you up. Re-read the explanations above and try the PhET Moving Man simulation.";
+  } else {
+    msg = "This is a great starting point. Go back through the explanations for every question, then revisit position-time and velocity-time graphs before trying again.";
+  }
+  encouragementEl.textContent = msg;
+  resultsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function resetQuiz() {
+  selected = new Array(questions.length).fill(null);
+  answered = new Array(questions.length).fill(false);
+  score = 0;
+  resultsPanel.classList.remove('show');
+  updateScoreBar();
+  buildQuiz();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+submitBtn.addEventListener('click', showResults);
+resetBtn.addEventListener('click', resetQuiz);
+
+buildQuiz();
+updateScoreBar();
+</script>
+</body>
+</html>
