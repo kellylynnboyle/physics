@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projectile Motion Quiz — Most Missed Questions</title>
+<style>
+  :root {
+    --bg: #f4f6f9;
+    --card-bg: #ffffff;
+    --text: #1c2530;
+    --muted: #5a6472;
+    --accent: #2f5fbf;
+    --correct-bg: #e3f6e8;
+    --correct-border: #2f9e52;
+    --wrong-bg: #fdeaea;
+    --wrong-border: #cc3b3b;
+    --option-border: #d3dae3;
+    --option-hover: #eef2f8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  header {
+    background: var(--accent);
+    color: #fff;
+    padding: 24px 16px;
+    text-align: center;
+  }
+  header h1 {
+    margin: 0 0 6px 0;
+    font-size: 1.5rem;
+  }
+  header p {
+    margin: 0;
+    font-size: 0.95rem;
+    opacity: 0.9;
+  }
+  #scoreBar {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    border-bottom: 1px solid var(--option-border);
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    z-index: 10;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+  .question-card {
+    background: var(--card-bg);
+    border: 1px solid var(--option-border);
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 16px;
+  }
+  .question-card h2 {
+    font-size: 1.05rem;
+    margin: 0 0 12px 0;
+  }
+  .qnum {
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: 6px;
+  }
+  fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    border: 1px solid var(--option-border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .option:hover {
+    background: var(--option-hover);
+  }
+  .option input[type="radio"] {
+    margin-top: 3px;
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+  }
+  .option label {
+    cursor: pointer;
+    flex: 1;
+  }
+  .option.correct {
+    background: var(--correct-bg);
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong-bg);
+    border-color: var(--wrong-border);
+  }
+  .option.locked {
+    cursor: default;
+  }
+  .feedback {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    display: none;
+  }
+  .feedback.show {
+    display: block;
+  }
+  .feedback.correct-fb {
+    background: var(--correct-bg);
+    border: 1px solid var(--correct-border);
+    color: #205c34;
+  }
+  .feedback.wrong-fb {
+    background: var(--wrong-bg);
+    border: 1px solid var(--wrong-border);
+    color: #7a2323;
+  }
+  #summary {
+    background: var(--card-bg);
+    border: 2px solid var(--accent);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    display: none;
+  }
+  #summary.show {
+    display: block;
+  }
+  #summary h2 {
+    margin-top: 0;
+  }
+  #summaryScore {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  #summaryMsg {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+  .btn {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  .btn:hover {
+    opacity: 0.92;
+  }
+  footer {
+    text-align: center;
+    padding: 24px 16px 40px;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  @media (max-width: 480px) {
+    header h1 { font-size: 1.25rem; }
+    .question-card { padding: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Projectile Motion Quiz</h1>
+  <p>Most Missed Questions — test your understanding of common misconceptions</p>
+</header>
+
+<div id="scoreBar">
+  <span>Score: <span id="runningScore">0</span> / <span id="answeredCount">0</span> answered</span>
+  <span id="progressLabel">0 of 10 questions</span>
+</div>
+
+<main>
+  <div id="summary">
+    <h2>Quiz Complete!</h2>
+    <div id="summaryScore">0 / 10</div>
+    <div id="summaryMsg"></div>
+    <button class="btn" onclick="resetQuiz()">Reset Quiz</button>
+  </div>
+
+  <div id="quizContainer"></div>
+
+  <div style="text-align:center;">
+    <button class="btn" onclick="resetQuiz()">Reset Quiz</button>
+  </div>
+</main>
+
+<footer>
+  11th Grade Physics — Projectile Motion Practice
+</footer>
+
+<script>
+const questions = [
+  {
+    q: "A ball is thrown horizontally off a cliff. As it falls, what happens to its horizontal velocity (ignoring air resistance)?",
+    options: [
+      "It increases steadily due to gravity",
+      "It decreases steadily as vertical velocity increases",
+      "It stays constant throughout the flight",
+      "It becomes zero at the peak of the path"
+    ],
+    correct: 2,
+    explain: "Correct answer: horizontal velocity stays constant because gravity acts only vertically — there is no horizontal acceleration. The trap answer (decreasing) comes from wrongly assuming gravity slows down ALL motion, not just the vertical part."
+  },
+  {
+    q: "A heavy bowling ball and a light tennis ball are both launched horizontally from the same height at the same instant. Ignoring air resistance, which lands first?",
+    options: [
+      "The bowling ball, because it's heavier",
+      "The tennis ball, because it's lighter",
+      "They land at the same time",
+      "It depends on how fast each is thrown horizontally"
+    ],
+    correct: 2,
+    explain: "Correct answer: they land at the same time. Vertical motion (free fall) is independent of mass — both objects accelerate downward at the same rate g. The trap (heavier falls faster) is the classic Aristotelian misconception."
+  },
+  {
+    q: "At the very top of a projectile's trajectory (launched at an angle, not straight up), which statement is true?",
+    options: [
+      "Both horizontal and vertical velocity are zero",
+      "Only the vertical velocity is zero; horizontal velocity is unchanged",
+      "Only the horizontal velocity is zero",
+      "The velocity is at a minimum but nonzero, pointing straight down"
+    ],
+    correct: 1,
+    explain: "Correct answer: vy = 0 only for an instant at the peak, while vx stays the same as it was at launch. The trap answer assumes the object briefly 'stops' completely, but it's still moving forward the whole time."
+  },
+  {
+    q: "Which launch angle (measured from horizontal) gives the maximum RANGE for a projectile launched and landing at the same height?",
+    options: ["30°", "45°", "60°", "90°"],
+    correct: 1,
+    explain: "Correct answer: 45° maximizes range because R = v²sin(2θ)/g is largest when sin(2θ) = 1. The trap (90°) actually gives ZERO range — the object goes straight up and comes straight back down."
+  },
+  {
+    q: "Which launch angle gives the maximum HEIGHT for a given launch speed?",
+    options: [
+      "45°, same as maximum range",
+      "60°",
+      "90°",
+      "It's impossible to reach maximum height without also maximizing range"
+    ],
+    correct: 2,
+    explain: "Correct answer: 90° (straight up) maximizes height because it puts all the launch speed into vy. The trap (45°) mixes up the angle for max RANGE with the angle for max HEIGHT — they are different questions."
+  },
+  {
+    q: "What causes the parabolic (curved) shape of a projectile's path?",
+    options: [
+      "Horizontal velocity constantly changing",
+      "The combination of constant horizontal velocity and constantly accelerating vertical velocity",
+      "Air resistance pushing the object downward",
+      "The object's mass increasing as it falls"
+    ],
+    correct: 1,
+    explain: "Correct answer: uniform horizontal motion combined with uniformly accelerated vertical motion produces a parabola. The trap answer wrongly assigns acceleration to the horizontal component, which never changes."
+  },
+  {
+    q: "A projectile is launched and lands at the same height it started from. How does the time to rise to maximum height compare with the time to fall back down?",
+    options: [
+      "Time up is longer than time down",
+      "Time down is longer than time up",
+      "They are equal",
+      "It depends on the launch angle"
+    ],
+    correct: 2,
+    explain: "Correct answer: the rise and fall times are equal because the motion is symmetric when launch and landing heights match. The trap (depends on angle) is wrong — this symmetry holds for ANY launch angle, as long as the heights are equal."
+  },
+  {
+    q: "To find the components of an initial velocity v launched at angle θ above the horizontal, which formula is correct?",
+    options: [
+      "vx = v·sinθ, vy = v·cosθ",
+      "vx = v·cosθ, vy = v·sinθ",
+      "vx = v·tanθ, vy = v/tanθ",
+      "vx = vy = v/2"
+    ],
+    correct: 1,
+    explain: "Correct answer: vx = v·cosθ (adjacent side) and vy = v·sinθ (opposite side) relative to the angle from horizontal. The trap answer simply swaps sine and cosine — a very common decomposition mistake."
+  },
+  {
+    q: "A problem asks you to find the 'maximum height' reached by a ball. A student instead calculates the total horizontal distance it traveled. What mistake did the student make?",
+    options: [
+      "They correctly answered the question",
+      "They confused 'maximum height' with 'range'",
+      "They confused 'time of flight' with 'range'",
+      "They forgot to include gravity in their calculation"
+    ],
+    correct: 1,
+    explain: "Correct answer: maximum height (a vertical quantity using vy) is different from range (a horizontal quantity using vx and total time). The trap is careless reading — swapping which formula answers which question."
+  },
+  {
+    q: "Which best describes the vertical velocity of a projectile throughout its flight (launched at an angle, landing at the same height)?",
+    options: [
+      "It is constant the whole time",
+      "It continuously changes due to gravity, reaching zero only at the peak",
+      "It is zero for the entire upper half of the trajectory",
+      "It increases while rising and stays constant while falling"
+    ],
+    correct: 1,
+    explain: "Correct answer: gravity continuously accelerates the vertical component downward at 9.8 m/s², so vy is zero only for an instant at the very top. The trap answer wrongly imagines a broad 'zero velocity zone' near the peak instead of a single instant."
+  }
+];
+
+let userAnswers = new Array(questions.length).fill(null);
+
+function buildQuiz() {
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = '';
+  questions.forEach((item, qIndex) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = 'card-' + qIndex;
+
+    const heading = document.createElement('h2');
+    heading.innerHTML = '<span class="qnum">Q' + (qIndex + 1) + '.</span>' + item.q;
+    card.appendChild(heading);
+
+    const fieldset = document.createElement('fieldset');
+    item.options.forEach((optText, optIndex) => {
+      const optDiv = document.createElement('div');
+      optDiv.className = 'option';
+      optDiv.id = 'opt-' + qIndex + '-' + optIndex;
+
+      const radioId = 'q' + qIndex + '_opt' + optIndex;
+      const radio = document.createElement('input');
+      radio.type = 'radio';
+      radio.name = 'q' + qIndex;
+      radio.id = radioId;
+      radio.value = optIndex;
+      radio.addEventListener('change', function () {
+        selectAnswer(qIndex, optIndex);
+      });
+
+      const label = document.createElement('label');
+      label.setAttribute('for', radioId);
+      label.textContent = optText;
+
+      optDiv.appendChild(radio);
+      optDiv.appendChild(label);
+      fieldset.appendChild(optDiv);
+    });
+    card.appendChild(fieldset);
+
+    const feedback = document.createElement('div');
+    feedback.className = 'feedback';
+    feedback.id = 'feedback-' + qIndex;
+    card.appendChild(feedback);
+
+    container.appendChild(card);
+  });
+}
+
+function selectAnswer(qIndex, optIndex) {
+  if (userAnswers[qIndex] !== null) return; // already answered, locked
+
+  userAnswers[qIndex] = optIndex;
+  const item = questions[qIndex];
+  const isCorrect = optIndex === item.correct;
+
+  for (let i = 0; i < item.options.length; i++) {
+    const optDiv = document.getElementById('opt-' + qIndex + '-' + i);
+    const radio = optDiv.querySelector('input[type="radio"]');
+    radio.disabled = true;
+    optDiv.classList.add('locked');
+    if (i === item.correct) {
+      optDiv.classList.add('correct');
+    } else if (i === optIndex && !isCorrect) {
+      optDiv.classList.add('wrong');
+    }
+  }
+
+  const feedback = document.getElementById('feedback-' + qIndex);
+  feedback.classList.add('show');
+  if (isCorrect) {
+    feedback.classList.add('correct-fb');
+    feedback.textContent = 'Correct! ' + item.explain;
+  } else {
+    feedback.classList.add('wrong-fb');
+    feedback.textContent = 'Not quite. ' + item.explain;
+  }
+
+  updateScore();
+}
+
+function updateScore() {
+  let score = 0;
+  let answered = 0;
+  userAnswers.forEach((ans, i) => {
+    if (ans !== null) {
+      answered++;
+      if (ans === questions[i].correct) score++;
+    }
+  });
+
+  document.getElementById('runningScore').textContent = score;
+  document.getElementById('answeredCount').textContent = answered;
+  document.getElementById('progressLabel').textContent = answered + ' of ' + questions.length + ' questions';
+
+  if (answered === questions.length) {
+    showSummary(score);
+  } else {
+    document.getElementById('summary').classList.remove('show');
+  }
+}
+
+function showSummary(score) {
+  const summary = document.getElementById('summary');
+  document.getElementById('summaryScore').textContent = score + ' / ' + questions.length;
+
+  let msg = '';
+  if (score === 10) {
+    msg = "Perfect score! You've got projectile motion down cold.";
+  } else if (score >= 8) {
+    msg = "Great work! You have a strong grasp of projectile motion — review the missed explanations above.";
+  } else if (score >= 6) {
+    msg = "Good effort. Revisit the concepts you missed, especially the sin/cos and range-vs-height mix-ups.";
+  } else if (score >= 4) {
+    msg = "You're building understanding, but several key misconceptions are tripping you up. Re-read the explanations and try again.";
+  } else {
+    msg = "This topic needs more review. Go back through the notes on velocity components, time of flight, and symmetry, then retake the quiz.";
+  }
+  document.getElementById('summaryMsg').textContent = msg;
+  summary.classList.add('show');
+  summary.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function resetQuiz() {
+  userAnswers = new Array(questions.length).fill(null);
+  document.getElementById('summary').classList.remove('show');
+  buildQuiz();
+  updateScore();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildQuiz();
+updateScore();
+</script>
+
+</body>
+</html>
