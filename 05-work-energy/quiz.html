@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work & Energy Quiz — Unit 5</title>
+<style>
+  :root {
+    --bg: #0f1720; --card: #1a2432; --accent: #4f9dff; --good: #2ecc71;
+    --bad: #ff5d5d; --text: #e8edf4; --muted: #94a3b8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--text); padding: 24px 16px 80px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  .sub { color: var(--muted); margin-bottom: 24px; font-size: 0.95rem; }
+  .progress-bar { height: 8px; background: #263244; border-radius: 4px; overflow: hidden; margin-bottom: 24px; }
+  .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width .25s ease; }
+  .question { background: var(--card); border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; border: 1px solid #263244; }
+  .question h3 { margin: 0 0 12px; font-size: 1.02rem; line-height: 1.4; }
+  .choice {
+    display: block; width: 100%; text-align: left; background: #202c3d;
+    border: 1px solid #2e3d52; color: var(--text); padding: 10px 14px;
+    border-radius: 8px; margin-bottom: 8px; cursor: pointer; font-size: 0.95rem;
+  }
+  .choice:hover { border-color: var(--accent); }
+  .choice.correct { border-color: var(--good); background: #163a26; }
+  .choice.incorrect { border-color: var(--bad); background: #3a1616; }
+  .choice[disabled] { cursor: default; }
+  .explain {
+    display: none; margin-top: 10px; padding: 10px 12px; background: #14202f;
+    border-left: 3px solid var(--accent); border-radius: 4px; font-size: 0.9rem; color: var(--muted);
+  }
+  .explain.show { display: block; }
+  #score-panel {
+    position: sticky; bottom: 0; background: var(--card); border: 1px solid #263244;
+    border-radius: 12px; padding: 16px 20px; margin-top: 20px; display: flex;
+    align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  #score-text { font-size: 1.05rem; font-weight: 600; }
+  button.action {
+    background: var(--accent); color: #051221; border: none; font-weight: 700;
+    padding: 10px 18px; border-radius: 8px; cursor: pointer; font-size: 0.95rem;
+  }
+  button.action:hover { filter: brightness(1.1); }
+  .tag {
+    display: inline-block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: .04em;
+    color: var(--accent); background: #142033; border: 1px solid #24344d; padding: 2px 8px;
+    border-radius: 999px; margin-bottom: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">Unit 5 · Work & Energy</span>
+  <h1>Most-Missed Questions: Work & Energy</h1>
+  <p class="sub">10 questions targeting the misconceptions students hit most often. Pick an answer to see immediate feedback. Target: 8/10 (80%).</p>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  <div id="quiz"></div>
+  <div id="score-panel">
+    <span id="score-text">0 / 10 answered</span>
+    <button class="action" id="reset-btn">Retake Quiz</button>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A person holds a heavy box perfectly still above their head for 60 seconds. How much work is done on the box during that time?",
+    choices: [
+      "A large amount, because holding something heavy is hard work",
+      "Zero, because the box has zero displacement",
+      "It depends on how long they hold it",
+      "Work equals the box's weight times 60 seconds"
+    ],
+    correct: 1,
+    explain: "W = Fd·cosθ. Since the box doesn't move, displacement d = 0, so the physics definition of work gives exactly zero — regardless of how tiring it is for the person's muscles. 'Effort' and 'physics work' are not the same thing."
+  },
+  {
+    q: "A satellite moves in a circular orbit at constant speed. The gravitational force is always directed toward the center of the orbit (perpendicular to the satellite's velocity). How much work does gravity do on the satellite?",
+    choices: ["A large positive amount", "A large negative amount", "Zero, because force and displacement are perpendicular", "It depends on the orbital radius"],
+    correct: 2,
+    explain: "W = Fd·cosθ, and θ = 90° between the (centripetal) gravitational force and the satellite's instantaneous displacement (tangent to the circle). cos(90°) = 0, so gravity does zero work — consistent with the satellite's constant speed (constant KE)."
+  },
+  {
+    q: "What does the work-energy theorem state?",
+    choices: [
+      "The work done by gravity always equals kinetic energy",
+      "The net work done on an object equals its change in kinetic energy",
+      "Work and kinetic energy are always equal to each other",
+      "Net work equals the object's final kinetic energy only"
+    ],
+    correct: 1,
+    explain: "W_net = ΔKE = KE_final − KE_initial. It's specifically the NET (total, combined) work from all forces that equals the CHANGE in kinetic energy — not any single force's work, and not the final KE alone."
+  },
+  {
+    q: "A ball rolls down a frictionless hill. As it descends, what happens to its kinetic energy and gravitational potential energy?",
+    choices: [
+      "Both increase",
+      "Both decrease",
+      "KE increases as PE decreases, and their sum (mechanical energy) stays constant",
+      "KE decreases as PE increases"
+    ],
+    correct: 2,
+    explain: "With no friction, mechanical energy (KE + PE) is conserved. As height decreases, PE decreases, and that same amount of energy converts into KE, so KE increases by exactly as much as PE decreases."
+  },
+  {
+    q: "A skateboarder rolls down a ramp that has some friction. Compared to a frictionless ramp of the same height, how does their speed at the bottom compare, and where did the 'missing' energy go?",
+    choices: [
+      "Same speed; energy is never affected by friction",
+      "Slower; the missing mechanical energy converted into heat and sound, not lost entirely",
+      "Faster; friction adds energy to the system",
+      "Slower; the energy simply disappeared"
+    ],
+    correct: 1,
+    explain: "Friction is a non-conservative force — it removes energy from the mechanical (KE + PE) system and converts it into heat and sound. Total energy is still conserved overall; only the MECHANICAL portion decreases. Energy never simply 'disappears.'"
+  },
+  {
+    q: "Two motors lift identical 500 N crates to the same height of 10 m. Motor A takes 5 seconds; Motor B takes 10 seconds. Compare the work done and the power output of each.",
+    choices: [
+      "Motor A does more work, and has more power",
+      "Both do the same work, but Motor A has more power because it did it faster",
+      "Both have the same power, because they did the same work",
+      "Motor B has more power because it took longer"
+    ],
+    correct: 1,
+    explain: "Work depends only on force and distance: W = 500 × 10 = 5000 J for both motors — the same. Power is work divided by TIME: P = W/t. Motor A (5 s) has twice the power of Motor B (10 s) for doing the identical job faster."
+  },
+  {
+    q: "A box is pushed 8 m across a floor by a 20 N force directed at 60° above the horizontal. What angle should be used in W = Fd·cosθ?",
+    choices: ["0°, because the box moves horizontally", "60°, the angle between the applied force and the displacement", "90°, because part of the force is vertical", "30°, the complement of 60°"],
+    correct: 1,
+    explain: "θ in the work formula is always the angle between the FORCE vector and the DISPLACEMENT vector — here that's 60°, as given, even though the displacement itself is horizontal. Only the horizontal component of the force (F·cos60°) actually contributes to work."
+  },
+  {
+    q: "An object's speed doubles. What happens to its kinetic energy?",
+    choices: ["It doubles", "It quadruples (×4)", "It stays the same", "It increases by a factor of 8"],
+    correct: 1,
+    explain: "KE = ½mv², so kinetic energy depends on the SQUARE of speed. Doubling v means (2v)² = 4v² — kinetic energy quadruples, not just doubles."
+  },
+  {
+    q: "A spring is compressed and stores 40 J of elastic potential energy. It's released and pushes a 2 kg block (initially at rest, on a frictionless surface) away. What is the block's speed once it leaves the spring, assuming all the spring's PE converts to the block's KE?",
+    choices: ["20 m/s", "6.3 m/s", "40 m/s", "2.8 m/s"],
+    correct: 1,
+    explain: "Conservation of energy: PE_spring = KE_block → 40 = ½(2)v² → 40 = v² → v = √40 ≈ 6.3 m/s. This is the same conservation-of-mechanical-energy logic used for height-based (gravitational) problems, just with spring PE instead."
+  },
+  {
+    q: "Which statement correctly distinguishes power from work?",
+    choices: [
+      "Power and work measure the exact same thing, just in different units",
+      "Work measures a total amount of energy transferred; power measures the rate at which that transfer happens",
+      "Power is always larger than work for the same task",
+      "Work depends on time; power does not"
+    ],
+    correct: 1,
+    explain: "Work/energy (Joules) is a total quantity — how much energy was transferred overall. Power (Watts = J/s) is a RATE — how quickly that transfer happened. The same total work can correspond to very different power values depending on how much time it took."
+  }
+];
+
+const quizEl = document.getElementById('quiz');
+const progressFill = document.getElementById('progress-fill');
+const scoreText = document.getElementById('score-text');
+const resetBtn = document.getElementById('reset-btn');
+let answered = new Array(QUESTIONS.length).fill(false);
+let correctCount = 0;
+
+function render() {
+  quizEl.innerHTML = '';
+  QUESTIONS.forEach((item, qi) => {
+    const card = document.createElement('div');
+    card.className = 'question';
+    const h3 = document.createElement('h3');
+    h3.textContent = `${qi + 1}. ${item.q}`;
+    card.appendChild(h3);
+
+    item.choices.forEach((choiceText, ci) => {
+      const btn = document.createElement('button');
+      btn.className = 'choice';
+      btn.textContent = choiceText;
+      btn.addEventListener('click', () => selectAnswer(qi, ci));
+      card.appendChild(btn);
+    });
+
+    const explain = document.createElement('div');
+    explain.className = 'explain';
+    explain.id = `explain-${qi}`;
+    explain.textContent = item.explain;
+    card.appendChild(explain);
+
+    quizEl.appendChild(card);
+  });
+  updateScore();
+}
+
+function selectAnswer(qi, ci) {
+  if (answered[qi]) return;
+  answered[qi] = true;
+  const card = quizEl.children[qi];
+  const buttons = card.querySelectorAll('.choice');
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+    if (i === QUESTIONS[qi].correct) b.classList.add('correct');
+    else if (i === ci) b.classList.add('incorrect');
+  });
+  if (ci === QUESTIONS[qi].correct) correctCount++;
+  document.getElementById(`explain-${qi}`).classList.add('show');
+  updateScore();
+}
+
+function updateScore() {
+  const answeredCount = answered.filter(Boolean).length;
+  scoreText.textContent = `${correctCount} correct / ${answeredCount} answered / ${QUESTIONS.length} total`;
+  progressFill.style.width = `${(answeredCount / QUESTIONS.length) * 100}%`;
+}
+
+resetBtn.addEventListener('click', () => {
+  answered = new Array(QUESTIONS.length).fill(false);
+  correctCount = 0;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

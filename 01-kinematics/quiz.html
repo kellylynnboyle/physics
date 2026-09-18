@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinematics Quiz — Unit 1</title>
+<style>
+  :root {
+    --bg: #0f1720;
+    --card: #1a2432;
+    --accent: #4f9dff;
+    --good: #2ecc71;
+    --bad: #ff5d5d;
+    --text: #e8edf4;
+    --muted: #94a3b8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 24px 16px 80px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  .sub { color: var(--muted); margin-bottom: 24px; font-size: 0.95rem; }
+  .progress-bar {
+    height: 8px; background: #263244; border-radius: 4px; overflow: hidden; margin-bottom: 24px;
+  }
+  .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width .25s ease; }
+  .question {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+    border: 1px solid #263244;
+  }
+  .question h3 { margin: 0 0 12px; font-size: 1.02rem; line-height: 1.4; }
+  .choice {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: #202c3d;
+    border: 1px solid #2e3d52;
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+  }
+  .choice:hover { border-color: var(--accent); }
+  .choice.selected { border-color: var(--accent); background: #22344d; }
+  .choice.correct { border-color: var(--good); background: #163a26; }
+  .choice.incorrect { border-color: var(--bad); background: #3a1616; }
+  .choice[disabled] { cursor: default; }
+  .explain {
+    display: none;
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: #14202f;
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .explain.show { display: block; }
+  #score-panel {
+    position: sticky;
+    bottom: 0;
+    background: var(--card);
+    border: 1px solid #263244;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  #score-text { font-size: 1.05rem; font-weight: 600; }
+  button.action {
+    background: var(--accent);
+    color: #051221;
+    border: none;
+    font-weight: 700;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+  }
+  button.action:hover { filter: brightness(1.1); }
+  button.action:disabled { opacity: .4; cursor: not-allowed; }
+  .tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--accent);
+    background: #142033;
+    border: 1px solid #24344d;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">Unit 1 · Kinematics</span>
+  <h1>Most-Missed Questions: Kinematics</h1>
+  <p class="sub">10 questions targeting the misconceptions students hit most often. Pick an answer to see immediate feedback. Target: 8/10 (80%).</p>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  <div id="quiz"></div>
+  <div id="score-panel">
+    <span id="score-text">0 / 10 answered</span>
+    <button class="action" id="reset-btn">Retake Quiz</button>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A student runs 100 m east, then turns around and runs 40 m west. What is the student's displacement?",
+    choices: ["140 m east", "60 m east", "60 m west", "140 m west"],
+    correct: 1,
+    explain: "Displacement is the vector from start to end: 100 m east − 40 m east (since west is negative) = 60 m east. Distance traveled (140 m) is different from displacement — this is the #1 confused pair in kinematics."
+  },
+  {
+    q: "A car's velocity–time graph is a straight horizontal line at −10 m/s. What is the car doing?",
+    choices: [
+      "Speeding up in the negative direction",
+      "Moving at a constant 10 m/s in the negative direction",
+      "Slowing down",
+      "Accelerating at 10 m/s²"
+    ],
+    correct: 1,
+    explain: "A horizontal line on a velocity–time graph means constant velocity (zero slope = zero acceleration). The negative sign just means the direction is negative, not that it's slowing down."
+  },
+  {
+    q: "A ball is thrown straight up. At the very top of its path, which statement is true?",
+    choices: [
+      "Both velocity and acceleration are zero",
+      "Velocity is zero; acceleration is still −9.8 m/s²",
+      "Velocity is at its maximum; acceleration is zero",
+      "Velocity is zero; acceleration is zero only at that instant"
+    ],
+    correct: 1,
+    explain: "Gravity never switches off. At the peak, velocity is momentarily zero, but acceleration is still g downward (≈ −9.8 m/s²) the entire time the ball is in the air — that's exactly why it starts falling back down."
+  },
+  {
+    q: "An object has a negative acceleration. What must be happening to its speed?",
+    choices: [
+      "It is definitely slowing down",
+      "It is definitely speeding up",
+      "It depends on the direction (sign) of the velocity",
+      "Its speed is not changing"
+    ],
+    correct: 2,
+    explain: "Negative acceleration just means acceleration points in the negative direction. If velocity is also negative, the object speeds up (same sign = speeding up). If velocity is positive, the object slows down (opposite signs = slowing down)."
+  },
+  {
+    q: "On a position–time graph, what does the slope of the line represent?",
+    choices: ["Acceleration", "Displacement", "Velocity", "Distance traveled"],
+    correct: 2,
+    explain: "Slope = rise/run = Δposition/Δtime = velocity. (Slope of a velocity–time graph, one level up, gives acceleration instead.)"
+  },
+  {
+    q: "On a velocity–time graph, how do you find the total displacement over an interval?",
+    choices: [
+      "Read the slope of the line",
+      "Read the y-value at the end of the interval",
+      "Find the area between the line and the time axis",
+      "Multiply the highest velocity by the total time"
+    ],
+    correct: 2,
+    explain: "Area under a velocity–time graph equals displacement. Area below the time axis (negative velocity) counts as negative displacement."
+  },
+  {
+    q: "Which set of givens makes `Δx = v₀t + ½at²` the right equation to use (instead of the other three kinematics equations)?",
+    choices: [
+      "You know v₀, a, t, and want Δx (final velocity not given or needed)",
+      "You know v₀, v, and t, and want a",
+      "You know v₀, v, and a, and want t",
+      "You know only Δx and t"
+    ],
+    correct: 0,
+    explain: "Each kinematics equation is missing exactly one of the five variables (v₀, v, a, t, Δx). `Δx = v₀t + ½at²` is the one missing final velocity v — use it when v isn't given and isn't what you need."
+  },
+  {
+    q: "A rock is dropped (not thrown) from a cliff. What is its initial velocity, and what is its acceleration during the fall?",
+    choices: [
+      "v₀ = 9.8 m/s downward; a = 0",
+      "v₀ = 0; a = 9.8 m/s² downward, the whole way down",
+      "v₀ = 0; a = 0 until it speeds up",
+      "v₀ = 0; a increases as it falls"
+    ],
+    correct: 1,
+    explain: "\"Dropped\" means v₀ = 0. Acceleration is the constant g ≈ 9.8 m/s² downward for the entire fall (ignoring air resistance) — it does not start at zero and build up."
+  },
+  {
+    q: "Two runners: Runner A covers 100 m in 10 s in a straight line. Runner B jogs in a 100 m loop and returns to the start in 10 s. Compare their average velocities.",
+    choices: [
+      "Both have the same average velocity, 10 m/s",
+      "Runner A's average velocity is 10 m/s; Runner B's average velocity is 0 m/s",
+      "Runner B has a greater average velocity because they ran the same distance",
+      "Average velocity cannot be found without knowing the path shape"
+    ],
+    correct: 1,
+    explain: "Average velocity = displacement/time. Runner B ends up back at the start, so displacement = 0, giving average velocity = 0 m/s — even though average *speed* (distance/time) is 10 m/s for both."
+  },
+  {
+    q: "A car accelerates uniformly from 4 m/s to 20 m/s in 8 seconds. What is its acceleration, and is this consistent with 'speeding up'?",
+    choices: [
+      "a = 2 m/s²; yes, because velocity and acceleration are both positive (same sign)",
+      "a = 0.5 m/s²; no, because acceleration is too small to matter",
+      "a = 2 m/s²; no, acceleration alone never tells you about speeding up",
+      "a = 16 m/s²; yes, because that's v minus v₀"
+    ],
+    correct: 0,
+    explain: "a = (v − v₀)/t = (20 − 4)/8 = 2 m/s². Since both velocity and acceleration are positive (same sign), the car is speeding up — consistent with the same-sign / opposite-sign rule from earlier questions."
+  }
+];
+
+const quizEl = document.getElementById('quiz');
+const progressFill = document.getElementById('progress-fill');
+const scoreText = document.getElementById('score-text');
+const resetBtn = document.getElementById('reset-btn');
+let answered = new Array(QUESTIONS.length).fill(false);
+let correctCount = 0;
+
+function render() {
+  quizEl.innerHTML = '';
+  QUESTIONS.forEach((item, qi) => {
+    const card = document.createElement('div');
+    card.className = 'question';
+    const h3 = document.createElement('h3');
+    h3.textContent = `${qi + 1}. ${item.q}`;
+    card.appendChild(h3);
+
+    item.choices.forEach((choiceText, ci) => {
+      const btn = document.createElement('button');
+      btn.className = 'choice';
+      btn.textContent = choiceText;
+      btn.addEventListener('click', () => selectAnswer(qi, ci));
+      card.appendChild(btn);
+    });
+
+    const explain = document.createElement('div');
+    explain.className = 'explain';
+    explain.id = `explain-${qi}`;
+    explain.textContent = item.explain;
+    card.appendChild(explain);
+
+    quizEl.appendChild(card);
+  });
+  updateScore();
+}
+
+function selectAnswer(qi, ci) {
+  if (answered[qi]) return;
+  answered[qi] = true;
+  const card = quizEl.children[qi];
+  const buttons = card.querySelectorAll('.choice');
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+    if (i === QUESTIONS[qi].correct) b.classList.add('correct');
+    else if (i === ci) b.classList.add('incorrect');
+  });
+  if (ci === QUESTIONS[qi].correct) correctCount++;
+  document.getElementById(`explain-${qi}`).classList.add('show');
+  updateScore();
+}
+
+function updateScore() {
+  const answeredCount = answered.filter(Boolean).length;
+  scoreText.textContent = `${correctCount} correct / ${answeredCount} answered / ${QUESTIONS.length} total`;
+  progressFill.style.width = `${(answeredCount / QUESTIONS.length) * 100}%`;
+}
+
+resetBtn.addEventListener('click', () => {
+  answered = new Array(QUESTIONS.length).fill(false);
+  correctCount = 0;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newton's Laws Quiz — Unit 3</title>
+<style>
+  :root {
+    --bg: #0f1720; --card: #1a2432; --accent: #4f9dff; --good: #2ecc71;
+    --bad: #ff5d5d; --text: #e8edf4; --muted: #94a3b8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--text); padding: 24px 16px 80px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  .sub { color: var(--muted); margin-bottom: 24px; font-size: 0.95rem; }
+  .progress-bar { height: 8px; background: #263244; border-radius: 4px; overflow: hidden; margin-bottom: 24px; }
+  .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width .25s ease; }
+  .question { background: var(--card); border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; border: 1px solid #263244; }
+  .question h3 { margin: 0 0 12px; font-size: 1.02rem; line-height: 1.4; }
+  .choice {
+    display: block; width: 100%; text-align: left; background: #202c3d;
+    border: 1px solid #2e3d52; color: var(--text); padding: 10px 14px;
+    border-radius: 8px; margin-bottom: 8px; cursor: pointer; font-size: 0.95rem;
+  }
+  .choice:hover { border-color: var(--accent); }
+  .choice.correct { border-color: var(--good); background: #163a26; }
+  .choice.incorrect { border-color: var(--bad); background: #3a1616; }
+  .choice[disabled] { cursor: default; }
+  .explain {
+    display: none; margin-top: 10px; padding: 10px 12px; background: #14202f;
+    border-left: 3px solid var(--accent); border-radius: 4px; font-size: 0.9rem; color: var(--muted);
+  }
+  .explain.show { display: block; }
+  #score-panel {
+    position: sticky; bottom: 0; background: var(--card); border: 1px solid #263244;
+    border-radius: 12px; padding: 16px 20px; margin-top: 20px; display: flex;
+    align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  #score-text { font-size: 1.05rem; font-weight: 600; }
+  button.action {
+    background: var(--accent); color: #051221; border: none; font-weight: 700;
+    padding: 10px 18px; border-radius: 8px; cursor: pointer; font-size: 0.95rem;
+  }
+  button.action:hover { filter: brightness(1.1); }
+  .tag {
+    display: inline-block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: .04em;
+    color: var(--accent); background: #142033; border: 1px solid #24344d; padding: 2px 8px;
+    border-radius: 999px; margin-bottom: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">Unit 3 · Newton's Laws</span>
+  <h1>Most-Missed Questions: Newton's Laws</h1>
+  <p class="sub">10 questions targeting the misconceptions students hit most often. Pick an answer to see immediate feedback. Target: 8/10 (80%).</p>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  <div id="quiz"></div>
+  <div id="score-panel">
+    <span id="score-text">0 / 10 answered</span>
+    <button class="action" id="reset-btn">Retake Quiz</button>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A puck slides across frictionless ice at constant velocity. What net force is acting on it?",
+    choices: ["A constant force in the direction of motion", "Zero net force", "A force equal to its weight", "It's impossible to have constant velocity without a force"],
+    correct: 1,
+    explain: "Newton's 1st law: constant velocity (including moving in a straight line at steady speed) requires zero NET force, not zero force and not a constant push. No force is needed to keep something moving at constant velocity."
+  },
+  {
+    q: "A book rests on a table. Which two forces act on the book?",
+    choices: [
+      "The book's weight and the table's weight",
+      "Gravity pulling the book down, and the normal force from the table pushing up",
+      "Only gravity — the table doesn't exert a force",
+      "The book pushing down on the table, and gravity"
+    ],
+    correct: 1,
+    explain: "The two forces acting ON the book are gravity (down) and the normal force from the table (up). They happen to be equal and opposite here, but they are NOT a Newton's-3rd-law pair — a 3rd law pair always involves two different objects exerting force on each other, and both forces here point at the book from two different sources but are actually a coincidental balance, not an action-reaction pair."
+  },
+  {
+    q: "According to Newton's 3rd law, why don't action-reaction force pairs cancel each other out?",
+    choices: [
+      "They do cancel out — that's why objects don't move",
+      "Because they act on two different objects, not the same object",
+      "Because one force is always larger than the other",
+      "Because they act in the same direction"
+    ],
+    correct: 1,
+    explain: "Action-reaction pairs are equal in magnitude and opposite in direction, but they act on DIFFERENT objects. Forces can only cancel when they act on the SAME object, so a 3rd-law pair can never cancel itself."
+  },
+  {
+    q: "A 60 kg skater pushes on a wall with 200 N. What force does the wall exert on the skater?",
+    choices: ["0 N, walls don't push back", "200 N, in the opposite direction, on the skater", "200 N, in the same direction, on the wall", "It depends on the skater's speed"],
+    correct: 1,
+    explain: "Newton's 3rd law: the wall pushes back on the skater with 200 N in the opposite direction. This reaction force is what actually accelerates the skater away from the wall."
+  },
+  {
+    q: "A crate sits on an inclined ramp. Which statement about the normal force is correct?",
+    choices: [
+      "Normal force always equals the crate's full weight, mg",
+      "Normal force equals mg·cosθ, which is less than the full weight on an incline",
+      "Normal force equals mg·sinθ",
+      "There is no normal force on an incline"
+    ],
+    correct: 1,
+    explain: "On an incline, only the component of gravity perpendicular to the surface (mg cosθ) is balanced by the normal force. The component along the surface (mg sinθ) is what tends to slide the object down — it is NOT balanced by the normal force."
+  },
+  {
+    q: "An elevator accelerates upward. How does the tension in the cable compare to the elevator's weight at rest?",
+    choices: [
+      "Tension is always exactly equal to the weight",
+      "Tension is greater than the weight, because net force must point upward",
+      "Tension is less than the weight",
+      "Tension and weight are unrelated"
+    ],
+    correct: 1,
+    explain: "For F_net = ma to point upward (accelerating up), the upward tension must exceed the downward weight: T − mg = ma, so T = mg + ma > mg."
+  },
+  {
+    q: "What is the difference between mass and weight?",
+    choices: [
+      "They are the same thing, just different units",
+      "Mass is the amount of matter (constant everywhere); weight is the force of gravity on that mass (changes with location)",
+      "Weight is constant everywhere; mass changes with location",
+      "Mass is measured in Newtons; weight is measured in kilograms"
+    ],
+    correct: 1,
+    explain: "Mass (kg) doesn't change based on where you are. Weight (N) = mg, so it changes if g changes — e.g., an astronaut's mass is the same on the Moon, but their weight is about 1/6 of what it is on Earth."
+  },
+  {
+    q: "A box won't budge when you push it with 40 N, but it starts sliding once you push with 55 N. What does this tell you about friction?",
+    choices: [
+      "Kinetic friction was greater than 55 N",
+      "The maximum static friction force is somewhere between 40 N and 55 N",
+      "There is no friction on this box",
+      "Static and kinetic friction are always identical"
+    ],
+    correct: 1,
+    explain: "Static friction matches the applied force up to a maximum value (μₛN). Since 40 N wasn't enough to move it but 55 N was, the maximum static friction force lies between those two values."
+  },
+  {
+    q: "A car is moving at constant velocity in a straight line on a level road. What can you conclude about the forces acting on it?",
+    choices: [
+      "No forces are acting on the car at all",
+      "The net force on the car is zero, even though the engine is still producing a forward force",
+      "The engine force must be zero",
+      "The car must be decelerating"
+    ],
+    correct: 1,
+    explain: "Constant velocity means zero net force (1st law), not zero force. The forward force from the engine is exactly balanced by backward forces (friction/air resistance), so individual forces are nonzero even though they sum to zero."
+  },
+  {
+    q: "Two objects of different mass (2 kg and 8 kg) are pushed by the SAME net force. How do their accelerations compare?",
+    choices: [
+      "They have the same acceleration because the force is the same",
+      "The 2 kg object accelerates more, because a = F_net/m and it has less mass",
+      "The 8 kg object accelerates more, because it's heavier",
+      "Acceleration cannot depend on mass"
+    ],
+    correct: 1,
+    explain: "From F_net = ma, acceleration a = F_net/m. For the same net force, a smaller mass produces a larger acceleration — the 2 kg object accelerates 4 times faster than the 8 kg object."
+  }
+];
+
+const quizEl = document.getElementById('quiz');
+const progressFill = document.getElementById('progress-fill');
+const scoreText = document.getElementById('score-text');
+const resetBtn = document.getElementById('reset-btn');
+let answered = new Array(QUESTIONS.length).fill(false);
+let correctCount = 0;
+
+function render() {
+  quizEl.innerHTML = '';
+  QUESTIONS.forEach((item, qi) => {
+    const card = document.createElement('div');
+    card.className = 'question';
+    const h3 = document.createElement('h3');
+    h3.textContent = `${qi + 1}. ${item.q}`;
+    card.appendChild(h3);
+
+    item.choices.forEach((choiceText, ci) => {
+      const btn = document.createElement('button');
+      btn.className = 'choice';
+      btn.textContent = choiceText;
+      btn.addEventListener('click', () => selectAnswer(qi, ci));
+      card.appendChild(btn);
+    });
+
+    const explain = document.createElement('div');
+    explain.className = 'explain';
+    explain.id = `explain-${qi}`;
+    explain.textContent = item.explain;
+    card.appendChild(explain);
+
+    quizEl.appendChild(card);
+  });
+  updateScore();
+}
+
+function selectAnswer(qi, ci) {
+  if (answered[qi]) return;
+  answered[qi] = true;
+  const card = quizEl.children[qi];
+  const buttons = card.querySelectorAll('.choice');
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+    if (i === QUESTIONS[qi].correct) b.classList.add('correct');
+    else if (i === ci) b.classList.add('incorrect');
+  });
+  if (ci === QUESTIONS[qi].correct) correctCount++;
+  document.getElementById(`explain-${qi}`).classList.add('show');
+  updateScore();
+}
+
+function updateScore() {
+  const answeredCount = answered.filter(Boolean).length;
+  scoreText.textContent = `${correctCount} correct / ${answeredCount} answered / ${QUESTIONS.length} total`;
+  progressFill.style.width = `${(answeredCount / QUESTIONS.length) * 100}%`;
+}
+
+resetBtn.addEventListener('click', () => {
+  answered = new Array(QUESTIONS.length).fill(false);
+  correctCount = 0;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

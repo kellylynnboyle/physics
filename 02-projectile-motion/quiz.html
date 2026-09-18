@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projectile Motion Quiz — Unit 2</title>
+<style>
+  :root {
+    --bg: #0f1720;
+    --card: #1a2432;
+    --accent: #4f9dff;
+    --good: #2ecc71;
+    --bad: #ff5d5d;
+    --text: #e8edf4;
+    --muted: #94a3b8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 24px 16px 80px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  .sub { color: var(--muted); margin-bottom: 24px; font-size: 0.95rem; }
+  .progress-bar { height: 8px; background: #263244; border-radius: 4px; overflow: hidden; margin-bottom: 24px; }
+  .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width .25s ease; }
+  .question { background: var(--card); border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; border: 1px solid #263244; }
+  .question h3 { margin: 0 0 12px; font-size: 1.02rem; line-height: 1.4; }
+  .choice {
+    display: block; width: 100%; text-align: left; background: #202c3d;
+    border: 1px solid #2e3d52; color: var(--text); padding: 10px 14px;
+    border-radius: 8px; margin-bottom: 8px; cursor: pointer; font-size: 0.95rem;
+  }
+  .choice:hover { border-color: var(--accent); }
+  .choice.selected { border-color: var(--accent); background: #22344d; }
+  .choice.correct { border-color: var(--good); background: #163a26; }
+  .choice.incorrect { border-color: var(--bad); background: #3a1616; }
+  .choice[disabled] { cursor: default; }
+  .explain {
+    display: none; margin-top: 10px; padding: 10px 12px; background: #14202f;
+    border-left: 3px solid var(--accent); border-radius: 4px; font-size: 0.9rem; color: var(--muted);
+  }
+  .explain.show { display: block; }
+  #score-panel {
+    position: sticky; bottom: 0; background: var(--card); border: 1px solid #263244;
+    border-radius: 12px; padding: 16px 20px; margin-top: 20px; display: flex;
+    align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  #score-text { font-size: 1.05rem; font-weight: 600; }
+  button.action {
+    background: var(--accent); color: #051221; border: none; font-weight: 700;
+    padding: 10px 18px; border-radius: 8px; cursor: pointer; font-size: 0.95rem;
+  }
+  button.action:hover { filter: brightness(1.1); }
+  .tag {
+    display: inline-block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: .04em;
+    color: var(--accent); background: #142033; border: 1px solid #24344d; padding: 2px 8px;
+    border-radius: 999px; margin-bottom: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">Unit 2 · Projectile Motion</span>
+  <h1>Most-Missed Questions: Projectile Motion</h1>
+  <p class="sub">10 questions targeting the misconceptions students hit most often. Pick an answer to see immediate feedback. Target: 8/10 (80%).</p>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  <div id="quiz"></div>
+  <div id="score-panel">
+    <span id="score-text">0 / 10 answered</span>
+    <button class="action" id="reset-btn">Retake Quiz</button>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "A projectile is launched at an angle above the horizontal. What happens to its horizontal velocity during the flight (ignoring air resistance)?",
+    choices: ["It decreases steadily due to gravity", "It stays constant the entire flight", "It increases as the projectile falls", "It becomes zero at the peak"],
+    correct: 1,
+    explain: "Gravity acts only vertically, so there is no horizontal acceleration. Horizontal velocity is constant from launch to landing — this is the core idea of the whole unit."
+  },
+  {
+    q: "At the very top (apex) of a projectile's path, which is true?",
+    choices: [
+      "Both velocity components are zero",
+      "Vertical velocity is zero; horizontal velocity is unchanged from launch",
+      "Horizontal velocity is zero; vertical velocity is at its maximum",
+      "Speed is zero"
+    ],
+    correct: 1,
+    explain: "Only the vertical velocity momentarily reaches zero at the apex. Horizontal velocity never changes during flight, so it's the same at the apex as it was at launch."
+  },
+  {
+    q: "A ball rolls off a table horizontally at 3 m/s. What is its initial vertical velocity the instant it leaves the table?",
+    choices: ["3 m/s downward", "0 m/s", "9.8 m/s downward", "Cannot be determined"],
+    correct: 1,
+    explain: "For a horizontal launch, all of the initial speed is horizontal: v₀ₓ = 3 m/s and v₀ᵧ = 0. Gravity then begins accelerating the vertical component from zero the instant it leaves the table."
+  },
+  {
+    q: "To find the total time a projectile is in the air, which motion should you analyze?",
+    choices: ["The horizontal motion only", "The vertical motion only", "You must average both components", "Time cannot be found without air resistance data"],
+    correct: 1,
+    explain: "Time of flight is entirely determined by the vertical motion (how long it takes to rise and/or fall the required vertical distance). Horizontal velocity plays no role in determining time."
+  },
+  {
+    q: "Once you've calculated the time of flight for a projectile, how do you find its range (horizontal distance)?",
+    choices: [
+      "Range = v₀ (initial speed) × time",
+      "Range = vₓ (horizontal velocity component) × time",
+      "Range = vᵧ (vertical velocity component) × time",
+      "Range = ½ × g × time²"
+    ],
+    correct: 1,
+    explain: "Range uses only the horizontal component of velocity, since that's the component responsible for horizontal displacement: Δx = vₓ · t. Using the full initial speed v₀ instead of vₓ is a common error."
+  },
+  {
+    q: "Two identical projectiles are launched from the ground at the same speed, one at 30° and one at 60° above horizontal. Which reaches a greater maximum height?",
+    choices: ["The 30° launch", "The 60° launch", "Both reach the same height", "Cannot be determined without more information"],
+    correct: 1,
+    explain: "Max height depends on v₀ᵧ = v₀ sinθ. sin(60°) > sin(30°), so the steeper launch angle produces a larger vertical velocity component and therefore a greater max height (even though its range may be smaller)."
+  },
+  {
+    q: "A projectile is launched and lands at the same height it started from. Which statement about the trajectory is correct?",
+    choices: [
+      "The landing speed is less than the launch speed because of gravity",
+      "Time to reach the peak equals time to fall back down, and launch speed equals landing speed",
+      "The horizontal velocity at landing is greater than at launch",
+      "The trajectory is only symmetric if the launch angle is 45°"
+    ],
+    correct: 1,
+    explain: "When launch and landing heights are equal, the trajectory is always symmetric (for any angle): time up = time down, and by energy/kinematics symmetry, landing speed equals launch speed."
+  },
+  {
+    q: "An object is thrown horizontally off a cliff at the same time an identical object is dropped straight down from the same height. Which hits the ground first?",
+    choices: [
+      "The thrown object, because it has more speed",
+      "The dropped object, because it falls straight down",
+      "They hit at the same time",
+      "It depends on the horizontal launch speed"
+    ],
+    correct: 2,
+    explain: "Both objects have v₀ᵧ = 0 and experience the same vertical acceleration g. Since horizontal and vertical motion are independent, the horizontal speed of the thrown object has zero effect on how long it takes to fall — they land simultaneously."
+  },
+  {
+    q: "What is the launch angle that gives the maximum range for a projectile launched and landing at the same height (no air resistance)?",
+    choices: ["90°", "45°", "60°", "It depends on the mass of the projectile"],
+    correct: 1,
+    explain: "Range = v₀²sin(2θ)/g is maximized when sin(2θ) = 1, i.e. 2θ = 90°, so θ = 45°. Mass does not appear in the range equation at all (ignoring air resistance)."
+  },
+  {
+    q: "A cannonball is launched at 25 m/s at 35° above horizontal. Which pair of steps correctly starts this problem?",
+    choices: [
+      "Use 25 m/s directly in both the horizontal and vertical equations",
+      "Split 25 m/s into v₀ₓ = 25cos35° and v₀ᵧ = 25sin35°, then solve the vertical and horizontal parts separately",
+      "Average 25 m/s and 35° to get a single effective velocity",
+      "Use 25 m/s as v₀ᵧ and solve for v₀ₓ afterward"
+    ],
+    correct: 1,
+    explain: "Every projectile problem starts the same way: decompose the launch velocity into horizontal and vertical components using cosine and sine of the launch angle, then treat each component with its own set of equations."
+  }
+];
+
+const quizEl = document.getElementById('quiz');
+const progressFill = document.getElementById('progress-fill');
+const scoreText = document.getElementById('score-text');
+const resetBtn = document.getElementById('reset-btn');
+let answered = new Array(QUESTIONS.length).fill(false);
+let correctCount = 0;
+
+function render() {
+  quizEl.innerHTML = '';
+  QUESTIONS.forEach((item, qi) => {
+    const card = document.createElement('div');
+    card.className = 'question';
+    const h3 = document.createElement('h3');
+    h3.textContent = `${qi + 1}. ${item.q}`;
+    card.appendChild(h3);
+
+    item.choices.forEach((choiceText, ci) => {
+      const btn = document.createElement('button');
+      btn.className = 'choice';
+      btn.textContent = choiceText;
+      btn.addEventListener('click', () => selectAnswer(qi, ci));
+      card.appendChild(btn);
+    });
+
+    const explain = document.createElement('div');
+    explain.className = 'explain';
+    explain.id = `explain-${qi}`;
+    explain.textContent = item.explain;
+    card.appendChild(explain);
+
+    quizEl.appendChild(card);
+  });
+  updateScore();
+}
+
+function selectAnswer(qi, ci) {
+  if (answered[qi]) return;
+  answered[qi] = true;
+  const card = quizEl.children[qi];
+  const buttons = card.querySelectorAll('.choice');
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+    if (i === QUESTIONS[qi].correct) b.classList.add('correct');
+    else if (i === ci) b.classList.add('incorrect');
+  });
+  if (ci === QUESTIONS[qi].correct) correctCount++;
+  document.getElementById(`explain-${qi}`).classList.add('show');
+  updateScore();
+}
+
+function updateScore() {
+  const answeredCount = answered.filter(Boolean).length;
+  scoreText.textContent = `${correctCount} correct / ${answeredCount} answered / ${QUESTIONS.length} total`;
+  progressFill.style.width = `${(answeredCount / QUESTIONS.length) * 100}%`;
+}
+
+resetBtn.addEventListener('click', () => {
+  answered = new Array(QUESTIONS.length).fill(false);
+  correctCount = 0;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
