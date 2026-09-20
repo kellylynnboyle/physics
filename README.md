@@ -24,6 +24,7 @@ It's built for two audiences at once:
 |---|---|---|
 | **1 — Mechanics** | Kinematics, Projectile Motion, Newton's Laws, Momentum, Work & Energy | ✅ Full content built (notes, quizzes, resources) |
 | **2 — Electricity, Magnetism, Waves, Light & Earth Science** | Electricity, Magnetism, Waves, Light, Plate Tectonics, Earthquakes, Nuclear Physics | 🚧 Outline built ([units below](#semester-2--electricity-magnetism-waves-light--earth-science-outline)); full lesson content in progress |
+| **[Unit P.2 — Energy, Forces, & Earth's Crust](unit-p2-energy-forces-earths-crust/)** *(real coursework)* | OpenSciEd HS Physics, Lessons 4–10: particle-level force/energy models, seismic waves, convection, radioactive decay, age of rocks, rock density, plate boundaries | ✅ Full content built — real class materials (Lessons 4–7) + newly built study guides (Lessons 8–10, Unit 2 test prep) |
 
 ## How the project is organized
 
@@ -42,7 +43,8 @@ physics/
 ├── 09-light/                    ├─ Semester 2: E&M, Waves, Light, Earth Science
 ├── 10-plate-tectonics/          │
 ├── 11-earthquakes/              │
-└── 12-nuclear-physics/         ─┘
+├── 12-nuclear-physics/         ─┘
+└── unit-p2-energy-forces-earths-crust/  ← real coursework (see note below)
 ```
 
 Each **semester 1** unit folder follows the same four-file pattern (semester
@@ -59,6 +61,8 @@ in each folder):
 No installation or build step is required. `quiz.html` files are plain
 HTML/CSS/JavaScript — double-click to open, or serve the folder with any
 static file server (e.g. GitHub Pages).
+
+> **[`unit-p2-energy-forces-earths-crust/`](unit-p2-energy-forces-earths-crust/) is different from the rest of this repo.** Everything above is a generic, standards-based curriculum built for any 11th-grade physics student. That folder is one real student's actual OpenSciEd HS Physics class — real slides, handouts, and teacher notes, organized by the class's own lesson numbers and Matter-Energy-Force framework rather than this repo's topic outline. See its own README for details.
 
 ## Semester 1 — Mechanics: unit sequence and suggested pacing
 

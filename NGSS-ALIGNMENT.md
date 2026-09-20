@@ -99,6 +99,20 @@ one unit because the official framework itself bundles them that way
 
 \* Asterisked PEs integrate science with engineering (HS-ETS1 practices).
 
+## Real coursework: Unit P.2 (OpenSciEd) vs. this document's model
+
+[`unit-p2-energy-forces-earths-crust/`](unit-p2-energy-forces-earths-crust/) is a different, real curriculum — **OpenSciEd High School Physics** — not the "Physics of the Universe" model this document otherwise describes. Both are NGSS-aligned, but OpenSciEd organizes its Unit 2 ("Energy, Forces, & Earth's Crust") around a Matter-Energy-Force storyline instead of the instructional segments above. Rough mapping to the same PE codes used in this document:
+
+| OpenSciEd Unit P.2 lesson | Closest PE(s) above |
+|---|---|
+| Lesson 2 (net force, free-body diagrams, equilibrium) | HS-PS2-1 (IS1) |
+| Lesson 4 (particle-level force/energy models, elastic limit) | HS-PS2-1, HS-PS3-1/2 (IS1/IS3) — plus HS-ESS2-1 applied to plate boundaries |
+| Lesson 5 (seismic waves, Earth's layers) | HS-PS4-1, HS-ESS2-1 (IS4/IS5) |
+| Lesson 6–7 (convection, radioactive decay) | HS-PS1-8 (IS4) |
+| Lesson 8 (age of rocks) | HS-ESS1-5, HS-ESS1-6 (IS4) |
+| Lesson 9 (rock density/isostasy) | HS-ESS2-1 (IS4) |
+| Lesson 10 (plate boundaries) | HS-ESS2-1, HS-ESS1-5 (IS4) |
+
 ## Using this document
 
 - **Instructors:** cite the relevant PE code(s) directly on assessments and report-outs — administrators and NGSS-aligned gradebooks generally expect the exact `HS-PSx-x` / `HS-ESSx-x` code.
