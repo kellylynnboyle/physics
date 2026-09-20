@@ -2,6 +2,8 @@
 
 **OpenSciEd High School Physics · Unit P.2: Energy, Forces, & Earth's Crust**
 
+> 📄 **[Open the readable version →](https://claude.ai/artifact/1cQKAm9EY1zYNtiYha9QJr)** (with an Earth cross-section diagram and wave-speed visual)
+
 | Name: _______________ | Date: _______________ | Period: _______________ |
 |---|---|---|
 

@@ -2,6 +2,8 @@
 
 **OpenSciEd High School Physics · Unit P.2: Energy, Forces, & Earth's Crust**
 
+> 📄 **[Open the readable version →](https://claude.ai/artifact/4KjWVHF21YVgMoq4CpH2N7)** (tabbed with Lessons 8–9 and the practice set, includes a boundary-type diagram)
+
 | Name: _______________ | Date: _______________ | Period: _______________ |
 |---|---|---|
 

@@ -4,6 +4,8 @@
 
 Score: _____ / 19
 
+> 📄 **[Open the readable/interactive version →](https://claude.ai/artifact/Tw5Zz99YRtxTGKmX49BVJy)** (tap-to-reveal answers, no scrolling to the back)
+
 **Before you start:** work every question with the study guide closed. The answer key is at the bottom of this page — don't read it until you've written something for all 19. A wrong answer you actually reasoned through is worth more than a right one you copied.
 
 **How to use this:** if your answer differs from the key, don't just cross it out. Find the specific sentence where your reasoning and the key's reasoning split apart. That sentence is the thing you actually need to study.

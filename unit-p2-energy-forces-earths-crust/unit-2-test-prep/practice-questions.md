@@ -2,6 +2,8 @@
 
 **20 multiple choice + 1 short answer**, in the style of the real Unit 2 test (27 MC + 1 SA). Closed-book, timed if possible. Answer key at the bottom — check reasoning, not just the letter.
 
+> 📄 **[Open the interactive version →](https://claude.ai/artifact/2ZBpMM5Nx6vEdeymy74DQt)** — tap an answer for instant feedback instead of scrolling to the key
+
 ---
 
 ## Multiple Choice

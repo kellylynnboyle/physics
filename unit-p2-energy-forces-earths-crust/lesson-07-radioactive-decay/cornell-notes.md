@@ -2,6 +2,8 @@
 
 **OpenSciEd High School Physics · Unit P.2: Energy, Forces, & Earth's Crust**
 
+> 📄 **[Open the readable version →](https://claude.ai/artifact/LEgX6ogT6sxwvDhAg72nxk)** (combined with Lesson 6, includes the decay cause-effect chain diagram)
+
 | Name: _______________ | Date: _______________ | Period: _______________ |
 |---|---|---|
 

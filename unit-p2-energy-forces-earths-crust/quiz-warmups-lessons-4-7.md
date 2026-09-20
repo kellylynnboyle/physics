@@ -2,6 +2,8 @@
 
 **OpenSciEd High School Physics · Unit P.2: Energy, Forces, & Earth's Crust**
 
+> 📄 **[Open the readable version →](https://claude.ai/artifact/TmEYb3xDKN4cxEn1rPnJHY)** (same page as the vocab guide, scroll to "Quiz-day warm-ups")
+
 The class deck includes the quiz-day warm-up slides. They are the closest thing to a blueprint you'll get for the actual quiz: **three prompts, one per lesson pair.** Practice answering each one in full sentences with a diagram, timed.
 
 **For the short answer:** whatever it asks, structure it as **Matter / Energy / Forces** — three labelled sentences. That's the M-E-F triangle the class has used all unit, and it's how the teacher's own notes are organized.

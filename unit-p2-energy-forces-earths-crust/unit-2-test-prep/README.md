@@ -2,6 +2,8 @@
 
 **OpenSciEd High School Physics · Corona del Mar HS**
 
+> 📄 **[Open the readable/interactive version →](https://claude.ai/artifact/2ZBpMM5Nx6vEdeymy74DQt)** — links to every lesson's page, plus a tap-to-answer practice test
+
 **Format (per the pacing calendar):** 27 multiple choice + 1 short answer. Bring 3 colored pencils. Chromebook ready (nmusd.schoology.com). Covers Lessons 1–10. The teacher posts the U2 study guide and its solutions around 9/15–16 — cross-check that against this page.
 
 ---

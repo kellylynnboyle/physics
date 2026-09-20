@@ -2,6 +2,8 @@
 
 **OpenSciEd High School Physics · Unit P.2: Energy, Forces, & Earth's Crust**
 
+> 📄 **[Open the readable/interactive version →](https://claude.ai/artifact/Tw5Zz99YRtxTGKmX49BVJy)**
+
 | Name: _______________ | Date: _______________ | Period: _______________ |
 |---|---|---|
 

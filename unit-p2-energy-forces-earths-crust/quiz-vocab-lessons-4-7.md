@@ -4,6 +4,8 @@
 
 *From the word list on the overhead slide and the board word wall (Corona del Mar HS physics room).*
 
+> 📄 **[Open the readable/flip-card version →](https://claude.ai/artifact/TmEYb3xDKN4cxEn1rPnJHY)** (includes the actual word-wall photo)
+
 **The chain that connects all of this:** Strong force loses to electric force in an unstable nucleus → radioactive decay releases energy (E=mc²) → that energy becomes kinetic energy in mantle particles → uneven heating drives convection → convection pushes on plates → stress builds until forces go unbalanced → earthquake or eruption.
 
 ---

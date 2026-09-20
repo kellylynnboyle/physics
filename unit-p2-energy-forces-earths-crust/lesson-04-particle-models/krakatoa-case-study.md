@@ -2,6 +2,8 @@
 
 **OpenSciEd High School Physics · Unit P.2, Lesson 4**
 
+> 📄 **[Open the readable/interactive version →](https://claude.ai/artifact/NzSeXVspS4pdkbJdCQCfhF)** (tap-to-reveal answers, stats, and timeline)
+
 Answer the following questions to explain what causes a volcano to (1) appear stable over long periods of time and then (2) experience sudden catastrophic change.
 
 **The whole idea in one sentence:** A volcano looks stable when the forces on it are balanced, and it changes suddenly when something makes them unbalanced.

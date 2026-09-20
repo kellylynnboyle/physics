@@ -4,6 +4,8 @@
 
 **Unit question:** How do forces in Earth's interior determine what will happen to the surface we see?
 
+> **📖 [Open the Unit P.2 Study Hub](https://claude.ai/artifact/V74qJrDYFySGyzXphpgyMo)** — every lesson below also has a formatted, interactive study-guide page (self-checks, worked examples, flip-card vocab, and an interactive practice test). The hub links to all of them. The markdown files in this folder are the source of truth; the linked pages are a more readable/study-friendly rendering of the same content.
+
 ---
 
 ## Why this unit uses a different structure than the rest of the repo
@@ -30,21 +32,21 @@ OpenSciEd organizes physics around **storylines** and a recurring **Matter–Ene
 
 ## Folder guide
 
-| Folder / file | Contents |
-|---|---|
-| [`lesson-04-particle-models/`](lesson-04-particle-models/) | Cornell notes, study guide, practice set (19 Q + key), evaluating-models handout, Krakatoa case study + answers, Krakatoa deep-dive Cornell notes, and the original teacher source files |
-| [`lesson-05-earths-interior/`](lesson-05-earths-interior/) | P/S waves, Earth's layers, seismic tomography — Cornell notes |
-| [`lesson-06-convection/`](lesson-06-convection/) | Convection M-E-F box, Gizmo tank notes — Cornell notes |
-| [`lesson-07-radioactive-decay/`](lesson-07-radioactive-decay/) | The decay → heat → convection cause-effect chain — Cornell notes |
-| [`lesson-08-age-of-rocks/`](lesson-08-age-of-rocks/) | Radiometric dating, half-life — **new content**, built for this repo (no teacher scan existed yet) |
-| [`lesson-09-rock-density/`](lesson-09-rock-density/) | Basalt vs. granite, isostasy — **new content**, built for this repo |
-| [`lesson-10-plate-boundaries/`](lesson-10-plate-boundaries/) | Convergent/divergent/transform boundaries — **new content**, capstone lesson tying L4–L9 together |
-| [`lesson-08-10-practice-set.md`](lesson-08-10-practice-set.md) | 12 questions + answer key covering Lessons 8–10 |
-| [`quiz-vocab-lessons-4-7.md`](quiz-vocab-lessons-4-7.md) | Vocabulary for the 9/14 quiz, matches the classroom word wall |
-| [`quiz-warmups-lessons-4-7.md`](quiz-warmups-lessons-4-7.md) | The three warm-up prompts (blueprint for the quiz's short answer) |
-| [`unit-2-test-prep/`](unit-2-test-prep/) | Full-unit storyline review + 20 MC + 1 SA practice test with answer key |
-| [`Unit_2_Overview_pacing_calendar.pptx`](Unit_2_Overview_pacing_calendar.pptx) | Original teacher pacing deck |
-| [`photos/`](photos/) | Classroom whiteboard/word-wall reference photos |
+| Folder / file | Contents | Readable page |
+|---|---|---|
+| [`lesson-04-particle-models/`](lesson-04-particle-models/) | Cornell notes, study guide, practice set (19 Q + key), evaluating-models handout, Krakatoa case study + answers, Krakatoa deep-dive Cornell notes, and the original teacher source files | [Particle-Level Force Models ↗](https://claude.ai/artifact/Tw5Zz99YRtxTGKmX49BVJy) · [Krakatoa: Loading & Release ↗](https://claude.ai/artifact/NzSeXVspS4pdkbJdCQCfhF) |
+| [`lesson-05-earths-interior/`](lesson-05-earths-interior/) | P/S waves, Earth's layers, seismic tomography — Cornell notes | [Reading Earth's Interior ↗](https://claude.ai/artifact/1cQKAm9EY1zYNtiYha9QJr) |
+| [`lesson-06-convection/`](lesson-06-convection/) | Convection M-E-F box, Gizmo tank notes — Cornell notes | [Convection & Radioactive Decay ↗](https://claude.ai/artifact/LEgX6ogT6sxwvDhAg72nxk) |
+| [`lesson-07-radioactive-decay/`](lesson-07-radioactive-decay/) | The decay → heat → convection cause-effect chain — Cornell notes | *(same page as Lesson 6, above)* |
+| [`lesson-08-age-of-rocks/`](lesson-08-age-of-rocks/) | Radiometric dating, half-life — **new content**, built for this repo (no teacher scan existed yet) | [Rocks, Density & Boundaries ↗](https://claude.ai/artifact/4KjWVHF21YVgMoq4CpH2N7) |
+| [`lesson-09-rock-density/`](lesson-09-rock-density/) | Basalt vs. granite, isostasy — **new content**, built for this repo | *(same page as Lesson 8, above)* |
+| [`lesson-10-plate-boundaries/`](lesson-10-plate-boundaries/) | Convergent/divergent/transform boundaries — **new content**, capstone lesson tying L4–L9 together | *(same page as Lesson 8, above)* |
+| [`lesson-08-10-practice-set.md`](lesson-08-10-practice-set.md) | 12 questions + answer key covering Lessons 8–10 | *(included in the page above)* |
+| [`quiz-vocab-lessons-4-7.md`](quiz-vocab-lessons-4-7.md) | Vocabulary for the 9/14 quiz, matches the classroom word wall | [Quiz Guide: Vocab & Warm-Ups ↗](https://claude.ai/artifact/TmEYb3xDKN4cxEn1rPnJHY) |
+| [`quiz-warmups-lessons-4-7.md`](quiz-warmups-lessons-4-7.md) | The three warm-up prompts (blueprint for the quiz's short answer) | *(same page as above)* |
+| [`unit-2-test-prep/`](unit-2-test-prep/) | Full-unit storyline review + 20 MC + 1 SA practice test with answer key | [Unit 2 Test Prep ↗](https://claude.ai/artifact/2ZBpMM5Nx6vEdeymy74DQt) — interactive version of the practice test |
+| [`Unit_2_Overview_pacing_calendar.pptx`](Unit_2_Overview_pacing_calendar.pptx) | Original teacher pacing deck | — |
+| [`photos/`](photos/) | Classroom whiteboard/word-wall reference photos | — |
 
 ## A note on the Lessons 8–10 and test-prep content
 

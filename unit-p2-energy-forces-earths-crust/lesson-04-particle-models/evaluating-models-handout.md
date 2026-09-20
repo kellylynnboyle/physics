@@ -1,5 +1,7 @@
 # Evaluating Models — Lesson 4 Handout
 
+> 📄 **[Open the readable version →](https://claude.ai/artifact/Tw5Zz99YRtxTGKmX49BVJy)** (filled-in reference table, in the "Particle-Level Force Models" page)
+
 Every model has advantages (merits) and limitations. Understanding what these are allows us to move more flexibly between different types of models, which can help us develop a more complete explanation of how and why phenomena occur.
 
 **What types of phenomena will we try to explain with the models below?**

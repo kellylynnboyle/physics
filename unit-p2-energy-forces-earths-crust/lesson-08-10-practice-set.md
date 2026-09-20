@@ -4,6 +4,8 @@
 
 Score: _____ / 12
 
+> 📄 **[Open the readable/interactive version →](https://claude.ai/artifact/4KjWVHF21YVgMoq4CpH2N7)** (tap-to-reveal answers, in the "Practice" tab)
+
 Work every question with the notes closed first. Answer key is at the bottom.
 
 ---

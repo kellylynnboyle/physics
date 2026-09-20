@@ -2,6 +2,8 @@
 
 **OpenSciEd High School Physics · Unit P.2: Energy, Forces, & Earth's Crust**
 
+> 📄 **[Open the readable/interactive version →](https://claude.ai/artifact/Tw5Zz99YRtxTGKmX49BVJy)** (the "Particle-Level Force Models" page includes this content)
+
 This is the expanded companion to [`cornell-notes.md`](cornell-notes.md) — use it to fill in class-day prompts (video questions, Progress Tracker) and to rehearse the summary before writing it.
 
 ---
