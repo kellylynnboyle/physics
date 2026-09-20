@@ -51,6 +51,23 @@ By the end of this unit, students will be able to:
 | Energy with friction present | Correctly identifies that mechanical energy decreases and accounts for the "missing" energy as heat, without claiming energy disappears |
 | Power vs. energy | Clearly distinguishes power (rate) from work/energy (total amount) in both calculations and written explanations |
 
+## NGSS alignment
+
+**HS-PS3-1.** Create a computational model to calculate the change in
+energy of one component in a system when the change in energy of the
+other component(s) and energy flows in/out of the system are known.
+
+**HS-PS3-2.** Develop and use models to illustrate that energy at the
+macroscopic scale can be accounted for as either motions of particles or
+energy stored in fields — e.g., KE ↔ thermal energy, gravitational PE.
+Full text: [`NGSS-ALIGNMENT.md`](../NGSS-ALIGNMENT.md). (This unit sets up
+HS-PS3-3, the energy-conversion-device design task, which is picked up
+again in the semester 2 Magnetism unit with generators/solar cells.)
+
+**Suggested lab:** an energy-conservation cart/ramp lab (with and without
+added friction) tracking KE + PE at multiple points, building the
+computational-model skill HS-PS3-1 asks for directly.
+
 ## Files in this unit
 
 - [`cornell-notes.md`](cornell-notes.md) — Cornell-format notes for this unit

@@ -54,6 +54,14 @@ By the end of this unit, students will be able to:
 | Free fall | Solves both "dropped" and "thrown upward" problems, correctly using `v = 0` only at the peak, not for the whole trip |
 | Communication | Explains a real-world kinematics scenario using correct vocabulary (see `resources.md`) |
 
+## NGSS alignment
+
+Kinematics has no standalone HS performance expectation of its own —
+NGSS moves straight to force/motion analysis (HS-PS2-1). This unit exists
+to build the position/velocity/acceleration graph-reading and equation
+fluency that HS-PS2-1 assumes students already have when they start
+analyzing force data in Unit 3. See [`NGSS-ALIGNMENT.md`](../NGSS-ALIGNMENT.md).
+
 ## Files in this unit
 
 - [`cornell-notes.md`](cornell-notes.md) — Cornell-format notes for this unit

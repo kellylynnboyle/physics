@@ -1,27 +1,53 @@
-# 11th Grade Physics — Mechanics Learning Project
+# Physics of the Universe — 11th Grade Physics & Earth Science
 
-A self-contained study package covering the core first-semester mechanics
-units taught in most 11th grade physics courses (regular or algebra-based
-Honors/AP 1 level). It's built for two audiences at once:
+A full-year, lab-based course integrating **physics and Earth/space
+science**, built around the California NGSS **"Physics of the Universe"**
+course model. It combines hands-on lab experience, real-world
+connections, and the theoretical framework needed to meet the [Next
+Generation Science Standards for California](https://www.cde.ca.gov/pd/ca/sc/ngssstandards.asp)
+— see [`NGSS-ALIGNMENT.md`](NGSS-ALIGNMENT.md) for the full standards
+crosswalk. **The NGSS performance expectations are this course's learning
+goals**, not an afterthought: every unit below is built to prepare
+students to demonstrate a specific, named standard.
+
+It's built for two audiences at once:
 
 - **Students** — a study path with notes, self-grading quizzes, and practice
   problems for each unit.
 - **Instructors** — a ready-made unit outline with objectives, vocabulary,
-  and assessment criteria that map cleanly onto a gradebook.
+  NGSS-aligned assessment criteria, and lab/real-world connections that map
+  cleanly onto a gradebook.
+
+## Course structure
+
+| Semester | Topics | Status |
+|---|---|---|
+| **1 — Mechanics** | Kinematics, Projectile Motion, Newton's Laws, Momentum, Work & Energy | ✅ Full content built (notes, quizzes, resources) |
+| **2 — Electricity, Magnetism, Waves, Light & Earth Science** | Electricity, Magnetism, Waves, Light, Plate Tectonics, Earthquakes, Nuclear Physics | 🚧 Outline built ([units below](#semester-2--electricity-magnetism-waves-light--earth-science-outline)); full lesson content in progress |
 
 ## How the project is organized
 
 ```
 physics/
 ├── README.md                  ← you are here: master outline + checklist
-├── 01-kinematics/
-├── 02-projectile-motion/
-├── 03-newtons-laws/
-├── 04-momentum/
-└── 05-work-energy/
+├── NGSS-ALIGNMENT.md          ← full NGSS standards crosswalk (learning goals)
+├── 01-kinematics/              ─┐
+├── 02-projectile-motion/        │
+├── 03-newtons-laws/             ├─ Semester 1: Mechanics
+├── 04-momentum/                 │
+├── 05-work-energy/             ─┘
+├── 06-electricity/             ─┐
+├── 07-magnetism/                │
+├── 08-waves/                    │
+├── 09-light/                    ├─ Semester 2: E&M, Waves, Light, Earth Science
+├── 10-plate-tectonics/          │
+├── 11-earthquakes/              │
+└── 12-nuclear-physics/         ─┘
 ```
 
-Each unit folder follows the same four-file pattern:
+Each **semester 1** unit folder follows the same four-file pattern (semester
+2 units currently have the `README.md` outline only — see the status note
+in each folder):
 
 | File | Purpose |
 |---|---|
@@ -34,25 +60,46 @@ No installation or build step is required. `quiz.html` files are plain
 HTML/CSS/JavaScript — double-click to open, or serve the folder with any
 static file server (e.g. GitHub Pages).
 
-## Unit sequence and suggested pacing
+## Semester 1 — Mechanics: unit sequence and suggested pacing
 
 Designed for a ~5–6 week block within a semester; adjust to your school's
 calendar. Each unit assumes roughly 5 class days: 1–2 days direct
 instruction/notes, 1–2 days practice + labs, 1 day quiz/assessment.
 
-| # | Unit | Suggested days | Prerequisite skills |
+| # | Unit | Suggested days | Prerequisite skills | Primary NGSS PE(s) |
+|---|---|---|---|---|
+| 1 | [Kinematics](01-kinematics/) | 5 | Algebra I (linear equations, graphing lines), basic trig ratios | Prerequisite skills for HS-PS2-1 |
+| 2 | [Projectile Motion](02-projectile-motion/) | 4 | Unit 1 complete; right-triangle trig (SOH-CAH-TOA) | Prerequisite skills for HS-PS2-1 |
+| 3 | [Newton's Laws](03-newtons-laws/) | 6 | Units 1–2; vector addition | HS-PS2-1 |
+| 4 | [Momentum](04-momentum/) | 4 | Unit 3 complete | HS-PS2-2, HS-PS2-3 |
+| 5 | [Work & Energy](05-work-energy/) | 5 | Units 1–3; dot-product idea of "force along displacement" (no calculus needed) | HS-PS3-1, HS-PS3-2 |
+
+Total: ~24 class days. Full standard text and assessment boundaries: [`NGSS-ALIGNMENT.md`](NGSS-ALIGNMENT.md).
+
+## Semester 2 — Electricity, Magnetism, Waves, Light & Earth Science (outline)
+
+Semester 2 follows the same "Physics of the Universe" NGSS instructional
+segments, extended into electromagnetism, waves/light, and Earth &
+space science. Each unit folder currently has a `README.md` outline
+(concepts, vocabulary, objectives, NGSS PEs); Cornell notes, an
+interactive quiz, and a resources page are being built out next, following
+the same four-file pattern as semester 1.
+
+| # | Unit | Ties to semester 1 | Primary NGSS PE(s) |
 |---|---|---|---|
-| 1 | [Kinematics](01-kinematics/) | 5 | Algebra I (linear equations, graphing lines), basic trig ratios |
-| 2 | [Projectile Motion](02-projectile-motion/) | 4 | Unit 1 complete; right-triangle trig (SOH-CAH-TOA) |
-| 3 | [Newton's Laws](03-newtons-laws/) | 6 | Units 1–2; vector addition |
-| 4 | [Momentum](04-momentum/) | 4 | Unit 3 complete |
-| 5 | [Work & Energy](05-work-energy/) | 5 | Units 1–3; dot-product idea of "force along displacement" (no calculus needed) |
+| 6 | [Electricity](06-electricity/) | Newton's Laws (force framework extends to Coulomb's Law) | HS-PS2-4, HS-PS2-6 |
+| 7 | [Magnetism](07-magnetism/) | Electricity (unit 6); Work & Energy (field energy) | HS-PS2-5, HS-PS3-5 |
+| 8 | [Waves](08-waves/) | Kinematics (periodic motion, graphing) | HS-PS4-1, HS-PS4-3 |
+| 9 | [Light](09-light/) | Waves (unit 8) | HS-PS4-2, HS-PS4-4, HS-PS4-5 |
+| 10 | [Plate Tectonics](10-plate-tectonics/) | Newton's Laws/Momentum (collision framework applied to Earth's crust) | HS-ESS2-1, HS-ESS1-5 |
+| 11 | [Earthquakes](11-earthquakes/) | Waves (unit 8); Plate Tectonics (unit 10) | HS-ESS2-1, HS-PS4-1 |
+| 12 | [Nuclear Physics](12-nuclear-physics/) | Work & Energy (energy conservation/transformation) | HS-PS1-8, HS-ESS1-1, HS-ESS1-6 |
 
-Total: ~24 class days.
+See [`NGSS-ALIGNMENT.md`](NGSS-ALIGNMENT.md) for full PE text, clarification statements, and assessment boundaries for every unit in both semesters.
 
-## Master learning objectives
+## Semester 1 learning objectives
 
-By the end of this project, students should be able to:
+By the end of semester 1 (Mechanics), students should be able to:
 
 1. Distinguish and correctly use scalar vs. vector quantities (distance/displacement, speed/velocity) across all five units.
 2. Select and apply the correct equation(s) for a given kinematics, dynamics, momentum, or energy scenario, and justify the choice.
@@ -63,9 +110,9 @@ By the end of this project, students should be able to:
 7. Apply the work-energy theorem and conservation of mechanical energy, including cases with non-conservative forces (friction).
 8. Connect each concept to at least one real-world application and explain the physics in plain language (communication/transfer, not just calculation).
 
-## Project-wide student checklist
+## Semester 1 student checklist
 
-Print this section or copy it into a planner/LMS. Check off each item as it's completed.
+Print this section or copy it into a planner/LMS. Check off each item as it's completed. (A matching semester 2 checklist will be added once each unit's full content is built.)
 
 ### Unit 1 — Kinematics
 - [ ] Read unit README and Cornell notes
@@ -105,7 +152,9 @@ Print this section or copy it into a planner/LMS. Check off each item as it's co
 
 ## Assessment framework (for instructors)
 
-Each unit's `README.md` includes unit-specific assessment criteria. Project-wide, grades can be built from:
+Each unit's `README.md` includes unit-specific assessment criteria, tied to
+its NGSS performance expectation(s) — see [`NGSS-ALIGNMENT.md`](NGSS-ALIGNMENT.md).
+For semester 1, grades can be built from:
 
 | Component | Suggested weight | Notes |
 |---|---|---|
@@ -114,7 +163,7 @@ Each unit's `README.md` includes unit-specific assessment criteria. Project-wide
 | Cornell notes / vocabulary check | 10% | Completion and quality (cue questions answered, summary written) |
 | Unit assessments (5) | 50% | Summative; one per unit, mix of conceptual (Newton's-laws-style "explain why") and quantitative problems |
 | Real-world application write-ups | 5% | 2–3 sentence transfer tasks, one per unit |
-| Cumulative final assessment | 10% | Covers all 5 units; emphasizes the cross-unit skills in "Master learning objectives" above |
+| Cumulative final assessment | 10% | Covers all 5 units; emphasizes the cross-unit skills in "Semester 1 learning objectives" above |
 
 ### General rubric for conceptual/short-answer questions
 

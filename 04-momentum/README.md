@@ -50,6 +50,23 @@ By the end of this unit, students will be able to:
 | Collision classification | Correctly identifies elastic vs. inelastic vs. perfectly inelastic and explains which quantities are/aren't conserved in each |
 | Momentum vs. energy distinction | Explicitly states that KE conservation is NOT guaranteed the way momentum conservation is |
 
+## NGSS alignment
+
+**HS-PS2-2.** Use mathematical representations to support the claim that
+the total momentum of a system of objects is conserved when there is no
+net force on the system. *(Limited to two macroscopic bodies moving in one
+dimension.)*
+
+**HS-PS2-3\*.** Apply scientific and engineering ideas to design, evaluate,
+and refine a device that minimizes the force on a macroscopic object
+during a collision — e.g., a football helmet or a parachute. Full text:
+[`NGSS-ALIGNMENT.md`](../NGSS-ALIGNMENT.md).
+
+**Suggested lab:** a collision-cart investigation (elastic and
+perfectly-inelastic setups) to verify momentum conservation numerically,
+paired with an egg-drop or crumple-zone design challenge that directly
+targets HS-PS2-3.
+
 ## Files in this unit
 
 - [`cornell-notes.md`](cornell-notes.md) — Cornell-format notes for this unit

@@ -57,6 +57,21 @@ By the end of this unit, students will be able to:
 | Newton's 3rd law reasoning | Correctly identifies the paired object and never claims the pair cancels on one object |
 | Friction problems | Correctly distinguishes static vs. kinetic friction and applies the right coefficient |
 
+## NGSS alignment
+
+**HS-PS2-1.** Analyze data to support the claim that Newton's second law of
+motion describes the mathematical relationship among the net force on a
+macroscopic object, its mass, and its acceleration. *(Assessment limited to
+1D motion, non-relativistic speeds — e.g., tables/graphs of position or
+velocity vs. time for a falling object, an object on a ramp, or an object
+pulled by a constant force.)* Full text and instructional-segment context:
+[`NGSS-ALIGNMENT.md`](../NGSS-ALIGNMENT.md).
+
+**Suggested lab:** collect position-vs-time data for a cart pulled by a
+constant force (motion sensor, or a phone video + frame-by-frame
+tracking), graph it, and use the data to verify F = ma — this is exactly
+the evidence HS-PS2-1 asks students to analyze.
+
 ## Files in this unit
 
 - [`cornell-notes.md`](cornell-notes.md) — Cornell-format notes for this unit

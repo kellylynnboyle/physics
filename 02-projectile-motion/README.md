@@ -53,6 +53,13 @@ By the end of this unit, students will be able to:
 | Horizontal launch cases | Correctly identifies v₀ᵧ = 0 for horizontal launches (not v₀ₓ = 0) |
 | Range/height problems | Solves multi-step problems combining both components without sign errors |
 
+## NGSS alignment
+
+Like Kinematics, Projectile Motion has no standalone HS performance
+expectation — it's the 2D extension of the same modeling skill (position,
+velocity, acceleration as functions of time) that HS-PS2-1 requires
+students to analyze. See [`NGSS-ALIGNMENT.md`](../NGSS-ALIGNMENT.md).
+
 ## Files in this unit
 
 - [`cornell-notes.md`](cornell-notes.md) — Cornell-format notes for this unit
