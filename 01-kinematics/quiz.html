@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinematics Quiz — Most Missed Questions</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<div class="quiz-wrap" id="quiz-root"></div>
+<script src="../assets/quiz.js"></script>
+<script>
+var QUESTIONS = [
+  {
+    q: "A car has a velocity of −20 m/s and an acceleration of −4 m/s². What is happening to the car?",
+    missed: true,
+    choices: ["Speeding up", "Slowing down", "Moving at constant speed", "Not enough information"],
+    answer: 0,
+    explain: "Velocity and acceleration have the SAME sign (both negative), so the car is speeding up in the negative direction. The negative sign only tells you direction, not whether it's slowing down."
+  },
+  {
+    q: "A ball is thrown straight up. At the very top of its path, which statement is true?",
+    missed: true,
+    choices: [
+      "Velocity = 0 and acceleration = 0",
+      "Velocity = 0 and acceleration = −9.8 m/s²",
+      "Velocity = 9.8 m/s and acceleration = 0",
+      "Velocity and acceleration are both undefined"
+    ],
+    answer: 1,
+    explain: "Velocity is momentarily zero at the peak, but gravity never stops acting — acceleration stays at −9.8 m/s² the entire flight, including at the top."
+  },
+  {
+    q: "On a position-time graph, what does the slope of the line represent?",
+    missed: false,
+    choices: ["Acceleration", "Velocity", "Displacement", "Distance"],
+    answer: 1,
+    explain: "Slope of a position-time graph = rise/run = Δposition/Δtime = velocity."
+  },
+  {
+    q: "On a velocity-time graph, what does the AREA under the curve represent?",
+    missed: true,
+    choices: ["Acceleration", "Velocity", "Displacement", "Jerk"],
+    answer: 2,
+    explain: "Area under a v-t graph = velocity × time = displacement. Students often mix this up with slope (which gives acceleration on this graph)."
+  },
+  {
+    q: "A runner completes one full lap around a 400 m track and returns to the starting line. What is the runner's displacement?",
+    missed: true,
+    choices: ["400 m", "200 m", "0 m", "Cannot be determined"],
+    answer: 2,
+    explain: "Displacement only cares about start and end position. Since the runner ends where they started, displacement = 0 m, even though distance traveled = 400 m."
+  },
+  {
+    q: "Which set of knowns lets you use Δx = v₀t + ½at² directly, without first finding another variable?",
+    missed: true,
+    choices: [
+      "v₀, v, a known; find t",
+      "v₀, a, t known; find Δx",
+      "v, a, Δx known; find t",
+      "v₀, v, Δx known; find a"
+    ],
+    answer: 1,
+    explain: "This equation's variables are v₀, a, t, and Δx. If you know v₀, a, and t, you can solve directly for Δx without needing v."
+  },
+  {
+    q: "A ball dropped from a height (v₀ = 0) falls for 3 seconds before hitting the ground. Using g = 9.8 m/s², how far did it fall?",
+    missed: true,
+    choices: ["29.4 m", "44.1 m", "9.8 m", "88.2 m"],
+    answer: 1,
+    explain: "Δx = v₀t + ½at² = 0 + ½(9.8)(3²) = ½(9.8)(9) = 44.1 m. A common error is forgetting the ½ or using t instead of t²."
+  },
+  {
+    q: "An object's velocity-time graph is a horizontal line above the t-axis. What is true about its motion?",
+    missed: false,
+    choices: [
+      "It is at rest",
+      "It moves at constant velocity (no acceleration)",
+      "It is accelerating at a constant rate",
+      "It is slowing down"
+    ],
+    answer: 1,
+    explain: "A flat, non-zero line on a v-t graph means velocity isn't changing — zero acceleration, constant velocity."
+  },
+  {
+    q: "Two cars start at the same position. Car A moves at a constant 10 m/s. Car B starts at rest and accelerates at 2 m/s². Which correctly describes their position-time graphs?",
+    missed: true,
+    choices: [
+      "Both are straight lines with the same slope",
+      "Car A's graph is a straight line; Car B's graph is a curve that gets steeper over time",
+      "Car A's graph is a curve; Car B's graph is a straight line",
+      "Both are curves that flatten out over time"
+    ],
+    answer: 1,
+    explain: "Constant velocity → straight-line position-time graph (constant slope). Constant acceleration from rest → a curve (parabola) whose slope increases with time, since velocity is increasing."
+  },
+  {
+    q: "A cyclist speeds up from 5 m/s to 15 m/s over 4 seconds while traveling in a straight line. What is the average acceleration?",
+    missed: false,
+    choices: ["2.5 m/s²", "10 m/s²", "5 m/s²", "0.4 m/s²"],
+    answer: 0,
+    explain: "a = Δv/Δt = (15 − 5)/4 = 10/4 = 2.5 m/s²."
+  }
+];
+
+renderQuiz('quiz-root', QUESTIONS, {
+  title: 'Kinematics — Most-Missed Question Quiz',
+  subtitle: '10 questions targeting the misconceptions students hit most often. Pick an answer to see instant feedback.',
+  backHref: './notes.md',
+  backLabel: 'Back to Unit 1 Cornell Notes'
+});
+</script>
+</body>
+</html>

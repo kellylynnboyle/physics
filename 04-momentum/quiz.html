@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Momentum Quiz — Most Missed Questions</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<div class="quiz-wrap" id="quiz-root"></div>
+<script src="../assets/quiz.js"></script>
+<script>
+var QUESTIONS = [
+  {
+    q: "In a closed system, two carts collide and stick together. Is kinetic energy conserved?",
+    missed: true,
+    choices: [
+      "Yes, kinetic energy is always conserved along with momentum",
+      "No — momentum is conserved, but kinetic energy is lost to heat/sound/deformation",
+      "No, neither momentum nor kinetic energy is conserved",
+      "Only if the carts have equal mass"
+    ],
+    answer: 1,
+    explain: "Sticking together makes this a perfectly inelastic collision. Momentum is ALWAYS conserved in a closed system, but kinetic energy is only conserved in elastic collisions — a perfectly inelastic collision loses the maximum possible kinetic energy."
+  },
+  {
+    q: "Why do airbags reduce injury in a car crash, in terms of the impulse-momentum theorem?",
+    missed: true,
+    choices: [
+      "They reduce the change in momentum needed to stop the passenger",
+      "They increase the collision time, which reduces the average force for the same momentum change",
+      "They increase the force to stop the passenger faster",
+      "They eliminate momentum entirely"
+    ],
+    answer: 1,
+    explain: "J = FΔt = Δp. The passenger's momentum change (Δp) is fixed by the crash — stopping from speed to rest. Airbags increase Δt (the stopping time), which means less average force F is needed to produce that same Δp."
+  },
+  {
+    q: "A 1000 kg car moving at 10 m/s (call this positive) collides head-on with a 1000 kg car moving at 10 m/s in the opposite direction. What is the total momentum of the system before the collision?",
+    missed: true,
+    choices: ["20,000 kg·m/s", "0 kg·m/s", "10,000 kg·m/s", "Cannot be determined"],
+    answer: 1,
+    explain: "Momentum is a vector. p = (1000)(10) + (1000)(−10) = 10,000 − 10,000 = 0 kg·m/s. Opposite directions mean opposite signs — they don't simply add as magnitudes."
+  },
+  {
+    q: "Two skaters at rest push off each other. Skater A (heavier) and Skater B (lighter). How do their speeds after the push compare?",
+    missed: true,
+    choices: [
+      "They have the same speed, since the push force is equal",
+      "Skater A (heavier) moves faster",
+      "Skater B (lighter) moves faster",
+      "Neither moves, since they started at rest"
+    ],
+    answer: 2,
+    explain: "Total momentum starts and stays at zero, so m_A·v_A = m_B·v_B in magnitude. For that product to be equal, the lighter skater (B) must have the greater speed."
+  },
+  {
+    q: "Ball A (4 kg at 2 m/s) and Ball B (1 kg at 8 m/s) both have momentum p = 8 kg·m/s. Do they also have equal kinetic energy?",
+    missed: true,
+    choices: [
+      "Yes, equal momentum always means equal kinetic energy",
+      "No — Ball A has KE = 8 J, Ball B has KE = 32 J, since KE depends on v²",
+      "No — Ball A has more kinetic energy than Ball B",
+      "Kinetic energy can't be calculated without more information"
+    ],
+    answer: 1,
+    explain: "KE = ½mv²: Ball A: ½(4)(2²) = 8 J. Ball B: ½(1)(8²) = 32 J. Even with identical momentum (p = mv is linear in v), kinetic energy (quadratic in v) can differ a lot — never assume momentum and KE track together."
+  },
+  {
+    q: "In an elastic collision between two objects, which quantities are conserved?",
+    missed: false,
+    choices: ["Only momentum", "Only kinetic energy", "Both momentum and kinetic energy", "Neither"],
+    answer: 2,
+    explain: "Elastic collisions are defined as those where both total momentum and total kinetic energy are conserved (e.g., idealized billiard ball collisions)."
+  },
+  {
+    q: "A baseball bat hits a ball, reversing its direction. The ball's momentum changes from +6 kg·m/s to −5 kg·m/s. What is the impulse delivered to the ball?",
+    missed: true,
+    choices: ["1 kg·m/s", "11 kg·m/s in the direction of the bat's swing", "−11 kg·m/s (i.e., 11 kg·m/s opposite the ball's original direction)", "−1 kg·m/s"],
+    answer: 2,
+    explain: "Impulse J = Δp = p_final − p_initial = (−5) − (+6) = −11 kg·m/s. Students often forget the sign flip from reversing direction and just subtract magnitudes, getting 1 instead of 11."
+  },
+  {
+    q: "Is momentum conserved for the SYSTEM only, or for each individual object in a collision?",
+    missed: true,
+    choices: [
+      "Each object's momentum is individually conserved",
+      "Only the total momentum of the system is conserved; individual objects' momenta typically change",
+      "Neither — nothing about momentum is conserved during a collision",
+      "Only the heavier object's momentum is conserved"
+    ],
+    answer: 1,
+    explain: "Individual objects exchange momentum during a collision — that's the point of colliding. It's the vector SUM (total momentum of the whole system) that remains constant when no external force acts."
+  },
+  {
+    q: "A karate expert breaks a board with a fast strike instead of a slow push, even applying a similar amount of force over the swing. Why does the fast, short-duration strike do more damage?",
+    missed: false,
+    choices: [
+      "A shorter Δt for the same Δp requires a much larger peak force, F = Δp/Δt",
+      "Fast strikes have less momentum, which somehow does more damage",
+      "The board only breaks from sound waves",
+      "There is no physics difference — speed doesn't matter"
+    ],
+    answer: 0,
+    explain: "For a given change in momentum, a very short contact time (Δt) requires a very large average force (F = Δp/Δt), concentrating the impact and increasing the chance of exceeding the board's breaking force."
+  },
+  {
+    q: "A 2 kg cart at 4 m/s collides elastically with an identical stationary 2 kg cart. In a perfectly elastic collision between equal masses where one starts at rest, what happens?",
+    missed: true,
+    choices: [
+      "They both move together at 2 m/s after",
+      "The moving cart stops, and the stationary cart moves off at 4 m/s",
+      "The moving cart continues at 4 m/s, and the other stays at rest",
+      "Both move at 4 m/s in the same direction"
+    ],
+    answer: 1,
+    explain: "For an elastic collision between equal masses with one initially at rest, the incoming object transfers all its velocity to the target and stops — a classic result (seen in Newton's cradle) satisfying both momentum and kinetic energy conservation simultaneously."
+  }
+];
+
+renderQuiz('quiz-root', QUESTIONS, {
+  title: 'Momentum — Most-Missed Question Quiz',
+  subtitle: '10 questions targeting the misconceptions students hit most often. Pick an answer to see instant feedback.',
+  backHref: './notes.md',
+  backLabel: 'Back to Unit 4 Cornell Notes'
+});
+</script>
+</body>
+</html>

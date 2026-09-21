@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newton's Laws Quiz — Most Missed Questions</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<div class="quiz-wrap" id="quiz-root"></div>
+<script src="../assets/quiz.js"></script>
+<script>
+var QUESTIONS = [
+  {
+    q: "A book sits still on a table. Why doesn't it accelerate, given that gravity is pulling down on it?",
+    missed: true,
+    choices: [
+      "Because there are no forces acting on it",
+      "Because the normal force from the table balances gravity, so net force is zero",
+      "Because gravity and the normal force are an action-reaction pair and cancel",
+      "Because the book has no mass to accelerate"
+    ],
+    answer: 1,
+    explain: "Gravity (down) and the normal force (up) are two different forces on the SAME object that happen to balance — net force is zero, so by Newton's 2nd Law, acceleration is zero. They are NOT an action-reaction pair (a 3rd-law pair acts on two different objects)."
+  },
+  {
+    q: "You push on a wall with 50 N of force and the wall doesn't move. According to Newton's Third Law, what force does the wall exert on you?",
+    missed: true,
+    choices: ["0 N, because the wall is rigid", "25 N, half of what you applied", "50 N, in the opposite direction", "It depends on how hard the wall 'wants' to push back"],
+    answer: 2,
+    explain: "Newton's Third Law: the wall pushes back on you with a force equal in magnitude (50 N) and opposite in direction, regardless of whether the wall moves."
+  },
+  {
+    q: "A car and a truck collide head-on. The truck has much more mass. Which vehicle experiences the greater force during the collision?",
+    missed: true,
+    choices: ["The car, because it's lighter", "The truck, because it's heavier", "They experience equal forces (action-reaction)", "Neither experiences a force — only damage occurs"],
+    answer: 2,
+    explain: "By Newton's Third Law, the force the car exerts on the truck equals the force the truck exerts on the car — same magnitude, opposite direction. What differs is the resulting acceleration (a = F/m), which is much greater for the lighter car."
+  },
+  {
+    q: "An object moves at a constant 20 m/s in a straight line. What can you conclude about the net force acting on it?",
+    missed: true,
+    choices: [
+      "The net force must be in the direction of motion",
+      "The net force is zero",
+      "The net force equals its weight",
+      "There is no way to know without more information"
+    ],
+    answer: 1,
+    explain: "Constant velocity means zero acceleration. By F_net = ma, if a = 0, then F_net = 0 — this is equilibrium, exactly like being at rest. 'Moving' does not require a net force; only changing motion does."
+  },
+  {
+    q: "A 4 kg object experiences a 20 N force to the right and a 12 N friction force to the left. What is its acceleration?",
+    missed: true,
+    choices: ["5.0 m/s² right", "2.0 m/s² right", "8.0 m/s² right", "3.0 m/s² left"],
+    answer: 1,
+    explain: "Net force = 20 − 12 = 8 N to the right. a = F_net/m = 8/4 = 2.0 m/s² to the right. A common mistake is using only the 20 N applied force instead of the net force."
+  },
+  {
+    q: "Which of these correctly compares mass and weight?",
+    missed: false,
+    choices: [
+      "Mass and weight are the same thing, just different units",
+      "Mass changes with location; weight stays constant",
+      "Weight changes with location (depends on gravity); mass stays constant",
+      "Both mass and weight change depending on location"
+    ],
+    answer: 2,
+    explain: "Mass is the amount of matter in an object and doesn't change. Weight = mg depends on the local gravitational field, so the same object weighs less on the Moon but has identical mass."
+  },
+  {
+    q: "A crate is at rest on the floor. You push horizontally with 30 N but it doesn't move. The maximum static friction is 45 N. What is the friction force actually acting on the crate?",
+    missed: true,
+    choices: ["45 N, the maximum possible", "0 N, since the crate isn't moving", "30 N, exactly matching your push", "15 N, half of the maximum"],
+    answer: 2,
+    explain: "Static friction adjusts to match the applied force up to its maximum, keeping the object in equilibrium. Since the crate stays still, friction must exactly balance your 30 N push — it does not jump to its maximum value unless motion is about to start."
+  },
+  {
+    q: "A 10 kg object and a 2 kg object are dropped from the same height with no air resistance. How do their accelerations compare?",
+    missed: true,
+    choices: [
+      "The 10 kg object accelerates 5 times faster",
+      "The 2 kg object accelerates faster because it's lighter",
+      "Both accelerate at the same rate, g = 9.8 m/s²",
+      "The heavier object accelerates faster only near the ground"
+    ],
+    answer: 2,
+    explain: "F = mg and a = F/m = mg/m = g — mass cancels out. Both objects accelerate identically under gravity alone, regardless of mass."
+  },
+  {
+    q: "A box rests on a ramp inclined at angle θ. Which expression gives the component of gravity pulling the box DOWN the slope?",
+    missed: true,
+    choices: ["mg", "mg·cos(θ)", "mg·sin(θ)", "mg/cos(θ)"],
+    answer: 2,
+    explain: "The component of gravity parallel to the incline (down the slope) is mg·sin(θ). The perpendicular component, balanced by the normal force, is mg·cos(θ) — these are commonly swapped."
+  },
+  {
+    q: "You are standing in an elevator that is accelerating upward. How does the normal force from the floor on you compare to your normal weight (mg)?",
+    missed: false,
+    choices: ["It's less than mg", "It's equal to mg", "It's greater than mg", "There is no normal force while accelerating"],
+    answer: 2,
+    explain: "For upward acceleration, F_net = N − mg = ma (taking up as positive), so N = mg + ma, which is greater than mg — this is why you feel heavier as an elevator accelerates upward."
+  }
+];
+
+renderQuiz('quiz-root', QUESTIONS, {
+  title: "Newton's Laws — Most-Missed Question Quiz",
+  subtitle: '10 questions targeting the misconceptions students hit most often. Pick an answer to see instant feedback.',
+  backHref: './notes.md',
+  backLabel: 'Back to Unit 3 Cornell Notes'
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work &amp; Energy Quiz — Most Missed Questions</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<div class="quiz-wrap" id="quiz-root"></div>
+<script src="../assets/quiz.js"></script>
+<script>
+var QUESTIONS = [
+  {
+    q: "You carry a heavy backpack at constant height while walking horizontally at constant speed. How much work does gravity do on the backpack?",
+    missed: true,
+    choices: [
+      "A large positive amount, since you're exerting effort",
+      "Zero, because gravity acts perpendicular to the horizontal displacement",
+      "A large negative amount",
+      "It depends on how heavy the backpack is"
+    ],
+    answer: 1,
+    explain: "W = Fd·cos(θ). Gravity points straight down; your displacement is horizontal, so θ = 90° and cos(90°) = 0. No work is done by gravity, no matter how tiring the walk feels — 'feeling tired' isn't the same as physics 'work' on the backpack."
+  },
+  {
+    q: "A crate slides across a rough floor and comes to a stop. What does the work-energy theorem say about the work done by friction?",
+    missed: true,
+    choices: [
+      "Friction does zero work since the crate isn't accelerating anymore at the end",
+      "Friction does negative work equal in magnitude to the crate's initial kinetic energy",
+      "Friction does positive work to slow the crate down",
+      "Work-energy theorem doesn't apply when friction is involved"
+    ],
+    answer: 1,
+    explain: "W_net = ΔKE. The crate's KE goes from some initial value to zero, so ΔKE is negative. Friction is the only horizontal force doing work here, so it must do negative work equal in magnitude to the initial KE — friction removes kinetic energy, converting it to heat."
+  },
+  {
+    q: "A ball is dropped from height h and reaches the ground with kinetic energy KE. If a ball with twice the mass is dropped from the same height, how does its kinetic energy at the ground compare?",
+    missed: true,
+    choices: [
+      "The same KE", "Twice the KE", "Four times the KE", "Half the KE"
+    ],
+    answer: 1,
+    explain: "PE = mgh converts entirely to KE (no friction). Doubling mass doubles PE, so KE at the ground also doubles. (Note: speed stays the same either way, since v = √(2gh) doesn't depend on mass — it's KE, not speed, that scales with mass.)"
+  },
+  {
+    q: "At the very top of a frictionless roller coaster loop, the car has some kinetic energy (it's not zero — it needs speed to maintain the loop). At the bottom of the loop, how does the car's speed compare to the top?",
+    missed: false,
+    choices: [
+      "Speed is the same at top and bottom",
+      "Speed is greater at the bottom, since PE converted to KE",
+      "Speed is greater at the top",
+      "Cannot be determined without the car's mass"
+    ],
+    answer: 1,
+    explain: "As height decreases going from top to bottom, PE (mgh) decreases and converts into KE, increasing speed. Mass cancels out of the final speed calculation, so no mass value is needed."
+  },
+  {
+    q: "Two workers lift identical boxes to the same height. Worker A takes 2 seconds; Worker B takes 8 seconds. Compare the WORK and POWER for each.",
+    missed: true,
+    choices: [
+      "Worker A does more work and has more power",
+      "They do equal work, but Worker A has more power",
+      "They do equal work, but Worker B has more power",
+      "Worker A does more work, but they have equal power"
+    ],
+    answer: 1,
+    explain: "Work only depends on force and displacement (W = Fd), which are identical for both — same box, same height. Power = W/t, so the same work done in less time (Worker A) means greater power, even though the work itself is equal."
+  },
+  {
+    q: "A spring is compressed to twice its original displacement from equilibrium (x → 2x). How does its elastic potential energy change?",
+    missed: true,
+    choices: ["Doubles", "Triples", "Quadruples", "Stays the same"],
+    answer: 2,
+    explain: "PE_spring = ½kx². Since energy depends on x², doubling x quadruples the potential energy (2² = 4), not just doubles it — a very common error since it looks linear at first glance."
+  },
+  {
+    q: "A car's engine does work to overcome friction and air resistance at constant speed on a flat highway. Since velocity isn't changing, is the net work on the car zero?",
+    missed: true,
+    choices: [
+      "No — the engine does a large positive amount of net work to keep the car moving",
+      "Yes — net work is zero, since KE isn't changing (constant speed means ΔKE = 0)",
+      "Net work is negative since friction is present",
+      "Net work can't be determined without knowing the car's mass"
+    ],
+    answer: 1,
+    explain: "By the work-energy theorem, W_net = ΔKE. At constant speed, KE doesn't change, so net work is exactly zero — the engine's positive work exactly cancels the negative work done by friction/air resistance/road resistance."
+  },
+  {
+    q: "In a real (non-ideal) roller coaster with friction, does the car reach the same maximum height on the second hill as the first hill (assuming the second hill is taller than needed)?",
+    missed: true,
+    choices: [
+      "Yes, mechanical energy is always fully conserved",
+      "No, it reaches a lower height, since some mechanical energy converted to heat via friction",
+      "No, it reaches a higher height because friction adds energy",
+      "Height is unrelated to energy in this scenario"
+    ],
+    answer: 1,
+    explain: "With friction present, mechanical energy (KE + PE) is not conserved — some energy converts to heat and sound. The car has less total mechanical energy on the second hill, so it can't reach as high as the first hill, even though total energy (including heat) is still conserved."
+  },
+  {
+    q: "What is the SI unit of power, and how does it relate to work and time?",
+    missed: false,
+    choices: [
+      "Joules; P = W × t",
+      "Newtons; P = W / d",
+      "Watts; P = W / t",
+      "Watts; P = W × t"
+    ],
+    answer: 2,
+    explain: "Power is measured in watts (W = J/s) and is defined as the rate of doing work: P = W/t (work per unit time)."
+  },
+  {
+    q: "A 5 kg object is lifted 3 m at constant velocity. How much work is done against gravity? (g = 9.8 m/s²)",
+    missed: false,
+    choices: ["14.7 J", "147 J", "29.4 J", "49 J"],
+    answer: 1,
+    explain: "W = mgh = 5 × 9.8 × 3 = 147 J. Lifting at constant velocity means the applied force equals gravity's force, so all the work goes into gaining gravitational PE."
+  }
+];
+
+renderQuiz('quiz-root', QUESTIONS, {
+  title: 'Work & Energy — Most-Missed Question Quiz',
+  subtitle: '10 questions targeting the misconceptions students hit most often. Pick an answer to see instant feedback.',
+  backHref: './notes.md',
+  backLabel: 'Back to Unit 5 Cornell Notes'
+});
+</script>
+</body>
+</html>

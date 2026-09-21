@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projectile Motion Quiz — Most Missed Questions</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<div class="quiz-wrap" id="quiz-root"></div>
+<script src="../assets/quiz.js"></script>
+<script>
+var QUESTIONS = [
+  {
+    q: "A ball is launched at an angle. At the very peak of its trajectory, which is true?",
+    missed: true,
+    choices: [
+      "Both velocity and acceleration are zero",
+      "Velocity is zero, acceleration is −9.8 m/s²",
+      "Vertical velocity is zero; horizontal velocity is unchanged and nonzero",
+      "Horizontal velocity is zero; vertical velocity is at its maximum"
+    ],
+    answer: 2,
+    explain: "Only the vertical component of velocity is zero at the peak. The horizontal component never changes during flight (no horizontal acceleration), so it's still moving forward. Acceleration stays at −9.8 m/s² the whole time."
+  },
+  {
+    q: "A bullet is fired perfectly horizontally at the same instant an identical bullet is dropped from the same height. Which hits the ground first (ignore air resistance)?",
+    missed: true,
+    choices: [
+      "The fired bullet, because it's moving faster overall",
+      "The dropped bullet, because it has no horizontal motion to slow it down",
+      "They hit at the same time",
+      "It depends on the firing speed"
+    ],
+    answer: 2,
+    explain: "Vertical and horizontal motion are independent. Both bullets start with zero vertical velocity and fall under the same gravity, so they take exactly the same time to fall, regardless of horizontal speed."
+  },
+  {
+    q: "To split an initial velocity v₀ launched at angle θ above the horizontal into components, which pair is correct?",
+    missed: true,
+    choices: [
+      "v₀ₓ = v₀sin(θ), v₀y = v₀cos(θ)",
+      "v₀ₓ = v₀cos(θ), v₀y = v₀sin(θ)",
+      "v₀ₓ = v₀tan(θ), v₀y = v₀",
+      "v₀ₓ = v₀, v₀y = v₀tan(θ)"
+    ],
+    answer: 1,
+    explain: "When θ is measured from the horizontal, the horizontal (adjacent) component uses cosine and the vertical (opposite) component uses sine: v₀ₓ = v₀cos(θ), v₀y = v₀sin(θ)."
+  },
+  {
+    q: "What is the horizontal acceleration of a projectile in flight (no air resistance)?",
+    missed: false,
+    choices: ["9.8 m/s²", "0 m/s²", "Equal to the vertical acceleration", "It decreases over time"],
+    answer: 1,
+    explain: "No horizontal force acts on the projectile (ignoring air resistance), so horizontal acceleration is always exactly zero — the horizontal velocity never changes."
+  },
+  {
+    q: "A projectile is launched and lands at the same height it started. At what angle is its range maximized?",
+    missed: true,
+    choices: ["30°", "45°", "60°", "90°"],
+    answer: 1,
+    explain: "R = v₀²sin(2θ)/g is maximized when sin(2θ) = 1, i.e., 2θ = 90°, so θ = 45°."
+  },
+  {
+    q: "A ball rolls off a table with a purely horizontal velocity. What is its initial vertical velocity, v₀y?",
+    missed: true,
+    choices: ["Equal to its horizontal velocity", "9.8 m/s", "0 m/s", "Cannot be determined without the height"],
+    answer: 2,
+    explain: "A horizontally launched projectile has no vertical component of velocity at the start — v₀y = 0. It only begins to gain downward velocity once gravity acts on it."
+  },
+  {
+    q: "For a projectile launched and landing at the same height, how does the time going up compare to the time coming down?",
+    missed: false,
+    choices: ["Time up is longer", "Time down is longer", "They are equal", "Depends on launch angle only"],
+    answer: 2,
+    explain: "By symmetry of free-fall motion, time to rise to the peak equals time to fall back to the same height — the trajectory is symmetric."
+  },
+  {
+    q: "A projectile has an initial speed of 20 m/s at 30° above horizontal. What is v₀y (use sin30° = 0.5)?",
+    missed: true,
+    choices: ["20 m/s", "17.3 m/s", "10 m/s", "0 m/s"],
+    answer: 2,
+    explain: "v₀y = v₀sin(θ) = 20 × 0.5 = 10 m/s. (v₀ₓ would be 20 × cos30° ≈ 17.3 m/s — the value in choice B is the horizontal component, a common mix-up.)"
+  },
+  {
+    q: "Two identical projectiles are launched at 30° and 60° above horizontal with the same initial speed (landing at the same height). How do their ranges compare?",
+    missed: true,
+    choices: [
+      "The 60° launch goes farther",
+      "The 30° launch goes farther",
+      "They land at the same distance",
+      "The 60° launch goes twice as far"
+    ],
+    answer: 2,
+    explain: "sin(2×30°) = sin(60°) and sin(2×60°) = sin(120°) = sin(60°) — these are equal, so complementary launch angles (summing to 90°) produce equal ranges, just with different flight times/heights."
+  },
+  {
+    q: "As a projectile rises toward its peak, what happens to its speed (not just vertical velocity)?",
+    missed: false,
+    choices: [
+      "It stays constant the whole time",
+      "It decreases, reaching a minimum (but not necessarily zero) at the peak",
+      "It increases the whole way up",
+      "It becomes zero exactly at the peak"
+    ],
+    answer: 1,
+    explain: "Overall speed = sqrt(v_x² + v_y²). Since v_y shrinks to zero while v_x stays constant, total speed decreases toward the peak but reaches a minimum equal to v_x — not zero (unless the launch was purely vertical)."
+  }
+];
+
+renderQuiz('quiz-root', QUESTIONS, {
+  title: 'Projectile Motion — Most-Missed Question Quiz',
+  subtitle: '10 questions targeting the misconceptions students hit most often. Pick an answer to see instant feedback.',
+  backHref: './notes.md',
+  backLabel: 'Back to Unit 2 Cornell Notes'
+});
+</script>
+</body>
+</html>
