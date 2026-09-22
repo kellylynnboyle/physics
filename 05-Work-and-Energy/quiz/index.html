@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work &amp; Energy Quiz — Most Missed Questions</title>
+<link rel="stylesheet" href="../../assets/quiz.css">
+</head>
+<body>
+<a class="back-link" href="../README.md">← Back to Unit 5: Work &amp; Energy</a>
+<h1>Work &amp; Energy: Most Often Missed Questions</h1>
+<p class="subtitle">10 questions targeting the misconceptions students hit hardest. Click an answer to see feedback immediately.</p>
+<div id="progress-bar-track"><div id="progress-bar-fill"></div></div>
+<div id="quiz-root"></div>
+<div id="results"></div>
+
+<script src="../../assets/quiz.js"></script>
+<script>
+const QUESTIONS = [
+  {
+    question: "A person carries a 10 kg box at constant height across a flat room, walking 8 m horizontally. How much work does the person do ON the box (against gravity)?",
+    misconception: "Work is zero when force and displacement are perpendicular",
+    choices: [
+      "784 J (using mgh with h = 8 m)",
+      "80 J",
+      "0 J, because the supporting force (up) is perpendicular to the horizontal displacement",
+      "Cannot be determined without knowing the person's walking speed"
+    ],
+    answer: 2,
+    explanation: "The person exerts an upward force to support the box's weight, but the box moves horizontally. Since the force is perpendicular to the displacement (θ = 90°, cos 90° = 0), the work done against gravity in this direction is zero — even though the person is clearly exerting effort and getting tired."
+  },
+  {
+    question: "You push on a heavy crate with 200 N of force, but it doesn't move at all. How much work did you do on the crate?",
+    misconception: "Work requires displacement — force alone isn't enough",
+    choices: ["200 J", "0 J, because displacement is zero", "Depends on how long you pushed", "100 J, half the force"],
+    answer: 1,
+    explanation: "Work = F × d × cos θ. If displacement d = 0 (the crate doesn't move), then work = 0 regardless of how much force was applied. This surprises many students because it feels like real physical effort — but physics 'work' specifically requires displacement."
+  },
+  {
+    question: "An object's gravitational potential energy is measured relative to a reference point the problem-solver chooses (e.g., the ground, a table top, etc.). Does the choice of reference point affect the physics of the problem?",
+    misconception: "PE reference point is arbitrary — only ΔPE matters physically",
+    choices: [
+      "Yes, different reference points give different correct answers for velocity, energy released, etc.",
+      "No — the reference point is arbitrary; only the CHANGE in PE (ΔPE) between two points has physical meaning",
+      "The reference point must always be the ground (h = 0 at ground level)",
+      "PE reference points only matter for elastic potential energy, not gravitational"
+    ],
+    answer: 1,
+    explanation: "You can choose h = 0 anywhere you like (the ground, the table, the object's starting point). The actual PE values will differ depending on that choice, but the CHANGE in PE between two points — which is what affects KE and motion via conservation of energy — will always come out the same no matter which reference point you pick."
+  },
+  {
+    question: "A ball rolls down a frictionless hill from a height of 10 m, starting from rest. What determines its speed at the bottom?",
+    misconception: "Conservation of mechanical energy — mass cancels out for height-based speed problems",
+    choices: [
+      "Only the height of the hill (mass cancels out of the equation)",
+      "Both the height of the hill and the mass of the ball equally",
+      "Only the mass of the ball",
+      "The shape/path of the hill, regardless of height"
+    ],
+    answer: 0,
+    explanation: "Using mgh = ½mv², mass cancels from both sides: v = √(2gh). On a frictionless incline, the final speed depends only on the height dropped, not on mass or the specific shape of the path (as long as it's frictionless)."
+  },
+  {
+    question: "A 2 kg block slides down a ramp and then across a rough floor with friction before stopping. Which equation correctly models this using energy methods?",
+    misconception: "Incorporating non-conservative forces (friction) into the energy equation",
+    choices: [
+      "KE_i + PE_i = KE_f + PE_f (energy is always perfectly conserved)",
+      "KE_i + PE_i = KE_f + PE_f + Energy lost to friction",
+      "PE_i = KE_f only (ignore friction entirely)",
+      "KE_i = PE_f (energy reverses form completely)"
+    ],
+    answer: 1,
+    explanation: "When a non-conservative force like friction acts, mechanical energy (KE + PE) is not conserved on its own — some of it converts to heat. The correct equation accounts for that loss: initial mechanical energy equals final mechanical energy PLUS the energy lost to friction (f × d)."
+  },
+  {
+    question: "A spring is compressed twice as far from its equilibrium position (x doubles). How does its stored elastic potential energy change?",
+    misconception: "Elastic PE depends on x², not x — doubling x quadruples PE",
+    choices: ["It doubles", "It stays the same", "It quadruples (×4)", "It is cut in half"],
+    answer: 2,
+    explanation: "PE_spring = ½kx². Since PE depends on x SQUARED, doubling x means (2x)² = 4x² — so the stored energy quadruples, not doubles. This is a common error since students often assume a linear relationship."
+  },
+  {
+    question: "What is the correct formula for the work-energy theorem, and what does it tell you?",
+    misconception: "Work-energy theorem relates NET work to the CHANGE in kinetic energy, not total KE",
+    choices: [
+      "W_net = KE_final (net work equals the final kinetic energy)",
+      "W_net = ΔKE = KE_final − KE_initial (net work equals the change in kinetic energy)",
+      "W_net = PE_final − PE_initial",
+      "W_net = KE_initial (net work equals the starting kinetic energy)"
+    ],
+    answer: 1,
+    explanation: "The work-energy theorem states that the NET work done on an object (from all forces combined) equals its CHANGE in kinetic energy, not its final or initial KE alone: W_net = ΔKE = KE_f − KE_i."
+  },
+  {
+    question: "Two motors lift identical 100 kg loads to the same height of 5 m. Motor A takes 10 seconds; Motor B takes 20 seconds. Compare the work done and the power output of each motor.",
+    misconception: "Work vs. power — same work can require different power depending on time",
+    choices: [
+      "Both motors do the same work, but Motor A has twice the power output of Motor B",
+      "Motor A does more work than Motor B because it's faster",
+      "Both motors have the same power since they lift the same weight the same height",
+      "Motor B has more power because it takes longer"
+    ],
+    answer: 0,
+    explanation: "Work only depends on force and distance (W = mgh here), so both motors do the SAME work since they lift the same mass the same height. But power = W/t, so the faster motor (A, at 10 s) has twice the power of the slower motor (B, at 20 s) — power measures the RATE of doing work, not the total work."
+  },
+  {
+    question: "A roller coaster car has zero kinetic energy at the very top of the first hill (its highest point) and no more energy is added by motors after this point. According to conservation of energy, what can you conclude about its speed at any lower point later in the ride (ignoring friction)?",
+    misconception: "Height alone (not the path shape) determines speed via conservation of energy",
+    choices: [
+      "Its speed at any lower point depends only on how far BELOW the first hill's height that point is — not on the twists, loops, or dips in between",
+      "Its speed depends on the exact shape of the track between the two points",
+      "Its speed is the same everywhere on the track, since energy is conserved",
+      "Its speed can never be calculated without more information about the track's design"
+    ],
+    answer: 0,
+    explanation: "With no friction and no motor input, total mechanical energy is constant throughout the ride. At any point, KE = (initial PE) − (PE at that point) = mg(h_top − h_now). The speed at any point depends only on the vertical height dropped from the highest point, regardless of the twists and turns of the track in between — this is why the first hill must always be the tallest."
+  },
+  {
+    question: "A crane lifts a 50 kg crate straight up at a slow, constant velocity. What is the net work done on the crate during the lift (ignoring air resistance)?",
+    misconception: "Constant velocity means zero net force, so net work (not the crane's work alone) is zero",
+    choices: [
+      "Positive, equal to mgh, since the crane is clearly doing work",
+      "Zero, because constant velocity means the net force (and therefore net work) is zero, even though the crane's applied force alone does positive work",
+      "Negative, because gravity opposes the lift",
+      "Cannot be determined without knowing the height lifted"
+    ],
+    answer: 1,
+    explanation: "At constant velocity, acceleration = 0, so net force = 0 (the crane's upward force exactly balances gravity). By the work-energy theorem, W_net = ΔKE = 0 since KE doesn't change. This doesn't mean the crane does no work — the crane does positive work (+mgh) and gravity does equal negative work (−mgh), and they cancel to give zero NET work."
+  }
+];
+initQuiz(QUESTIONS, "work-energy-quiz-history");
+</script>
+</body>
+</html>

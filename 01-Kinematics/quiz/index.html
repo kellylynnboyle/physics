@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinematics Quiz — Most Missed Questions</title>
+<link rel="stylesheet" href="../../assets/quiz.css">
+</head>
+<body>
+<a class="back-link" href="../README.md">← Back to Unit 1: Kinematics</a>
+<h1>Kinematics: Most Often Missed Questions</h1>
+<p class="subtitle">10 questions targeting the misconceptions students hit hardest. Click an answer to see feedback immediately.</p>
+<div id="progress-bar-track"><div id="progress-bar-fill"></div></div>
+<div id="quiz-root"></div>
+<div id="results"></div>
+
+<script src="../../assets/quiz.js"></script>
+<script>
+const QUESTIONS = [
+  {
+    question: "A student walks 8 m east, then 3 m west. What is the student's total distance traveled and displacement?",
+    misconception: "Distance vs. displacement",
+    choices: [
+      "Distance = 5 m, Displacement = 5 m east",
+      "Distance = 11 m, Displacement = 5 m east",
+      "Distance = 11 m, Displacement = 11 m east",
+      "Distance = 5 m, Displacement = 11 m east"
+    ],
+    answer: 1,
+    explanation: "Distance adds up every meter walked regardless of direction: 8 + 3 = 11 m. Displacement is the net straight-line change in position: 8 m east − 3 m east (since west is negative) = 5 m east."
+  },
+  {
+    question: "On a position-time (x-t) graph, what does the slope of the line represent?",
+    misconception: "Reading motion graphs (slope vs. area)",
+    choices: ["Acceleration", "Velocity", "Displacement", "Distance"],
+    answer: 1,
+    explanation: "Slope on an x-t graph is Δx/Δt, which is velocity. (On a v-t graph, slope would instead represent acceleration.)"
+  },
+  {
+    question: "On a velocity-time (v-t) graph, how do you find the total displacement over an interval?",
+    misconception: "Reading motion graphs (slope vs. area)",
+    choices: [
+      "Read the slope of the line",
+      "Read the y-value at the final time",
+      "Calculate the area between the line and the time axis",
+      "Multiply the final velocity by the final time"
+    ],
+    answer: 2,
+    explanation: "Displacement equals the area under a v-t graph (area between the curve and the t-axis), not the slope — the slope of a v-t graph is acceleration."
+  },
+  {
+    question: "A car moving in the negative direction is speeding up. What are the signs of its velocity and acceleration?",
+    misconception: "Sign conventions — negative acceleration does not always mean 'slowing down'",
+    choices: [
+      "Velocity negative, acceleration positive",
+      "Velocity positive, acceleration negative",
+      "Both velocity and acceleration are negative",
+      "Both velocity and acceleration are positive"
+    ],
+    answer: 2,
+    explanation: "If the car is moving in the negative direction and speeding up, both its velocity and its acceleration point in the negative direction — so both are negative. Negative acceleration only means 'slowing down' when velocity is positive."
+  },
+  {
+    question: "A ball is thrown straight up. What is its acceleration at the very top of its path, at the instant its velocity is zero?",
+    misconception: "Free fall — acceleration is constant even at the peak",
+    choices: [
+      "0 m/s², because the ball is momentarily at rest",
+      "9.8 m/s² upward",
+      "9.8 m/s² downward",
+      "It depends on how fast the ball was thrown"
+    ],
+    answer: 2,
+    explanation: "Gravity acts the entire time the ball is in the air, including at the peak. Even though velocity = 0 at that instant, acceleration is still −9.8 m/s² (downward) throughout the entire flight."
+  },
+  {
+    question: "Which set of known/unknown variables would require the equation Δx = v₀t + ½at² ?",
+    misconception: "Choosing the correct kinematic equation",
+    choices: [
+      "Given v₀, a, t — find Δx (final velocity v not needed)",
+      "Given v₀, v, a — find Δx (time t not needed)",
+      "Given v₀, v, t — find a (acceleration a is the unknown itself)",
+      "Given a, Δx, t — find v₀ (final velocity v not given or needed)"
+    ],
+    answer: 0,
+    explanation: "Δx = v₀t + ½at² contains v₀, a, t, and Δx — it does NOT contain final velocity v. So it's the right tool whenever v is the variable that's missing from the problem."
+  },
+  {
+    question: "What is the difference between average velocity and instantaneous velocity?",
+    misconception: "Average vs. instantaneous velocity",
+    choices: [
+      "There is no difference — they're always equal",
+      "Average velocity is total displacement over total time; instantaneous velocity is the velocity at one specific moment",
+      "Average velocity only applies to objects at constant speed",
+      "Instantaneous velocity is always larger than average velocity"
+    ],
+    answer: 1,
+    explanation: "Average velocity = Δx/Δt over an entire interval. Instantaneous velocity is the velocity at a single instant in time — the slope of the tangent line to the x-t graph at that point. The two are only equal when acceleration is zero (constant velocity)."
+  },
+  {
+    question: "A rock is dropped (not thrown) from a cliff. Which variable should you set to zero when solving for how long it takes to hit the ground?",
+    misconception: "Setting up free-fall problems correctly",
+    choices: ["Acceleration (a = 0)", "Final velocity (v = 0)", "Initial velocity (v₀ = 0)", "Displacement (Δx = 0)"],
+    answer: 2,
+    explanation: "'Dropped' means released from rest, so initial velocity v₀ = 0. Acceleration is NOT zero — it's −9.8 m/s² the whole time."
+  },
+  {
+    question: "Two runners cover the same 400 m distance. Runner A takes 50 s at a constant pace. Runner B sprints the first 200 m in 20 s, then jogs the last 200 m in 30 s. Do they have the same average velocity?",
+    misconception: "Average velocity isn't the average of two speeds unless time intervals match",
+    choices: [
+      "Yes, both average 8 m/s, since both cover 400 m total",
+      "No — Runner B's average velocity is higher because of the fast start",
+      "No — Runner B's average velocity is lower because jogging counts more",
+      "Cannot be determined without knowing direction"
+    ],
+    answer: 0,
+    explanation: "Average velocity = total displacement / total time. Both runners cover 400 m in 50 s total, so both average 400/50 = 8 m/s — even though their instantaneous speeds varied throughout. A common mistake is averaging the two speeds (10 m/s and 6.7 m/s) directly, which is only valid when time intervals are equal."
+  },
+  {
+    question: "A v-t graph shows a straight diagonal line from (0 s, 0 m/s) to (4 s, 20 m/s). What is the object's acceleration and its displacement over those 4 seconds?",
+    misconception: "Combining slope (acceleration) and area (displacement) on the same graph",
+    choices: [
+      "a = 5 m/s², Δx = 20 m",
+      "a = 5 m/s², Δx = 40 m",
+      "a = 20 m/s², Δx = 40 m",
+      "a = 0.2 m/s², Δx = 20 m"
+    ],
+    answer: 1,
+    explanation: "Acceleration = slope = (20 − 0)/(4 − 0) = 5 m/s². Displacement = area under the line, which is a triangle: ½ × base × height = ½ × 4 s × 20 m/s = 40 m."
+  }
+];
+initQuiz(QUESTIONS, "kinematics-quiz-history");
+</script>
+</body>
+</html>

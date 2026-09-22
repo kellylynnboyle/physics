@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newton's Laws Quiz — Most Missed Questions</title>
+<link rel="stylesheet" href="../../assets/quiz.css">
+</head>
+<body>
+<a class="back-link" href="../README.md">← Back to Unit 3: Newton's Laws</a>
+<h1>Newton's Laws: Most Often Missed Questions</h1>
+<p class="subtitle">10 questions targeting the misconceptions students hit hardest. Click an answer to see feedback immediately.</p>
+<div id="progress-bar-track"><div id="progress-bar-fill"></div></div>
+<div id="quiz-root"></div>
+<div id="results"></div>
+
+<script src="../../assets/quiz.js"></script>
+<script>
+const QUESTIONS = [
+  {
+    question: "An astronaut has a mass of 70 kg on Earth. What is their mass on the Moon (where gravity is about 1/6 of Earth's)?",
+    misconception: "Mass vs. weight — mass does not change with location",
+    choices: ["About 11.7 kg", "70 kg", "About 420 kg", "0 kg (weightless)"],
+    answer: 1,
+    explanation: "Mass is the amount of matter in an object and does not change with location — the astronaut is still 70 kg on the Moon. Only their WEIGHT changes (weight = mg, and g is smaller on the Moon)."
+  },
+  {
+    question: "A book sits at rest on a table. According to Newton's 1st Law, why isn't the book accelerating?",
+    misconception: "Equilibrium ≠ zero forces",
+    choices: [
+      "Because no forces are acting on it",
+      "Because the net force on it is zero — gravity and the normal force balance",
+      "Because gravity is too weak to move it",
+      "Because the table is stronger than gravity"
+    ],
+    answer: 1,
+    explanation: "Two forces ARE acting on the book: gravity (down) and the normal force from the table (up). They are equal in magnitude and opposite in direction, so the net force is zero — this is equilibrium, not 'no forces.'"
+  },
+  {
+    question: "A 1500 kg car accelerates from 0 to 20 m/s in 10 seconds. What net force was required?",
+    misconception: "Applying F = ma correctly (finding a first)",
+    choices: ["150 N", "300 N", "3000 N", "30,000 N"],
+    answer: 2,
+    explanation: "First find acceleration: a = Δv/Δt = 20/10 = 2 m/s². Then F_net = ma = 1500 × 2 = 3000 N."
+  },
+  {
+    question: "According to Newton's 3rd Law, when you push on a wall, the wall pushes back on you with an equal and opposite force. Why doesn't this pair of forces cancel out and result in zero net force?",
+    misconception: "Action-reaction pairs act on two DIFFERENT objects",
+    choices: [
+      "It does cancel out — that's why nothing moves",
+      "The forces act on two different objects (you and the wall), so they can't cancel — each object has its own net force to consider",
+      "The wall's force is always weaker than yours",
+      "Newton's 3rd Law only applies to moving objects"
+    ],
+    answer: 1,
+    explanation: "Action-reaction pairs act on DIFFERENT objects — the force on the wall (from you) and the force on you (from the wall). Forces only cancel when they act on the SAME object. Since each force acts on a different object, they never cancel each other."
+  },
+  {
+    question: "A 4 kg block sits on a 30° frictionless incline. What is the normal force on the block? (g = 9.8 m/s², cos 30° ≈ 0.87)",
+    misconception: "Normal force on an incline is NOT equal to mg",
+    choices: ["39.2 N (= mg)", "34.1 N (= mg cos θ)", "19.6 N (= mg sin θ)", "0 N, since it's frictionless"],
+    answer: 1,
+    explanation: "On an incline, normal force equals only the component of gravity perpendicular to the surface: N = mg cos θ = 4 × 9.8 × 0.87 ≈ 34.1 N. Using the full weight (mg) is the most common incline mistake."
+  },
+  {
+    question: "A box remains stationary even though you're pushing on it with 15 N of force. The maximum static friction is 20 N. What is the friction force actually acting on the box right now?",
+    misconception: "Static friction adjusts up to its maximum — it isn't always at its max value",
+    choices: ["20 N, the maximum possible", "15 N, exactly matching your push", "0 N, since the box isn't moving", "35 N, the sum of both forces"],
+    answer: 1,
+    explanation: "Static friction is a 'response' force — it adjusts to exactly balance the applied force, up to its maximum value. Since 15 N < 20 N (max), static friction is exactly 15 N, keeping the box in equilibrium. It only equals the maximum value at the instant the box is about to slip."
+  },
+  {
+    question: "Which pair below is a correct Newton's 3rd Law action-reaction pair for a book resting on a table?",
+    misconception: "Distinguishing 3rd-law pairs from balanced forces on the same object",
+    choices: [
+      "Gravity pulling the book down, and the normal force pushing the book up",
+      "The book pushing down on the table, and the table pushing up on the book",
+      "The book's weight, and the table's weight",
+      "The normal force on the book, and friction on the book"
+    ],
+    answer: 1,
+    explanation: "A true 3rd Law pair involves the SAME two objects, with the forces swapped: the book pushes down on the table (action), and the table pushes up on the book (reaction). Gravity and normal force (choice A) are two different forces on the SAME object (the book) — that's equilibrium, not a 3rd-law pair."
+  },
+  {
+    question: "A rocket in deep space (no gravity, no air) fires exhaust gas out of its engine. How does it move forward?",
+    misconception: "Newton's 3rd Law doesn't require air or a surface to push against",
+    choices: [
+      "The exhaust gas pushes against the surrounding air to move the rocket forward",
+      "The rocket pushes the exhaust gas backward, and the exhaust gas pushes the rocket forward (action-reaction)",
+      "Rockets cannot accelerate in a vacuum since there is nothing to push against",
+      "The rocket's engines directly pull it forward through space"
+    ],
+    answer: 1,
+    explanation: "Rockets work by Newton's 3rd Law: the engine pushes exhaust gas backward (action), and the gas pushes the rocket forward (reaction) — this works in the vacuum of space because it only requires the two interacting objects (rocket and exhaust), not air or a surface."
+  },
+  {
+    question: "A car moving at a constant 60 mph on a straight highway has balanced forces (net force = 0). Is the car accelerating?",
+    misconception: "Constant velocity means zero acceleration, even though the object is still moving",
+    choices: [
+      "Yes, because it's still moving forward",
+      "No — constant velocity (constant speed AND direction) means zero acceleration",
+      "Yes, because engines always produce acceleration",
+      "It depends on the car's mass"
+    ],
+    answer: 1,
+    explanation: "Acceleration is the rate of change of velocity. If velocity is constant (same speed, same direction), acceleration is zero — regardless of how fast the object is moving. This matches Newton's 1st Law: zero net force means zero acceleration, i.e., constant velocity (which includes being at rest)."
+  },
+  {
+    question: "An elevator accelerates upward. How does the normal force the floor exerts on a passenger compare to their actual weight (mg)?",
+    misconception: "Normal force isn't always equal to weight — it changes with acceleration",
+    choices: [
+      "Normal force is always exactly equal to mg, regardless of the elevator's motion",
+      "Normal force is greater than mg while accelerating upward (you feel heavier)",
+      "Normal force is less than mg while accelerating upward (you feel lighter)",
+      "Normal force is zero because you're inside a moving elevator"
+    ],
+    answer: 1,
+    explanation: "Using F_net = ma with upward as positive: N − mg = ma, so N = mg + ma = m(g + a). Since the elevator accelerates upward, N > mg, meaning the floor pushes up harder than your weight — this is why you feel heavier as an elevator starts moving up."
+  }
+];
+initQuiz(QUESTIONS, "newtons-laws-quiz-history");
+</script>
+</body>
+</html>

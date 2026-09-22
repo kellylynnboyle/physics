@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projectile Motion Quiz — Most Missed Questions</title>
+<link rel="stylesheet" href="../../assets/quiz.css">
+</head>
+<body>
+<a class="back-link" href="../README.md">← Back to Unit 2: Projectile Motion</a>
+<h1>Projectile Motion: Most Often Missed Questions</h1>
+<p class="subtitle">10 questions targeting the misconceptions students hit hardest. Click an answer to see feedback immediately.</p>
+<div id="progress-bar-track"><div id="progress-bar-fill"></div></div>
+<div id="quiz-root"></div>
+<div id="results"></div>
+
+<script src="../../assets/quiz.js"></script>
+<script>
+const QUESTIONS = [
+  {
+    question: "A projectile is launched at an angle. What happens to its horizontal velocity during the flight (ignoring air resistance)?",
+    misconception: "Independence of horizontal and vertical motion",
+    choices: [
+      "It increases the whole time due to gravity",
+      "It decreases as the projectile rises, then increases as it falls",
+      "It stays constant the entire flight",
+      "It becomes zero at the peak of the trajectory"
+    ],
+    answer: 2,
+    explanation: "Gravity only acts vertically. With no horizontal acceleration, horizontal velocity (vₓ) stays exactly constant for the whole flight — only vertical velocity changes."
+  },
+  {
+    question: "What is the vertical acceleration of a projectile at the exact top of its trajectory, where vertical velocity is momentarily zero?",
+    misconception: "Confusing zero velocity with zero acceleration at the peak",
+    choices: ["0 m/s²", "9.8 m/s² downward", "9.8 m/s² upward", "Depends on the launch angle"],
+    answer: 1,
+    explanation: "Just like in free fall, gravity acts continuously. Even at the peak where v_y = 0, acceleration is still −9.8 m/s² (downward) — velocity and acceleration are independent quantities."
+  },
+  {
+    question: "A ball is launched at 20 m/s at 30° above horizontal. What is the correct way to find its initial vertical velocity component?",
+    misconception: "Angle decomposition — mixing up sine and cosine",
+    choices: [
+      "v₀ᵧ = 20 × cos(30°)",
+      "v₀ᵧ = 20 × sin(30°)",
+      "v₀ᵧ = 20 / sin(30°)",
+      "v₀ᵧ = 20 (use full speed, angle doesn't matter for vertical)"
+    ],
+    answer: 1,
+    explanation: "Vertical component uses sine: v₀ᵧ = v₀ sin θ. (Horizontal component uses cosine: v₀ₓ = v₀ cos θ.) A common mix-up is swapping sine and cosine between the two components."
+  },
+  {
+    question: "To find the maximum height of a projectile, which set of equations should you use?",
+    misconception: "Mixing horizontal and vertical equations",
+    choices: [
+      "Horizontal kinematic equations using vₓ",
+      "Vertical kinematic equations using v₀ᵧ and a = −9.8 m/s²",
+      "The full launch speed v₀ in either equation",
+      "Range equation solved for height"
+    ],
+    answer: 1,
+    explanation: "Maximum height is purely a vertical-motion question — you must use only the vertical component v₀ᵧ and vertical acceleration in a vertical kinematic equation, never the full v₀ or the horizontal component."
+  },
+  {
+    question: "For a projectile launched and landing at the same height, how does the time to reach maximum height compare to the time to fall back down?",
+    misconception: "Trajectory symmetry",
+    choices: [
+      "Time up is always longer than time down",
+      "Time down is always longer than time up",
+      "Time up equals time down",
+      "It depends on the launch angle"
+    ],
+    answer: 2,
+    explanation: "When launch height equals landing height, the trajectory is symmetric: time to rise to the peak exactly equals time to fall back down, so total flight time = 2 × (time to peak)."
+  },
+  {
+    question: "A projectile is launched horizontally (0° angle) from the edge of a cliff. What is its initial vertical velocity?",
+    misconception: "Horizontal launches — v₀ᵧ = 0, not v₀",
+    choices: ["Equal to the full launch speed v₀", "Zero", "9.8 m/s", "Depends on the cliff height"],
+    answer: 1,
+    explanation: "A horizontal launch means the entire initial velocity is horizontal: v₀ₓ = v₀ and v₀ᵧ = 0. The projectile still falls due to gravity, but it starts with zero vertical speed."
+  },
+  {
+    question: "Two projectiles are launched from the ground at the same speed, one at 30° and one at 60°. What do they have in common?",
+    misconception: "Complementary angles give equal range, not equal everything",
+    choices: [
+      "They have the same range, but different max heights and flight times",
+      "They land at exactly the same time",
+      "They reach exactly the same maximum height",
+      "They have no properties in common"
+    ],
+    answer: 0,
+    explanation: "30° and 60° are complementary angles (they sum to 90°), so on level ground they produce the same range. However, the 60° launch goes higher and stays in the air longer than the 30° launch."
+  },
+  {
+    question: "A ball rolls off a horizontal table at 3 m/s and lands 0.5 s later. What determines that 0.5 s time of flight?",
+    misconception: "Time of flight is controlled only by vertical motion",
+    choices: [
+      "The horizontal speed of 3 m/s",
+      "Both the horizontal speed and the height of the table equally",
+      "Only the height of the table (vertical motion/free fall)",
+      "The mass of the ball"
+    ],
+    answer: 2,
+    explanation: "Time of flight is entirely determined by the vertical drop (how long free fall takes to cover that height) — the horizontal speed has zero effect on how long the ball stays in the air."
+  },
+  {
+    question: "A projectile is launched from the top of a 20 m cliff at some angle above horizontal, and lands on the ground below. Compared to a projectile launched at the same angle and speed from level ground, how does the time of flight differ?",
+    misconception: "Asymmetric trajectories (different launch and landing heights)",
+    choices: [
+      "It's exactly the same because launch angle and speed are the same",
+      "It's longer, because the projectile must fall the extra 20 m below launch height",
+      "It's shorter, because the cliff gives it a head start",
+      "It cannot be compared without knowing the mass"
+    ],
+    answer: 1,
+    explanation: "When launch height is above the landing height, the trajectory is no longer symmetric — the projectile takes longer to descend than to ascend, since it must travel farther vertically overall. You cannot simply double the time-to-peak in this case."
+  },
+  {
+    question: "A student sets up this equation to find the range of a projectile: Range = v₀ᵧ × t. What's wrong?",
+    misconception: "The #1 error — plugging a vertical variable into a horizontal equation",
+    choices: [
+      "Nothing is wrong, this is correct",
+      "Range should use vₓ (horizontal velocity), not v₀ᵧ (vertical velocity)",
+      "Range should use acceleration instead of velocity",
+      "Time should not be included in the range equation"
+    ],
+    answer: 1,
+    explanation: "Range is a horizontal distance, so it must be calculated using horizontal velocity: Range = vₓ × t_total. Using v₀ᵧ instead is the single most common error in this unit — always double check that vertical quantities are paired with vertical equations, and horizontal with horizontal."
+  }
+];
+initQuiz(QUESTIONS, "projectile-quiz-history");
+</script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Momentum Quiz — Most Missed Questions</title>
+<link rel="stylesheet" href="../../assets/quiz.css">
+</head>
+<body>
+<a class="back-link" href="../README.md">← Back to Unit 4: Momentum</a>
+<h1>Momentum: Most Often Missed Questions</h1>
+<p class="subtitle">10 questions targeting the misconceptions students hit hardest. Click an answer to see feedback immediately.</p>
+<div id="progress-bar-track"><div id="progress-bar-fill"></div></div>
+<div id="quiz-root"></div>
+<div id="results"></div>
+
+<script src="../../assets/quiz.js"></script>
+<script>
+const QUESTIONS = [
+  {
+    question: "A 0.5 kg ball moving right at 4 m/s collides with a 0.5 kg ball moving left at 4 m/s. What is the total momentum of the system before the collision?",
+    misconception: "Momentum is a vector — opposite directions partially or fully cancel",
+    choices: ["4 kg·m/s", "0 kg·m/s", "2 kg·m/s", "8 kg·m/s"],
+    answer: 1,
+    explanation: "Momentum is a vector. Taking right as positive: p = (0.5)(4) + (0.5)(−4) = 2 − 2 = 0 kg·m/s. The two momenta are equal and opposite, so they cancel to a total of zero — a very common sign error is adding the magnitudes instead."
+  },
+  {
+    question: "A moving ball bounces off a wall and returns with the same speed but opposite direction. Did its momentum change?",
+    misconception: "A speed change of zero doesn't mean a momentum change of zero — direction matters",
+    choices: [
+      "No, momentum is unchanged since speed is the same",
+      "Yes, momentum changed because direction reversed, even though speed stayed the same",
+      "Cannot be determined without the mass",
+      "No, because the wall didn't apply any force"
+    ],
+    answer: 1,
+    explanation: "Momentum is a vector, so reversing direction changes it even if the magnitude (speed) stays the same. For example, going from +5 kg·m/s to −5 kg·m/s is a change of 10 kg·m/s, not zero."
+  },
+  {
+    question: "In a car crash, why do airbags reduce injury even though the change in momentum (impulse) of the passenger is the same with or without the airbag?",
+    misconception: "Impulse-momentum theorem — same Δp, different force depending on time",
+    choices: [
+      "Airbags reduce the passenger's momentum change",
+      "Airbags increase the collision time, which reduces the average force for the same impulse",
+      "Airbags eliminate the need for a force to stop the passenger",
+      "Airbags decrease the mass of the passenger"
+    ],
+    answer: 1,
+    explanation: "J = FΔt = Δp. Since Δp (the required change in momentum to stop the passenger) is fixed by the crash, increasing Δt (contact/stopping time) means the average force F must decrease — that's why airbags and padding reduce injury."
+  },
+  {
+    question: "Two objects collide and bounce apart. Total kinetic energy is exactly the same before and after. What type of collision is this?",
+    misconception: "Distinguishing elastic from inelastic collisions",
+    choices: ["Perfectly inelastic", "Inelastic", "Elastic", "This cannot happen — KE is always lost in collisions"],
+    answer: 2,
+    explanation: "A collision where kinetic energy is fully conserved (in addition to momentum) is called elastic. In inelastic collisions, some KE converts to heat/sound/deformation; in perfectly inelastic collisions, the objects stick together and lose the most KE possible while still conserving momentum."
+  },
+  {
+    question: "A 2 kg cart moving at 5 m/s collides with a stationary 2 kg cart and they stick together. Is momentum conserved? Is kinetic energy conserved?",
+    misconception: "Momentum is always conserved in a closed system; KE is not, in inelastic collisions",
+    choices: [
+      "Both momentum and KE are conserved",
+      "Momentum is conserved, but KE is not conserved",
+      "KE is conserved, but momentum is not conserved",
+      "Neither is conserved"
+    ],
+    answer: 1,
+    explanation: "Momentum is conserved in ANY closed collision (elastic or inelastic) — that's the whole point of conservation of momentum. But kinetic energy is only conserved in elastic collisions. Since these carts stick together (perfectly inelastic), KE is NOT conserved — some was converted to heat/sound/deformation."
+  },
+  {
+    question: "Looking at a Force vs. time graph for a collision, how do you find the impulse delivered?",
+    misconception: "Reading impulse from a force-time graph (area, not height)",
+    choices: [
+      "Read the peak force value directly",
+      "Calculate the area under the curve (between the force line and the time axis)",
+      "Multiply the peak force by the total time shown on the graph",
+      "Find the slope of the line"
+    ],
+    answer: 1,
+    explanation: "Impulse J = FΔt is represented by the AREA under a force-vs-time graph, similar to how displacement is the area under a velocity-time graph. If the force varies over time, you need the total area (which may require breaking it into geometric shapes), not just the peak value."
+  },
+  {
+    question: "A 60 kg astronaut at rest pushes off a 200 kg space capsule (also at rest), moving away at 1.5 m/s. What is the recoil velocity of the capsule?",
+    misconception: "Explosion/separation problems — total momentum before (zero) must equal total after",
+    choices: ["1.5 m/s in the same direction as the astronaut", "0.45 m/s in the opposite direction", "5 m/s in the opposite direction", "0 m/s, since the capsule is too heavy to move"],
+    answer: 1,
+    explanation: "Before pushing off, total momentum = 0 (both at rest). After: 0 = (60)(1.5) + (200)(v_capsule), so v_capsule = −90/200 = −0.45 m/s (opposite direction to the astronaut). Momentum conservation applies to explosions/separations just as it does to collisions."
+  },
+  {
+    question: "A 1000 kg car moving at 20 m/s has more momentum than a 2000 kg truck moving at 8 m/s. Is this statement true?",
+    misconception: "Comparing momentum requires calculating m×v for each, not just comparing mass or speed alone",
+    choices: [
+      "True — car: 20,000 kg·m/s vs. truck: 16,000 kg·m/s",
+      "False — the truck always has more momentum because it's heavier",
+      "False — the car always has more momentum because it's faster",
+      "They must have equal momentum since both are vehicles"
+    ],
+    answer: 0,
+    explanation: "You must calculate p = mv for each: car = 1000 × 20 = 20,000 kg·m/s; truck = 2000 × 8 = 16,000 kg·m/s. The car actually has more momentum despite being lighter, because its speed advantage outweighs the truck's mass advantage. Momentum depends on the product of mass and velocity, not either one alone."
+  },
+  {
+    question: "Which of these is the correct SI unit for both momentum and impulse?",
+    misconception: "Units of impulse and momentum are equivalent (kg·m/s = N·s)",
+    choices: ["Joules (J)", "Newtons (N)", "kg·m/s (equivalently, N·s)", "Watts (W)"],
+    answer: 2,
+    explanation: "Momentum: p = mv → kg·(m/s) = kg·m/s. Impulse: J = FΔt → N·s. These are dimensionally equivalent (since 1 N = 1 kg·m/s²), which makes sense because the impulse-momentum theorem states J = Δp — they must share units."
+  },
+  {
+    question: "A stationary bowling ball (7 kg) is struck by a bowling pin. Which object experiences the LARGER magnitude of impulse during the collision?",
+    misconception: "Newton's 3rd Law applied to momentum — equal and opposite impulses/forces on both objects",
+    choices: [
+      "The bowling ball, since it was stationary",
+      "The bowling pin, since it was already moving",
+      "Both experience exactly the same magnitude of impulse (opposite in direction)",
+      "Impossible to determine without knowing both masses"
+    ],
+    answer: 2,
+    explanation: "By Newton's 3rd Law, the force the pin exerts on the ball is equal and opposite to the force the ball exerts on the pin, over the same contact time — so the impulses (and therefore the momentum changes) on both objects have equal magnitude, just opposite direction. The resulting velocity CHANGE differs because their masses differ, but the impulse magnitude is the same."
+  }
+];
+initQuiz(QUESTIONS, "momentum-quiz-history");
+</script>
+</body>
+</html>
