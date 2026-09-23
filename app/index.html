@@ -1,0 +1,830 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics 11 — Mechanics Study Companion</title>
+<style>
+  :root{
+    --bg:#eef1f6; --surface:#ffffff; --surface-2:#f4f7fb;
+    --ink:#12192a; --ink-soft:#4b5872; --border:#d7dee9;
+    --blue:#1d4d8f; --blue-deep:#0f2d54; --amber:#b85c1c;
+    --good:#1f7a4d; --good-bg:#e6f4ec; --bad:#b3273f; --bad-bg:#fbe9ec;
+    --grid-line: rgba(29,77,143,0.07);
+    color-scheme: light;
+  }
+  html[data-theme="dark"]{
+    --bg:#0c121f; --surface:#131b2c; --surface-2:#182238;
+    --ink:#e7ecf5; --ink-soft:#a6b3cc; --border:#263453;
+    --blue:#6ea3f2; --blue-deep:#bcd6ff; --amber:#f0a15e;
+    --good:#52d18c; --good-bg:#133326; --bad:#ff7a8a; --bad-bg:#3a1520;
+    --grid-line: rgba(110,163,242,0.08);
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: dark){
+    html:not([data-theme="light"]){
+      --bg:#0c121f; --surface:#131b2c; --surface-2:#182238;
+      --ink:#e7ecf5; --ink-soft:#a6b3cc; --border:#263453;
+      --blue:#6ea3f2; --blue-deep:#bcd6ff; --amber:#f0a15e;
+      --good:#52d18c; --good-bg:#133326; --bad:#ff7a8a; --bad-bg:#3a1520;
+      --grid-line: rgba(110,163,242,0.08);
+      color-scheme: dark;
+    }
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:16px; line-height:1.5;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size:28px 28px;
+  }
+  h1,h2,h3,h4{
+    font-family:Georgia,"Iowan Old Style","Palatino Linotype",serif;
+    color:var(--ink); margin:0 0 .3em; text-wrap:balance;
+  }
+  code, .mono, .data{
+    font-family:"SF Mono",SFMono-Regular,Consolas,"Liberation Mono",Menlo,monospace;
+  }
+  a{color:var(--blue);}
+  button{font:inherit;}
+  [hidden]{display:none!important;}
+
+  /* header */
+  header.top{
+    position:sticky; top:0; z-index:10;
+    background:var(--blue-deep); color:#eaf1ff;
+    border-bottom:3px solid var(--amber);
+  }
+  html[data-theme="dark"] header.top, @supports (color:red){}
+  header.top .bar{
+    max-width:1100px; margin:0 auto; padding:14px 16px 0;
+  }
+  header.top .eyebrow{
+    font-family:"SF Mono",SFMono-Regular,Consolas,monospace;
+    font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    opacity:.75; display:flex; justify-content:space-between; align-items:center; gap:8px;
+  }
+  header.top h1{
+    color:#fff; font-size:clamp(20px,3.4vw,30px); margin:4px 0 12px;
+  }
+  #theme-toggle{
+    background:transparent; border:1px solid rgba(255,255,255,.4); color:#eaf1ff;
+    border-radius:6px; padding:4px 10px; cursor:pointer; font-size:11px;
+    letter-spacing:.04em;
+  }
+  #theme-toggle:hover{background:rgba(255,255,255,.08);}
+  nav.tabs{
+    display:flex; gap:2px; overflow-x:auto; max-width:1100px; margin:0 auto;
+    padding:0 16px; scrollbar-width:thin;
+  }
+  nav.tabs button{
+    background:transparent; border:none; color:#cdddf7;
+    padding:10px 14px; cursor:pointer; white-space:nowrap;
+    border-bottom:3px solid transparent; font-size:14px; font-weight:600;
+  }
+  nav.tabs button.active{ color:#fff; border-bottom-color:var(--amber); }
+  nav.tabs button:hover{ color:#fff; }
+
+  main{max-width:1100px; margin:0 auto; padding:24px 16px 80px;}
+
+  .unit-head{
+    display:flex; gap:14px; align-items:baseline; flex-wrap:wrap; margin-bottom:6px;
+  }
+  .unit-num{
+    font-family:"SF Mono",SFMono-Regular,Consolas,monospace;
+    color:var(--blue); font-size:14px; font-weight:700;
+  }
+  .badge{
+    display:inline-block; font-family:"SF Mono",SFMono-Regular,Consolas,monospace;
+    font-size:11px; letter-spacing:.03em; color:var(--blue);
+    background:var(--surface-2); border:1px solid var(--border);
+    border-radius:20px; padding:3px 10px; margin:2px 6px 2px 0;
+  }
+  .blurb{color:var(--ink-soft); max-width:70ch; margin-bottom:20px;}
+
+  .card{
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:18px 20px; margin-bottom:20px;
+  }
+  .card > h3{font-size:15px; text-transform:uppercase; letter-spacing:.04em;
+    font-family:"SF Mono",SFMono-Regular,Consolas,monospace; color:var(--ink-soft);
+    margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; gap:10px;
+  }
+
+  .chips{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{
+    background:var(--surface-2); border:1px solid var(--border); border-radius:6px;
+    padding:6px 12px; font-size:13.5px; color:var(--ink);
+  }
+
+  /* progress */
+  .progress-track{
+    background:var(--surface-2); border:1px solid var(--border); border-radius:20px;
+    height:8px; overflow:hidden; flex:1; min-width:80px;
+  }
+  .progress-fill{
+    height:100%; background:linear-gradient(90deg, var(--blue), var(--amber));
+    width:0%; transition:width .3s ease;
+  }
+  .progress-row{display:flex; align-items:center; gap:10px; font-size:12.5px; color:var(--ink-soft);}
+  .progress-row .pct{font-family:"SF Mono",SFMono-Regular,Consolas,monospace; min-width:34px; text-align:right;}
+
+  /* checklist */
+  .obj-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px;}
+  .obj-list li{display:flex; gap:10px; align-items:flex-start;}
+  .obj-list input[type=checkbox]{
+    width:18px; height:18px; margin-top:2px; accent-color:var(--blue); flex:none; cursor:pointer;
+  }
+  .obj-list label{cursor:pointer;}
+  .obj-list li.checked label{color:var(--ink-soft); text-decoration:line-through;}
+
+  /* cornell notes */
+  .cornell{border:1px solid var(--border); border-radius:10px; overflow:hidden; background:var(--surface);}
+  .cornell .row{display:grid; grid-template-columns:minmax(120px,28%) 1fr; border-top:1px solid var(--border);}
+  .cornell .row:first-child{border-top:none;}
+  .cornell .cue, .cornell .note{padding:12px 16px;}
+  .cornell .cue{
+    background:var(--surface-2); border-right:2px solid var(--amber);
+    font-weight:700; font-size:14px; color:var(--blue-deep);
+  }
+  html[data-theme="dark"] .cornell .cue{color:var(--blue);}
+  .cornell .note{font-size:14.5px; color:var(--ink);}
+  .cornell .summary{
+    background:var(--surface-2); border-top:2px solid var(--amber);
+    padding:14px 16px; font-size:14px;
+  }
+  .cornell .summary b{
+    font-family:"SF Mono",SFMono-Regular,Consolas,monospace; font-size:11px;
+    text-transform:uppercase; letter-spacing:.05em; color:var(--amber); display:block; margin-bottom:6px;
+  }
+  @media(max-width:640px){
+    .cornell .row{grid-template-columns:1fr;}
+    .cornell .cue{border-right:none; border-left:3px solid var(--amber);}
+  }
+
+  /* quiz */
+  .quiz-score{
+    font-family:"SF Mono",SFMono-Regular,Consolas,monospace; font-size:12px; color:var(--ink-soft);
+  }
+  .q-block{border-top:1px solid var(--border); padding:16px 0;}
+  .q-block:first-of-type{border-top:none; padding-top:4px;}
+  .q-text{font-weight:600; margin-bottom:10px; font-size:15px;}
+  .q-flag{
+    font-family:"SF Mono",SFMono-Regular,Consolas,monospace; font-size:10px;
+    letter-spacing:.05em; color:var(--bad); border:1px solid var(--bad);
+    border-radius:4px; padding:1px 6px; margin-right:8px; vertical-align:middle;
+  }
+  .options{display:flex; flex-direction:column; gap:8px;}
+  .opt{
+    text-align:left; background:var(--surface-2); border:1px solid var(--border);
+    border-radius:8px; padding:10px 14px; cursor:pointer; font-size:14.5px; color:var(--ink);
+  }
+  .opt:hover:not(:disabled){border-color:var(--blue);}
+  .opt:disabled{cursor:default;}
+  .opt.correct{background:var(--good-bg); border-color:var(--good); color:var(--good); font-weight:600;}
+  .opt.incorrect{background:var(--bad-bg); border-color:var(--bad); color:var(--bad); font-weight:600;}
+  .opt.reveal{border-color:var(--good); color:var(--good); font-weight:600;}
+  .why{
+    margin-top:10px; padding:10px 14px; background:var(--surface-2); border-left:3px solid var(--blue);
+    border-radius:0 6px 6px 0; font-size:13.5px; color:var(--ink-soft);
+  }
+
+  .cols3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  @media(max-width:820px){.cols3{grid-template-columns:1fr;}}
+  ul.plain{margin:0; padding-left:18px;}
+  ul.plain li{margin-bottom:8px; font-size:14px;}
+
+  .overview-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:640px){.overview-grid{grid-template-columns:1fr;}}
+  .stat-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px;
+  }
+  .stat-card .unit-link{
+    display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;
+  }
+  .stat-card .unit-link button{
+    background:none; border:none; color:var(--ink); font-weight:700; font-size:15px; cursor:pointer; padding:0;
+    font-family:Georgia,serif;
+  }
+  .stat-card .unit-link button:hover{color:var(--blue);}
+
+  footer{
+    max-width:1100px; margin:0 auto; padding:20px 16px 60px; color:var(--ink-soft); font-size:12.5px;
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="bar">
+    <div class="eyebrow">
+      <span>Physics 11 &middot; Semester 1 &middot; Mechanics</span>
+      <button id="theme-toggle" type="button">Toggle theme</button>
+    </div>
+    <h1>Mechanics Study Companion</h1>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+
+<main id="main"></main>
+
+<footer>
+  Built for the NGSS California Physics &amp; Earth Science course model
+  (<a href="https://www.cde.ca.gov/pd/ca/sc/ngssstandards.asp" target="_blank" rel="noopener">CDE NGSS standards</a>).
+  Checklist and quiz progress are saved only in this browser — nothing is uploaded or shared.
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+const UNITS = [
+{
+  id:"kinematics", number:1, title:"Kinematics",
+  standards:["Foundational to HS-PS2-1"],
+  blurb:"Kinematics describes HOW something moves — position, velocity, and acceleration over time — without yet asking WHY (that's Newton's Laws, Unit 3).",
+  concepts:["Position, distance & displacement","Speed vs. velocity","Acceleration & direction","The 4 constant-a equations","Motion graphs (x-t, v-t)","Free fall (g = 9.8 m/s²)"],
+  cornell:[
+    {cue:"Distance vs. Displacement", note:"Distance = total path length (scalar, always positive). Displacement = straight-line change in position (vector, can be +, −, or 0). Example: walk 5 m east then 5 m west → distance = 10 m, displacement = 0 m."},
+    {cue:"Speed vs. Velocity", note:"Speed = distance / time (scalar). Velocity = displacement / time (vector, has direction)."},
+    {cue:"Acceleration", note:"a = Δv / Δt (m/s²). Direction matters: acceleration in the same direction as velocity speeds an object up; opposite direction slows it down — regardless of positive/negative sign convention."},
+    {cue:"The Big Four Equations", note:"v = v₀ + at &nbsp;·&nbsp; Δx = v₀t + ½at² &nbsp;·&nbsp; v² = v₀² + 2aΔx &nbsp;·&nbsp; Δx = ½(v₀+v)t &nbsp; (constant acceleration only)"},
+    {cue:"Graphs", note:"On an x-t graph, slope = velocity. On a v-t graph, slope = acceleration, and the area under the curve = displacement. A curved x-t line means velocity is changing."},
+    {cue:"Free Fall", note:"Near Earth's surface, all objects accelerate downward at g = 9.8 m/s², independent of mass (ignoring air resistance)."}
+  ],
+  summary:"Master the scalar/vector distinction first — it's the root of most kinematics errors. Then practice reading slope and area off motion graphs until it's automatic.",
+  objectives:[
+    "I can distinguish distance/displacement and speed/velocity, and explain why one pair is scalar and the other is vector.",
+    "I can calculate acceleration from a change in velocity and correctly reason about its direction relative to motion.",
+    "I can solve for an unknown using the four constant-acceleration kinematics equations.",
+    "I can read position-time and velocity-time graphs: slope, and area under the curve.",
+    "I can apply free-fall motion (g = 9.8 m/s²) to vertical-motion problems, including at the peak of a toss."
+  ],
+  quiz:[
+    {q:"A car travels 3 laps around a circular track and returns to its starting point. What is its displacement?",
+     options:["Equal to the distance traveled","Zero","Equal to one lap's circumference","Cannot be determined"], correct:1,
+     why:"Displacement depends only on start/end position. Since the car returns to its starting point, displacement = 0 even though the distance traveled is large."},
+    {q:"An object is thrown straight up. At the very top of its path, its velocity is zero. What is its acceleration at that instant?",
+     options:["Zero, since velocity is zero","9.8 m/s², directed downward","9.8 m/s², directed upward","Undefined at that instant"], correct:1,
+     why:"Zero velocity does NOT mean zero acceleration. Gravity continues to act at 9.8 m/s² downward throughout the entire flight, including at the peak."},
+    {q:"On a velocity-time graph, a straight horizontal line above the x-axis represents:",
+     options:["The object is at rest","The object is accelerating at a constant rate","The object is moving at a constant, nonzero velocity","The object is decelerating"], correct:2,
+     why:"A flat v-t line means velocity isn't changing (zero acceleration), but the object is still moving because velocity is nonzero."},
+    {q:"Which kinematics equation should you use if you are not given time and need to relate velocity, acceleration, and displacement directly?",
+     options:["v = v₀ + at","Δx = v₀t + ½at²","v² = v₀² + 2aΔx","Δx = ½(v₀+v)t"], correct:2,
+     why:"v² = v₀² + 2aΔx is the only one of the four equations that doesn't include t, so it's the right pick whenever time is unknown or irrelevant."}
+  ],
+  resources:[
+    {label:"PhET: Moving Man simulation", url:"https://phet.colorado.edu/en/simulations/moving-man"},
+    {label:"Khan Academy: One-dimensional motion", url:"https://www.khanacademy.org/science/physics/one-dimensional-motion"},
+    {label:"The Physics Classroom: 1-D Kinematics", url:"https://www.physicsclassroom.com/class/1DKin"}
+  ],
+  practice:[
+    "A cyclist accelerates from 2 m/s to 14 m/s in 6 s. Find the acceleration and the distance traveled.",
+    "A ball is thrown straight up at 20 m/s. Find the time to reach maximum height and the maximum height reached.",
+    "A car's x-t graph is a line from (0 s, 0 m) to (4 s, 40 m), then flat to (8 s, 40 m). Describe the motion in each segment and find the average velocity over 8 s.",
+    "An object decelerates from 30 m/s to rest over 100 m. Find the acceleration."
+  ],
+  applications:[
+    "Reaction time and stopping distance in driver's ed and traffic safety.",
+    "Sprinter acceleration analysis in track and field coaching.",
+    "Elevator and roller-coaster acceleration limits for passenger comfort/safety."
+  ]
+},
+{
+  id:"projectile", number:2, title:"Projectile Motion",
+  standards:["Builds on HS-PS2-1"],
+  blurb:"Projectile motion is kinematics in two dimensions: a horizontal motion and a vertical motion happening at the same time, linked only by a shared clock.",
+  concepts:["Independence of x/y motion","Velocity components (v₀cosθ, v₀sinθ)","Time of flight, max height, range","Range-angle relationship","Trajectory symmetry","Horizontal launch from a height"],
+  cornell:[
+    {cue:"Two Independent Motions", note:"Horizontal motion (constant velocity, a = 0) and vertical motion (constant acceleration, a = −g) happen simultaneously but never affect each other."},
+    {cue:"Component Velocities", note:"vₓ = v₀cosθ, constant for the whole flight (no horizontal force). v_y = v₀sinθ − gt, changes continuously due to gravity."},
+    {cue:"Time of Flight", note:"For launch and landing at the same height: t = 2v₀sinθ / g."},
+    {cue:"Range", note:"R = v₀²sin(2θ) / g. Maximum range occurs at θ = 45° (equal launch/landing height)."},
+    {cue:"Max Height", note:"h_max = (v₀sinθ)² / (2g), reached when v_y = 0."},
+    {cue:"Symmetry", note:"Time up = time down (equal launch/landing height); speed at a given height on the way up equals speed at that height on the way down."}
+  ],
+  summary:"Treat horizontal and vertical motion as two separate 1D kinematics problems that share only the variable t. Most errors come from mixing vₓ and v_y into the same equation.",
+  objectives:[
+    "I can explain why horizontal and vertical motion are independent during projectile flight.",
+    "I can break an initial velocity into horizontal and vertical components using sine and cosine.",
+    "I can calculate time of flight, maximum height, and range for a projectile launched and landing at the same height.",
+    "I can predict and explain the range-angle relationship, including why complementary angles give equal range.",
+    "I can solve horizontal-launch-from-height problems (e.g., off a cliff or table)."
+  ],
+  quiz:[
+    {q:"A ball is thrown horizontally off a cliff at the same instant a second ball is dropped straight down from the same height. Which ball hits the ground first?",
+     options:["The thrown ball, because it has more speed","The dropped ball, because it falls straight down","They land at the same time","It depends on how hard the first ball was thrown"], correct:2,
+     why:"Horizontal velocity doesn't affect vertical motion — both balls share the same initial vertical velocity (zero) and the same vertical acceleration (g), so they hit the ground simultaneously."},
+    {q:"At the peak of a projectile's trajectory (launched at an angle), which statement is true?",
+     options:["Both velocity components are zero","The vertical velocity is zero, but horizontal velocity is unchanged","The acceleration is zero","The horizontal velocity is zero, but vertical velocity is unchanged"], correct:1,
+     why:"Only v_y momentarily equals zero at the peak; vₓ stays constant throughout flight, and acceleration remains −g the whole time, even at the peak."},
+    {q:"To maximize the range of a projectile launched and landing at the same height, what launch angle should you choose?",
+     options:["30°","45°","60°","90°"], correct:1,
+     why:"R = v₀²sin(2θ)/g is maximized when sin(2θ) = 1, i.e. 2θ = 90°, so θ = 45°."},
+    {q:"A projectile is launched at 30°, and another at 60°, both with the same initial speed (same launch/landing height). How do their ranges compare?",
+     options:["The 60° launch goes farther","The 30° launch goes farther","They land at the same distance","Neither travels any horizontal distance"], correct:2,
+     why:"sin(2×30°) = sin(60°) = sin(120°) = sin(2×60°), so complementary angles (summing to 90°) give equal range — a frequently missed symmetry."}
+  ],
+  resources:[
+    {label:"PhET: Projectile Motion simulation", url:"https://phet.colorado.edu/en/simulations/projectile-motion"},
+    {label:"Khan Academy: Two-dimensional motion", url:"https://www.khanacademy.org/science/physics/two-dimensional-motion"},
+    {label:"The Physics Classroom: Projectile Motion", url:"https://www.physicsclassroom.com/class/vectors"}
+  ],
+  practice:[
+    "A ball is launched at 25 m/s at 40° above horizontal. Find its time of flight, maximum height, and range.",
+    "A stone is thrown horizontally at 15 m/s from a 20 m cliff. Find the time to land and horizontal distance traveled.",
+    "A projectile has a range of 50 m when launched at 30°. What other angle (same speed) gives the same range?",
+    "Compare the max heights of two projectiles launched at the same speed, one at 30° and one at 60°."
+  ],
+  applications:[
+    "Sports trajectories: free throws, javelin, long jump — optimal angle shifts with release height.",
+    "Artillery and ballistics range calculations.",
+    "Water fountain and sprinkler arc design for coverage area."
+  ]
+},
+{
+  id:"newton", number:3, title:"Newton's Laws",
+  standards:["HS-PS2-1"],
+  blurb:"Newton's Laws connect force (the WHY) to the motion kinematics describes (the HOW).",
+  concepts:["1st Law — inertia","2nd Law — ΣF = ma","3rd Law — action/reaction","Free body diagrams","Mass vs. weight","Static & kinetic friction"],
+  cornell:[
+    {cue:"1st Law — Inertia", note:"An object at rest stays at rest, and an object in motion stays in motion at constant velocity, unless acted on by a net (unbalanced) external force."},
+    {cue:"2nd Law", note:"ΣF = ma. Acceleration is proportional to net force and inversely proportional to mass; acceleration points the same direction as the net force."},
+    {cue:"3rd Law", note:"Every action force has an equal and opposite reaction force — acting on the OTHER object, never the same one, so they can't cancel each other for a single object's motion."},
+    {cue:"Mass vs. Weight", note:"Mass (kg) = amount of matter, constant everywhere. Weight (N) = Fg = mg, depends on local gravity."},
+    {cue:"Free Body Diagrams", note:"Draw every force acting ON the object (gravity, normal, applied, friction, tension) as a vector from a single point; net force is the vector sum."},
+    {cue:"Friction", note:"Static friction (not sliding) ranges from 0 up to μₛN; kinetic friction (sliding) ≈ μₖN, roughly constant once motion starts. μₛ > μₖ typically."}
+  ],
+  summary:"Always start a problem by drawing the free body diagram and identifying the net force — nearly every Newton's-Laws error traces back to a missing or mis-paired force.",
+  objectives:[
+    "I can state and apply Newton's First Law to explain constant-velocity or at-rest motion.",
+    "I can apply Newton's Second Law (ΣF = ma) to solve for net force, mass, or acceleration.",
+    "I can correctly identify Newton's Third Law action-reaction pairs, including that they act on different objects.",
+    "I can draw a complete free body diagram, including gravity, normal force, applied force(s), tension, and friction.",
+    "I can distinguish static and kinetic friction, and explain why static friction is variable up to its maximum.",
+    "I can distinguish mass (invariant) from weight (location-dependent, = mg)."
+  ],
+  quiz:[
+    {q:"A book sits at rest on a table. According to Newton's 3rd Law, what is the reaction force to \"the table pushes up on the book\" (normal force)?",
+     options:["The book pushing down on the table","Gravity pulling the book down","The book's weight","There is no reaction force because the book isn't moving"], correct:0,
+     why:"A common mix-up: students often pair the normal force with gravity because they happen to be equal here. The true 3rd-law pair is \"book pushes down on table\" — equal, opposite, acting on different objects. Gravity and the normal force are two separate forces that happen to balance (1st Law), not a 3rd-law pair."},
+    {q:"A heavier object and a lighter object are dropped from the same height (ignore air resistance). Which hits the ground with greater acceleration?",
+     options:["The heavier object, because F=ma means more force","The lighter object, because it's easier to move","They accelerate the same amount","Cannot be determined without knowing the exact masses"], correct:2,
+     why:"Heavier objects need more force to accelerate the same amount, and gravity provides exactly that proportionally more force (Fg = mg) — the mass terms cancel, so acceleration = g for both, independent of mass."},
+    {q:"A car moves at constant velocity in a straight line, so its net force is zero. Does this mean no forces are acting on the car at all?",
+     options:["Yes, an object in motion with zero net force has no forces on it","No — gravity, normal force, engine thrust, and friction/drag are all acting, but they're balanced","No, only gravity is acting","Yes, because zero net force means zero individual forces"], correct:1,
+     why:"Zero NET force means the vector sum is zero, not that no forces exist. Balanced forces are still forces — this is the core of the 1st Law, and it's easy to confuse \"no net force\" with \"no forces.\""},
+    {q:"You push a heavy box and it doesn't move. What can you conclude about the static friction force?",
+     options:["Static friction is zero since nothing is moving","Static friction is at its maximum possible value","Static friction exactly equals your applied push force","Static friction is greater than your applied force"], correct:2,
+     why:"If the box isn't accelerating, net force = 0, so static friction must exactly balance your applied force. Static friction adjusts up to a maximum limit (μₛN) and only gets \"broken\" past that point, when the box starts sliding."}
+  ],
+  resources:[
+    {label:"PhET: Forces and Motion Basics", url:"https://phet.colorado.edu/en/simulations/forces-and-motion-basics"},
+    {label:"Khan Academy: Forces and Newton's laws of motion", url:"https://www.khanacademy.org/science/physics/forces-newtons-laws"},
+    {label:"The Physics Classroom: Newton's Laws", url:"https://www.physicsclassroom.com/class/newtlaws"}
+  ],
+  practice:[
+    "A 5 kg box is pushed with 40 N across a floor with 15 N of friction. Find its acceleration.",
+    "Two blocks (3 kg, 7 kg) are connected by a string over a pulley. Find the system's acceleration and the string tension.",
+    "A 60 kg skater pushes off a wall with 90 N. Find their acceleration and identify the 3rd-law reaction force.",
+    "A 10 kg crate sits on a 20° ramp. Draw the free body diagram and find the gravity component along the ramp."
+  ],
+  applications:[
+    "Seatbelt and airbag design (inertia during sudden stops).",
+    "Rocket propulsion (3rd Law — expelled exhaust pushes the rocket forward).",
+    "Traction and tire design (static vs. kinetic friction in braking and acceleration)."
+  ]
+},
+{
+  id:"momentum", number:4, title:"Momentum",
+  standards:["HS-PS2-2","HS-PS2-3"],
+  blurb:"Momentum tracks \"quantity of motion\" through a system, and it's conserved whenever no external net force acts — collisions included.",
+  concepts:["Momentum p = mv","Impulse J = FΔt","Conservation of momentum","Elastic vs. inelastic collisions","2D collisions (x/y independent)","Safety engineering applications"],
+  cornell:[
+    {cue:"Momentum", note:"p = mv (kg·m/s). A vector — its direction is the same as the velocity's."},
+    {cue:"Impulse-Momentum Theorem", note:"J = FΔt = Δp = mΔv. A small force over a long time can produce the same Δp as a large force over a short time — the basis of airbags and crumple zones."},
+    {cue:"Conservation of Momentum", note:"In an isolated system (no external net force), total momentum before = total momentum after: Σp_before = Σp_after — true even when kinetic energy is lost in the collision."},
+    {cue:"Elastic vs. Inelastic", note:"Elastic = kinetic energy conserved (objects bounce apart). Inelastic = KE not conserved (converts to heat/sound/deformation). Perfectly inelastic = objects stick together (max KE loss). Momentum is conserved in ALL of these."},
+    {cue:"2D Collisions", note:"Momentum is conserved separately along the x-direction and the y-direction."}
+  ],
+  summary:"Momentum conservation applies whenever the external net force on a system is zero — regardless of whether kinetic energy is conserved. That distinction is the most commonly confused point in this unit.",
+  objectives:[
+    "I can calculate momentum (p = mv) and impulse (J = FΔt), and relate them through the impulse-momentum theorem.",
+    "I can apply conservation of momentum to solve for an unknown velocity or mass in a collision or explosion.",
+    "I can distinguish elastic, inelastic, and perfectly inelastic collisions, and state what's conserved in each.",
+    "I can explain real-world impulse applications (airbags, crumple zones, padding) in terms of extending Δt.",
+    "I can apply conservation of momentum separately along the x- and y-axes for a 2D collision."
+  ],
+  quiz:[
+    {q:"In a perfectly inelastic collision where two objects stick together, which of the following is conserved?",
+     options:["Only momentum","Only kinetic energy","Both momentum and kinetic energy","Neither momentum nor kinetic energy"], correct:0,
+     why:"Momentum is ALWAYS conserved in an isolated collision, elastic or not. Kinetic energy is only conserved in elastic collisions — in a perfectly inelastic collision, KE is at its minimum, but momentum conservation still holds."},
+    {q:"A bug hits the windshield of a moving car. Compare the magnitude of the force the bug exerts on the car to the force the car exerts on the bug.",
+     options:["The car exerts a much larger force on the bug","The bug exerts a much larger force on the car","The forces are equal in magnitude (Newton's 3rd Law)","Neither exerts a force on the other"], correct:2,
+     why:"Students often assume the car \"wins\" because of the visible damage to the bug, but by Newton's 3rd Law the force pair is always equal in magnitude — the bug just has far less mass, so it undergoes a far greater acceleration for that same force."},
+    {q:"Why do airbags and crumple zones reduce injury, in terms of the impulse-momentum theorem (J = FΔt = Δp)?",
+     options:["They reduce the change in momentum, Δp","They increase the time of impact, Δt, which reduces the average force F for the same Δp","They increase the force to stop the car faster","They eliminate momentum entirely"], correct:1,
+     why:"The Δp needed to stop a passenger is fixed by their mass and speed. Airbags/crumple zones extend the collision time (Δt), which — since J = FΔt is fixed — reduces the average force (F) on the passenger."},
+    {q:"Two ice skaters, initially at rest, push off from each other. Skater A (heavier) and Skater B (lighter) move apart. How do their speeds compare?",
+     options:["They move at the same speed since they push with equal force","Skater A (heavier) moves faster","Skater B (lighter) moves faster","Neither moves, since they started at rest"], correct:2,
+     why:"Total momentum starts at zero and must stay zero, so m_A·v_A = m_B·v_B in magnitude. Since A has more mass, A must have proportionally less speed than B — the lighter skater always ends up moving faster."}
+  ],
+  resources:[
+    {label:"PhET: Collision Lab", url:"https://phet.colorado.edu/en/simulations/collision-lab"},
+    {label:"Khan Academy: Momentum and impulse", url:"https://www.khanacademy.org/science/physics/linear-momentum"},
+    {label:"The Physics Classroom: Momentum and Collisions", url:"https://www.physicsclassroom.com/class/momentum"}
+  ],
+  practice:[
+    "A 1200 kg car at 15 m/s collides with a stationary 1500 kg car and they stick together. Find their combined velocity.",
+    "A 0.15 kg baseball moving at 40 m/s is hit and leaves at 50 m/s in the opposite direction. Find the impulse from the bat.",
+    "Two skaters (50 kg, 70 kg) at rest push off each other. If the 50 kg skater moves at 3.5 m/s, find the 70 kg skater's speed.",
+    "A 0.5 kg ball hits a wall at 10 m/s and bounces back at 8 m/s over 0.05 s. Find the average force from the wall."
+  ],
+  applications:[
+    "Vehicle safety engineering: crumple zones, airbags, seatbelts.",
+    "Rocket and jet propulsion (momentum conservation with expelled mass).",
+    "Sports: bat/ball and club/ball collisions, padded helmets."
+  ]
+},
+{
+  id:"energy", number:5, title:"Work & Energy",
+  standards:["HS-PS3-1","HS-PS3-2","HS-PS3-3"],
+  blurb:"Energy is never created or destroyed, only transformed or transferred — this unit builds the tools to track it through a system.",
+  concepts:["Work W = Fd·cosθ","Work-energy theorem","Kinetic energy ½mv²","Gravitational PE = mgh","Conservation of mech. energy","Power P = W/t"],
+  cornell:[
+    {cue:"Work", note:"W = Fd·cosθ (Joules). Only the force component PARALLEL to displacement does work. A perpendicular force (e.g., carrying a tray at constant height) does zero work."},
+    {cue:"Work-Energy Theorem", note:"W_net = ΔKE. The net work done on an object equals its change in kinetic energy."},
+    {cue:"Kinetic Energy", note:"KE = ½mv² — depends on speed SQUARED, so doubling speed quadruples KE."},
+    {cue:"Gravitational PE", note:"PEg = mgh, measured relative to a chosen reference height (h = 0 is arbitrary — only ΔPE is physically meaningful)."},
+    {cue:"Conservation of Mech. Energy", note:"If only conservative forces act (gravity, springs — no friction), KE + PE = constant. Where PE decreases, KE increases by exactly the same amount, and vice versa."},
+    {cue:"Power", note:"P = W/t = Fv (Watts). Power is about HOW FAST work is done, not how much total work is done."}
+  ],
+  summary:"When mechanical energy seems to \"disappear\" to friction, it has become heat and sound — total energy is still conserved, even though mechanical energy alone is not.",
+  objectives:[
+    "I can calculate work (W = Fd·cosθ) and identify when a force does zero work.",
+    "I can apply the work-energy theorem (W_net = ΔKE) to relate net work to a change in speed.",
+    "I can calculate kinetic energy (KE = ½mv²) and gravitational potential energy (PEg = mgh).",
+    "I can apply conservation of mechanical energy to frictionless systems (ramps, pendulums, coasters).",
+    "I can calculate power (P = W/t = Fv) and distinguish it from work/energy.",
+    "I can explain where \"lost\" mechanical energy goes in a system with friction."
+  ],
+  quiz:[
+    {q:"A waiter carries a tray at a constant height, walking at constant velocity across a room. How much work does the waiter do on the tray (vertically supporting it) during this horizontal walk?",
+     options:["A large positive amount, since he's exerting a force the whole time","Zero, because the supporting force is perpendicular to the (horizontal) displacement","Negative work, because he's fighting gravity","It depends on how heavy the tray is"], correct:1,
+     why:"Work requires a force component in the direction of displacement. The waiter's upward supporting force is perpendicular to the horizontal motion, so cosθ = cos90° = 0 — no work is done on the tray, no matter how much force is needed to hold it up."},
+    {q:"If you double an object's speed, what happens to its kinetic energy?",
+     options:["It doubles","It triples","It quadruples","It stays the same"], correct:2,
+     why:"KE = ½mv² depends on velocity SQUARED. Doubling v means (2v)² = 4v² — a commonly missed relationship, since many students assume KE scales linearly with speed."},
+    {q:"A ball rolls down a frictionless ramp, starting from rest at height h. At the halfway point (height h/2), how does its kinetic energy compare to its KE at the bottom (height 0)?",
+     options:["Exactly half of the KE at the bottom","One-quarter of the KE at the bottom","The same as the KE at the bottom","Zero"], correct:0,
+     why:"Since total mechanical energy is conserved and the ball starts at rest, KE gained equals PE lost, which is directly proportional to height dropped. Dropping half the height converts exactly half the total PE to KE. (Many students guess one-quarter, reasoning from KE∝v² and assuming speed itself is halved — but speed does NOT scale linearly with height dropped.)"},
+    {q:"Two identical carts roll down two different frictionless ramps of the same height but different shapes (one straight, one curved). Which cart reaches the bottom with more speed?",
+     options:["The straight ramp cart, since it's a more direct path","The curved ramp cart, since curves add energy","Both carts reach the bottom with the same speed","It depends on the exact curve shape"], correct:2,
+     why:"Since both ramps are frictionless and start/end at the same heights, conservation of energy guarantees the same final KE (and thus the same final speed) regardless of path shape — only the TIME to reach the bottom differs, not the final speed."}
+  ],
+  resources:[
+    {label:"PhET: Energy Skate Park", url:"https://phet.colorado.edu/en/simulations/energy-skate-park"},
+    {label:"Khan Academy: Work and energy", url:"https://www.khanacademy.org/science/physics/work-and-energy"},
+    {label:"The Physics Classroom: Work, Energy, and Power", url:"https://www.physicsclassroom.com/class/energy"}
+  ],
+  practice:[
+    "A 20 kg box is pushed 8 m with a 50 N force applied at 30° above horizontal. Find the work done.",
+    "A 1000 kg coaster car starts at rest atop a 45 m frictionless hill. Find its speed at the bottom.",
+    "A 2 kg ball is dropped from 10 m. Find its speed just before impact using energy conservation, and check it with kinematics.",
+    "A motor lifts a 500 N crate 6 m in 4 s. Find the motor's power output.",
+    "A 0.2 kg dart is launched by a spring compressed 0.1 m (k = 250 N/m). Find its launch speed."
+  ],
+  applications:[
+    "Roller coaster design (height/speed trade-offs, energy loss to track friction).",
+    "Hydroelectric power (gravitational PE → kinetic → electrical energy).",
+    "Regenerative braking in electric/hybrid vehicles.",
+    "Energy efficiency ratings for appliances and motors."
+  ]
+}
+];
+
+/* ---------- storage ---------- */
+const STORE_KEY = "physics-mechanics-progress-v1";
+function loadStore(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    return raw ? JSON.parse(raw) : {obj:{}, quiz:{}};
+  }catch(e){ return {obj:{}, quiz:{}}; }
+}
+function saveStore(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(store)); }catch(e){ /* ignore */ }
+}
+let store = loadStore();
+
+/* ---------- theme ---------- */
+(function initTheme(){
+  try{
+    const saved = localStorage.getItem("physics-theme");
+    if(saved) document.documentElement.setAttribute("data-theme", saved);
+  }catch(e){}
+})();
+document.getElementById("theme-toggle").addEventListener("click", function(){
+  const cur = document.documentElement.getAttribute("data-theme");
+  const next = cur === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  try{ localStorage.setItem("physics-theme", next); }catch(e){}
+});
+
+/* ---------- helpers ---------- */
+function esc(s){
+  return String(s).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+}
+function unitObjKey(u,i){ return u.id+"-obj-"+i; }
+function unitQuizKey(u,i){ return u.id+"-q-"+i; }
+
+function unitObjPct(u){
+  let done = 0;
+  u.objectives.forEach((_,i)=>{ if(store.obj[unitObjKey(u,i)]) done++; });
+  return Math.round(100*done/u.objectives.length);
+}
+function unitQuizStats(u){
+  let correct=0, answered=0;
+  u.quiz.forEach((_,i)=>{
+    const v = store.quiz[unitQuizKey(u,i)];
+    if(v){ answered++; if(v==="correct") correct++; }
+  });
+  return {correct, answered, total:u.quiz.length};
+}
+function overallStats(){
+  let objDone=0, objTotal=0, quizCorrect=0, quizTotal=0;
+  UNITS.forEach(u=>{
+    objTotal += u.objectives.length;
+    u.objectives.forEach((_,i)=>{ if(store.obj[unitObjKey(u,i)]) objDone++; });
+    quizTotal += u.quiz.length;
+    const s = unitQuizStats(u);
+    quizCorrect += s.correct;
+  });
+  return {objDone, objTotal, quizCorrect, quizTotal};
+}
+
+/* ---------- rendering ---------- */
+const main = document.getElementById("main");
+const tabsEl = document.getElementById("tabs");
+
+function buildTabs(){
+  const tabs = [{id:"overview", title:"Overview"}].concat(
+    UNITS.map(u => ({id:u.id, title:u.number+". "+u.title}))
+  );
+  tabsEl.innerHTML = tabs.map(t =>
+    `<button data-tab="${t.id}">${esc(t.title)}</button>`
+  ).join("");
+  tabsEl.querySelectorAll("button").forEach(btn=>{
+    btn.addEventListener("click", ()=> goTo(btn.getAttribute("data-tab")));
+  });
+}
+
+function renderOverview(){
+  const s = overallStats();
+  const objPct = s.objTotal ? Math.round(100*s.objDone/s.objTotal) : 0;
+  let html = `
+    <div class="card">
+      <h3>Course Overview</h3>
+      <p class="blurb" style="margin-bottom:14px;">
+        Semester 1 mechanics sequence for 11th grade Physics, aligned to the
+        <a href="https://www.cde.ca.gov/pd/ca/sc/ngssstandards.asp" target="_blank" rel="noopener">NGSS for California</a>
+        (HS-PS2 Motion &amp; Stability: Forces and Interactions, HS-PS3 Energy).
+        Work through each unit in order &mdash; read the Cornell notes, take the
+        most-missed-question quiz, then check off objectives as you master them.
+      </p>
+      <div class="progress-row" style="margin-bottom:4px;">
+        <span>Overall objectives mastered</span>
+        <div class="progress-track"><div class="progress-fill" style="width:${objPct}%"></div></div>
+        <span class="pct">${objPct}%</span>
+      </div>
+      <div class="progress-row">
+        <span>Overall quiz questions correct</span>
+        <div class="progress-track"><div class="progress-fill" style="width:${s.quizTotal? Math.round(100*s.quizCorrect/s.quizTotal):0}%"></div></div>
+        <span class="pct">${s.quizCorrect}/${s.quizTotal}</span>
+      </div>
+    </div>
+    <div class="overview-grid">
+  `;
+  UNITS.forEach(u=>{
+    const pct = unitObjPct(u);
+    const qs = unitQuizStats(u);
+    html += `
+      <div class="stat-card">
+        <div class="unit-link">
+          <button data-tab="${u.id}">${u.number}. ${esc(u.title)}</button>
+          <span class="badge">${esc(u.standards.join(", "))}</span>
+        </div>
+        <div class="progress-row" style="margin-bottom:6px;">
+          <span>Objectives</span>
+          <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+          <span class="pct">${pct}%</span>
+        </div>
+        <div class="progress-row">
+          <span>Quiz</span>
+          <div class="progress-track"><div class="progress-fill" style="width:${qs.total? Math.round(100*qs.correct/qs.total):0}%"></div></div>
+          <span class="pct">${qs.correct}/${qs.total}</span>
+        </div>
+      </div>
+    `;
+  });
+  html += `</div>`;
+  return html;
+}
+
+function renderUnit(u){
+  const objPct = unitObjPct(u);
+  const qs = unitQuizStats(u);
+
+  const objectivesHtml = u.objectives.map((text,i)=>{
+    const key = unitObjKey(u,i);
+    const checked = !!store.obj[key];
+    return `
+      <li class="${checked?'checked':''}">
+        <input type="checkbox" id="${key}" ${checked?'checked':''} data-objkey="${key}">
+        <label for="${key}">${esc(text)}</label>
+      </li>`;
+  }).join("");
+
+  const cornellHtml = u.cornell.map(row => `
+    <div class="row">
+      <div class="cue">${esc(row.cue)}</div>
+      <div class="note">${row.note}</div>
+    </div>
+  `).join("");
+
+  const quizHtml = u.quiz.map((q,i)=>{
+    const key = unitQuizKey(u,i);
+    const answered = store.quiz[key];
+    const optsHtml = q.options.map((opt,oi)=>{
+      let cls = "opt";
+      let disabled = "";
+      if(answered){
+        disabled = "disabled";
+        if(oi === q.correct) cls += " reveal";
+        if(answered === "answered-wrong-"+oi) cls += " incorrect";
+      }
+      return `<button type="button" class="${cls}" data-unit="${u.id}" data-q="${i}" data-opt="${oi}" ${disabled}>${esc(opt)}</button>`;
+    }).join("");
+    return `
+      <div class="q-block" data-qwrap="${u.id}-${i}">
+        <div class="q-text"><span class="q-flag">MOST MISSED</span>${esc(q.q)}</div>
+        <div class="options">${optsHtml}</div>
+        <div class="why" ${answered?'':'hidden'} data-why="${u.id}-${i}">${q.why}</div>
+      </div>
+    `;
+  }).join("");
+
+  const resourcesHtml = u.resources.map(r => `<li><a href="${r.url}" target="_blank" rel="noopener">${esc(r.label)}</a></li>`).join("");
+  const practiceHtml = u.practice.map(p => `<li>${esc(p)}</li>`).join("");
+  const applicationsHtml = u.applications.map(a => `<li>${esc(a)}</li>`).join("");
+
+  return `
+    <div class="unit-head">
+      <span class="unit-num">UNIT ${u.number}</span>
+      <h2>${esc(u.title)}</h2>
+    </div>
+    <div style="margin-bottom:10px;">
+      ${u.standards.map(s=>`<span class="badge">${esc(s)}</span>`).join("")}
+    </div>
+    <p class="blurb">${esc(u.blurb)}</p>
+
+    <div class="card">
+      <h3>Key Concepts</h3>
+      <div class="chips">${u.concepts.map(c=>`<span class="chip">${esc(c)}</span>`).join("")}</div>
+    </div>
+
+    <div class="card">
+      <h3>
+        Learning Objectives
+        <span class="progress-row" style="min-width:140px;">
+          <div class="progress-track"><div class="progress-fill" style="width:${objPct}%"></div></div>
+          <span class="pct">${objPct}%</span>
+        </span>
+      </h3>
+      <ul class="obj-list">${objectivesHtml}</ul>
+    </div>
+
+    <div class="card" style="padding:0; overflow:hidden;">
+      <h3 style="padding:18px 20px 0;">Cornell Notes</h3>
+      <div class="cornell" style="border:none; border-radius:0; margin-top:12px;">
+        ${cornellHtml}
+        <div class="summary"><b>Summary</b>${u.summary}</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>
+        Interactive Quiz &mdash; Most Often Missed
+        <span class="quiz-score" data-quizscore="${u.id}">${qs.correct}/${qs.total} correct</span>
+      </h3>
+      ${quizHtml}
+    </div>
+
+    <div class="cols3">
+      <div class="card">
+        <h3>Resources</h3>
+        <ul class="plain">${resourcesHtml}</ul>
+      </div>
+      <div class="card">
+        <h3>Practice Problems</h3>
+        <ul class="plain">${practiceHtml}</ul>
+      </div>
+      <div class="card">
+        <h3>Real-World Applications</h3>
+        <ul class="plain">${applicationsHtml}</ul>
+      </div>
+    </div>
+  `;
+}
+
+function attachUnitHandlers(u){
+  main.querySelectorAll("input[data-objkey]").forEach(cb=>{
+    cb.addEventListener("change", function(){
+      store.obj[this.getAttribute("data-objkey")] = this.checked;
+      saveStore();
+      this.closest("li").classList.toggle("checked", this.checked);
+      renderCurrentProgressBits(u);
+    });
+  });
+  main.querySelectorAll(".opt").forEach(btn=>{
+    btn.addEventListener("click", function(){
+      const unitId = this.getAttribute("data-unit");
+      const qi = parseInt(this.getAttribute("data-q"),10);
+      const oi = parseInt(this.getAttribute("data-opt"),10);
+      const unit = UNITS.find(x=>x.id===unitId);
+      const q = unit.quiz[qi];
+      const key = unitQuizKey(unit, qi);
+      if(store.quiz[key]) return; // already answered
+      const isCorrect = (oi === q.correct);
+      store.quiz[key] = isCorrect ? "correct" : ("answered-wrong-"+oi);
+      saveStore();
+
+      const wrap = main.querySelector(`[data-qwrap="${unitId}-${qi}"]`);
+      wrap.querySelectorAll(".opt").forEach((b,bi)=>{
+        b.disabled = true;
+        if(bi === q.correct) b.classList.add("reveal");
+        if(!isCorrect && bi === oi) b.classList.add("incorrect");
+      });
+      const why = wrap.querySelector(`[data-why="${unitId}-${qi}"]`);
+      why.hidden = false;
+
+      renderCurrentProgressBits(unit);
+    });
+  });
+}
+
+function renderCurrentProgressBits(u){
+  // update objective % bar in the Learning Objectives card header
+  const objPct = unitObjPct(u);
+  const objCard = Array.from(main.querySelectorAll(".card")).find(c => c.querySelector("h3") && c.querySelector("h3").textContent.trim().startsWith("Learning Objectives"));
+  if(objCard){
+    const fill = objCard.querySelector(".progress-fill");
+    const pct = objCard.querySelector(".pct");
+    if(fill) fill.style.width = objPct+"%";
+    if(pct) pct.textContent = objPct+"%";
+  }
+  const qs = unitQuizStats(u);
+  const scoreEl = main.querySelector(`[data-quizscore="${u.id}"]`);
+  if(scoreEl) scoreEl.textContent = `${qs.correct}/${qs.total} correct`;
+}
+
+let currentTab = "overview";
+function goTo(tabId){
+  currentTab = tabId;
+  location.hash = tabId;
+  render();
+  window.scrollTo({top:0, behavior:"instant" in window ? "instant" : "auto"});
+}
+
+function render(){
+  tabsEl.querySelectorAll("button").forEach(b=>{
+    b.classList.toggle("active", b.getAttribute("data-tab") === currentTab);
+  });
+  if(currentTab === "overview"){
+    main.innerHTML = renderOverview();
+    main.querySelectorAll("button[data-tab]").forEach(btn=>{
+      btn.addEventListener("click", ()=> goTo(btn.getAttribute("data-tab")));
+    });
+  } else {
+    const u = UNITS.find(x=>x.id===currentTab);
+    if(!u){ currentTab="overview"; return render(); }
+    main.innerHTML = renderUnit(u);
+    attachUnitHandlers(u);
+  }
+}
+
+/* ---------- init ---------- */
+buildTabs();
+const initialHash = location.hash.replace("#","");
+if(initialHash && (initialHash==="overview" || UNITS.some(u=>u.id===initialHash))){
+  currentTab = initialHash;
+}
+render();
+
+})();
+</script>
+</body>
+</html>
