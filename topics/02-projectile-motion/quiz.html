@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projectile Motion — Interactive Quiz</title>
+<style>
+  :root {
+    --bg: #0f172a; --card: #1e293b; --text: #e2e8f0; --muted: #94a3b8;
+    --accent: #38bdf8; --correct: #22c55e; --wrong: #ef4444; --border: #334155;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); padding: 24px 16px 64px; }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  .subtitle { color: var(--muted); margin-bottom: 24px; font-size: 0.95rem; }
+  #progress { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 24px; }
+  #progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width .3s; }
+  .question { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 18px; }
+  .q-title { font-weight: 600; margin-bottom: 12px; line-height: 1.4; }
+  .choices { display: flex; flex-direction: column; gap: 8px; }
+  button.choice { text-align: left; background: #0f172a; border: 1px solid var(--border); color: var(--text); padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 0.95rem; transition: border-color .15s, background .15s; }
+  button.choice:hover:not(:disabled) { border-color: var(--accent); }
+  button.choice:disabled { cursor: default; }
+  button.choice.correct { background: rgba(34,197,94,0.15); border-color: var(--correct); }
+  button.choice.wrong { background: rgba(239,68,68,0.15); border-color: var(--wrong); }
+  .explanation { margin-top: 12px; padding: 12px 14px; background: #0f172a; border-left: 3px solid var(--accent); border-radius: 6px; font-size: 0.9rem; color: var(--muted); display: none; }
+  .explanation.show { display: block; }
+  #summary { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; text-align: center; display: none; }
+  #summary.show { display: block; }
+  #summary h2 { margin-top: 0; }
+  #score { font-size: 2.5rem; font-weight: 700; color: var(--accent); }
+  button#retry { margin-top: 16px; background: var(--accent); color: #0f172a; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+  a.back { color: var(--muted); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Projectile Motion — Most-Missed Questions</h1>
+  <p class="subtitle">Answer each question. You'll see the explanation immediately, whether you're right or wrong. Aim for 80%+.</p>
+  <div id="progress"><div id="progress-bar"></div></div>
+  <div id="quiz"></div>
+  <div id="summary">
+    <h2>Quiz Complete</h2>
+    <div id="score"></div>
+    <p id="score-msg" class="subtitle"></p>
+    <button id="retry">Retake Quiz</button>
+  </div>
+  <p><a class="back" href="notes.md">← Back to Cornell notes</a></p>
+</div>
+<script>
+const QUESTIONS = [
+  {
+    q: "A ball rolls off a table horizontally at 2 m/s. A second identical ball is dropped straight down from the same height at the same instant. Which hits the floor first?",
+    choices: ["The rolling ball", "The dropped ball", "They hit at the same time", "Cannot be determined without knowing table height"],
+    correct: 2,
+    explain: "Vertical motion is independent of horizontal motion. Both balls start with zero vertical velocity and fall under the same gravity, so they hit the ground at the same time regardless of horizontal speed."
+  },
+  {
+    q: "At the very top of a projectile's arc (launched at an angle, landing at the same height it launched from), which statement is true?",
+    choices: ["Both velocity and acceleration are zero", "Velocity is zero, but acceleration is still 9.8 m/s² downward", "Vertical velocity is zero, but horizontal velocity is unchanged and nonzero", "Horizontal velocity is zero, but vertical velocity is at its maximum"],
+    correct: 2,
+    explain: "At the peak, vertical velocity is momentarily zero, but horizontal velocity never changes during flight (no horizontal acceleration). Acceleration stays at 9.8 m/s² downward the whole time, including at the peak."
+  },
+  {
+    q: "A projectile is launched at 40 m/s at an angle of 30° above horizontal. What is its initial vertical velocity component?",
+    choices: ["40 m/s", "40cos(30°) ≈ 34.6 m/s", "40sin(30°) = 20 m/s", "40tan(30°) ≈ 23.1 m/s"],
+    correct: 2,
+    explain: "Vertical component uses sine: v_y = v₀sinθ = 40 × sin(30°) = 40 × 0.5 = 20 m/s. Horizontal component uses cosine (v₀cosθ)."
+  },
+  {
+    q: "For a given launch speed on level ground, which launch angle produces the maximum range?",
+    choices: ["90°", "60°", "45°", "The steeper the angle, the farther it goes"],
+    correct: 2,
+    explain: "45° splits the launch speed evenly between horizontal and vertical components, maximizing the product of horizontal speed and time of flight — the combination that maximizes range on level ground."
+  },
+  {
+    q: "Two projectiles are launched at the same speed, one at 20° and one at 70° above horizontal. How do their ranges on level ground compare?",
+    choices: ["The 70° launch goes farther, since it's higher", "The 20° launch goes farther, since it's flatter", "They land at the same range", "There's no way to compare without more information"],
+    correct: 2,
+    explain: "Launch angles that are complementary (add up to 90°, like 20° and 70°) produce equal ranges on level ground, even though their trajectories (max height, time of flight) are very different."
+  },
+  {
+    q: "A projectile is launched horizontally off a cliff. What does 'time of flight' depend on?",
+    choices: ["Both the horizontal launch speed and the cliff height", "Only the horizontal launch speed", "Only the cliff height (and gravity)", "The angle of the cliff edge"],
+    correct: 2,
+    explain: "Time of flight is entirely determined by the vertical motion: how long it takes to fall the given height under gravity. Horizontal speed affects how far it travels (range), not how long it's in the air."
+  },
+  {
+    q: "Why do we decompose an angled launch velocity into horizontal and vertical components before solving a projectile problem?",
+    choices: ["Because horizontal and vertical motion obey different kinematic rules and must be solved separately", "Because it makes the math look more impressive", "Because gravity affects horizontal motion too, just less strongly", "It's an optional step that doesn't change the answer"],
+    correct: 0,
+    explain: "Horizontal motion has zero acceleration (constant velocity) while vertical motion has constant acceleration (gravity). These require different kinematic equations, so they must be handled as two separate 1D problems linked only by time."
+  }
+];
+
+let current = 0;
+let score = 0;
+const quizEl = document.getElementById('quiz');
+const progressBar = document.getElementById('progress-bar');
+const summaryEl = document.getElementById('summary');
+
+function render() {
+  if (current >= QUESTIONS.length) { showSummary(); return; }
+  quizEl.innerHTML = '';
+  const item = QUESTIONS[current];
+  const card = document.createElement('div');
+  card.className = 'question';
+  const title = document.createElement('div');
+  title.className = 'q-title';
+  title.textContent = `Q${current + 1} of ${QUESTIONS.length}. ${item.q}`;
+  card.appendChild(title);
+
+  const choicesWrap = document.createElement('div');
+  choicesWrap.className = 'choices';
+  item.choices.forEach((choiceText, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.textContent = choiceText;
+    btn.addEventListener('click', () => selectAnswer(idx, item, card, choicesWrap));
+    choicesWrap.appendChild(btn);
+  });
+  card.appendChild(choicesWrap);
+
+  const expl = document.createElement('div');
+  expl.className = 'explanation';
+  expl.textContent = item.explain;
+  card.appendChild(expl);
+
+  quizEl.appendChild(card);
+  progressBar.style.width = `${(current / QUESTIONS.length) * 100}%`;
+}
+
+function selectAnswer(idx, item, card, choicesWrap) {
+  const buttons = choicesWrap.querySelectorAll('button.choice');
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+    if (i === item.correct) b.classList.add('correct');
+    else if (i === idx && idx !== item.correct) b.classList.add('wrong');
+  });
+  if (idx === item.correct) score++;
+  card.querySelector('.explanation').classList.add('show');
+
+  const nextBtn = document.createElement('button');
+  nextBtn.id = 'retry';
+  nextBtn.style.marginTop = '14px';
+  nextBtn.textContent = current === QUESTIONS.length - 1 ? 'See Results' : 'Next Question';
+  nextBtn.addEventListener('click', () => { current++; render(); });
+  card.appendChild(nextBtn);
+}
+
+function showSummary() {
+  quizEl.innerHTML = '';
+  progressBar.style.width = '100%';
+  summaryEl.classList.add('show');
+  const pct = Math.round((score / QUESTIONS.length) * 100);
+  document.getElementById('score').textContent = `${score} / ${QUESTIONS.length} (${pct}%)`;
+  const msg = document.getElementById('score-msg');
+  if (pct >= 80) msg.textContent = "Strong work — you've got this topic. Move on to the next unit.";
+  else if (pct >= 60) msg.textContent = "Getting there. Review the explanations above and retake the quiz.";
+  else msg.textContent = "Revisit the Key Concepts and Common Misconceptions in notes.md, then try again.";
+}
+
+document.getElementById('retry').addEventListener('click', () => {
+  current = 0; score = 0; summaryEl.classList.remove('show'); render();
+});
+
+render();
+</script>
+</body>
+</html>

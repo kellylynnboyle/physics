@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Momentum — Interactive Quiz</title>
+<style>
+  :root {
+    --bg: #0f172a; --card: #1e293b; --text: #e2e8f0; --muted: #94a3b8;
+    --accent: #38bdf8; --correct: #22c55e; --wrong: #ef4444; --border: #334155;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); padding: 24px 16px 64px; }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  .subtitle { color: var(--muted); margin-bottom: 24px; font-size: 0.95rem; }
+  #progress { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 24px; }
+  #progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width .3s; }
+  .question { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 18px; }
+  .q-title { font-weight: 600; margin-bottom: 12px; line-height: 1.4; }
+  .choices { display: flex; flex-direction: column; gap: 8px; }
+  button.choice { text-align: left; background: #0f172a; border: 1px solid var(--border); color: var(--text); padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 0.95rem; transition: border-color .15s, background .15s; }
+  button.choice:hover:not(:disabled) { border-color: var(--accent); }
+  button.choice:disabled { cursor: default; }
+  button.choice.correct { background: rgba(34,197,94,0.15); border-color: var(--correct); }
+  button.choice.wrong { background: rgba(239,68,68,0.15); border-color: var(--wrong); }
+  .explanation { margin-top: 12px; padding: 12px 14px; background: #0f172a; border-left: 3px solid var(--accent); border-radius: 6px; font-size: 0.9rem; color: var(--muted); display: none; }
+  .explanation.show { display: block; }
+  #summary { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; text-align: center; display: none; }
+  #summary.show { display: block; }
+  #summary h2 { margin-top: 0; }
+  #score { font-size: 2.5rem; font-weight: 700; color: var(--accent); }
+  button#retry { margin-top: 16px; background: var(--accent); color: #0f172a; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+  a.back { color: var(--muted); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Momentum — Most-Missed Questions</h1>
+  <p class="subtitle">Answer each question. You'll see the explanation immediately, whether you're right or wrong. Aim for 80%+.</p>
+  <div id="progress"><div id="progress-bar"></div></div>
+  <div id="quiz"></div>
+  <div id="summary">
+    <h2>Quiz Complete</h2>
+    <div id="score"></div>
+    <p id="score-msg" class="subtitle"></p>
+    <button id="retry">Retake Quiz</button>
+  </div>
+  <p><a class="back" href="notes.md">← Back to Cornell notes</a></p>
+</div>
+<script>
+const QUESTIONS = [
+  {
+    q: "In a perfectly inelastic collision where two objects stick together, which of these is conserved?",
+    choices: ["Kinetic energy only", "Momentum only", "Both momentum and kinetic energy", "Neither — both are lost"],
+    correct: 1,
+    explain: "Momentum is conserved in every collision type, including perfectly inelastic ones. Kinetic energy is NOT conserved in inelastic collisions — some of it converts to heat, sound, and deformation."
+  },
+  {
+    q: "A 1000 kg car moving at 20 m/s and a 20,000 kg truck moving at 1 m/s in the same direction — which has more momentum?",
+    choices: ["The truck, since it's much heavier", "The car, since it's faster", "They have exactly equal momentum", "Momentum can't be compared between different masses"],
+    correct: 2,
+    explain: "p = mv for each: car = 1000 × 20 = 20,000 kg·m/s; truck = 20,000 × 1 = 20,000 kg·m/s. They're equal — momentum depends on the product of mass and velocity, not on mass (or speed) alone, so you can't assume the 'bigger' or 'faster' object automatically has more."
+  },
+  {
+    q: "Two carts moving toward each other collide head-on. Cart A (+3 kg·m/s) and Cart B (moving the opposite direction at 3 kg·m/s of momentum). What is the total momentum before the collision, if you set up signs correctly?",
+    choices: ["6 kg·m/s", "0 kg·m/s", "3 kg·m/s", "It depends on whether the collision is elastic"],
+    correct: 1,
+    explain: "Momentum is a vector. Moving toward each other means opposite directions, so one momentum is +3 kg·m/s and the other is −3 kg·m/s. Total = +3 + (−3) = 0 kg·m/s. Forgetting the sign for the opposite direction is the most common error in this type of problem."
+  },
+  {
+    q: "A car's airbag increases the time over which a passenger's momentum changes during a crash. According to J = FΔt, what effect does this have?",
+    choices: ["It increases the total impulse on the passenger", "It decreases the impulse, making the crash less severe", "It decreases the average force on the passenger, since impulse (Δp) is fixed", "It has no effect on force, only on comfort"],
+    correct: 2,
+    explain: "The impulse (change in momentum, Δp) needed to stop the passenger is fixed by their mass and speed — it doesn't change. But since J = FΔt, increasing Δt for that same fixed J means the average force F must decrease. That's the entire safety principle behind airbags and crumple zones."
+  },
+  {
+    q: "Two skaters at rest push off each other. The 50 kg skater ends up moving faster than the 100 kg skater. What does this tell you?",
+    choices: ["Momentum was not conserved, since one is faster", "The heavier skater exerted more force, so this is expected and not related to momentum", "Both skaters have equal and opposite momentum after the push; the lighter one must move faster to match the heavier one's momentum", "This is impossible; equal forces must produce equal speeds"],
+    correct: 2,
+    explain: "Total momentum starts at zero (both at rest) and stays zero (no external force). So m₁v₁ = m₂v₂ in magnitude, meaning the lighter skater (50 kg) must have proportionally greater speed than the heavier skater (100 kg) for their momenta to be equal and opposite."
+  },
+  {
+    q: "A ball moving at 5 m/s bounces elastically off a wall and returns at 5 m/s (same speed, opposite direction). What is the impulse delivered by the wall, given the ball's mass is 0.5 kg?",
+    choices: ["0 kg·m/s, since the speed didn't change", "2.5 kg·m/s", "5 kg·m/s (using only the magnitude of speed)", "5 kg·m/s in magnitude — but only because you account for the direction reversal"],
+    correct: 3,
+    explain: "Impulse = Δp = m(v_f − v_i). With signs: v_i = +5, v_f = −5, so Δp = 0.5 × (−5 − 5) = 0.5 × (−10) = −5 kg·m/s (magnitude 5 kg·m/s). Even though speed is unchanged, velocity (a vector) reversed direction, so momentum change — and impulse — is nonzero."
+  }
+];
+
+let current = 0;
+let score = 0;
+const quizEl = document.getElementById('quiz');
+const progressBar = document.getElementById('progress-bar');
+const summaryEl = document.getElementById('summary');
+
+function render() {
+  if (current >= QUESTIONS.length) { showSummary(); return; }
+  quizEl.innerHTML = '';
+  const item = QUESTIONS[current];
+  const card = document.createElement('div');
+  card.className = 'question';
+  const title = document.createElement('div');
+  title.className = 'q-title';
+  title.textContent = `Q${current + 1} of ${QUESTIONS.length}. ${item.q}`;
+  card.appendChild(title);
+
+  const choicesWrap = document.createElement('div');
+  choicesWrap.className = 'choices';
+  item.choices.forEach((choiceText, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.textContent = choiceText;
+    btn.addEventListener('click', () => selectAnswer(idx, item, card, choicesWrap));
+    choicesWrap.appendChild(btn);
+  });
+  card.appendChild(choicesWrap);
+
+  const expl = document.createElement('div');
+  expl.className = 'explanation';
+  expl.textContent = item.explain;
+  card.appendChild(expl);
+
+  quizEl.appendChild(card);
+  progressBar.style.width = `${(current / QUESTIONS.length) * 100}%`;
+}
+
+function selectAnswer(idx, item, card, choicesWrap) {
+  const buttons = choicesWrap.querySelectorAll('button.choice');
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+    if (i === item.correct) b.classList.add('correct');
+    else if (i === idx && idx !== item.correct) b.classList.add('wrong');
+  });
+  if (idx === item.correct) score++;
+  card.querySelector('.explanation').classList.add('show');
+
+  const nextBtn = document.createElement('button');
+  nextBtn.id = 'retry';
+  nextBtn.style.marginTop = '14px';
+  nextBtn.textContent = current === QUESTIONS.length - 1 ? 'See Results' : 'Next Question';
+  nextBtn.addEventListener('click', () => { current++; render(); });
+  card.appendChild(nextBtn);
+}
+
+function showSummary() {
+  quizEl.innerHTML = '';
+  progressBar.style.width = '100%';
+  summaryEl.classList.add('show');
+  const pct = Math.round((score / QUESTIONS.length) * 100);
+  document.getElementById('score').textContent = `${score} / ${QUESTIONS.length} (${pct}%)`;
+  const msg = document.getElementById('score-msg');
+  if (pct >= 80) msg.textContent = "Strong work — you've got this topic. Move on to the next unit.";
+  else if (pct >= 60) msg.textContent = "Getting there. Review the explanations above and retake the quiz.";
+  else msg.textContent = "Revisit the Key Concepts and Common Misconceptions in notes.md, then try again.";
+}
+
+document.getElementById('retry').addEventListener('click', () => {
+  current = 0; score = 0; summaryEl.classList.remove('show'); render();
+});
+
+render();
+</script>
+</body>
+</html>

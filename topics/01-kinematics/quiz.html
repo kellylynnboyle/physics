@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinematics — Interactive Quiz</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --accent: #38bdf8;
+    --correct: #22c55e;
+    --wrong: #ef4444;
+    --border: #334155;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 24px 16px 64px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  .subtitle { color: var(--muted); margin-bottom: 24px; font-size: 0.95rem; }
+  #progress {
+    height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 24px;
+  }
+  #progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width .3s; }
+  .question {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 18px;
+  }
+  .q-title { font-weight: 600; margin-bottom: 12px; line-height: 1.4; }
+  .choices { display: flex; flex-direction: column; gap: 8px; }
+  button.choice {
+    text-align: left;
+    background: #0f172a;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: border-color .15s, background .15s;
+  }
+  button.choice:hover:not(:disabled) { border-color: var(--accent); }
+  button.choice:disabled { cursor: default; }
+  button.choice.correct { background: rgba(34,197,94,0.15); border-color: var(--correct); }
+  button.choice.wrong { background: rgba(239,68,68,0.15); border-color: var(--wrong); }
+  .explanation {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: #0f172a;
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: var(--muted);
+    display: none;
+  }
+  .explanation.show { display: block; }
+  #summary {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    display: none;
+  }
+  #summary.show { display: block; }
+  #summary h2 { margin-top: 0; }
+  #score { font-size: 2.5rem; font-weight: 700; color: var(--accent); }
+  button#retry {
+    margin-top: 16px;
+    background: var(--accent);
+    color: #0f172a;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  a.back { color: var(--muted); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Kinematics — Most-Missed Questions</h1>
+  <p class="subtitle">Answer each question. You'll see the explanation immediately, whether you're right or wrong. Aim for 80%+.</p>
+  <div id="progress"><div id="progress-bar"></div></div>
+  <div id="quiz"></div>
+  <div id="summary">
+    <h2>Quiz Complete</h2>
+    <div id="score"></div>
+    <p id="score-msg" class="subtitle"></p>
+    <button id="retry">Retake Quiz</button>
+  </div>
+  <p><a class="back" href="notes.md">← Back to Cornell notes</a></p>
+</div>
+<script>
+const QUESTIONS = [
+  {
+    q: "A car moving in the positive direction slows down. What is the sign of its acceleration?",
+    choices: ["Positive", "Negative", "Zero", "Cannot be determined"],
+    correct: 1,
+    explain: "Slowing down means velocity and acceleration point in opposite directions. Since velocity is positive, acceleration must be negative — even though the car isn't moving backward."
+  },
+  {
+    q: "A ball is thrown straight up. What is its acceleration at the very top of its path, the instant its velocity is zero?",
+    choices: ["Zero, because velocity is zero", "9.8 m/s², directed downward", "9.8 m/s², directed upward", "It switches from positive to negative instantly, passing through infinity"],
+    correct: 1,
+    explain: "Velocity and acceleration are independent. Gravity acts the whole flight, so acceleration is a constant −9.8 m/s² (downward) even at the exact instant velocity is zero. Only the velocity is momentarily zero, not the acceleration."
+  },
+  {
+    q: "A runner jogs 300 m east, then turns around and jogs 100 m west. What is the runner's displacement?",
+    choices: ["400 m", "200 m east", "200 m west", "100 m west"],
+    correct: 1,
+    explain: "Displacement is the straight-line change from start to end: 300 m east − 100 m east-equivalent (100 m west) = 200 m east. Distance traveled (400 m) is different and larger."
+  },
+  {
+    q: "On a position-time graph, what does the slope of the line represent?",
+    choices: ["Acceleration", "Velocity", "Distance traveled", "Speed only, never direction"],
+    correct: 1,
+    explain: "Slope of a position-time graph is Δx/Δt — that's velocity, by definition, including its sign/direction."
+  },
+  {
+    q: "A velocity-time graph shows a straight diagonal line with constant positive slope. What does this tell you about acceleration?",
+    choices: ["Acceleration is changing", "Acceleration is zero", "Acceleration is constant and nonzero", "You need a position-time graph to know acceleration"],
+    correct: 2,
+    explain: "A straight line on a v-t graph has constant slope, and slope on a v-t graph is acceleration. A straight (non-horizontal) line means constant, nonzero acceleration."
+  },
+  {
+    q: "Two balls, one twice as heavy as the other, are dropped from the same height at the same time (ignore air resistance). Which hits the ground first?",
+    choices: ["The heavier ball", "The lighter ball", "They hit at the same time", "It depends on their initial velocity"],
+    correct: 2,
+    explain: "In free fall without air resistance, acceleration due to gravity (9.8 m/s²) doesn't depend on mass. Both balls speed up identically and land together — this is the same result Galileo is credited with demonstrating."
+  },
+  {
+    q: "Which kinematic equation should you use if you know v₀, a, and Δx, and need to find v, but you don't know t?",
+    choices: ["v = v₀ + at", "Δx = v₀t + ½at²", "v² = v₀² + 2aΔx", "Δx = ½(v₀+v)t"],
+    correct: 2,
+    explain: "v² = v₀² + 2aΔx is the only one of the four kinematic equations that doesn't contain time, so it's the right tool whenever t is unknown and not asked for."
+  },
+  {
+    q: "An object's velocity-time graph is a horizontal line above the x-axis. What is true about its motion?",
+    choices: ["It is at rest", "It is moving at constant, nonzero velocity", "It is accelerating at a constant rate", "It is in free fall"],
+    correct: 1,
+    explain: "A horizontal (flat) line on a v-t graph means velocity isn't changing — constant velocity. Since the line is above the axis, that constant velocity is nonzero and positive. Slope (acceleration) is zero."
+  }
+];
+
+let current = 0;
+let score = 0;
+const quizEl = document.getElementById('quiz');
+const progressBar = document.getElementById('progress-bar');
+const summaryEl = document.getElementById('summary');
+
+function render() {
+  if (current >= QUESTIONS.length) {
+    showSummary();
+    return;
+  }
+  quizEl.innerHTML = '';
+  const item = QUESTIONS[current];
+  const card = document.createElement('div');
+  card.className = 'question';
+  const title = document.createElement('div');
+  title.className = 'q-title';
+  title.textContent = `Q${current + 1} of ${QUESTIONS.length}. ${item.q}`;
+  card.appendChild(title);
+
+  const choicesWrap = document.createElement('div');
+  choicesWrap.className = 'choices';
+  item.choices.forEach((choiceText, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.textContent = choiceText;
+    btn.addEventListener('click', () => selectAnswer(idx, item, card, choicesWrap));
+    choicesWrap.appendChild(btn);
+  });
+  card.appendChild(choicesWrap);
+
+  const expl = document.createElement('div');
+  expl.className = 'explanation';
+  expl.textContent = item.explain;
+  card.appendChild(expl);
+
+  quizEl.appendChild(card);
+  progressBar.style.width = `${(current / QUESTIONS.length) * 100}%`;
+}
+
+function selectAnswer(idx, item, card, choicesWrap) {
+  const buttons = choicesWrap.querySelectorAll('button.choice');
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+    if (i === item.correct) b.classList.add('correct');
+    else if (i === idx && idx !== item.correct) b.classList.add('wrong');
+  });
+  if (idx === item.correct) score++;
+  card.querySelector('.explanation').classList.add('show');
+
+  const nextBtn = document.createElement('button');
+  nextBtn.id = 'retry';
+  nextBtn.style.marginTop = '14px';
+  nextBtn.textContent = current === QUESTIONS.length - 1 ? 'See Results' : 'Next Question';
+  nextBtn.addEventListener('click', () => {
+    current++;
+    render();
+  });
+  card.appendChild(nextBtn);
+}
+
+function showSummary() {
+  quizEl.innerHTML = '';
+  progressBar.style.width = '100%';
+  summaryEl.classList.add('show');
+  const pct = Math.round((score / QUESTIONS.length) * 100);
+  document.getElementById('score').textContent = `${score} / ${QUESTIONS.length} (${pct}%)`;
+  const msg = document.getElementById('score-msg');
+  if (pct >= 80) msg.textContent = "Strong work — you've got this topic. Move on to the next unit.";
+  else if (pct >= 60) msg.textContent = "Getting there. Review the explanations above and retake the quiz.";
+  else msg.textContent = "Revisit the Key Concepts and Common Misconceptions in notes.md, then try again.";
+}
+
+document.getElementById('retry').addEventListener('click', () => {
+  current = 0;
+  score = 0;
+  summaryEl.classList.remove('show');
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

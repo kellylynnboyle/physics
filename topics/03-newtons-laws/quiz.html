@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newton's Laws — Interactive Quiz</title>
+<style>
+  :root {
+    --bg: #0f172a; --card: #1e293b; --text: #e2e8f0; --muted: #94a3b8;
+    --accent: #38bdf8; --correct: #22c55e; --wrong: #ef4444; --border: #334155;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); padding: 24px 16px 64px; }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  .subtitle { color: var(--muted); margin-bottom: 24px; font-size: 0.95rem; }
+  #progress { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 24px; }
+  #progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width .3s; }
+  .question { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 18px; }
+  .q-title { font-weight: 600; margin-bottom: 12px; line-height: 1.4; }
+  .choices { display: flex; flex-direction: column; gap: 8px; }
+  button.choice { text-align: left; background: #0f172a; border: 1px solid var(--border); color: var(--text); padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 0.95rem; transition: border-color .15s, background .15s; }
+  button.choice:hover:not(:disabled) { border-color: var(--accent); }
+  button.choice:disabled { cursor: default; }
+  button.choice.correct { background: rgba(34,197,94,0.15); border-color: var(--correct); }
+  button.choice.wrong { background: rgba(239,68,68,0.15); border-color: var(--wrong); }
+  .explanation { margin-top: 12px; padding: 12px 14px; background: #0f172a; border-left: 3px solid var(--accent); border-radius: 6px; font-size: 0.9rem; color: var(--muted); display: none; }
+  .explanation.show { display: block; }
+  #summary { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; text-align: center; display: none; }
+  #summary.show { display: block; }
+  #summary h2 { margin-top: 0; }
+  #score { font-size: 2.5rem; font-weight: 700; color: var(--accent); }
+  button#retry { margin-top: 16px; background: var(--accent); color: #0f172a; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+  a.back { color: var(--muted); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Newton's Laws — Most-Missed Questions</h1>
+  <p class="subtitle">Answer each question. You'll see the explanation immediately, whether you're right or wrong. Aim for 80%+.</p>
+  <div id="progress"><div id="progress-bar"></div></div>
+  <div id="quiz"></div>
+  <div id="summary">
+    <h2>Quiz Complete</h2>
+    <div id="score"></div>
+    <p id="score-msg" class="subtitle"></p>
+    <button id="retry">Retake Quiz</button>
+  </div>
+  <p><a class="back" href="notes.md">← Back to Cornell notes</a></p>
+</div>
+<script>
+const QUESTIONS = [
+  {
+    q: "A hockey puck slides across frictionless ice at constant velocity. What net force is acting on it?",
+    choices: ["A constant force in the direction of motion, or it would stop", "Zero net force", "A force equal to its weight", "It depends on the puck's speed"],
+    correct: 1,
+    explain: "Newton's First Law: constant velocity means zero acceleration, which means zero net force. No force is needed to sustain motion — only to change it. This is the single most commonly missed idea in the unit."
+  },
+  {
+    q: "A rocket pushes exhaust gas downward and accelerates upward. Why doesn't the downward force on the exhaust and the upward force on the rocket cancel out?",
+    choices: ["They do cancel, which is why rockets barely move", "Because the exhaust is much lighter than the rocket", "Because action-reaction pairs act on two different objects, so each object only feels its own force", "Because gravity breaks the symmetry"],
+    correct: 2,
+    explain: "Newton's Third Law pairs never act on the same object, so they never cancel for either object individually. The rocket feels only the upward reaction force; the exhaust feels only the downward force. Each object accelerates according to F=ma using only the force acting on it."
+  },
+  {
+    q: "A 2 kg cart and an 8 kg cart are both pushed with the same 4 N force, each starting at rest. How do their accelerations compare?",
+    choices: ["Both accelerate the same, since the force is the same", "The 8 kg cart accelerates 4 times faster", "The 2 kg cart accelerates 4 times faster", "The heavier cart doesn't move at all"],
+    correct: 2,
+    explain: "a = F/m. With the same force, acceleration is inversely proportional to mass: the 2 kg cart gets a = 4/2 = 2 m/s², while the 8 kg cart gets a = 4/8 = 0.5 m/s² — exactly 4 times less, so the lighter cart's acceleration is 4 times greater."
+  },
+  {
+    q: "A book rests on a table. Which pair of forces are the Newton's Third Law reaction pair to 'gravity pulling the book down'?",
+    choices: ["The normal force the table exerts on the book", "The gravitational force the book exerts on the Earth", "Friction between the book and table", "There is no reaction force for gravity"],
+    correct: 1,
+    explain: "The Third Law pair to 'Earth pulls book down' is 'book pulls Earth up' (equal, opposite, acting on the Earth). The normal force is a *different* force entirely — it's what balances gravity to keep the book in equilibrium on the same object, not a reaction pair to it."
+  },
+  {
+    q: "Which correctly describes what belongs on a free-body diagram for a box being pushed across a floor?",
+    choices: ["Every force the box exerts on other objects", "Only the applied push force", "All forces acting ON the box: gravity, normal force, applied force, and friction", "The net force only, drawn as one arrow"],
+    correct: 2,
+    explain: "A free-body diagram shows every individual force acting ON the object of interest (not forces it exerts on others, and not just the net force pre-combined) so you can correctly sum them to apply F_net = ma."
+  },
+  {
+    q: "An astronaut's mass is 80 kg on Earth. What is their mass on the Moon, where gravity is about 1/6th as strong?",
+    choices: ["About 13.3 kg", "80 kg — mass doesn't change with location", "It depends on the astronaut's weight on Earth", "0 kg, since gravity is very weak on the Moon"],
+    correct: 1,
+    explain: "Mass is the amount of matter in an object and does not change with location. Weight (a force, W = mg) would change on the Moon, dropping to about 1/6th, but mass stays exactly 80 kg."
+  },
+  {
+    q: "A car and a mosquito collide head-on. According to Newton's Third Law, how do the force the car exerts on the mosquito and the force the mosquito exerts on the car compare?",
+    choices: ["The car exerts a much larger force on the mosquito", "The mosquito exerts a much larger force on the car, since it's squishier", "The two forces are exactly equal in magnitude, opposite in direction", "There's no force from the mosquito at all"],
+    correct: 2,
+    explain: "Newton's Third Law guarantees the forces are exactly equal in magnitude regardless of the size difference. What differs enormously is the resulting acceleration (a = F/m) — the mosquito, having tiny mass, gets a huge acceleration, while the car's acceleration is negligible."
+  }
+];
+
+let current = 0;
+let score = 0;
+const quizEl = document.getElementById('quiz');
+const progressBar = document.getElementById('progress-bar');
+const summaryEl = document.getElementById('summary');
+
+function render() {
+  if (current >= QUESTIONS.length) { showSummary(); return; }
+  quizEl.innerHTML = '';
+  const item = QUESTIONS[current];
+  const card = document.createElement('div');
+  card.className = 'question';
+  const title = document.createElement('div');
+  title.className = 'q-title';
+  title.textContent = `Q${current + 1} of ${QUESTIONS.length}. ${item.q}`;
+  card.appendChild(title);
+
+  const choicesWrap = document.createElement('div');
+  choicesWrap.className = 'choices';
+  item.choices.forEach((choiceText, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.textContent = choiceText;
+    btn.addEventListener('click', () => selectAnswer(idx, item, card, choicesWrap));
+    choicesWrap.appendChild(btn);
+  });
+  card.appendChild(choicesWrap);
+
+  const expl = document.createElement('div');
+  expl.className = 'explanation';
+  expl.textContent = item.explain;
+  card.appendChild(expl);
+
+  quizEl.appendChild(card);
+  progressBar.style.width = `${(current / QUESTIONS.length) * 100}%`;
+}
+
+function selectAnswer(idx, item, card, choicesWrap) {
+  const buttons = choicesWrap.querySelectorAll('button.choice');
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+    if (i === item.correct) b.classList.add('correct');
+    else if (i === idx && idx !== item.correct) b.classList.add('wrong');
+  });
+  if (idx === item.correct) score++;
+  card.querySelector('.explanation').classList.add('show');
+
+  const nextBtn = document.createElement('button');
+  nextBtn.id = 'retry';
+  nextBtn.style.marginTop = '14px';
+  nextBtn.textContent = current === QUESTIONS.length - 1 ? 'See Results' : 'Next Question';
+  nextBtn.addEventListener('click', () => { current++; render(); });
+  card.appendChild(nextBtn);
+}
+
+function showSummary() {
+  quizEl.innerHTML = '';
+  progressBar.style.width = '100%';
+  summaryEl.classList.add('show');
+  const pct = Math.round((score / QUESTIONS.length) * 100);
+  document.getElementById('score').textContent = `${score} / ${QUESTIONS.length} (${pct}%)`;
+  const msg = document.getElementById('score-msg');
+  if (pct >= 80) msg.textContent = "Strong work — you've got this topic. Move on to the next unit.";
+  else if (pct >= 60) msg.textContent = "Getting there. Review the explanations above and retake the quiz.";
+  else msg.textContent = "Revisit the Key Concepts and Common Misconceptions in notes.md, then try again.";
+}
+
+document.getElementById('retry').addEventListener('click', () => {
+  current = 0; score = 0; summaryEl.classList.remove('show'); render();
+});
+
+render();
+</script>
+</body>
+</html>

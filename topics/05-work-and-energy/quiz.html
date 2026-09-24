@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work &amp; Energy — Interactive Quiz</title>
+<style>
+  :root {
+    --bg: #0f172a; --card: #1e293b; --text: #e2e8f0; --muted: #94a3b8;
+    --accent: #38bdf8; --correct: #22c55e; --wrong: #ef4444; --border: #334155;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); padding: 24px 16px 64px; }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  .subtitle { color: var(--muted); margin-bottom: 24px; font-size: 0.95rem; }
+  #progress { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 24px; }
+  #progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width .3s; }
+  .question { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 18px; }
+  .q-title { font-weight: 600; margin-bottom: 12px; line-height: 1.4; }
+  .choices { display: flex; flex-direction: column; gap: 8px; }
+  button.choice { text-align: left; background: #0f172a; border: 1px solid var(--border); color: var(--text); padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 0.95rem; transition: border-color .15s, background .15s; }
+  button.choice:hover:not(:disabled) { border-color: var(--accent); }
+  button.choice:disabled { cursor: default; }
+  button.choice.correct { background: rgba(34,197,94,0.15); border-color: var(--correct); }
+  button.choice.wrong { background: rgba(239,68,68,0.15); border-color: var(--wrong); }
+  .explanation { margin-top: 12px; padding: 12px 14px; background: #0f172a; border-left: 3px solid var(--accent); border-radius: 6px; font-size: 0.9rem; color: var(--muted); display: none; }
+  .explanation.show { display: block; }
+  #summary { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; text-align: center; display: none; }
+  #summary.show { display: block; }
+  #summary h2 { margin-top: 0; }
+  #score { font-size: 2.5rem; font-weight: 700; color: var(--accent); }
+  button#retry { margin-top: 16px; background: var(--accent); color: #0f172a; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+  a.back { color: var(--muted); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Work &amp; Energy — Most-Missed Questions</h1>
+  <p class="subtitle">Answer each question. You'll see the explanation immediately, whether you're right or wrong. Aim for 80%+.</p>
+  <div id="progress"><div id="progress-bar"></div></div>
+  <div id="quiz"></div>
+  <div id="summary">
+    <h2>Quiz Complete</h2>
+    <div id="score"></div>
+    <p id="score-msg" class="subtitle"></p>
+    <button id="retry">Retake Quiz</button>
+  </div>
+  <p><a class="back" href="notes.md">← Back to Cornell notes</a></p>
+</div>
+<script>
+const QUESTIONS = [
+  {
+    q: "A person carries a heavy box at constant velocity across a level floor. How much work does the person do on the box?",
+    choices: ["A large positive amount, since it takes effort", "Zero, because the applied force (up, to support weight) is perpendicular to the horizontal displacement", "A negative amount, since the box doesn't speed up", "It depends on how far the box is carried"],
+    correct: 1,
+    explain: "Work = Fd·cosθ. The person's supporting force is vertical (up), while displacement is horizontal, so θ = 90° and cos(90°) = 0. No work is done on the box by that force, even though it feels effortful."
+  },
+  {
+    q: "A sliding box is brought to rest by friction. What happens to its kinetic energy?",
+    choices: ["It is destroyed and no longer exists anywhere", "It converts into thermal energy (heat) at the sliding surfaces", "It transfers entirely into potential energy", "Energy is not conserved in this situation"],
+    correct: 1,
+    explain: "Energy is always conserved. Friction doesn't destroy kinetic energy — it converts it into thermal energy (heat) and some sound, dissipated at the microscopic/particle level (HS-PS3-2)."
+  },
+  {
+    q: "Motor A lifts a 100 kg load 5 m in 10 s. Motor B lifts the same load the same height in 5 s. Compare their work and power.",
+    choices: ["Motor B does more work, since it's faster", "Both motors do the same work, but Motor B has twice the power", "Motor A has more power, since it takes longer", "Work and power are the same thing here, so both motors are identical"],
+    correct: 1,
+    explain: "Work only depends on force and distance (W = mgh), which are identical for both motors, so W is the same. Power = W/t, and since Motor B does the same work in half the time, its power is twice as great."
+  },
+  {
+    q: "A ball's velocity doubles. How does its kinetic energy change?",
+    choices: ["It also doubles", "It quadruples (×4)", "It stays the same, since mass didn't change", "It increases by a factor of 8"],
+    correct: 1,
+    explain: "KE = ½mv². Since velocity is squared, doubling v multiplies KE by 2² = 4. This proportional relationship (not linear) is one of the most commonly missed ideas in the unit."
+  },
+  {
+    q: "A pendulum swings from its highest point (momentarily at rest) down to its lowest point. Ignoring air resistance, how does its mechanical energy compare at the two points?",
+    choices: ["Mechanical energy at the top is greater, since PE is higher there", "Mechanical energy at the bottom is greater, since it's now moving", "Mechanical energy is the same at both points; only the KE/PE split changes", "There's no way to compare energy at different points in the swing"],
+    correct: 2,
+    explain: "With no friction/air resistance, total mechanical energy (KE + PE) is conserved throughout the swing. At the top, it's all PE (KE = 0); at the bottom, it's all KE (PE is minimum) — but the total stays constant."
+  },
+  {
+    q: "A roller coaster car's actual speed at the bottom of a hill is measured to be less than the frictionless prediction from conservation of mechanical energy. What does the work-energy theorem say about this?",
+    choices: ["The prediction must be wrong; energy conservation doesn't apply to roller coasters", "Non-conservative forces (friction, air resistance) did negative work, converting some mechanical energy to heat, so W_net = ΔKE still holds using the *actual* net work, not just gravity's work", "The car's mass must have increased during the ride", "This means momentum, not energy, was conserved instead"],
+    correct: 1,
+    explain: "Conservation of mechanical energy only applies without friction. When friction is present, the work-energy theorem (W_net = ΔKE) still holds exactly — you just have to include the negative work done by friction/air resistance in W_net, which accounts for the 'missing' kinetic energy as heat."
+  },
+  {
+    q: "Which pair correctly identifies when each energy tool applies: the work-energy theorem, vs. conservation of mechanical energy?",
+    choices: ["Work-energy theorem only works without friction; conservation of mechanical energy always works", "Both only work without friction", "Work-energy theorem (W_net = ΔKE) works with or without friction; conservation of mechanical energy (KE+PE constant) requires no friction/air resistance", "They are two names for the exact same equation"],
+    correct: 2,
+    explain: "The work-energy theorem is completely general — it holds with any forces, including friction, as long as you use the true net work. Conservation of mechanical energy is a special case that only holds when non-conservative forces (like friction) do zero work."
+  }
+];
+
+let current = 0;
+let score = 0;
+const quizEl = document.getElementById('quiz');
+const progressBar = document.getElementById('progress-bar');
+const summaryEl = document.getElementById('summary');
+
+function render() {
+  if (current >= QUESTIONS.length) { showSummary(); return; }
+  quizEl.innerHTML = '';
+  const item = QUESTIONS[current];
+  const card = document.createElement('div');
+  card.className = 'question';
+  const title = document.createElement('div');
+  title.className = 'q-title';
+  title.textContent = `Q${current + 1} of ${QUESTIONS.length}. ${item.q}`;
+  card.appendChild(title);
+
+  const choicesWrap = document.createElement('div');
+  choicesWrap.className = 'choices';
+  item.choices.forEach((choiceText, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.textContent = choiceText;
+    btn.addEventListener('click', () => selectAnswer(idx, item, card, choicesWrap));
+    choicesWrap.appendChild(btn);
+  });
+  card.appendChild(choicesWrap);
+
+  const expl = document.createElement('div');
+  expl.className = 'explanation';
+  expl.textContent = item.explain;
+  card.appendChild(expl);
+
+  quizEl.appendChild(card);
+  progressBar.style.width = `${(current / QUESTIONS.length) * 100}%`;
+}
+
+function selectAnswer(idx, item, card, choicesWrap) {
+  const buttons = choicesWrap.querySelectorAll('button.choice');
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+    if (i === item.correct) b.classList.add('correct');
+    else if (i === idx && idx !== item.correct) b.classList.add('wrong');
+  });
+  if (idx === item.correct) score++;
+  card.querySelector('.explanation').classList.add('show');
+
+  const nextBtn = document.createElement('button');
+  nextBtn.id = 'retry';
+  nextBtn.style.marginTop = '14px';
+  nextBtn.textContent = current === QUESTIONS.length - 1 ? 'See Results' : 'Next Question';
+  nextBtn.addEventListener('click', () => { current++; render(); });
+  card.appendChild(nextBtn);
+}
+
+function showSummary() {
+  quizEl.innerHTML = '';
+  progressBar.style.width = '100%';
+  summaryEl.classList.add('show');
+  const pct = Math.round((score / QUESTIONS.length) * 100);
+  document.getElementById('score').textContent = `${score} / ${QUESTIONS.length} (${pct}%)`;
+  const msg = document.getElementById('score-msg');
+  if (pct >= 80) msg.textContent = "Strong work — you've got this topic. Move on to the next unit.";
+  else if (pct >= 60) msg.textContent = "Getting there. Review the explanations above and retake the quiz.";
+  else msg.textContent = "Revisit the Key Concepts and Common Misconceptions in notes.md, then try again.";
+}
+
+document.getElementById('retry').addEventListener('click', () => {
+  current = 0; score = 0; summaryEl.classList.remove('show'); render();
+});
+
+render();
+</script>
+</body>
+</html>
