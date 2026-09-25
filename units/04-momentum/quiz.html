@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Momentum Quiz</title>
+<link rel="stylesheet" href="../../assets/quiz.css">
+</head>
+<body>
+<header class="quiz-header">
+  <h1 id="quiz-title">Loading…</h1>
+  <p id="quiz-unit"></p>
+</header>
+<nav class="quiz-nav">
+  <a href="README.md">← Unit notes</a> &nbsp;|&nbsp; <a href="../../PROJECT_OUTLINE.md">Project outline</a>
+</nav>
+<main>
+  <div id="score-bar"></div>
+  <div id="quiz-root"></div>
+  <div class="actions">
+    <button id="check-btn">Check My Answers</button>
+    <button id="reset-btn">Try Again</button>
+  </div>
+</main>
+<script>
+window.QUIZ_DATA = {
+  title: "Momentum — Most-Missed Questions",
+  unit: "Unit 4: Momentum",
+  storageKey: "physics-unit4-momentum",
+  questions: [
+    {
+      q: "A 2 kg cart moves right at 3 m/s (call right positive) and collides head-on with a 2 kg cart moving left at 3 m/s. What is the total momentum of the system BEFORE the collision?",
+      choices: ["12 kg·m/s", "6 kg·m/s", "0 kg·m/s", "-12 kg·m/s"],
+      answer: 2,
+      explain: "Momentum is a vector: p = mv. Cart 1: (2)(+3) = +6 kg·m/s. Cart 2: (2)(−3) = −6 kg·m/s. Total = +6 + (−6) = 0 kg·m/s. Forgetting the negative sign for leftward motion is the most common error here.",
+      missRate: "Most commonly missed: students add magnitudes (6+6=12) instead of accounting for opposite directions."
+    },
+    {
+      q: "In a perfectly inelastic collision where two objects stick together, which quantity is conserved?",
+      choices: ["Kinetic energy only", "Momentum only", "Both momentum and kinetic energy", "Neither"],
+      answer: 1,
+      explain: "Momentum is conserved in ALL collisions (elastic or inelastic) as long as the system is isolated. Kinetic energy is only conserved in elastic collisions — in a perfectly inelastic collision, kinetic energy is always lost (converted to heat, sound, and deformation) even though momentum is not.",
+      missRate: "Most commonly missed: students assume kinetic energy is conserved because 'energy is always conserved' — true for total energy, but not for mechanical/kinetic energy specifically."
+    },
+    {
+      q: "A stationary firework (initially at rest, total momentum = 0) explodes into two fragments. What must be true about their momenta immediately after?",
+      choices: [
+        "Both fragments must have zero momentum",
+        "The fragments' momenta must be equal in magnitude and opposite in direction",
+        "The heavier fragment must have more momentum than the lighter one",
+        "Momentum is not conserved during an explosion"
+      ],
+      answer: 1,
+      explain: "Momentum is conserved even in an explosion. Since the total momentum before was 0, the total after must also be 0 — so the two fragments' momenta must be equal in magnitude and opposite in direction (they don't need equal speeds if their masses differ, but m₁v₁ = −m₂v₂).",
+      missRate: "Most commonly missed: students think momentum conservation is violated because kinetic energy clearly increases in an explosion (energy comes from a separate stored source, like a chemical reaction)."
+    },
+    {
+      q: "A 0.5 kg ball moving at 6 m/s bounces off a wall and returns at 6 m/s in the opposite direction. What is the magnitude of the impulse delivered to the ball?",
+      choices: ["0 kg·m/s", "3 kg·m/s", "6 kg·m/s", "12 kg·m/s"],
+      answer: 2,
+      explain: "Impulse = Δp = m(v_f − v_i). Taking the ball's initial direction as positive: v_i = +6 m/s, v_f = −6 m/s (it fully reverses). Δv = v_f − v_i = −6 − 6 = −12 m/s, so Δp = 0.5 kg × (−12 m/s) = −6 kg·m/s. The magnitude of the impulse is 6 kg·m/s. The speed didn't change (6 m/s both ways), but the DIRECTION reversed, so momentum still changed by twice the original amount.",
+      missRate: "Most commonly missed: students think impulse is 0 because 'speed in equals speed out,' forgetting momentum is a vector and direction reversed."
+    },
+    {
+      q: "Why do airbags and crumple zones reduce injury in a car crash, in terms of the impulse-momentum theorem (J = FΔt = Δp)?",
+      choices: [
+        "They reduce the change in momentum, Δp, to zero",
+        "They increase the collision time, Δt, which reduces the force F needed to produce the same Δp",
+        "They increase the force to stop the passenger faster",
+        "They have no physics explanation — they're purely cushioning"
+      ],
+      answer: 1,
+      explain: "The passenger's momentum change (Δp) during a crash is essentially fixed by the crash's speed change — it can't be avoided. But since J = FΔt = Δp, increasing the time Δt over which that momentum change happens (via airbags/crumple zones) reduces the peak force F required, which reduces injury.",
+      missRate: "Most commonly missed: students think airbags 'absorb' the momentum rather than spreading the same momentum change over more time to lower the force."
+    },
+    {
+      q: "Object A (1 kg) moves at 10 m/s. Object B (5 kg) moves at 3 m/s in the same direction. Which object has more momentum?",
+      choices: ["Object A (10 kg·m/s vs 15 kg·m/s — A is less)", "Object B, because it's heavier", "They are equal", "Cannot be determined from mass and velocity alone"],
+      answer: 1,
+      explain: "p_A = (1)(10) = 10 kg·m/s. p_B = (5)(3) = 15 kg·m/s. Object B has more momentum. This shows momentum depends on the product of mass AND velocity — you can't judge it from mass alone, but in this particular case the heavier, slower object does win.",
+      missRate: "Most commonly missed: students assume the faster object always has more momentum, without actually computing mv for both."
+    }
+  ]
+};
+</script>
+<script src="../../assets/quiz.js"></script>
+</body>
+</html>

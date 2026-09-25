@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projectile Motion Quiz</title>
+<link rel="stylesheet" href="../../assets/quiz.css">
+</head>
+<body>
+<header class="quiz-header">
+  <h1 id="quiz-title">Loading…</h1>
+  <p id="quiz-unit"></p>
+</header>
+<nav class="quiz-nav">
+  <a href="README.md">← Unit notes</a> &nbsp;|&nbsp; <a href="../../PROJECT_OUTLINE.md">Project outline</a>
+</nav>
+<main>
+  <div id="score-bar"></div>
+  <div id="quiz-root"></div>
+  <div class="actions">
+    <button id="check-btn">Check My Answers</button>
+    <button id="reset-btn">Try Again</button>
+  </div>
+</main>
+<script>
+window.QUIZ_DATA = {
+  title: "Projectile Motion — Most-Missed Questions",
+  unit: "Unit 2: Projectile Motion",
+  storageKey: "physics-unit2-projectile",
+  questions: [
+    {
+      q: "At the highest point of a projectile's trajectory (launched at an angle, not straight up), which is true?",
+      choices: [
+        "Both velocity components are zero",
+        "Vertical velocity is zero; horizontal velocity is unchanged from launch",
+        "Horizontal velocity is zero; vertical velocity is unchanged from launch",
+        "Both velocity components are at maximum"
+      ],
+      answer: 1,
+      explain: "Only vertical velocity reaches zero at the peak (that's what defines 'the top'). Horizontal velocity never changes during flight since there's no horizontal force — it stays at vₓ = v₀cos(θ) the whole time, including at the peak.",
+      missRate: "Most commonly missed: students think the object briefly stops completely at the top."
+    },
+    {
+      q: "A ball is dropped from a table at the same instant a second identical ball is launched horizontally from the same height. Which ball hits the floor first (ignore air resistance)?",
+      choices: ["The dropped ball", "The launched ball", "They land at the same time", "Depends on the launch speed"],
+      answer: 2,
+      explain: "Both balls start with the same vertical velocity (zero) and experience the same vertical acceleration (−g). Horizontal velocity has zero effect on vertical motion, so both balls fall for exactly the same amount of time.",
+      missRate: "Most commonly missed: students assume the launched ball takes longer because it 'has farther to go.'"
+    },
+    {
+      q: "A projectile is launched at speed v₀ and angle θ above horizontal. What is the correct expression for its initial VERTICAL velocity component?",
+      choices: ["v₀cos(θ)", "v₀sin(θ)", "v₀tan(θ)", "v₀"],
+      answer: 1,
+      explain: "By convention (angle measured from horizontal), the vertical component uses sine: v_y0 = v₀sin(θ). The horizontal component uses cosine: vₓ = v₀cos(θ). Mixing these up is a very common algebra slip.",
+      missRate: "Most commonly missed: students swap sine and cosine between the two components."
+    },
+    {
+      q: "On level ground with no air resistance, which launch angle produces the MAXIMUM range?",
+      choices: ["30°", "45°", "60°", "90°"],
+      answer: 1,
+      explain: "45° maximizes range on level ground with no air resistance, because it gives the best balance between time of flight and horizontal speed. Complementary angles like 30°/60° give equal (but smaller) ranges than 45°.",
+      missRate: "Most commonly missed: students assume a steeper angle (like 60° or 90°) always goes farther since it goes higher."
+    },
+    {
+      q: "A heavier projectile and a lighter projectile (same shape, negligible air resistance) are launched with identical speed and angle. How do their ranges compare?",
+      choices: ["The heavier one travels farther", "The lighter one travels farther", "Their ranges are the same", "Cannot be determined without more information"],
+      answer: 2,
+      explain: "In the absence of air resistance, mass cancels out of the projectile motion equations entirely — gravity accelerates all masses equally. Same launch speed and angle means the same trajectory regardless of mass.",
+      missRate: "Most commonly missed: students think a heavier object 'plows through the air better' and goes farther."
+    },
+    {
+      q: "What determines the total time a projectile spends in the air (launched and landing at the same height)?",
+      choices: [
+        "Only the horizontal velocity",
+        "Only the vertical velocity and gravity",
+        "Both components equally",
+        "The total launch speed only"
+      ],
+      answer: 1,
+      explain: "Time of flight is entirely a vertical-motion question: how long does it take gravity to bring the vertical velocity back down to the landing height? Horizontal velocity has no effect on how long the object stays airborne.",
+      missRate: "Most commonly missed: students try to use the horizontal velocity or total speed to find time of flight."
+    }
+  ]
+};
+</script>
+<script src="../../assets/quiz.js"></script>
+</body>
+</html>

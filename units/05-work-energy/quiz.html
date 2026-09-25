@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work & Energy Quiz</title>
+<link rel="stylesheet" href="../../assets/quiz.css">
+</head>
+<body>
+<header class="quiz-header">
+  <h1 id="quiz-title">Loading…</h1>
+  <p id="quiz-unit"></p>
+</header>
+<nav class="quiz-nav">
+  <a href="README.md">← Unit notes</a> &nbsp;|&nbsp; <a href="../../PROJECT_OUTLINE.md">Project outline</a>
+</nav>
+<main>
+  <div id="score-bar"></div>
+  <div id="quiz-root"></div>
+  <div class="actions">
+    <button id="check-btn">Check My Answers</button>
+    <button id="reset-btn">Try Again</button>
+  </div>
+</main>
+<script>
+window.QUIZ_DATA = {
+  title: "Work & Energy — Most-Missed Questions",
+  unit: "Unit 5: Work & Energy",
+  storageKey: "physics-unit5-workenergy",
+  questions: [
+    {
+      q: "A waiter carries a tray of food at constant height, walking 5 m horizontally at constant velocity. How much work does gravity do on the tray during this walk?",
+      choices: ["A large positive amount", "A large negative amount", "Zero", "Depends on the tray's mass"],
+      answer: 2,
+      explain: "Work = F·d·cos(θ). Gravity acts straight down, but the tray's displacement is horizontal — the angle between them is 90°, and cos(90°) = 0. So gravity does zero work here, even though the tray clearly has weight and the waiter clearly gets tired.",
+      missRate: "Most commonly missed: students assume any force present must be doing work, ignoring the perpendicular case."
+    },
+    {
+      q: "A box slides across a rough floor and comes to rest due to friction. What is the sign of the work done BY FRICTION on the box?",
+      choices: ["Positive", "Negative", "Zero", "Depends on the box's speed"],
+      answer: 1,
+      explain: "Friction always opposes the direction of motion, so it always does negative work on a moving object it acts on — removing kinetic energy (converting it to heat) until the box stops. This is consistent with the work-energy theorem: negative net work means decreasing KE.",
+      missRate: "Most commonly missed: students say friction does no work since the box 'isn't going anywhere new,' or say positive work since friction is 'making it stop.'"
+    },
+    {
+      q: "A ball rolls down a hill with a rough (frictional) surface. Which statement is correct?",
+      choices: [
+        "Mechanical energy (KE+PE) is conserved, same as on a frictionless hill",
+        "Mechanical energy is NOT conserved, but total energy (including heat) still is",
+        "Neither mechanical energy nor total energy is conserved",
+        "Only kinetic energy needs to be conserved"
+      ],
+      answer: 1,
+      explain: "Friction is a non-conservative force — when it acts, mechanical energy (KE+PE) is not conserved because some energy converts irreversibly into heat and sound. However, the TOTAL energy of the universe/system (including that heat) is always conserved — energy is never created or destroyed, just converted.",
+      missRate: "Most commonly missed: students either think energy is 'lost' entirely (violating conservation of energy), or think KE+PE must still balance even with friction present."
+    },
+    {
+      q: "If an object's speed doubles, what happens to its kinetic energy (mass unchanged)?",
+      choices: ["It doubles", "It triples", "It quadruples (×4)", "It stays the same"],
+      answer: 2,
+      explain: "KE = ½mv². Since KE depends on v² (not v), doubling v means KE scales by 2² = 4. This is why collision damage increases so dramatically with speed — e.g., a crash at 60 mph involves roughly 4× the kinetic energy of a crash at 30 mph, not just 2×.",
+      missRate: "Most commonly missed: students assume KE scales linearly with speed, like momentum does."
+    },
+    {
+      q: "Two motors lift identical 100 kg loads to the same height of 5 m. Motor A takes 10 seconds; Motor B takes 2 seconds. Which motor does MORE work, and which has MORE power?",
+      choices: [
+        "Motor A does more work; Motor A has more power",
+        "They do the same work; Motor B has more power",
+        "Motor B does more work; Motor A has more power",
+        "They do the same work; Motor A has more power"
+      ],
+      answer: 1,
+      explain: "Work depends only on force and displacement (W = mgh here), not time — both motors do exactly the same work (lifting the same mass the same height). Power = W/t, though, DOES depend on time — Motor B does the same work in less time, so it has more power (is 'more powerful'), even though it does the same amount of work.",
+      missRate: "Most commonly missed: students think the faster motor 'does more work,' conflating power with work."
+    },
+    {
+      q: "A spring-loaded toy launches a 0.1 kg ball straight up. The spring stores 2 J of elastic potential energy, all converted to the ball's gravitational PE at its highest point (ignore air resistance and assume the launch point is h=0). How high does the ball rise?",
+      choices: ["0.2 m", "1.0 m", "2.0 m", "20.4 m"],
+      answer: 2,
+      explain: "By conservation of energy: elastic PE converts entirely to gravitational PE at the peak (KE = 0 there). 2 J = mgh = (0.1 kg)(9.8 m/s²)(h) → h = 2 / (0.1 × 9.8) ≈ 2.04 m. Rounding to the given choices, ≈ 2.0 m is correct. A common error is forgetting to divide by mg, or dividing incorrectly.",
+      missRate: "Most commonly missed: students forget to divide by mg and instead treat 2 J as directly equal to height in meters."
+    }
+  ]
+};
+</script>
+<script src="../../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinematics Quiz</title>
+<link rel="stylesheet" href="../../assets/quiz.css">
+</head>
+<body>
+<header class="quiz-header">
+  <h1 id="quiz-title">Loading…</h1>
+  <p id="quiz-unit"></p>
+</header>
+<nav class="quiz-nav">
+  <a href="README.md">← Unit notes</a> &nbsp;|&nbsp; <a href="../../PROJECT_OUTLINE.md">Project outline</a>
+</nav>
+<main>
+  <div id="score-bar"></div>
+  <div id="quiz-root"></div>
+  <div class="actions">
+    <button id="check-btn">Check My Answers</button>
+    <button id="reset-btn">Try Again</button>
+  </div>
+</main>
+<script>
+window.QUIZ_DATA = {
+  title: "Kinematics — Most-Missed Questions",
+  unit: "Unit 1: Kinematics",
+  storageKey: "physics-unit1-kinematics",
+  questions: [
+    {
+      q: "A student walks 8 m east, then 8 m west, in 4 seconds total. What is the student's average velocity?",
+      choices: ["4 m/s east", "4 m/s west", "0 m/s", "2 m/s"],
+      answer: 2,
+      explain: "Average velocity = displacement / time. The student ends up back where they started, so displacement = 0 m, and average velocity = 0 m/s. Average speed, by contrast, is 16 m / 4 s = 4 m/s — a different quantity entirely. Mixing these two up is the single most common kinematics error.",
+      missRate: "Most commonly missed: students report the average speed (4 m/s) instead of average velocity."
+    },
+    {
+      q: "On a velocity-time (v-t) graph, what does the AREA under the curve represent?",
+      choices: ["Velocity", "Acceleration", "Displacement", "Speed"],
+      answer: 2,
+      explain: "Area under a v-t graph equals displacement (v × t has units of distance). The SLOPE of a v-t graph, not the area, gives acceleration. Confusing slope and area between the x-t, v-t, and a-t graphs is extremely common.",
+      missRate: "Most commonly missed: students say 'acceleration' by confusing area with slope."
+    },
+    {
+      q: "A car moving in the negative direction (backward) is slowing down. What is the sign of its acceleration?",
+      choices: ["Negative", "Positive", "Zero", "Cannot be determined"],
+      answer: 1,
+      explain: "Slowing down means velocity is moving toward zero, i.e., changing in the positive direction even though the velocity itself is negative. Acceleration is positive here — opposite in sign to the velocity. 'Slowing down' does NOT automatically mean negative acceleration; it means acceleration is opposite in sign to velocity.",
+      missRate: "Most commonly missed: students assume 'slowing down' always means negative acceleration."
+    },
+    {
+      q: "A ball is thrown straight up. At the exact top of its path, which statement is true?",
+      choices: [
+        "Both velocity and acceleration are zero",
+        "Velocity is zero; acceleration is g downward",
+        "Velocity is g downward; acceleration is zero",
+        "Both velocity and acceleration are at their maximum"
+      ],
+      answer: 1,
+      explain: "At the peak, the ball's velocity is momentarily zero (it's changing direction), but gravity never stops acting — acceleration is still g ≈ 9.8 m/s² downward throughout the entire flight, including at the very top.",
+      missRate: "Most commonly missed: students think acceleration is also zero at the peak, since velocity is zero."
+    },
+    {
+      q: "Which kinematic equation should you use to find final velocity when you know initial velocity, acceleration, and displacement — but NOT time?",
+      choices: ["v = v₀ + at", "x = x₀ + v₀t + ½at²", "v² = v₀² + 2a(x − x₀)", "x = x₀ + ½(v₀ + v)t"],
+      answer: 2,
+      explain: "v² = v₀² + 2a(x − x₀) is the only kinematic equation that doesn't contain time, so it's the right tool when time is unknown and not asked for.",
+      missRate: "Most commonly missed: students default to v = v₀ + at and get stuck because they don't have time."
+    },
+    {
+      q: "An object's position-time (x-t) graph is a straight line with a constant positive slope. What can you conclude?",
+      choices: [
+        "The object is accelerating in the positive direction",
+        "The object is at rest",
+        "The object moves with constant positive velocity",
+        "The object's acceleration is increasing"
+      ],
+      answer: 2,
+      explain: "A straight line on an x-t graph means constant slope, which means constant velocity — and therefore zero acceleration. A curved x-t graph (not a straight line) is what indicates acceleration.",
+      missRate: "Most commonly missed: students assume any nonzero slope implies acceleration."
+    },
+    {
+      q: "Two balls are dropped from the same height: Ball A has twice the mass of Ball B. Ignoring air resistance, which ball hits the ground first?",
+      choices: ["Ball A (heavier)", "Ball B (lighter)", "They land at the same time", "Depends on their initial velocity"],
+      answer: 2,
+      explain: "In free fall (no air resistance), all objects accelerate at the same rate, g, regardless of mass. Both balls fall the same distance under the same acceleration, so they land simultaneously. This is one of the most persistent physics misconceptions.",
+      missRate: "Most commonly missed: students assume heavier objects fall faster."
+    },
+    {
+      q: "A car travels 3 laps around a 400 m track and returns to its starting point. What is the car's total displacement?",
+      choices: ["1200 m", "400 m", "0 m", "800 m"],
+      answer: 2,
+      explain: "Displacement only depends on start and end position. Since the car returns to its starting point, displacement = 0 m, even though the distance traveled is 1200 m.",
+      missRate: "Most commonly missed: students report the distance traveled (1200 m) as the displacement."
+    }
+  ]
+};
+</script>
+<script src="../../assets/quiz.js"></script>
+</body>
+</html>

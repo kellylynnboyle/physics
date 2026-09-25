@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newton's Laws Quiz</title>
+<link rel="stylesheet" href="../../assets/quiz.css">
+</head>
+<body>
+<header class="quiz-header">
+  <h1 id="quiz-title">Loading…</h1>
+  <p id="quiz-unit"></p>
+</header>
+<nav class="quiz-nav">
+  <a href="README.md">← Unit notes</a> &nbsp;|&nbsp; <a href="../../PROJECT_OUTLINE.md">Project outline</a>
+</nav>
+<main>
+  <div id="score-bar"></div>
+  <div id="quiz-root"></div>
+  <div class="actions">
+    <button id="check-btn">Check My Answers</button>
+    <button id="reset-btn">Try Again</button>
+  </div>
+</main>
+<script>
+window.QUIZ_DATA = {
+  title: "Newton's Laws — Most-Missed Questions",
+  unit: "Unit 3: Newton's Laws",
+  storageKey: "physics-unit3-newton",
+  questions: [
+    {
+      q: "A hockey puck slides across frictionless ice at constant velocity. What net force is required to keep it moving at that constant velocity?",
+      choices: ["A force equal to its weight", "A small constant forward force", "Zero net force", "A force that increases with speed"],
+      answer: 2,
+      explain: "Newton's First Law: constant velocity means zero acceleration, which means zero NET force is needed. No force is required to sustain motion — only to change it. This is one of the most common Newtonian misconceptions (it contradicts everyday intuition from friction-filled experience).",
+      missRate: "Most commonly missed: students think a continuous force is needed to keep anything moving."
+    },
+    {
+      q: "A book rests on a table. The table pushes up on the book with a normal force. What is the Newton's-3rd-law reaction to this force?",
+      choices: [
+        "Gravity pulling the book down",
+        "The book pushing down on the table",
+        "The table pushing up on the floor",
+        "There is no reaction force here"
+      ],
+      answer: 1,
+      explain: "The 3rd-law partner to 'table pushes up on book' is 'book pushes down on table' — same magnitude, opposite direction, acting on the OTHER object (the table, not the book). Gravity and normal force are a different pair of forces (both act on the book) that happen to balance in this scenario — they are NOT a 3rd-law pair.",
+      missRate: "Most commonly missed: students pair the normal force with gravity, since they're equal and opposite — but they act on the same object, so they can't be a 3rd-law pair."
+    },
+    {
+      q: "A 10 kg box sits on a 30° incline (frictionless). What is true about the normal force on the box?",
+      choices: [
+        "Normal force equals the box's full weight, mg",
+        "Normal force is less than mg because it only supports the component of weight perpendicular to the incline",
+        "Normal force is greater than mg because the incline pushes harder",
+        "Normal force is zero since the incline is frictionless"
+      ],
+      answer: 1,
+      explain: "On an incline, only the component of weight perpendicular to the surface (mg·cos θ) is balanced by the normal force. The component along the incline (mg·sin θ) is unbalanced and causes acceleration down the slope. Normal force equals mg only when the surface is horizontal with no other vertical forces.",
+      missRate: "Most commonly missed: students assume normal force always equals mg regardless of surface angle."
+    },
+    {
+      q: "You push a heavy crate but it doesn't move, even though you're pushing with 50 N. What can you conclude?",
+      choices: [
+        "No friction force is acting on the crate",
+        "Static friction is also 50 N, exactly balancing your push",
+        "Kinetic friction is acting and is greater than 50 N",
+        "The crate has zero mass"
+      ],
+      answer: 1,
+      explain: "If the crate isn't moving, net force = 0 (Newton's 1st law), so static friction must exactly match your applied force — in this case 50 N. Static friction is variable, adjusting itself up to a maximum value (μ_sN); it only reaches kinetic friction once the object actually starts sliding.",
+      missRate: "Most commonly missed: students think friction is always a single fixed value (like μN) rather than a variable static force up to some maximum."
+    },
+    {
+      q: "A 60 kg passenger stands on a scale inside an elevator accelerating upward at 2 m/s². What does the scale read, compared to when the elevator is stationary?",
+      choices: ["The same as at rest", "Less than at rest", "More than at rest", "Zero"],
+      answer: 2,
+      explain: "The scale reads the normal force, found from ΣF = ma: N − mg = ma, so N = m(g + a). Since the elevator accelerates upward, N is greater than mg (the at-rest reading) — the passenger feels heavier. This shows normal force is NOT always equal to weight.",
+      missRate: "Most commonly missed: students assume the scale always reads mg regardless of the elevator's acceleration."
+    },
+    {
+      q: "If the net force on an object is zero, what can you conclude?",
+      choices: [
+        "No forces are acting on the object at all",
+        "The object must be at rest",
+        "The object's velocity is not changing (constant, possibly zero)",
+        "The object has no mass"
+      ],
+      answer: 2,
+      explain: "Zero net force means zero acceleration (Newton's 2nd law), so velocity is constant — this includes objects at rest AND objects moving at constant velocity. It does NOT mean no forces are present; it means the forces present are balanced.",
+      missRate: "Most commonly missed: students conflate 'zero net force' with 'no forces acting' or 'object is at rest.'"
+    }
+  ]
+};
+</script>
+<script src="../../assets/quiz.js"></script>
+</body>
+</html>
