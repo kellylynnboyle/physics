@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics Most-Missed Quizzes</title>
+<style>
+  :root { --bg:#f7f8fa; --fg:#1b1f24; --card:#fff; --line:#d6dae0; --accent:#1f5fbf; --ok:#14733a; --okbg:#e3f4ea; --bad:#a3231b; --badbg:#fbe7e5; --muted:#5a636e; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#14171b; --fg:#e8eaed; --card:#1e2227; --line:#383e46; --accent:#7ab0ff; --ok:#6fd49a; --okbg:#173325; --bad:#ff9b92; --badbg:#3a1e1c; --muted:#9aa3ad; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.5 system-ui,sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:16px; }
+  h1 { font-size:1.5rem; margin:.5rem 0; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; margin:12px 0; }
+  .grid { display:grid; gap:12px; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); }
+  button { font:inherit; cursor:pointer; border:1px solid var(--line); background:var(--card); color:var(--fg); border-radius:8px; padding:10px 14px; }
+  button.primary { background:var(--accent); color:#fff; border-color:var(--accent); }
+  button:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+  .opt { display:block; width:100%; text-align:left; margin:8px 0; }
+  .opt.correct { background:var(--okbg); border-color:var(--ok); }
+  .opt.wrong { background:var(--badbg); border-color:var(--bad); }
+  .muted { color:var(--muted); font-size:.9rem; }
+  .bar { height:8px; background:var(--line); border-radius:4px; overflow:hidden; margin-top:6px; }
+  .bar > span { display:block; height:100%; background:var(--accent); }
+  .fb { margin-top:10px; padding:10px; border-radius:8px; }
+  .fb.ok { background:var(--okbg); } .fb.no { background:var(--badbg); }
+  .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Physics: Most-Missed Questions</h1>
+  <p class="muted">Pick a topic. Each quiz targets the mistakes students make most often. Your best scores and missed questions are saved in this browser only.</p>
+  <div id="app"></div>
+</main>
+<script src="questions.js"></script>
+<script>
+(function () {
+  var KEY = "physics-quiz-progress-v1";
+  var app = document.getElementById("app");
+  var progress = load();
+
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(progress)); } catch (e) {} }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) {
+      if (k === "class") n.className = attrs[k]; else if (k === "text") n.textContent = attrs[k];
+      else if (k.indexOf("on") === 0) n.addEventListener(k.slice(2), attrs[k]); else n.setAttribute(k, attrs[k]);
+    });
+    (kids || []).forEach(function (c) { n.appendChild(c); });
+    return n;
+  }
+  function clear() { while (app.firstChild) app.removeChild(app.firstChild); }
+
+  function home() {
+    clear();
+    var grid = el("div", { class: "grid" });
+    TOPICS.forEach(function (t) {
+      var p = progress[t.id] || {};
+      var best = p.best == null ? "Not attempted" : "Best: " + p.best + "/" + t.questions.length;
+      var missed = (p.missed || []).length;
+      var card = el("div", { class: "card" }, [
+        el("strong", { text: t.title }),
+        el("div", { class: "muted", text: "NGSS: " + t.ngss }),
+        el("div", { class: "muted", text: best }),
+        el("div", { class: "bar" }, [el("span", { style: "width:" + (p.best == null ? 0 : Math.round(100 * p.best / t.questions.length)) + "%" })]),
+        el("div", { class: "row", style: "margin-top:10px" }, [
+          el("button", { class: "primary", text: "Start quiz", onclick: function () { run(t, t.questions); } }),
+          missed ? el("button", { text: "Retry " + missed + " missed", onclick: function () { retry(t); } }) : el("span")
+        ])
+      ]);
+      grid.appendChild(card);
+    });
+    app.appendChild(grid);
+    app.appendChild(el("button", { text: "Reset my progress", onclick: function () { if (confirm("Clear saved scores?")) { progress = {}; save(); home(); } } }));
+  }
+
+  function retry(t) {
+    var ids = (progress[t.id] || {}).missed || [];
+    var qs = t.questions.filter(function (q, i) { return ids.indexOf(i) !== -1; });
+    run(t, qs.length ? qs : t.questions, true);
+  }
+
+  function run(topic, pool, isRetry) {
+    var qs = shuffle(pool), i = 0, score = 0, missed = [];
+    function show() {
+      clear();
+      if (i >= qs.length) return done();
+      var q = qs[i], answered = false;
+      var opts = shuffle(q.options.map(function (text, idx) { return { text: text, ok: idx === q.answer }; }));
+      var fb = el("div", { "aria-live": "polite" });
+      var next = el("button", { class: "primary", text: i + 1 === qs.length ? "Finish" : "Next", style: "display:none", onclick: function () { i++; show(); } });
+      var card = el("div", { class: "card" }, [
+        el("div", { class: "muted", text: topic.title + (isRetry ? " (retry)" : "") + " · Question " + (i + 1) + " of " + qs.length }),
+        el("p", { text: q.q })
+      ]);
+      opts.forEach(function (o) {
+        var b = el("button", { class: "opt", text: o.text });
+        b.addEventListener("click", function () {
+          if (answered) return; answered = true;
+          if (o.ok) { score++; b.classList.add("correct"); }
+          else { b.classList.add("wrong"); missed.push(topic.questions.indexOf(q)); }
+          Array.prototype.forEach.call(card.querySelectorAll(".opt"), function (x) { x.disabled = true; if (x.textContent === q.options[q.answer]) x.classList.add("correct"); });
+          fb.className = "fb " + (o.ok ? "ok" : "no");
+          fb.appendChild(el("strong", { text: o.ok ? "Correct. " : "Not quite. " }));
+          fb.appendChild(document.createTextNode(q.why));
+          fb.appendChild(el("div", { class: "muted", text: "Common trap: " + q.trap }));
+          next.style.display = "";
+          next.focus();
+        });
+        card.appendChild(b);
+      });
+      card.appendChild(fb); card.appendChild(next);
+      app.appendChild(card);
+    }
+    function done() {
+      if (!isRetry) {
+        var p = progress[topic.id] || {};
+        p.best = Math.max(p.best || 0, score);
+        p.missed = missed;
+        progress[topic.id] = p;
+      } else {
+        var p2 = progress[topic.id] || {};
+        var still = missed;
+        p2.missed = still; progress[topic.id] = p2;
+      }
+      save();
+      app.appendChild(el("div", { class: "card" }, [
+        el("h2", { text: "Score: " + score + " / " + qs.length }),
+        el("p", { text: score === qs.length ? "Mastery. Move on to a harder problem set." : "Review the explanations above, then retry the missed questions." }),
+        el("button", { class: "primary", text: "Back to topics", onclick: home })
+      ]));
+    }
+    show();
+  }
+  home();
+})();
+</script>
+</body>
+</html>
