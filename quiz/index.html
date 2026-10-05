@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics Most-Missed Questions</title>
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--ink:#1c2430;--mute:#5b6676;--line:#d9dee6;--acc:#2456d6;--ok:#17803d;--bad:#b42318;--okbg:#e7f6ec;--badbg:#fdecea}
+@media(prefers-color-scheme:dark){:root{--bg:#12161c;--card:#1b212b;--ink:#e8ecf2;--mute:#9aa5b5;--line:#2c3441;--acc:#7aa2ff;--ok:#5fd18a;--bad:#ff8a80;--okbg:#14301f;--badbg:#3a1a18}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,sans-serif}
+main{max-width:720px;margin:0 auto;padding:16px}
+h1{font-size:1.5rem;margin:.5rem 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:10px 14px}
+button:hover{border-color:var(--acc)}
+button.primary{background:var(--acc);border-color:var(--acc);color:#fff}
+.topics{display:grid;gap:8px}
+.topics button{text-align:left;display:flex;justify-content:space-between}
+.choice{display:block;width:100%;text-align:left;margin:8px 0}
+.choice.ok{background:var(--okbg);border-color:var(--ok)}
+.choice.bad{background:var(--badbg);border-color:var(--bad)}
+.why{margin-top:10px;padding:10px;border-left:4px solid var(--acc);background:var(--bg)}
+.mute{color:var(--mute);font-size:.9rem}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}.bar>i{display:block;height:100%;background:var(--acc)}
+</style>
+</head>
+<body>
+<main>
+<h1>Physics: Most-Missed Questions</h1>
+<p class="mute">Pick a unit. Answer, read the explanation, and retake to improve. Best scores are saved in this browser.</p>
+<div id="app"></div>
+</main>
+<script src="questions.js"></script>
+<script>
+(function(){
+  var app=document.getElementById('app'),S={topic:null,i:0,score:0,missed:[],done:false};
+  function load(){try{return JSON.parse(localStorage.getItem('physicsBest')||'{}')}catch(e){return{}}}
+  function save(k,v){try{var b=load();if(!(k in b)||v>b[k]){b[k]=v;localStorage.setItem('physicsBest',JSON.stringify(b))}}catch(e){}}
+  function el(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!=null)e.textContent=h;return e}
+  function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+  function home(){
+    S={topic:null};app.textContent='';
+    var c=el('div','card'),best=load(),l=el('div','topics');
+    Object.keys(QUIZ).forEach(function(k){
+      var b=el('button'),n=QUIZ[k].questions.length;
+      b.appendChild(el('span','',QUIZ[k].title));
+      b.appendChild(el('span','mute',k in best?'Best: '+best[k]+'/'+n:n+' questions'));
+      b.onclick=function(){start(k)};l.appendChild(b)});
+    c.appendChild(l);app.appendChild(c)}
+  function start(k){S={topic:k,qs:shuffle(QUIZ[k].questions).map(function(q){
+      var order=shuffle(q.choices.map(function(_,i){return i}));
+      return{q:q.q,why:q.why,choices:order.map(function(i){return q.choices[i]}),answer:order.indexOf(q.answer)}}),i:0,score:0,missed:[]};show()}
+  function show(){
+    app.textContent='';
+    if(S.i>=S.qs.length)return results();
+    var q=S.qs[S.i],c=el('div','card');
+    c.appendChild(el('div','mute',QUIZ[S.topic].title+' — question '+(S.i+1)+' of '+S.qs.length));
+    var bar=el('div','bar'),fill=el('i');fill.style.width=(S.i/S.qs.length*100)+'%';bar.appendChild(fill);c.appendChild(bar);
+    c.appendChild(el('h2','',q.q));
+    var btns=[],answered=false;
+    q.choices.forEach(function(t,i){
+      var b=el('button','choice',t);btns.push(b);
+      b.onclick=function(){
+        if(answered)return;answered=true;
+        var right=i===q.answer;if(right)S.score++;else S.missed.push(q.q);
+        btns.forEach(function(x,j){x.disabled=true;if(j===q.answer)x.classList.add('ok');else if(j===i)x.classList.add('bad')});
+        c.appendChild(el('div','why',(right?'Correct. ':'Not quite. ')+q.why));
+        var n=el('button','primary',S.i+1<S.qs.length?'Next':'See results');n.style.marginTop='12px';
+        n.onclick=function(){S.i++;show()};c.appendChild(n);n.focus()};
+      c.appendChild(b)});
+    app.appendChild(c)}
+  function results(){
+    var n=S.qs.length;save(S.topic,S.score);
+    var c=el('div','card');
+    c.appendChild(el('h2','',QUIZ[S.topic].title+': '+S.score+'/'+n+' ('+Math.round(S.score/n*100)+'%)'));
+    c.appendChild(el('p','',S.score/n>=.8?'Proficient (80%+). Nice work.':S.score/n>=.6?'Developing. Review the notes for the missed ideas, then retry.':'Beginning. Re-read the unit notes, then retry.'));
+    if(S.missed.length){c.appendChild(el('p','mute','Missed — write a one-sentence correction for each in your notes:'));
+      var u=el('ul');S.missed.forEach(function(m){u.appendChild(el('li','',m))});c.appendChild(u)}
+    var r=el('button','primary','Retry');r.onclick=function(){start(S.topic)};
+    var h=el('button','','All units');h.style.marginLeft='8px';h.onclick=home;
+    c.appendChild(r);c.appendChild(h);app.appendChild(c)}
+  home();
+})();
+</script>
+</body>
+</html>
