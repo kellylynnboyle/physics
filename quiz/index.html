@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics Quizzes</title>
+<style>
+  :root { --bg:#f7f8fa; --card:#fff; --ink:#1c2430; --muted:#5b6678; --line:#d9dee7; --accent:#2457d6; --ok:#17803d; --bad:#b42318; --okbg:#e7f6ec; --badbg:#fdecea; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#11151c; --card:#1a202b; --ink:#e8ecf3; --muted:#9aa5b8; --line:#2c3545; --accent:#6f95ff; --ok:#4cc27a; --bad:#ff7b72; --okbg:#143222; --badbg:#3a1a18; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:24px 16px 64px; }
+  h1 { font-size:1.5rem; margin:0 0 4px; }
+  p.sub { color:var(--muted); margin:0 0 20px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:12px; }
+  .topic { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .topic h2 { font-size:1.05rem; margin:0; flex:1 1 180px; }
+  .bar { flex:1 1 140px; height:8px; background:var(--line); border-radius:99px; overflow:hidden; }
+  .bar > i { display:block; height:100%; background:var(--accent); }
+  .best { color:var(--muted); font-size:.85rem; min-width:90px; }
+  button { font:inherit; cursor:pointer; border-radius:8px; border:1px solid var(--accent); background:var(--accent); color:#fff; padding:8px 14px; }
+  button.ghost { background:transparent; color:var(--accent); }
+  button:disabled { opacity:.5; cursor:default; }
+  button:focus-visible, label:focus-within { outline:3px solid var(--accent); outline-offset:2px; }
+  .q { font-weight:600; margin:0 0 12px; }
+  .choice { display:flex; gap:10px; align-items:flex-start; border:1px solid var(--line); border-radius:8px; padding:10px 12px; margin-bottom:8px; cursor:pointer; }
+  .choice.ok { border-color:var(--ok); background:var(--okbg); }
+  .choice.bad { border-color:var(--bad); background:var(--badbg); }
+  .choice.locked { cursor:default; }
+  .why { margin-top:12px; padding:10px 12px; border-left:4px solid var(--accent); background:var(--bg); border-radius:4px; }
+  .meta { display:flex; justify-content:space-between; color:var(--muted); font-size:.9rem; margin-bottom:8px; }
+  .row { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+  .score { font-size:2rem; font-weight:700; }
+  .hidden { display:none; }
+  a { color:var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Physics Quizzes — Most-Missed Questions</h1>
+  <p class="sub">Grade 11 · Semester 1 · 8 questions per unit. Aim for 80% or higher, then try “Review missed.”</p>
+
+  <section id="home"></section>
+  <section id="run" class="hidden" aria-live="polite"></section>
+
+  <p class="sub" style="margin-top:32px">Progress is saved only in this browser. <a href="#" id="reset">Reset saved progress</a> · <a href="../README.md">Back to project outline</a></p>
+</main>
+
+<script src="questions.js"></script>
+<script>
+(function () {
+  var KEY = "physics-quiz-progress-v1";
+  var topics = window.QUIZ_TOPICS;
+  var home = document.getElementById("home");
+  var run = document.getElementById("run");
+
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(d) { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {} }
+
+  function shuffle(a) {
+    a = a.slice();
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    for (var k in (attrs || {})) {
+      if (k === "text") n.textContent = attrs[k];
+      else if (k === "class") n.className = attrs[k];
+      else if (k.indexOf("on") === 0) n.addEventListener(k.slice(2), attrs[k]);
+      else n.setAttribute(k, attrs[k]);
+    }
+    (kids || []).forEach(function (c) { n.appendChild(c); });
+    return n;
+  }
+
+  function renderHome() {
+    run.classList.add("hidden"); home.classList.remove("hidden");
+    home.innerHTML = "";
+    var data = load();
+    topics.forEach(function (t) {
+      var rec = data[t.id] || {};
+      var best = typeof rec.best === "number" ? rec.best : null;
+      var missed = (rec.missed || []).length;
+      var card = el("div", { class: "card topic" }, [
+        el("h2", { text: t.title }),
+        el("div", { class: "bar", role: "img", "aria-label": "Best score " + (best === null ? "none" : best + " percent") }, [ (function(){ var i = el("i"); i.style.width = (best || 0) + "%"; return i; })() ]),
+        el("span", { class: "best", text: best === null ? "Not attempted" : "Best " + best + "%" }),
+        el("button", { text: "Start", onclick: function () { start(t, null); } }),
+        el("button", { class: "ghost", text: "Review missed (" + missed + ")", onclick: function () { start(t, rec.missed); } })
+      ]);
+      if (!missed) card.lastChild.disabled = true;
+      home.appendChild(card);
+    });
+  }
+
+  function start(topic, onlyIdx) {
+    var idx = topic.questions.map(function (_, i) { return i; });
+    if (onlyIdx && onlyIdx.length) idx = onlyIdx.filter(function (i) { return i < topic.questions.length; });
+    var order = shuffle(idx);
+    var state = { topic: topic, order: order, pos: 0, correct: 0, missed: [], review: !!onlyIdx };
+    home.classList.add("hidden"); run.classList.remove("hidden");
+    showQuestion(state);
+  }
+
+  function showQuestion(s) {
+    run.innerHTML = "";
+    var qi = s.order[s.pos], q = s.topic.questions[qi];
+    var perm = shuffle(q.choices.map(function (_, i) { return i; }));
+    var card = el("div", { class: "card" });
+    card.appendChild(el("div", { class: "meta" }, [
+      el("span", { text: s.topic.title + (s.review ? " · review" : "") }),
+      el("span", { text: "Question " + (s.pos + 1) + " of " + s.order.length })
+    ]));
+    card.appendChild(el("p", { class: "q", text: q.q }));
+    var answered = false;
+    var box = el("div", { role: "radiogroup", "aria-label": "Answer choices" });
+    var next = el("button", { text: s.pos + 1 < s.order.length ? "Next" : "See results", class: "hidden" });
+    var why = el("div", { class: "why hidden" });
+
+    perm.forEach(function (orig) {
+      var c = el("div", { class: "choice", role: "radio", tabindex: "0", "aria-checked": "false", text: q.choices[orig] });
+      function choose() {
+        if (answered) return; answered = true;
+        var right = orig === q.answer;
+        if (right) s.correct++; else s.missed.push(qi);
+        Array.prototype.forEach.call(box.children, function (n, k) {
+          n.classList.add("locked");
+          if (perm[k] === q.answer) n.classList.add("ok");
+        });
+        if (!right) c.classList.add("bad");
+        c.setAttribute("aria-checked", "true");
+        why.textContent = (right ? "Correct. " : "Not quite. ") + q.why;
+        why.classList.remove("hidden"); next.classList.remove("hidden"); next.focus();
+      }
+      c.addEventListener("click", choose);
+      c.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choose(); } });
+      box.appendChild(c);
+    });
+    next.addEventListener("click", function () { s.pos++; if (s.pos < s.order.length) showQuestion(s); else showResults(s); });
+    card.appendChild(box); card.appendChild(why); card.appendChild(el("div", { class: "row" }, [next]));
+    run.appendChild(card);
+  }
+
+  function showResults(s) {
+    var pct = Math.round(100 * s.correct / s.order.length);
+    var data = load(), rec = data[s.topic.id] || {};
+    if (!s.review) {
+      rec.best = Math.max(rec.best || 0, pct);
+      rec.last = pct;
+      rec.missed = s.missed;
+    } else {
+      // Keep questions still missed; drop ones now answered correctly.
+      var still = s.missed;
+      rec.missed = (rec.missed || []).filter(function (i) { return s.order.indexOf(i) === -1; }).concat(still);
+    }
+    data[s.topic.id] = rec; save(data);
+
+    run.innerHTML = "";
+    var verdict = pct >= 90 ? "Ready for the test — try the challenge problems." :
+                  pct >= 80 ? "Proficient. Review what you missed." :
+                  pct >= 60 ? "Developing. Redo your Cornell notes cues and retake." :
+                              "Meet with your teacher and revisit the concept resources.";
+    var card = el("div", { class: "card" }, [
+      el("div", { class: "meta", text: s.topic.title + (s.review ? " · review" : "") }),
+      el("div", { class: "score", text: s.correct + " / " + s.order.length + " (" + pct + "%)" }),
+      el("p", { text: verdict }),
+      el("div", { class: "row" }, [
+        el("button", { text: "Retake", onclick: function () { start(s.topic, null); } }),
+        s.missed.length ? el("button", { class: "ghost", text: "Review missed (" + s.missed.length + ")", onclick: function () { start(s.topic, s.missed); } }) : el("span"),
+        el("button", { class: "ghost", text: "All units", onclick: renderHome })
+      ])
+    ]);
+    run.appendChild(card);
+  }
+
+  document.getElementById("reset").addEventListener("click", function (e) {
+    e.preventDefault();
+    if (confirm("Erase saved quiz progress in this browser?")) { try { localStorage.removeItem(KEY); } catch (x) {} renderHome(); }
+  });
+
+  renderHome();
+})();
+</script>
+</body>
+</html>
