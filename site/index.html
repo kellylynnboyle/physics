@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics 11: Learning Project</title>
+<style>
+:root{--bg:#f7f8fb;--card:#fff;--ink:#1c2230;--muted:#5b6578;--line:#dde2ec;--accent:#2457d6;--accent-ink:#fff;--ok:#16794a;--okbg:#e4f5ec;--bad:#b3261e;--badbg:#fdeceb;--warn:#8a5a00;--warnbg:#fff4d9}
+@media (prefers-color-scheme:dark){:root{--bg:#12151c;--card:#1b2029;--ink:#e8ecf4;--muted:#9aa5ba;--line:#2e3644;--accent:#7aa2ff;--accent-ink:#0b1020;--ok:#6fdca4;--okbg:#14301f;--bad:#ff8b84;--badbg:#3a1a19;--warn:#f2c46b;--warnbg:#35290f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:20px 16px 8px;max-width:960px;margin:0 auto}
+h1{margin:0 0 4px;font-size:1.5rem}
+header p{margin:0;color:var(--muted)}
+nav{display:flex;flex-wrap:wrap;gap:8px;max-width:960px;margin:12px auto;padding:0 16px}
+nav button,.tabs button{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 12px;border-radius:8px;cursor:pointer}
+nav button[aria-current=true],.tabs button[aria-selected=true]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+nav .pct{font-size:.8rem;opacity:.8;margin-left:6px}
+main{max-width:960px;margin:0 auto;padding:0 16px 48px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+h2{font-size:1.25rem;margin:0 0 8px}h3{font-size:1.05rem;margin:16px 0 6px}
+.muted{color:var(--muted)}
+.tag{display:inline-block;font-size:.8rem;background:var(--okbg);color:var(--ok);padding:1px 8px;border-radius:99px;margin-right:6px}
+table{border-collapse:collapse;width:100%}
+th,td{border:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+th{background:var(--bg)}
+.cornell td:first-child{width:32%;font-weight:600}
+.cornell.quizmode td:last-child .ans{visibility:hidden}
+.cornell.quizmode td:last-child.show .ans{visibility:visible}
+.cornell.quizmode td:last-child{cursor:pointer;background:var(--bg)}
+ul.clean{list-style:none;padding:0;margin:0}
+ul.clean li{padding:6px 0;border-bottom:1px solid var(--line)}
+label.chk{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+label.chk input{margin-top:5px;width:18px;height:18px}
+.opt{display:block;width:100%;text-align:left;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:6px 0;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.right{background:var(--okbg);border-color:var(--ok)}
+.opt.wrong{background:var(--badbg);border-color:var(--bad)}
+.opt:disabled{cursor:default}
+.fb{margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--warnbg);color:var(--ink)}
+.fb b.m{color:var(--warn)}
+.primary{font:inherit;background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;padding:10px 16px;cursor:pointer}
+.secondary{font:inherit;background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px 16px;cursor:pointer}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden}.bar>i{display:block;height:100%;background:var(--accent)}
+details{margin:6px 0}summary{cursor:pointer;color:var(--accent)}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media (max-width:600px){.cornell td:first-child{width:40%}th,td{padding:6px}}
+@media print{nav,.tabs,.noprint,header p{display:none}.panel{display:block!important}body{background:#fff;color:#000}.card{border-color:#999}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Physics 11: Learning Project</h1>
+  <p>Kinematics · Projectile Motion · Newton's Laws · Momentum · Work &amp; Energy. Aligned to California NGSS (HS-PS2, HS-PS3).</p>
+</header>
+<nav id="nav" aria-label="Topics"></nav>
+<main id="main"></main>
+<script src="data.js"></script>
+<script>
+(function(){
+  var T = window.PHYSICS_DATA, L = ["A","B","C","D"];
+  var KEY = "physics11-progress-v1";
+  var main = document.getElementById("main"), nav = document.getElementById("nav");
+  var state = load();
+  var cur = { id: "home", tab: "overview", quiz: null };
+
+  function load(){ try { return JSON.parse(localStorage.getItem(KEY)) || {obj:{},quiz:{},check:{}}; } catch(e){ return {obj:{},quiz:{},check:{}}; } }
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
+  function el(h){ var d=document.createElement("div"); d.innerHTML=h; return d.firstElementChild; }
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+  function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;} return a; }
+  function objPct(t){ var n=t.objectives.filter(function(o){return state.obj[o.id];}).length; return Math.round(100*n/t.objectives.length); }
+
+  function renderNav(){
+    nav.innerHTML = "";
+    var h = el('<button>Home</button>'); h.setAttribute("aria-current", cur.id==="home"); h.onclick=function(){go("home");}; nav.appendChild(h);
+    T.forEach(function(t){
+      var b = el('<button>'+t.number+'. '+esc(t.title)+'<span class="pct">'+objPct(t)+'%</span></button>');
+      b.setAttribute("aria-current", cur.id===t.id); b.onclick=function(){go(t.id);}; nav.appendChild(b);
+    });
+  }
+
+  function go(id, tab){ cur.id=id; cur.tab=tab||"overview"; cur.quiz=null; location.hash=id; render(); window.scrollTo(0,0); }
+
+  function render(){ renderNav(); if(cur.id==="home") return home(); var t=T.filter(function(x){return x.id===cur.id;})[0]; if(!t) return home(); topic(t); }
+
+  function home(){
+    var rows = T.map(function(t){
+      var best = state.quiz[t.id];
+      return '<tr><td><a href="#'+t.id+'">'+t.number+'. '+esc(t.title)+'</a><div class="muted">'+esc(t.tagline)+'</div></td><td>'+t.standards.map(function(s){return '<span class="tag">'+s.code+'</span>';}).join("")+'</td><td>'+objPct(t)+'%</td><td>'+(best?best.best+'/'+t.quiz.length:'—')+'</td></tr>';
+    }).join("");
+    main.innerHTML = '<div class="card"><h2>How to use this project</h2><ol><li>Pick a topic above and read the overview (concepts, objectives, standards).</li><li>Complete the <b>Cornell notes</b>, then use <b>Self-test mode</b> to cover the answers.</li><li>Take the <b>Quiz</b> of most-missed questions. Review every misconception explanation.</li><li>Work the <b>Practice</b> problems, then try the <b>Resources</b> and the lab.</li><li>Check off each learning objective when you can meet its criteria. Progress saves in this browser.</li></ol></div>'+
+      '<div class="card"><h2>Progress</h2><table><thead><tr><th>Topic</th><th>NGSS</th><th>Objectives met</th><th>Best quiz</th></tr></thead><tbody>'+rows+'</tbody></table><p class="muted">Standards: <a href="https://www.cde.ca.gov/pd/ca/sc/ngssstandards.asp">California NGSS (CDE)</a>.</p><button class="secondary noprint" id="reset">Reset my progress</button></div>';
+    document.getElementById("reset").onclick=function(){ if(confirm("Erase all saved progress in this browser?")){ state={obj:{},quiz:{},check:{}}; save(); render(); } };
+  }
+
+  var TABS=[["overview","Overview"],["cornell","Cornell Notes"],["quiz","Quiz"],["practice","Practice"],["resources","Resources & Real World"],["track","Track Progress"]];
+
+  function topic(t){
+    var tabs = '<div class="tabs" role="tablist">'+TABS.map(function(x){return '<button role="tab" aria-selected="'+(cur.tab===x[0])+'" data-tab="'+x[0]+'">'+x[1]+'</button>';}).join("")+'</div>';
+    main.innerHTML = '<h2 style="margin-top:12px">'+t.number+'. '+esc(t.title)+' <span class="muted" style="font-weight:400">— '+esc(t.tagline)+'</span></h2>'+tabs+'<div class="panel" id="panel"></div>';
+    main.querySelectorAll("[data-tab]").forEach(function(b){ b.onclick=function(){ cur.tab=b.dataset.tab; cur.quiz=null; topic(t); }; });
+    var p = document.getElementById("panel");
+    ({overview:overview,cornell:cornell,quiz:quiz,practice:practice,resources:resources,track:track})[cur.tab](t,p);
+  }
+
+  function overview(t,p){
+    p.innerHTML = '<div class="card"><b>Big idea.</b> '+esc(t.bigIdea)+'</div>'+
+      '<div class="card"><h3 style="margin-top:0">NGSS alignment</h3><ul class="clean">'+t.standards.map(function(s){return '<li><span class="tag">'+s.code+'</span>'+esc(s.note)+'</li>';}).join("")+'</ul><p class="muted">Practices: '+esc(t.practices.join("; "))+'<br>Crosscutting: '+esc(t.crosscutting.join("; "))+'</p></div>'+
+      '<div class="card"><h3 style="margin-top:0">Key concepts</h3><ul class="clean">'+t.concepts.map(function(c){return '<li><b>'+esc(c.term)+'.</b> '+esc(c.def)+'</li>';}).join("")+'</ul></div>';
+  }
+
+  function cornell(t,p){
+    var c=t.cornell;
+    p.innerHTML = '<div class="card"><div class="noprint" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"><button class="secondary" id="qm">Self-test mode (hide notes)</button><button class="secondary" id="pr">Print</button></div>'+
+      '<h3 style="margin-top:0">'+esc(c.topic)+'</h3><table class="cornell" id="ct"><thead><tr><th>Cues / Questions</th><th>Notes</th></tr></thead><tbody>'+
+      c.cues.map(function(r){return '<tr><td>'+esc(r.cue)+'</td><td><span class="ans">'+esc(r.notes)+'</span></td></tr>';}).join("")+
+      '</tbody></table><h3>Summary</h3><p>'+esc(c.summary)+'</p></div>';
+    var tbl=document.getElementById("ct"), on=false, btn=document.getElementById("qm");
+    btn.onclick=function(){ on=!on; tbl.classList.toggle("quizmode",on); tbl.querySelectorAll("td:last-child").forEach(function(td){td.classList.remove("show");}); btn.textContent=on?"Show all notes":"Self-test mode (hide notes)"; };
+    tbl.querySelectorAll("td:last-child").forEach(function(td){ td.onclick=function(){ if(on) td.classList.toggle("show"); }; });
+    document.getElementById("pr").onclick=function(){ window.print(); };
+  }
+
+  function quiz(t,p){
+    if(!cur.quiz){
+      var best=state.quiz[t.id];
+      p.innerHTML='<div class="card"><h3 style="margin-top:0">Most-missed questions: '+esc(t.title)+'</h3><p>'+t.quiz.length+' questions. Each one targets a common misconception, and you get an explanation after every answer.</p>'+(best?'<p class="muted">Your best score: '+best.best+'/'+t.quiz.length+'</p>':'')+'<button class="primary" id="start">Start quiz</button></div>';
+      document.getElementById("start").onclick=function(){ cur.quiz={qs:shuffle(t.quiz.map(function(q){ var idx=shuffle(q.options.map(function(_,i){return i;})); return {q:q.q,options:idx.map(function(i){return q.options[i];}),answer:idx.indexOf(q.answer),misconception:q.misconception,explain:q.explain}; })),i:0,score:0,missed:[]}; quiz(t,p); };
+      return;
+    }
+    var Q=cur.quiz;
+    if(Q.i>=Q.qs.length){
+      var s=state.quiz[t.id]||{best:0,attempts:0}; s.best=Math.max(s.best,Q.score); s.attempts++; state.quiz[t.id]=s; save(); renderNav();
+      p.innerHTML='<div class="card"><h3 style="margin-top:0">Score: '+Q.score+' / '+Q.qs.length+'</h3><div class="bar"><i style="width:'+Math.round(100*Q.score/Q.qs.length)+'%"></i></div>'+
+        (Q.missed.length?'<h3>Review these misconceptions</h3><ul class="clean">'+Q.missed.map(function(m){return '<li><b>'+esc(m.misconception)+'.</b> '+esc(m.explain)+'<div class="muted">'+esc(m.q)+'</div></li>';}).join("")+'</ul>':'<p>Perfect. Move on to the practice problems.</p>')+
+        '<p><button class="primary" id="again">Try again</button> '+(Q.missed.length?'<button class="secondary" id="miss">Retry missed only</button>':'')+'</p></div>';
+      document.getElementById("again").onclick=function(){ cur.quiz=null; quiz(t,p); };
+      var mb=document.getElementById("miss"); if(mb) mb.onclick=function(){ cur.quiz={qs:shuffle(Q.missed),i:0,score:0,missed:[]}; quiz(t,p); };
+      return;
+    }
+    var q=Q.qs[Q.i], done=false;
+    p.innerHTML='<div class="card"><div class="muted">Question '+(Q.i+1)+' of '+Q.qs.length+'</div><div class="bar" style="margin:6px 0 12px"><i style="width:'+Math.round(100*Q.i/Q.qs.length)+'%"></i></div><h3 style="margin-top:0">'+esc(q.q)+'</h3><div id="opts"></div><div id="fb" aria-live="polite"></div></div>';
+    var opts=document.getElementById("opts"), fb=document.getElementById("fb");
+    q.options.forEach(function(o,i){
+      var b=el('<button class="opt"><b>'+L[i]+'.</b> '+esc(o)+'</button>');
+      b.onclick=function(){
+        if(done) return; done=true;
+        opts.querySelectorAll("button").forEach(function(x,j){ x.disabled=true; if(j===q.answer) x.classList.add("right"); });
+        var ok=i===q.answer; if(ok) Q.score++; else { b.classList.add("wrong"); Q.missed.push(q); }
+        fb.innerHTML='<div class="fb"><b>'+(ok?'Correct.':'Not quite.')+'</b> <b class="m">Misconception: '+esc(q.misconception)+'.</b><br>'+esc(q.explain)+'</div><p><button class="primary" id="next">'+(Q.i+1<Q.qs.length?'Next question':'See results')+'</button></p>';
+        var nx=document.getElementById("next"); nx.focus(); nx.onclick=function(){ Q.i++; quiz(t,p); };
+      };
+      opts.appendChild(b);
+    });
+  }
+
+  function practice(t,p){
+    p.innerHTML='<div class="card"><h3 style="margin-top:0">Practice problems</h3><p class="muted">Show your work: knowns, unknown, equation, substitution with units. Then check.</p><ol>'+t.practice.map(function(x){return '<li>'+esc(x.problem)+'<details><summary>Show answer</summary>'+esc(x.answer)+'</details></li>';}).join("")+'</ol></div>';
+  }
+
+  function resources(t,p){
+    p.innerHTML='<div class="card"><h3 style="margin-top:0">Learning resources</h3><table><thead><tr><th>Resource</th><th>Type</th><th>How to use it</th></tr></thead><tbody>'+t.resources.map(function(r){return '<tr><td>'+(r.url?'<a href="'+esc(r.url)+'" target="_blank" rel="noopener">'+esc(r.name)+'</a>':esc(r.name))+'</td><td>'+esc(r.type)+'</td><td>'+esc(r.use)+'</td></tr>';}).join("")+'</tbody></table></div>'+
+      '<div class="card"><h3 style="margin-top:0">Real-world applications</h3><ul>'+t.applications.map(function(a){return '<li>'+esc(a)+'</li>';}).join("")+'</ul></div>';
+  }
+
+  function track(t,p){
+    var pct=objPct(t);
+    p.innerHTML='<div class="card"><h3 style="margin-top:0">Learning objectives</h3><p class="muted">Check an objective only when you can meet its evidence of mastery.</p><div class="bar"><i style="width:'+pct+'%"></i></div><p>'+pct+'% of objectives met</p><ul class="clean">'+
+      t.objectives.map(function(o){return '<li><label class="chk"><input type="checkbox" data-o="'+o.id+'"'+(state.obj[o.id]?' checked':'')+'><span><b>'+o.id+'.</b> '+esc(o.text)+'<div class="muted">Evidence: '+esc(o.criteria)+'</div></span></label></li>';}).join("")+'</ul></div>'+
+      '<div class="card"><h3 style="margin-top:0">Topic checklist</h3><ul class="clean">'+
+      ["Completed Cornell notes","Took the quiz and reviewed every miss","Solved all practice problems","Completed the lab or simulation"].map(function(x,i){var k=t.id+":"+i;return '<li><label class="chk"><input type="checkbox" data-c="'+k+'"'+(state.check[k]?' checked':'')+'><span>'+x+'</span></label></li>';}).join("")+'</ul></div>';
+    p.querySelectorAll("[data-o]").forEach(function(c){ c.onchange=function(){ state.obj[c.dataset.o]=c.checked; save(); topic(t); }; });
+    p.querySelectorAll("[data-c]").forEach(function(c){ c.onchange=function(){ state.check[c.dataset.c]=c.checked; save(); }; });
+  }
+
+  window.addEventListener("hashchange",function(){ var id=location.hash.slice(1); if(id&&id!==cur.id){ cur.id=id; cur.tab="overview"; cur.quiz=null; render(); } });
+  var h=location.hash.slice(1); if(h) cur.id=h; render();
+})();
+</script>
+</body>
+</html>
