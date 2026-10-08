@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics Most-Missed Questions</title>
+<style>
+  :root { --bg:#f8fafc; --card:#fff; --text:#0f172a; --muted:#475569; --line:#e2e8f0; --ok:#15803d; --okbg:#dcfce7; --bad:#b91c1c; --badbg:#fee2e2; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#0f172a; --card:#1e293b; --text:#f1f5f9; --muted:#94a3b8; --line:#334155; --ok:#4ade80; --okbg:#14532d; --bad:#f87171; --badbg:#7f1d1d; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--text); }
+  main { max-width:760px; margin:0 auto; padding:24px 16px 64px; }
+  h1 { font-size:1.6rem; margin:0 0 4px; }
+  .sub { color:var(--muted); margin:0 0 20px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
+  .topic { border-left:6px solid var(--c); cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  .topic:hover, .topic:focus-visible { outline:2px solid var(--c); }
+  .topic b { display:block; font-size:1.05rem; }
+  .bar { height:8px; background:var(--line); border-radius:4px; margin-top:8px; overflow:hidden; }
+  .bar i { display:block; height:100%; background:var(--c); }
+  .small { font-size:.85rem; color:var(--muted); }
+  .q { margin:16px 0; }
+  .q h2 { font-size:1.1rem; margin:0 0 12px; }
+  .choice { display:block; width:100%; text-align:left; font:inherit; color:inherit; background:var(--card); border:1px solid var(--line); border-radius:8px; padding:10px 12px; margin:8px 0; cursor:pointer; }
+  .choice:hover:not(:disabled) { border-color:var(--muted); }
+  .choice.ok { background:var(--okbg); border-color:var(--ok); }
+  .choice.bad { background:var(--badbg); border-color:var(--bad); }
+  .choice:disabled { cursor:default; }
+  .why { margin-top:12px; padding:12px; border-radius:8px; background:var(--bg); border:1px solid var(--line); }
+  .why .trap { color:var(--muted); font-size:.9rem; margin-top:6px; }
+  button.primary { font:inherit; font-weight:600; background:#2563eb; color:#fff; border:0; border-radius:8px; padding:10px 18px; cursor:pointer; }
+  button.link { font:inherit; background:none; border:0; color:#2563eb; cursor:pointer; padding:0; text-decoration:underline; }
+  .row { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+  .score { font-size:2.4rem; font-weight:700; }
+  .pill { display:inline-block; border-radius:999px; padding:2px 10px; font-size:.8rem; font-weight:600; }
+  .mastered { background:var(--okbg); color:var(--ok); } .developing { background:#fef3c7; color:#92400e; } .starting { background:var(--badbg); color:var(--bad); }
+  @media (prefers-color-scheme: dark) { .developing { background:#78350f; color:#fde68a; } }
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script src="questions.js"></script>
+<script>
+(function () {
+  var app = document.getElementById("app");
+  var KEY = "physics-quiz-progress-v1";
+  var data = window.QUIZ_DATA;
+
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(p) { try { localStorage.setItem(KEY, JSON.stringify(p)); } catch (e) {} }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) {
+      if (k === "text") n.textContent = attrs[k];
+      else if (k.indexOf("on") === 0) n.addEventListener(k.slice(2), attrs[k]);
+      else n.setAttribute(k, attrs[k]);
+    });
+    (kids || []).forEach(function (c) { n.appendChild(c); });
+    return n;
+  }
+  function level(pct) { return pct >= 80 ? ["mastered", "Mastered"] : pct >= 60 ? ["developing", "Developing"] : ["starting", "Needs review"]; }
+  function render(node) { app.textContent = ""; app.appendChild(node); window.scrollTo(0, 0); }
+
+  function home() {
+    var progress = load();
+    var root = el("div");
+    root.appendChild(el("h1", { text: "Physics: Most-Missed Questions" }));
+    root.appendChild(el("p", { class: "sub", text: "Pick a topic. Each question targets a common misconception. Aim for 80% or higher (Mastered), then retake until you can explain every answer." }));
+    var grid = el("div", { class: "grid" });
+    data.forEach(function (t) {
+      var best = progress[t.id] ? progress[t.id].best : null;
+      var card = el("button", { class: "card topic", style: "--c:" + t.color, onclick: function () { start(t); } }, [
+        el("b", { text: t.title }),
+        el("span", { class: "small", text: t.questions.length + " questions" })
+      ]);
+      if (best !== null) {
+        var l = level(best);
+        card.appendChild(el("div", {}, [el("span", { class: "pill " + l[0], text: l[1] + " · best " + best + "%" })]));
+        card.appendChild(el("div", { class: "bar" }, [el("i", { style: "width:" + best + "%" })]));
+      } else {
+        card.appendChild(el("div", { class: "small", text: "Not attempted" }));
+      }
+      grid.appendChild(card);
+    });
+    root.appendChild(grid);
+    root.appendChild(el("p", { class: "small", text: "Progress is saved in this browser only. Show your teacher your results screen." }));
+    root.appendChild(el("button", { class: "link", text: "Reset my progress", onclick: function () { if (confirm("Erase saved quiz scores on this device?")) { save({}); home(); } } }));
+    render(root);
+  }
+
+  function start(topic) {
+    var order = shuffle(topic.questions.map(function (_, i) { return i; }));
+    var state = { i: 0, correct: 0, missed: [] };
+    function show() {
+      if (state.i >= order.length) return finish(topic, state);
+      var q = topic.questions[order[state.i]];
+      var opts = shuffle(q.choices.map(function (c, idx) { return { text: c, ok: idx === q.answer }; }));
+      var root = el("div", { class: "q" });
+      root.appendChild(el("div", { class: "row" }, [
+        el("button", { class: "link", text: "← All topics", onclick: home }),
+        el("span", { class: "small", text: topic.title + " · " + (state.i + 1) + " of " + order.length })
+      ]));
+      root.appendChild(el("div", { class: "bar", style: "--c:" + topic.color }, [el("i", { style: "width:" + (state.i / order.length * 100) + "%" })]));
+      root.appendChild(el("h2", { text: q.q, style: "margin-top:16px" }));
+      var box = el("div");
+      var btns = [];
+      opts.forEach(function (o) {
+        var b = el("button", { class: "choice", text: o.text, onclick: function () { answer(o, b); } });
+        btns.push({ b: b, o: o });
+        box.appendChild(b);
+      });
+      root.appendChild(box);
+      var fb = el("div");
+      root.appendChild(fb);
+      function answer(o, b) {
+        btns.forEach(function (x) { x.b.disabled = true; if (x.o.ok) x.b.classList.add("ok"); });
+        if (o.ok) state.correct++; else { b.classList.add("bad"); state.missed.push(q); }
+        fb.appendChild(el("div", { class: "why" }, [
+          el("b", { text: o.ok ? "Correct. " : "Not quite. " }),
+          el("span", { text: q.why }),
+          el("div", { class: "trap", text: "Watch out: " + q.trap })
+        ]));
+        fb.appendChild(el("p", {}, [el("button", { class: "primary", text: state.i + 1 === order.length ? "See results" : "Next question", onclick: function () { state.i++; show(); } })]));
+      }
+      render(root);
+    }
+    show();
+  }
+
+  function finish(topic, state) {
+    var total = topic.questions.length;
+    var pct = Math.round(state.correct / total * 100);
+    var progress = load();
+    var prev = progress[topic.id] || { best: 0, attempts: 0 };
+    progress[topic.id] = { best: Math.max(prev.best, pct), last: pct, attempts: prev.attempts + 1, date: new Date().toISOString().slice(0, 10) };
+    save(progress);
+    var l = level(pct);
+    var root = el("div");
+    root.appendChild(el("h1", { text: topic.title + " results" }));
+    root.appendChild(el("div", { class: "card" }, [
+      el("div", { class: "score", text: state.correct + " / " + total + " (" + pct + "%)" }),
+      el("span", { class: "pill " + l[0], text: l[1] }),
+      el("p", { class: "small", text: "Attempt " + progress[topic.id].attempts + " · best " + progress[topic.id].best + "% · " + progress[topic.id].date })
+    ]));
+    if (state.missed.length) {
+      root.appendChild(el("h2", { text: "Review these" }));
+      state.missed.forEach(function (q) {
+        root.appendChild(el("div", { class: "card", style: "margin:8px 0" }, [
+          el("b", { text: q.q }),
+          el("p", { text: q.choices[q.answer] + ". " + q.why }),
+          el("p", { class: "small", text: "Misconception: " + q.trap })
+        ]));
+      });
+    } else {
+      root.appendChild(el("p", { text: "Perfect. Now try explaining each answer in your own words." }));
+    }
+    root.appendChild(el("p", {}, [
+      el("button", { class: "primary", text: "Retake", onclick: function () { start(topic); } }),
+      document.createTextNode(" "),
+      el("button", { class: "link", text: "All topics", onclick: home })
+    ]));
+    render(root);
+  }
+
+  home();
+})();
+</script>
+</body>
+</html>
