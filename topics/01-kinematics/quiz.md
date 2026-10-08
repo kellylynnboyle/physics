@@ -49,6 +49,18 @@ Take the [interactive version](../../site/index.html#kinematics) for instant fee
 - C. 20 m
 - D. 1.25 m
 
+### 9. A dot diagram has 6 dots, evenly spaced 4.0 cm apart, drawn every 0.10 s. What is the speed?
+- A. 0.40 m/s
+- B. 40 m/s
+- C. 0.67 m/s
+- D. 0.080 m/s
+
+### 10. In a dot diagram, the gaps between dots keep getting smaller from left to right. The object is…
+- A. speeding up
+- B. slowing down
+- C. moving at constant speed
+- D. at rest
+
 ---
 
 ## Answer key
@@ -60,3 +72,5 @@ Take the [interactive version](../../site/index.html#kinematics) for instant fee
 6. **C** — *Misconception: Assuming distance is proportional to time.* Δx = ½at², so distance grows with t². Doubling the time quadruples the distance: 4 × 10 m = 40 m.
 7. **A** — *Misconception: Multiplying instead of dividing.* a = Δv / Δt = 27 / 6.0 = 4.5 m/s². Acceleration is a rate, so divide by time.
 8. **C** — *Misconception: Not knowing that area under v–t = displacement.* Area of the rectangle = 4 m/s × 5 s = 20 m.
+9. **A** — *Misconception: Forgetting to convert cm to m or miscounting intervals.* Speed = gap ÷ Δt = 0.040 m ÷ 0.10 s = 0.40 m/s. The gap is 4.0 cm (not the total length), and 40 m/s forgets that cm must become m.
+10. **B** — *Misconception: Reading closer dots as faster.* The time between dots is always the same, so smaller gaps mean less distance covered each interval: slowing down.

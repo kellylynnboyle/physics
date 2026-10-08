@@ -13,6 +13,7 @@
 | How do I know if an object speeds up or slows down? | Same sign for v and a → speeding up. Opposite signs → slowing down. Negative a does NOT automatically mean slowing down. |
 | Which equation do I use? | Pick the one that has your three knowns and your one unknown and skips the variable you neither know nor want. No time given? v² = v₀² + 2aΔx. No final velocity? Δx = v₀t + ½at². |
 | How do I read motion graphs? | x–t: slope = velocity (steeper = faster). v–t: slope = acceleration, area under curve = displacement. A flat v–t line = constant velocity, a = 0. |
+| How do I read a dot diagram? | Dots are dropped at equal time intervals Δt, so gap size shows speed. Memory aids: 'Spread = speed, squished = slow'; 'Count the spaces, not the faces' (N dots = N − 1 gaps); G.O.T. = Gap Over Time (v = gap ÷ Δt). Even gaps = constant speed; growing = speeding up; shrinking = slowing down. For equal changes in gap, a = (change in gap) ÷ Δt². |
 | What is free fall? | Motion with only gravity acting. a = 9.8 m/s² down (use −9.8 if up is positive). Mass does not matter without air resistance. At the top of a toss: v = 0 but a is still 9.8 m/s² down. |
 
 ## Summary
@@ -25,7 +26,8 @@ Kinematics describes motion using displacement, velocity, and acceleration. Velo
 4. How do I know if an object speeds up or slows down?
 5. Which equation do I use?
 6. How do I read motion graphs?
-7. What is free fall?
+7. How do I read a dot diagram?
+8. What is free fall?
 
 _Student's own summary (2–3 sentences in your own words):_
 

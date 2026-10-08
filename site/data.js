@@ -79,6 +79,12 @@ window.PHYSICS_DATA = [
     "verb": "Analyze",
     "text": "I can analyze free-fall motion, including the motion at the top of a toss.",
     "criteria": "Uses a = −9.8 m/s² throughout; explains v = 0 at the top without a = 0."
+   },
+   {
+    "id": "K6",
+    "verb": "Interpret",
+    "text": "I can read a dot diagram (ticker tape) to decide if motion is constant, speeding up, or slowing down, and calculate speed and acceleration from it.",
+    "criteria": "Counts gaps (not dots), uses v = gap ÷ Δt with unit conversion, and a = (change in gap) ÷ Δt² for evenly changing gaps."
    }
   ],
   "cornell": {
@@ -107,6 +113,10 @@ window.PHYSICS_DATA = [
     {
      "cue": "How do I read motion graphs?",
      "notes": "x–t: slope = velocity (steeper = faster). v–t: slope = acceleration, area under curve = displacement. A flat v–t line = constant velocity, a = 0."
+    },
+    {
+     "cue": "How do I read a dot diagram?",
+     "notes": "Dots are dropped at equal time intervals Δt, so gap size shows speed. Memory aids: 'Spread = speed, squished = slow'; 'Count the spaces, not the faces' (N dots = N − 1 gaps); G.O.T. = Gap Over Time (v = gap ÷ Δt). Even gaps = constant speed; growing = speeding up; shrinking = slowing down. For equal changes in gap, a = (change in gap) ÷ Δt²."
     },
     {
      "cue": "What is free fall?",
@@ -211,6 +221,30 @@ window.PHYSICS_DATA = [
     "answer": 2,
     "misconception": "Not knowing that area under v–t = displacement",
     "explain": "Area of the rectangle = 4 m/s × 5 s = 20 m."
+   },
+   {
+    "q": "A dot diagram has 6 dots, evenly spaced 4.0 cm apart, drawn every 0.10 s. What is the speed?",
+    "options": [
+     "0.40 m/s",
+     "40 m/s",
+     "0.67 m/s",
+     "0.080 m/s"
+    ],
+    "answer": 0,
+    "misconception": "Forgetting to convert cm to m or miscounting intervals",
+    "explain": "Speed = gap ÷ Δt = 0.040 m ÷ 0.10 s = 0.40 m/s. The gap is 4.0 cm (not the total length), and 40 m/s forgets that cm must become m."
+   },
+   {
+    "q": "In a dot diagram, the gaps between dots keep getting smaller from left to right. The object is…",
+    "options": [
+     "speeding up",
+     "slowing down",
+     "moving at constant speed",
+     "at rest"
+    ],
+    "answer": 1,
+    "misconception": "Reading closer dots as faster",
+    "explain": "The time between dots is always the same, so smaller gaps mean less distance covered each interval: slowing down."
    }
   ],
   "practice": [
@@ -229,6 +263,14 @@ window.PHYSICS_DATA = [
    {
     "problem": "A student walks 40 m east in 20 s, then 40 m west in 20 s. Find average speed and average velocity for the whole trip.",
     "answer": "Speed = 80 m / 40 s = 2.0 m/s. Velocity = 0 m / 40 s = 0 m/s."
+   },
+   {
+    "problem": "A dot diagram is drawn every 0.20 s. The gaps from left to right are 2.0, 4.0, 6.0, 8.0 cm. Describe the motion, then find the speed in the first and last gap and the acceleration.",
+    "answer": "Gaps grow evenly: speeding up with constant acceleration. v₁ = 0.020/0.20 = 0.10 m/s; v₄ = 0.080/0.20 = 0.40 m/s. a = (0.020 m)/(0.20 s)² = 0.50 m/s²."
+   },
+   {
+    "problem": "Hint practice: a dot diagram has 7 dots drawn every 0.50 s with equal 12 cm gaps. How many time intervals are there, how long did the motion take, and what is the speed?",
+    "answer": "6 gaps (count spaces, not faces), so 3.0 s. v = 0.12 m / 0.50 s = 0.24 m/s, constant."
    },
    {
     "problem": "A ball is thrown straight up at 14.7 m/s. How long until it returns to the thrower's hand, and how high does it go?",

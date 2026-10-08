@@ -33,7 +33,8 @@ Each topic has key concepts, Cornell notes, an interactive quiz of the most-miss
 ## What's in each topic
 1. **Key concepts** to master (checklist)
 2. **Cornell notes**: cues, notes, summary, and self-quiz; printable
-3. **Interactive quiz**: 8 most-missed questions per topic (40 total), each tagged with the misconception it targets
+3. **Dot-diagram lesson** (Kinematics): interactive explorer, generated challenge problems, mnemonics, and hints
+3. **Interactive quiz**: most-missed questions per topic (42 total), each tagged with the misconception it targets
 4. **Practice problems** with worked answers
 5. **Resources**: simulations, tutorials, textbook chapters, labs, design projects
 6. **Real-world applications**

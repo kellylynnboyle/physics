@@ -58,6 +58,7 @@ a{color:var(--accent)}
 <nav id="nav" aria-label="Topics"></nav>
 <main id="main"></main>
 <script src="data.js"></script>
+<script src="dots.js"></script>
 <script>
 (function(){
   var T = window.PHYSICS_DATA, L = ["A","B","C","D"];
@@ -99,11 +100,12 @@ a{color:var(--accent)}
   var TABS=[["overview","Overview"],["cornell","Cornell Notes"],["quiz","Quiz"],["practice","Practice"],["resources","Resources & Real World"],["track","Track Progress"]];
 
   function topic(t){
-    var tabs = '<div class="tabs" role="tablist">'+TABS.map(function(x){return '<button role="tab" aria-selected="'+(cur.tab===x[0])+'" data-tab="'+x[0]+'">'+x[1]+'</button>';}).join("")+'</div>';
+    var TB = t.id==="kinematics" ? TABS.slice(0,3).concat([["dots","Dot Diagrams"]], TABS.slice(3)) : TABS;
+    var tabs = '<div class="tabs" role="tablist">'+TB.map(function(x){return '<button role="tab" aria-selected="'+(cur.tab===x[0])+'" data-tab="'+x[0]+'">'+x[1]+'</button>';}).join("")+'</div>';
     main.innerHTML = '<h2 style="margin-top:12px">'+t.number+'. '+esc(t.title)+' <span class="muted" style="font-weight:400">— '+esc(t.tagline)+'</span></h2>'+tabs+'<div class="panel" id="panel"></div>';
     main.querySelectorAll("[data-tab]").forEach(function(b){ b.onclick=function(){ cur.tab=b.dataset.tab; cur.quiz=null; topic(t); }; });
     var p = document.getElementById("panel");
-    ({overview:overview,cornell:cornell,quiz:quiz,practice:practice,resources:resources,track:track})[cur.tab](t,p);
+    ({overview:overview,cornell:cornell,quiz:quiz,dots:function(t,p){window.renderDots(p);},practice:practice,resources:resources,track:track})[cur.tab](t,p);
   }
 
   function overview(t,p){

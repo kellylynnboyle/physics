@@ -54,7 +54,7 @@ Copy this table into your notebook, or use the **Track Progress** tab in the [in
 
 | Topic | Cornell notes | Quiz (best /8) | Practice | Lab/Sim | Objectives met | Level (1–4) |
 |-------|:---:|:---:|:---:|:---:|:---:|:---:|
-| 1. Kinematics (K1–K5) | ☐ | | ☐ | ☐ | /5 | |
+| 1. Kinematics (K1–K6) | ☐ | | ☐ | ☐ | /6 | |
 | 2. Projectile Motion (P1–P5) | ☐ | | ☐ | ☐ | /5 | |
 | 3. Newton's Laws (N1–N6) | ☐ | | ☐ | ☐ | /6 | |
 | 4. Momentum (M1–M5) | ☐ | | ☐ | ☐ | /5 | |
@@ -63,16 +63,16 @@ Copy this table into your notebook, or use the **Track Progress** tab in the [in
 ## 7. Instructor class tracker (template)
 One row per student; enter 1–4 per objective.
 
-| Student | K1 | K2 | K3 | K4 | K5 | P1 | P2 | P3 | P4 | P5 | N1 | N2 | N3 | N4 | N5 | N6 | M1 | M2 | M3 | M4 | M5 | E1 | E2 | E3 | E4 | E5 | E6 |
-|---------|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|
-|         |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
+| Student | K1 | K2 | K3 | K4 | K5 | K6 | P1 | P2 | P3 | P4 | P5 | N1 | N2 | N3 | N4 | N5 | N6 | M1 | M2 | M3 | M4 | M5 | E1 | E2 | E3 | E4 | E5 | E6 |
+|---------|----|----|----|----|----|----|----|----|----|----|----||----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|
+|         |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
 
 Use the **quiz "Misconception" tags** to group re-teaching: when 30% or more of the class misses a question, reteach that misconception with a demo or simulation.
 
 ## 8. Common misconceptions at a glance (from the quizzes)
 | Unit | Most-missed ideas |
 |------|-------------------|
-| Kinematics | Distance vs. displacement; zero velocity ≠ zero acceleration; negative acceleration ≠ slowing; heavier objects fall faster |
+| Kinematics | Distance vs. displacement; reading dot diagrams (counting dots instead of gaps, closer = faster); zero velocity ≠ zero acceleration; negative acceleration ≠ slowing; heavier objects fall faster |
 | Projectile | Horizontal speed affects fall time; everything is zero at the top; a "force of the throw" continues; sin vs. cos |
 | Newton | Motion requires a force; bigger object hits harder; weight and normal force are a third-law pair; friction depends on area |
 | Momentum | Speed alone determines momentum; inelastic collisions lose momentum; bounce vs. stick impulse; ignoring direction |

@@ -23,7 +23,8 @@ module.exports = {
     { id: "K2", verb: "Calculate", text: "I can calculate acceleration from changes in velocity and interpret its sign.", criteria: "Computes a = Δv/Δt and states whether the object is speeding up or slowing down." },
     { id: "K3", verb: "Apply", text: "I can select and apply the constant-acceleration equations to solve multi-step problems.", criteria: "Lists knowns/unknown, picks an equation, shows substitution with units." },
     { id: "K4", verb: "Interpret", text: "I can interpret and sketch x–t, v–t, and a–t graphs for a described motion.", criteria: "Slope and area correctly used; graph matches the verbal description." },
-    { id: "K5", verb: "Analyze", text: "I can analyze free-fall motion, including the motion at the top of a toss.", criteria: "Uses a = −9.8 m/s² throughout; explains v = 0 at the top without a = 0." }
+    { id: "K5", verb: "Analyze", text: "I can analyze free-fall motion, including the motion at the top of a toss.", criteria: "Uses a = −9.8 m/s² throughout; explains v = 0 at the top without a = 0." },
+    { id: "K6", verb: "Interpret", text: "I can read a dot diagram (ticker tape) to decide if motion is constant, speeding up, or slowing down, and calculate speed and acceleration from it.", criteria: "Counts gaps (not dots), uses v = gap ÷ Δt with unit conversion, and a = (change in gap) ÷ Δt² for evenly changing gaps." }
   ],
   cornell: {
     topic: "Kinematics: Describing Motion",
@@ -34,6 +35,7 @@ module.exports = {
       { cue: "How do I know if an object speeds up or slows down?", notes: "Same sign for v and a → speeding up. Opposite signs → slowing down. Negative a does NOT automatically mean slowing down." },
       { cue: "Which equation do I use?", notes: "Pick the one that has your three knowns and your one unknown and skips the variable you neither know nor want. No time given? v² = v₀² + 2aΔx. No final velocity? Δx = v₀t + ½at²." },
       { cue: "How do I read motion graphs?", notes: "x–t: slope = velocity (steeper = faster). v–t: slope = acceleration, area under curve = displacement. A flat v–t line = constant velocity, a = 0." },
+      { cue: "How do I read a dot diagram?", notes: "Dots are dropped at equal time intervals Δt, so gap size shows speed. Memory aids: 'Spread = speed, squished = slow'; 'Count the spaces, not the faces' (N dots = N − 1 gaps); G.O.T. = Gap Over Time (v = gap ÷ Δt). Even gaps = constant speed; growing = speeding up; shrinking = slowing down. For equal changes in gap, a = (change in gap) ÷ Δt²." },
       { cue: "What is free fall?", notes: "Motion with only gravity acting. a = 9.8 m/s² down (use −9.8 if up is positive). Mass does not matter without air resistance. At the top of a toss: v = 0 but a is still 9.8 m/s² down." }
     ],
     summary: "Kinematics describes motion using displacement, velocity, and acceleration. Velocity is the rate of change of position, and acceleration is the rate of change of velocity. For constant acceleration, four equations relate the five variables (v₀, v, a, Δx, t). Graphs encode the same information: slope gives the rate, area gives the accumulated change. Free fall is constant-acceleration motion with a = 9.8 m/s² downward."
@@ -47,12 +49,16 @@ module.exports = {
     { q: "A car starts from rest with constant acceleration. If it travels 10 m in the first 2 s, how far has it traveled after 4 s?", options: ["20 m", "30 m", "40 m", "80 m"], answer: 2, misconception: "Assuming distance is proportional to time", explain: "Δx = ½at², so distance grows with t². Doubling the time quadruples the distance: 4 × 10 m = 40 m." },
     { q: "A car speeds up from 0 to 27 m/s in 6.0 s. What is its average acceleration?", options: ["4.5 m/s²", "162 m/s²", "0.22 m/s²", "27 m/s²"], answer: 0, misconception: "Multiplying instead of dividing", explain: "a = Δv / Δt = 27 / 6.0 = 4.5 m/s². Acceleration is a rate, so divide by time." },
     { q: "A v–t graph shows a constant velocity of 4 m/s for 5 s. What is the displacement during that time?", options: ["0.8 m", "9 m", "20 m", "1.25 m"], answer: 2, misconception: "Not knowing that area under v–t = displacement", explain: "Area of the rectangle = 4 m/s × 5 s = 20 m." }
+    ,{ q: "A dot diagram has 6 dots, evenly spaced 4.0 cm apart, drawn every 0.10 s. What is the speed?", options: ["0.40 m/s", "40 m/s", "0.67 m/s", "0.080 m/s"], answer: 0, misconception: "Forgetting to convert cm to m or miscounting intervals", explain: "Speed = gap ÷ Δt = 0.040 m ÷ 0.10 s = 0.40 m/s. The gap is 4.0 cm (not the total length), and 40 m/s forgets that cm must become m." },
+    { q: "In a dot diagram, the gaps between dots keep getting smaller from left to right. The object is…", options: ["speeding up", "slowing down", "moving at constant speed", "at rest"], answer: 1, misconception: "Reading closer dots as faster", explain: "The time between dots is always the same, so smaller gaps mean less distance covered each interval: slowing down." }
   ],
   practice: [
     { problem: "A car accelerates from rest at 3.0 m/s² for 8.0 s. Find its final speed and the distance covered.", answer: "v = 24 m/s; Δx = ½(3.0)(8.0)² = 96 m." },
     { problem: "A driver traveling 20 m/s brakes to a stop in 50 m. Find the acceleration and the stopping time.", answer: "a = −v₀²/(2Δx) = −400/100 = −4.0 m/s². t = Δv/a = (0 − 20)/(−4.0) = 5.0 s." },
     { problem: "A rock is dropped from a 45 m cliff (ignore air resistance). How long does it fall and how fast is it moving at impact?", answer: "t = √(2·45/9.8) ≈ 3.0 s; v = gt ≈ 30 m/s (29.7 m/s)." },
     { problem: "A student walks 40 m east in 20 s, then 40 m west in 20 s. Find average speed and average velocity for the whole trip.", answer: "Speed = 80 m / 40 s = 2.0 m/s. Velocity = 0 m / 40 s = 0 m/s." },
+    { problem: "A dot diagram is drawn every 0.20 s. The gaps from left to right are 2.0, 4.0, 6.0, 8.0 cm. Describe the motion, then find the speed in the first and last gap and the acceleration.", answer: "Gaps grow evenly: speeding up with constant acceleration. v₁ = 0.020/0.20 = 0.10 m/s; v₄ = 0.080/0.20 = 0.40 m/s. a = (0.020 m)/(0.20 s)² = 0.50 m/s²." },
+    { problem: "Hint practice: a dot diagram has 7 dots drawn every 0.50 s with equal 12 cm gaps. How many time intervals are there, how long did the motion take, and what is the speed?", answer: "6 gaps (count spaces, not faces), so 3.0 s. v = 0.12 m / 0.50 s = 0.24 m/s, constant." },
     { problem: "A ball is thrown straight up at 14.7 m/s. How long until it returns to the thrower's hand, and how high does it go?", answer: "Time up = 14.7/9.8 = 1.5 s, so total = 3.0 s. Height = v₀²/(2g) = 11.0 m." }
   ],
   resources: [

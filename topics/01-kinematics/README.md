@@ -28,6 +28,7 @@
 | K3 | I can select and apply the constant-acceleration equations to solve multi-step problems. | Lists knowns/unknown, picks an equation, shows substitution with units. |
 | K4 | I can interpret and sketch x–t, v–t, and a–t graphs for a described motion. | Slope and area correctly used; graph matches the verbal description. |
 | K5 | I can analyze free-fall motion, including the motion at the top of a toss. | Uses a = −9.8 m/s² throughout; explains v = 0 at the top without a = 0. |
+| K6 | I can read a dot diagram (ticker tape) to decide if motion is constant, speeding up, or slowing down, and calculate speed and acceleration from it. | Counts gaps (not dots), uses v = gap ÷ Δt with unit conversion, and a = (change in gap) ÷ Δt² for evenly changing gaps. |
 
 Track progress with the checklist in [docs/assessment-and-tracking.md](../../docs/assessment-and-tracking.md).
 
@@ -62,7 +63,21 @@ Try each problem before opening the answer.
 
    </details>
 
-5. A ball is thrown straight up at 14.7 m/s. How long until it returns to the thrower's hand, and how high does it go?
+5. A dot diagram is drawn every 0.20 s. The gaps from left to right are 2.0, 4.0, 6.0, 8.0 cm. Describe the motion, then find the speed in the first and last gap and the acceleration.
+   <details><summary>Answer</summary>
+
+   Gaps grow evenly: speeding up with constant acceleration. v₁ = 0.020/0.20 = 0.10 m/s; v₄ = 0.080/0.20 = 0.40 m/s. a = (0.020 m)/(0.20 s)² = 0.50 m/s².
+
+   </details>
+
+6. Hint practice: a dot diagram has 7 dots drawn every 0.50 s with equal 12 cm gaps. How many time intervals are there, how long did the motion take, and what is the speed?
+   <details><summary>Answer</summary>
+
+   6 gaps (count spaces, not faces), so 3.0 s. v = 0.12 m / 0.50 s = 0.24 m/s, constant.
+
+   </details>
+
+7. A ball is thrown straight up at 14.7 m/s. How long until it returns to the thrower's hand, and how high does it go?
    <details><summary>Answer</summary>
 
    Time up = 14.7/9.8 = 1.5 s, so total = 3.0 s. Height = v₀²/(2g) = 11.0 m.
@@ -90,4 +105,4 @@ Try each problem before opening the answer.
 - [ ] Took the interactive quiz and reviewed every missed question
 - [ ] Solved all practice problems
 - [ ] Completed the lab or simulation
-- [ ] Self-assessed every objective (K1, K2, K3, K4, K5)
+- [ ] Self-assessed every objective (K1, K2, K3, K4, K5, K6)
