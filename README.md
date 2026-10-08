@@ -7,7 +7,7 @@ Each topic has key concepts, Cornell notes, an interactive quiz of the most-miss
 ## Start here
 | I am a… | Go to |
 |---------|-------|
-| **Student** | Open [`site/index.html`](site/index.html) in a browser for notes, quizzes, and a progress tracker |
+| **Student** | Download and open [`site/physics-all-in-one.html`](site/physics-all-in-one.html) in a browser (GitHub shows HTML as code, so download it first) for notes, quizzes, and a progress tracker |
 | **Instructor** | [Instructor guide](docs/instructor-guide.md) and [assessment & tracking](docs/assessment-and-tracking.md) |
 | **Anyone** | Browse the topic pages below on GitHub |
 

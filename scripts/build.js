@@ -122,3 +122,13 @@ topics.forEach((t) => {
 
 fs.writeFileSync(path.join(root, "site", "data.js"), "window.PHYSICS_DATA = " + JSON.stringify(topics, null, 1) + ";\n");
 console.log(`Built ${topics.length} topics, ${topics.reduce((n, t) => n + t.quiz.length, 0)} quiz questions.`);
+
+// Single-file copy (scripts inlined) so the site can be opened or shared as one file.
+const html = fs.readFileSync(path.join(root, "site", "index.html"), "utf8");
+const inline = (name) => fs.readFileSync(path.join(root, "site", name), "utf8").replace(/<\/script/g, "<\\/script");
+fs.writeFileSync(
+  path.join(root, "site", "physics-all-in-one.html"),
+  html.replace('<script src="data.js"></script>', () => "<script>" + inline("data.js") + "</script>")
+      .replace('<script src="dots.js"></script>', () => "<script>" + inline("dots.js") + "</script>")
+);
+console.log("Wrote site/physics-all-in-one.html");
