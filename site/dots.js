@@ -21,7 +21,7 @@
     for (var i = 0; i < pos.length - 1; i++) {
       var a = X0 + pos[i] * SC, b = X0 + pos[i + 1] * SC, on = i === hi;
       if (on) s += '<rect x="' + a + '" y="22" width="' + (b - a) + '" height="52" fill="var(--accent)" opacity=".15"/>';
-      if (showVals && b - a >= 22) s += '<text x="' + ((a + b) / 2) + '" y="' + (on ? 18 : 18) + '" text-anchor="middle" font-size="12" fill="currentColor">' + r2(pos[i + 1] - pos[i]) + '</text>';
+      if (showVals && b - a >= 14) s += '<text x="' + ((a + b) / 2) + '" y="' + (on ? 18 : 18) + '" text-anchor="middle" font-size="12" fill="currentColor">' + r2(pos[i + 1] - pos[i]) + '</text>';
     }
     pos.forEach(function (p, i) { s += '<circle cx="' + (X0 + p * SC) + '" cy="48" r="6" fill="var(--accent)"/><line x1="' + (X0 + p * SC) + '" y1="56" x2="' + (X0 + p * SC) + '" y2="95" stroke="currentColor" stroke-width=".5" stroke-dasharray="2 3" opacity=".5"/>'; });
     return s + "</svg>";
