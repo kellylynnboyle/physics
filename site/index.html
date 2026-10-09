@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics Learning Project</title>
+<style>
+:root{--bg:#fafafa;--fg:#1c1f26;--mut:#5b6270;--card:#fff;--line:#d9dde4;--acc:#2756c5;--ok:#17803d;--bad:#b42318;--okbg:#e7f6ec;--badbg:#fdecea}
+@media (prefers-color-scheme:dark){:root{--bg:#14161a;--fg:#e8eaee;--mut:#9aa3b2;--card:#1d2026;--line:#323744;--acc:#7da3ff;--ok:#5fd68a;--bad:#ff8a80;--okbg:#14301f;--badbg:#3a1a17}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif}
+header{padding:16px;border-bottom:1px solid var(--line)}
+h1{font-size:1.25rem;margin:0}
+.sub{color:var(--mut);font-size:.9rem}
+main{max-width:980px;margin:0 auto;padding:16px}
+nav.units,nav.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+button{font:inherit;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer}
+button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px}
+table{border-collapse:collapse;width:100%}
+th,td{border:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+th{background:var(--bg)}
+.cornell td:first-child{width:32%;font-weight:600}
+.opt{display:block;width:100%;text-align:left;margin:6px 0}
+.opt.right{background:var(--okbg);border-color:var(--ok)}
+.opt.wrong{background:var(--badbg);border-color:var(--bad)}
+.fb{margin-top:8px;font-size:.95rem}
+.mut{color:var(--mut)}
+code{background:var(--bg);padding:1px 5px;border-radius:4px}
+details{margin:4px 0}
+ul{padding-left:1.2rem}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--acc)}
+@media print{nav,header .sub,button{display:none}}
+</style>
+</head>
+<body>
+<header><h1 id="title"></h1><div class="sub" id="grade"></div></header>
+<main>
+<nav class="units" id="units" aria-label="Units"></nav>
+<nav class="tabs" id="tabs" aria-label="Sections"></nav>
+<section id="view" aria-live="polite"></section>
+</main>
+<script src="data.js"></script>
+<script>
+const P = window.PHYSICS, U = P.units;
+const TABS = [["overview","Overview"],["notes","Cornell notes"],["quiz","Quiz"],["practice","Practice"],["resources","Resources & uses"],["assess","Assessment"]];
+let unit = 0, tab = "overview";
+
+// progress persisted per-browser; wrapped because storage can be unavailable
+let mem = {};
+function load(){ try { return JSON.parse(localStorage.getItem("physics-progress")||"{}"); } catch(e){ return mem; } }
+function save(s){ mem = s; try { localStorage.setItem("physics-progress", JSON.stringify(s)); } catch(e){} }
+let state = load();
+const us = id => (state[id] = state[id] || {obj:{}, steps:{}, best:0, missed:{}});
+
+const $ = (s) => document.querySelector(s);
+const el = (h) => { const t = document.createElement("template"); t.innerHTML = h.trim(); return t.content.firstChild; };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+
+function nav(){
+  $("#title").textContent = P.course.title;
+  $("#grade").textContent = P.course.grade + " · " + P.course.g;
+  const un = $("#units"); un.innerHTML = "";
+  U.forEach((u,i)=>{ const b = el(`<button class="${i===unit&&tab!=="progress"?"on":""}">${u.num}. ${esc(u.title)}</button>`); b.onclick=()=>{unit=i; if(tab==="progress") tab="overview"; render();}; un.append(b); });
+  const pb = el(`<button class="${tab==="progress"?"on":""}">Progress</button>`); pb.onclick=()=>{tab="progress"; render();}; un.append(pb);
+  const tb = $("#tabs"); tb.innerHTML = "";
+  if(tab!=="progress") TABS.forEach(([k,l])=>{ const b = el(`<button class="${k===tab?"on":""}">${l}</button>`); b.onclick=()=>{tab=k; render();}; tb.append(b); });
+}
+
+function overview(u){
+  const s = us(u.id);
+  return `<div class="card"><h2>${esc(u.title)} <span class="mut">(${esc(u.weeks)} · ${u.standards.join(", ")})</span></h2>
+  <p><b>Essential question:</b> ${esc(u.essential_question)}</p><p class="mut">${esc(u.standards_note)}</p>
+  <h3>Learning objectives</h3>${u.objectives.map((o,i)=>`<label style="display:block"><input type="checkbox" data-obj="${i}" ${s.obj[i]?"checked":""}> ${esc(o)}</label>`).join("")}</div>
+  <div class="card"><h3>Key concepts</h3><table><tr><th>Concept</th><th>What to master</th></tr>${u.concepts.map(c=>`<tr><td><b>${esc(c[0])}</b></td><td>${esc(c[1])}</td></tr>`).join("")}</table>
+  <p><b>Formulas:</b> ${u.formulas.map(f=>`<code>${esc(f)}</code>`).join(" ")}</p></div>
+  <div class="card"><h3>Watch for these misconceptions</h3><ul>${u.misconceptions.map(m=>`<li>${esc(m)}</li>`).join("")}</ul></div>`;
+}
+function notes(u){
+  return `<div class="card"><p class="mut">Cover the right column and use the cues to quiz yourself. Then write your own summary.</p>
+  <table class="cornell"><tr><th>Cues / Questions</th><th>Notes</th></tr>${u.cornell.map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td></tr>`).join("")}</table>
+  <p><b>Summary:</b> ${esc(u.summary)}</p>
+  <label class="mut">My own summary (not saved)<br><textarea rows="3" style="width:100%"></textarea></label></div>`;
+}
+function practice(u){
+  return `<div class="card"><p class="mut">Show knowns, unknown, equation, substitution with units, and a reasonableness check.</p>
+  <ol>${u.practice.map(p=>`<li>${esc(p[0])}<details><summary>Show answer</summary>${esc(p[1])}</details></li>`).join("")}</ol></div>
+  <div class="card"><h3>Labs / investigations</h3><ul>${u.labs.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`;
+}
+function resources(u){
+  return `<div class="card"><h3>Learning resources</h3><ul>${u.resources.map(r=>`<li><a href="${esc(r[1])}" target="_blank" rel="noopener">${esc(r[0])}</a></li>`).join("")}</ul></div>
+  <div class="card"><h3>Real-world applications</h3><ul>${u.real_world.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`;
+}
+function assess(u){
+  const A = P.assessment;
+  return `<div class="card"><h3>Performance task</h3><p>${esc(A.tasks[u.id])}</p><h3>Mastery checklist</h3>
+  <ul>${A.mastery.map(m=>`<li>${esc(m)}</li>`).join("")}</ul></div>
+  <div class="card"><h3>4-point scale</h3><table>${A.scale.map(s=>`<tr><td><b>${s[0]} ${esc(s[1])}</b></td><td>${esc(s[2])}</td></tr>`).join("")}</table>
+  <h3>Criteria</h3><table>${A.criteria.map(c=>`<tr><td><b>${esc(c[0])}</b></td><td>${esc(c[1])}</td></tr>`).join("")}</table></div>`;
+}
+
+// ---- quiz ----
+function quiz(u, root){
+  const s = us(u.id);
+  let order = shuffle(u.quiz.map((q,i)=>i)), idx = 0, right = 0, missed = [];
+  const box = document.createElement("div"); root.append(box);
+  function show(){
+    if(idx >= order.length){
+      const pct = Math.round(100*right/order.length);
+      if(pct > s.best) s.best = pct;
+      missed.forEach(i => s.missed[i] = (s.missed[i]||0)+1);
+      save(state);
+      box.innerHTML = `<div class="card"><h3>Score: ${right}/${order.length} (${pct}%)</h3>
+      <p>${pct>=80?"Mastery level reached (80%+).":"Below 80%: review the Cornell notes for the topics below, then retake."}</p>
+      ${missed.length?`<h4>Review these</h4><ul>${missed.map(i=>`<li>${esc(u.quiz[i].q)}<br><span class="mut">${esc(u.quiz[i].miss)}</span></li>`).join("")}</ul>`:""}
+      <button id="again">Retake (shuffled)</button></div>`;
+      box.querySelector("#again").onclick = () => { box.remove(); quiz(u, root); };
+      return;
+    }
+    const q = u.quiz[order[idx]];
+    const ch = shuffle(q.c.map((t,i)=>({t, ok:i===q.a})));
+    box.innerHTML = `<div class="card"><div class="bar"><i style="width:${100*idx/order.length}%"></i></div>
+    <p class="mut">Question ${idx+1} of ${order.length}</p><h3 style="margin-top:0">${esc(q.q)}</h3>
+    <div id="opts"></div><div class="fb" id="fb"></div></div>`;
+    const opts = box.querySelector("#opts");
+    ch.forEach(c => {
+      const b = el(`<button class="opt">${esc(c.t)}</button>`);
+      b.onclick = () => {
+        opts.querySelectorAll("button").forEach((x,i)=>{ x.disabled = true; if(ch[i].ok) x.classList.add("right"); });
+        if(c.ok){ right++; } else { b.classList.add("wrong"); missed.push(order[idx]); }
+        box.querySelector("#fb").innerHTML = `<b>${c.ok?"Correct.":"Not quite."}</b> ${esc(q.why)}<br><span class="mut">Common mistake: ${esc(q.miss)}</span><br><br>`;
+        const n = el(`<button>${idx+1<order.length?"Next":"See score"}</button>`);
+        n.onclick = () => { idx++; show(); }; box.querySelector("#fb").append(n); n.focus();
+      };
+      opts.append(b);
+    });
+  }
+  show();
+}
+
+function progress(){
+  const rows = U.map(u => { const s = us(u.id); const o = Object.values(s.obj).filter(Boolean).length;
+    return `<tr><td>${u.num}. ${esc(u.title)}</td><td>${o}/${u.objectives.length}</td><td>${s.best?s.best+"%":"-"}</td><td>${s.best>=80?"✔ Mastery":"In progress"}</td></tr>`; }).join("");
+  const mm = []; U.forEach(u => { const s = us(u.id); Object.entries(s.missed).forEach(([i,n]) => mm.push([n,u.title,u.quiz[i].q,u.quiz[i].miss])); });
+  mm.sort((a,b)=>b[0]-a[0]);
+  return `<div class="card"><h2>My progress</h2><p class="mut">Saved only in this browser.</p>
+  <table><tr><th>Unit</th><th>Objectives</th><th>Best quiz</th><th>Status</th></tr>${rows}</table></div>
+  <div class="card"><h3>Questions I miss most</h3>${mm.length?`<ol>${mm.slice(0,8).map(m=>`<li>${esc(m[2])} <span class="mut">(${esc(m[1])}, missed ${m[0]}×) ${esc(m[3])}</span></li>`).join("")}</ol>`:"<p class='mut'>Take a quiz to see this list.</p>"}</div>
+  <button id="reset">Reset my progress</button>`;
+}
+
+function render(){
+  nav();
+  const v = $("#view"); const u = U[unit];
+  if(tab==="progress"){ v.innerHTML = progress(); v.querySelector("#reset").onclick = () => { if(confirm("Erase all saved progress?")){ state = {}; save(state); render(); } }; return; }
+  if(tab==="quiz"){ v.innerHTML = `<div class="card"><h2>${esc(u.title)} quiz: most-missed questions</h2><p class="mut">${u.quiz.length} questions; answer order is shuffled every attempt. Aim for 80%.</p></div>`; quiz(u, v); return; }
+  v.innerHTML = ({overview, notes, practice, resources, assess}[tab])(u);
+  v.querySelectorAll("[data-obj]").forEach(c => c.onchange = () => { us(u.id).obj[c.dataset.obj] = c.checked; save(state); });
+}
+render();
+</script>
+</body>
+</html>
