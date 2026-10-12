@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics Quizzes</title>
+<style>
+  :root { --bg:#f7f8fa; --fg:#1b1f24; --card:#fff; --accent:#2a5bd7; --ok:#1a7f37; --bad:#c62828; --muted:#5b6672; --line:#d8dde3; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#14171b; --fg:#e8ebef; --card:#1d2227; --accent:#7aa2ff; --ok:#56d364; --bad:#ff7b72; --muted:#9aa5b1; --line:#2f363d; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.5 system-ui, sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:16px; }
+  h1 { font-size:1.5rem; margin:.5rem 0; }
+  .tabs { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+  button { font:inherit; cursor:pointer; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--fg); padding:8px 14px; }
+  button:hover { border-color:var(--accent); }
+  button.active, button.primary { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin:12px 0; }
+  .opt { display:block; width:100%; text-align:left; margin:6px 0; }
+  .opt.correct { border-color:var(--ok); box-shadow:inset 0 0 0 1px var(--ok); }
+  .opt.wrong { border-color:var(--bad); box-shadow:inset 0 0 0 1px var(--bad); }
+  .why { margin-top:10px; padding:10px; border-left:4px solid var(--accent); background:var(--bg); }
+  .muted { color:var(--muted); font-size:.9rem; }
+  progress { width:100%; height:10px; }
+  .score { font-size:1.25rem; font-weight:600; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Physics Quizzes: Most-Missed Questions</h1>
+  <p class="muted">Pick a unit. Answer each question, read the explanation, and retry the ones you miss. Your best scores are saved in this browser.</p>
+  <div class="tabs" id="tabs" role="tablist"></div>
+  <div id="stage"></div>
+</main>
+<script src="quizzes.js"></script>
+<script>
+(function () {
+  var Q = window.QUIZZES, tabs = document.getElementById('tabs'), stage = document.getElementById('stage');
+  var state = null;
+
+  function load() { try { return JSON.parse(localStorage.getItem('physicsBest') || '{}'); } catch (e) { return {}; } }
+  function save(key, pct) {
+    try { var b = load(); if (!(key in b) || pct > b[key]) { b[key] = pct; localStorage.setItem('physicsBest', JSON.stringify(b)); } } catch (e) {}
+  }
+  function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  function renderTabs() {
+    tabs.innerHTML = '';
+    var best = load();
+    Object.keys(Q).forEach(function (key) {
+      var label = Q[key].title + (key in best ? ' (' + best[key] + '%)' : '');
+      var b = el('button', state && state.key === key ? 'active' : '', label);
+      b.onclick = function () { start(key, null); };
+      tabs.appendChild(b);
+    });
+  }
+
+  function start(key, subset) {
+    var pool = subset || Q[key].questions.map(function (_, i) { return i; });
+    state = { key: key, order: shuffle(pool.slice()), pos: 0, missed: [], correct: 0, full: !subset };
+    renderTabs(); renderQuestion();
+  }
+
+  function renderQuestion() {
+    stage.innerHTML = '';
+    var qi = state.order[state.pos], item = Q[state.key].questions[qi];
+    var card = el('div', 'card');
+    var p = el('progress'); p.max = state.order.length; p.value = state.pos; card.appendChild(p);
+    card.appendChild(el('p', 'muted', 'Question ' + (state.pos + 1) + ' of ' + state.order.length));
+    card.appendChild(el('h2', null, item.q)); card.lastChild.style.fontSize = '1.1rem';
+    var opts = shuffle(item.options.map(function (t, i) { return { t: t, i: i }; }));
+    var answered = false, buttons = [];
+    var fb = el('div');
+    opts.forEach(function (o) {
+      var b = el('button', 'opt', o.t);
+      b.onclick = function () {
+        if (answered) return; answered = true;
+        var ok = o.i === item.answer;
+        if (ok) state.correct++; else state.missed.push(qi);
+        buttons.forEach(function (x) {
+          if (x.o.i === item.answer) x.b.classList.add('correct');
+          else if (x.b === b) x.b.classList.add('wrong');
+        });
+        fb.appendChild(el('div', 'why', (ok ? 'Correct. ' : 'Not quite. ') + item.why));
+        var next = el('button', 'primary', state.pos + 1 < state.order.length ? 'Next question' : 'See results');
+        next.style.marginTop = '12px';
+        next.onclick = function () { state.pos++; state.pos < state.order.length ? renderQuestion() : renderResults(); };
+        fb.appendChild(next); next.focus();
+      };
+      buttons.push({ b: b, o: o }); card.appendChild(b);
+    });
+    card.appendChild(fb); stage.appendChild(card);
+  }
+
+  function renderResults() {
+    stage.innerHTML = '';
+    var n = state.order.length, pct = Math.round(100 * state.correct / n);
+    if (state.full) save(state.key, pct);
+    renderTabs();
+    var card = el('div', 'card');
+    card.appendChild(el('p', 'score', state.correct + ' / ' + n + ' (' + pct + '%)'));
+    card.appendChild(el('p', null, pct >= 90 ? 'Mastery. Move on to a mixed-unit challenge.' :
+      pct >= 70 ? 'Proficient. Review the explanations for the ones you missed.' :
+      'Developing. Reread your Cornell notes for this unit, then retry.'));
+    if (state.missed.length) {
+      var r = el('button', 'primary', 'Retry ' + state.missed.length + ' missed question' + (state.missed.length > 1 ? 's' : ''));
+      r.onclick = function () { start(state.key, state.missed.slice()); };
+      card.appendChild(r); card.appendChild(document.createTextNode(' '));
+    }
+    var a = el('button', null, 'Restart unit'); a.onclick = function () { start(state.key, null); };
+    card.appendChild(a); stage.appendChild(card);
+  }
+
+  renderTabs();
+  stage.appendChild(el('div', 'card', 'Choose a unit above to begin.'));
+})();
+</script>
+</body>
+</html>
