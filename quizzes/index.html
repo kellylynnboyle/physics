@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics Quiz Practice</title>
+<style>
+  :root {
+    --bg: #f6f7fb; --card: #ffffff; --ink: #1c2333; --muted: #5b6478; --line: #d9deea;
+    --accent: #2f5bd8; --accent-ink: #ffffff; --good: #1b7f4c; --good-bg: #e3f5ec;
+    --bad: #b3261e; --bad-bg: #fdeceb; --focus: #ffb300;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12151e; --card: #1b2030; --ink: #e8ebf4; --muted: #a0a9bf; --line: #323a52;
+      --accent: #7c9cff; --accent-ink: #0d1220; --good: #5fd39a; --good-bg: #16352a;
+      --bad: #ff8a80; --bad-bg: #3a1f1f;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  h2 { font-size: 1.2rem; margin: 0 0 12px; }
+  p.sub { color: var(--muted); margin: 0 0 20px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  .topics { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+  button { font: inherit; cursor: pointer; }
+  button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .topic { text-align: left; background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .topic:hover { border-color: var(--accent); }
+  .topic b { display: block; }
+  .topic span { color: var(--muted); font-size: .9rem; }
+  .btn { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px; padding: 10px 18px; font-weight: 600; }
+  .btn.secondary { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  .btn[disabled] { opacity: .5; cursor: default; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+  .progress { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; margin: 8px 0 18px; }
+  .progress > div { height: 100%; background: var(--accent); width: 0; transition: width .2s; }
+  .tag { display: inline-block; font-size: .8rem; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 10px; }
+  .q { font-size: 1.1rem; margin: 10px 0 14px; }
+  .choices { list-style: none; padding: 0; margin: 0 0 14px; display: grid; gap: 8px; }
+  .choice { width: 100%; text-align: left; background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; }
+  .choice:hover:not([disabled]) { border-color: var(--accent); }
+  .choice.correct { background: var(--good-bg); border-color: var(--good); }
+  .choice.wrong { background: var(--bad-bg); border-color: var(--bad); }
+  .choice[disabled] { cursor: default; color: var(--ink); }
+  .why { border-left: 4px solid var(--accent); padding: 8px 12px; margin: 0 0 14px; background: var(--bg); border-radius: 0 8px 8px 0; }
+  .score { font-size: 2.4rem; font-weight: 700; margin: 4px 0; }
+  .missed li { margin-bottom: 14px; }
+  .missed .ans { color: var(--good); }
+  .best { color: var(--muted); font-size: .85rem; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Physics Quiz Practice</h1>
+  <p class="sub">Grade 11 · Semester 1 · the questions students miss most often. Pick a topic. You get an explanation after every question.</p>
+
+  <section id="menu" aria-labelledby="menu-h">
+    <div class="card">
+      <h2 id="menu-h">Choose a quiz</h2>
+      <div class="topics" id="topics"></div>
+    </div>
+    <p class="best">Goal: 80% or better on each topic. Best scores are saved on this device only.</p>
+  </section>
+
+  <section id="quiz" hidden aria-live="polite">
+    <div class="row"><span class="tag" id="q-topic"></span><span class="best" id="q-count"></span></div>
+    <div class="progress" aria-hidden="true"><div id="bar"></div></div>
+    <div class="card">
+      <span class="tag" id="q-obj"></span>
+      <p class="q" id="q-text"></p>
+      <div class="choices" id="choices" role="group" aria-label="Answer choices"></div>
+      <div class="why" id="why" hidden></div>
+      <div class="row">
+        <button class="btn secondary" id="quit">Quit</button>
+        <button class="btn" id="next" hidden>Next</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="result" hidden>
+    <div class="card">
+      <h2 id="r-title">Results</h2>
+      <div class="score" id="r-score"></div>
+      <p id="r-msg"></p>
+      <div class="row">
+        <button class="btn" id="retry-missed" hidden>Retry missed questions</button>
+        <button class="btn secondary" id="again">Retake this quiz</button>
+        <button class="btn secondary" id="home">All quizzes</button>
+      </div>
+    </div>
+    <div class="card" id="missed-card" hidden>
+      <h2>Review: questions you missed</h2>
+      <ol class="missed" id="missed"></ol>
+    </div>
+  </section>
+</main>
+
+<script src="questions.js"></script>
+<script>
+(function () {
+  "use strict";
+  var TOPICS = window.QUIZ_TOPICS, DATA = window.QUIZ_DATA;
+  var $ = function (id) { return document.getElementById(id); };
+  var state = null;
+
+  function load() { try { return JSON.parse(localStorage.getItem("physics-quiz-best") || "{}"); } catch (e) { return {}; } }
+  function save(key, pct) {
+    try {
+      var b = load();
+      if (b[key] === undefined || pct > b[key]) { b[key] = pct; localStorage.setItem("physics-quiz-best", JSON.stringify(b)); }
+    } catch (e) { /* storage unavailable; the quiz still works */ }
+  }
+
+  function shuffle(a) {
+    a = a.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  // Questions list the correct answer first; tag each question with its topic and keep that order for the shuffle.
+  function questionsFor(id) {
+    var out = [];
+    TOPICS.forEach(function (t) {
+      if (id !== "all" && id !== t.id) return;
+      DATA[t.id].forEach(function (q) { out.push({ topic: t.title, obj: q.obj, q: q.q, choices: q.choices, why: q.why }); });
+    });
+    return out;
+  }
+
+  function show(name) {
+    ["menu", "quiz", "result"].forEach(function (s) { $(s).hidden = s !== name; });
+    window.scrollTo(0, 0);
+  }
+
+  function renderMenu() {
+    var best = load(), box = $("topics");
+    box.innerHTML = "";
+    var items = TOPICS.map(function (t) { return { id: t.id, title: t.title, n: DATA[t.id].length }; });
+    var total = items.reduce(function (s, i) { return s + i.n; }, 0);
+    items.push({ id: "all", title: "All topics mix", n: Math.min(20, total), mix: true });
+    items.forEach(function (it) {
+      var b = document.createElement("button");
+      b.className = "topic";
+      var label = it.mix ? it.n + " random questions" : it.n + " questions";
+      var bestTxt = best[it.id] !== undefined ? " · best " + best[it.id] + "%" : "";
+      b.innerHTML = "<b></b><span></span>";
+      b.firstChild.textContent = it.title;
+      b.lastChild.textContent = label + bestTxt;
+      b.addEventListener("click", function () { start(it.id, null); });
+      box.appendChild(b);
+    });
+  }
+
+  function start(id, qs) {
+    var list = qs || shuffle(questionsFor(id));
+    if (!qs && id === "all") list = list.slice(0, 20);
+    state = { id: id, list: list, i: 0, right: 0, missed: [], answered: false, isRetry: !!qs };
+    show("quiz");
+    render();
+  }
+
+  function render() {
+    var q = state.list[state.i];
+    $("q-topic").textContent = q.topic;
+    $("q-obj").textContent = "Objective " + q.obj;
+    $("q-count").textContent = "Question " + (state.i + 1) + " of " + state.list.length;
+    $("bar").style.width = (state.i / state.list.length * 100) + "%";
+    $("q-text").textContent = q.q;
+    $("why").hidden = true;
+    $("next").hidden = true;
+    state.answered = false;
+    var box = $("choices");
+    box.innerHTML = "";
+    var order = shuffle(q.choices.map(function (c, idx) { return { text: c, ok: idx === 0 }; }));
+    order.forEach(function (c) {
+      var b = document.createElement("button");
+      b.className = "choice";
+      b.textContent = c.text;
+      b.addEventListener("click", function () { answer(b, c.ok, order); });
+      b._ok = c.ok;
+      box.appendChild(b);
+    });
+  }
+
+  function answer(btn, ok) {
+    if (state.answered) return;
+    state.answered = true;
+    var q = state.list[state.i];
+    Array.prototype.forEach.call($("choices").children, function (b) {
+      b.disabled = true;
+      if (b._ok) b.classList.add("correct");
+    });
+    if (ok) { state.right++; } else { btn.classList.add("wrong"); state.missed.push(q); }
+    var why = $("why");
+    why.textContent = (ok ? "Correct. " : "Not quite. ") + q.why;
+    why.hidden = false;
+    var next = $("next");
+    next.textContent = state.i === state.list.length - 1 ? "See results" : "Next";
+    next.hidden = false;
+    next.focus();
+  }
+
+  function finish() {
+    var n = state.list.length, pct = Math.round(state.right / n * 100);
+    if (!state.isRetry) save(state.id, pct);
+    $("bar").style.width = "100%";
+    $("r-title").textContent = state.isRetry ? "Retry results" : "Results";
+    $("r-score").textContent = state.right + " / " + n + " (" + pct + "%)";
+    $("r-msg").textContent = pct >= 90 ? "Excellent. You're ready for the unit assessment; try the mixed quiz for spaced review."
+      : pct >= 80 ? "Nearly there: you've reached the 80% goal. Read the explanations on any you missed."
+      : pct >= 60 ? "Some gaps. Revisit the Cornell notes for the missed objectives, redo the practice problems, then retake."
+      : "Let's reteach this one. Review the Cornell notes and the simulation, and talk with your teacher before retaking.";
+    var miss = state.missed;
+    $("retry-missed").hidden = miss.length === 0;
+    $("missed-card").hidden = miss.length === 0;
+    var ol = $("missed");
+    ol.innerHTML = "";
+    miss.forEach(function (q) {
+      var li = document.createElement("li");
+      var p = document.createElement("div"), a = document.createElement("div"), w = document.createElement("div");
+      p.textContent = q.q + " (" + q.obj + ")";
+      a.className = "ans"; a.textContent = "Correct answer: " + q.choices[0];
+      w.textContent = q.why;
+      li.appendChild(p); li.appendChild(a); li.appendChild(w);
+      ol.appendChild(li);
+    });
+    show("result");
+    renderMenu();
+  }
+
+  $("next").addEventListener("click", function () {
+    if (state.i === state.list.length - 1) finish(); else { state.i++; render(); }
+  });
+  $("quit").addEventListener("click", function () { show("menu"); });
+  $("home").addEventListener("click", function () { show("menu"); });
+  $("again").addEventListener("click", function () { start(state.id, null); });
+  $("retry-missed").addEventListener("click", function () { start(state.id, shuffle(state.missed)); });
+
+  renderMenu();
+  show("menu");
+})();
+</script>
+</body>
+</html>
