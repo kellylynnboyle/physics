@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics Quiz: Most-Missed Questions</title>
+<style>
+  :root { --bg:#f6f7fb; --card:#fff; --ink:#1c2230; --muted:#5b6478; --line:#dfe3ee;
+          --accent:#2b5fd9; --good:#17803d; --goodbg:#e6f6ec; --bad:#b42318; --badbg:#fdecea; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#12151d; --card:#1b2030; --ink:#e8ebf5; --muted:#9aa4bd; --line:#2d3550;
+            --accent:#7aa2ff; --good:#5fd38d; --goodbg:#16301f; --bad:#ff8a80; --badbg:#3a1a18; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:20px 16px 48px; }
+  h1 { font-size:1.5rem; margin:0 0 4px; }
+  .sub { color:var(--muted); margin:0 0 16px; }
+  .tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .tab { border:1px solid var(--line); background:var(--card); color:var(--ink); padding:8px 12px; border-radius:999px; cursor:pointer; font:inherit; }
+  .tab[aria-pressed="true"] { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .tab small { opacity:.8; margin-left:4px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px; }
+  .meta { display:flex; justify-content:space-between; color:var(--muted); font-size:.9rem; margin-bottom:8px; }
+  .bar { height:6px; background:var(--line); border-radius:3px; overflow:hidden; margin-bottom:14px; }
+  .bar > i { display:block; height:100%; background:var(--accent); transition:width .2s; }
+  .q { font-size:1.1rem; margin:0 0 14px; }
+  .opt { display:block; width:100%; text-align:left; margin:8px 0; padding:12px 14px; border:1px solid var(--line); border-radius:10px; background:var(--card); color:var(--ink); font:inherit; cursor:pointer; }
+  .opt:hover:not(:disabled) { border-color:var(--accent); }
+  .opt:disabled { cursor:default; }
+  .opt.right { background:var(--goodbg); border-color:var(--good); }
+  .opt.wrong { background:var(--badbg); border-color:var(--bad); }
+  .fb { margin-top:14px; padding:12px 14px; border-radius:10px; background:var(--bg); border:1px solid var(--line); }
+  .fb p { margin:4px 0; }
+  .fb b { color:var(--accent); }
+  .btn { margin-top:14px; border:0; background:var(--accent); color:#fff; padding:10px 18px; border-radius:10px; font:inherit; cursor:pointer; }
+  .btn.alt { background:transparent; color:var(--accent); border:1px solid var(--accent); margin-left:8px; }
+  .score { font-size:2rem; font-weight:700; }
+  .level { display:inline-block; padding:2px 10px; border-radius:999px; font-weight:600; }
+  ul.missed { padding-left:18px; } ul.missed li { margin:8px 0; }
+  .foot { color:var(--muted); font-size:.85rem; margin-top:24px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Physics Quiz: Most-Missed Questions</h1>
+  <p class="sub">Pick a topic. Answer each question, then read the explanation and the common trap. Use g = 9.8 m/s² and ignore air resistance.</p>
+  <div class="tabs" id="tabs" role="group" aria-label="Topics"></div>
+  <div class="card" id="stage" aria-live="polite"></div>
+  <p class="foot">Mastery target: 80% or higher on each topic. Your best scores are saved in this browser only.
+     Standards: California NGSS HS-PS2 and HS-PS3.</p>
+</main>
+<script src="questions.js"></script>
+<script>
+(function () {
+  const KEY = "physics-quiz-best-v1";
+  const TARGET = 0.8;
+  const $ = (s) => document.querySelector(s);
+  const tabs = $("#tabs"), stage = $("#stage");
+
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(b) { try { localStorage.setItem(KEY, JSON.stringify(b)); } catch (e) { /* storage unavailable */ } }
+  function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+  function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+
+  let best = load(), topic = null, run = null;
+
+  function renderTabs() {
+    tabs.innerHTML = "";
+    TOPICS.forEach((t) => {
+      const b = document.createElement("button");
+      b.className = "tab"; b.type = "button";
+      b.setAttribute("aria-pressed", String(topic === t.id));
+      const pct = best[t.id] != null ? Math.round(best[t.id] * 100) + "%" : "–";
+      b.innerHTML = esc(t.name) + "<small>" + pct + "</small>";
+      b.onclick = () => start(t.id);
+      tabs.appendChild(b);
+    });
+  }
+
+  function home() {
+    stage.innerHTML = "<p>Choose a topic above to begin. Each topic has " +
+      QUESTIONS.filter((q) => q.t === TOPICS[0].id).length + " questions drawn from the ones students miss most often.</p>";
+  }
+
+  function start(id, only) {
+    topic = id;
+    const pool = only || QUESTIONS.filter((q) => q.t === id);
+    run = { items: shuffle(pool).map((q) => ({ q, opts: shuffle(q.o) })), i: 0, correct: 0, missed: [], review: !!only };
+    renderTabs(); question();
+  }
+
+  function question() {
+    const { items, i } = run, it = items[i];
+    const name = TOPICS.find((t) => t.id === topic).name;
+    stage.innerHTML =
+      '<div class="meta"><span>' + esc(name) + (run.review ? " (review)" : "") + '</span><span>Question ' + (i + 1) + " of " + items.length + "</span></div>" +
+      '<div class="bar"><i style="width:' + (i / items.length * 100) + '%"></i></div>' +
+      '<p class="q">' + esc(it.q.q) + "</p><div id=\"opts\"></div><div id=\"fb\"></div>";
+    const box = $("#opts");
+    it.opts.forEach((text) => {
+      const b = document.createElement("button");
+      b.className = "opt"; b.type = "button"; b.textContent = text;
+      b.onclick = () => answer(b, text);
+      box.appendChild(b);
+    });
+  }
+
+  function answer(btn, text) {
+    const it = run.items[run.i], ok = text === it.q.o[0];
+    document.querySelectorAll(".opt").forEach((b) => {
+      b.disabled = true;
+      if (b.textContent === it.q.o[0]) b.classList.add("right");
+    });
+    if (!ok) btn.classList.add("wrong");
+    if (ok) run.correct++; else run.missed.push(it.q);
+    const last = run.i === run.items.length - 1;
+    $("#fb").innerHTML =
+      '<div class="fb"><p><b>' + (ok ? "Correct." : "Not quite.") + "</b> " + esc(it.q.why) + "</p>" +
+      "<p><b>Common trap:</b> " + esc(it.q.trap) + "</p></div>" +
+      '<button class="btn" id="next" type="button">' + (last ? "See results" : "Next question") + "</button>";
+    $("#next").focus();
+    $("#next").onclick = () => { if (last) results(); else { run.i++; question(); } };
+  }
+
+  function results() {
+    const n = run.items.length, frac = run.correct / n, pct = Math.round(frac * 100);
+    if (!run.review) { best[topic] = Math.max(best[topic] || 0, frac); save(best); }
+    renderTabs();
+    const lvl = frac >= 0.9 ? ["Advanced", "var(--good)"] : frac >= TARGET ? ["Proficient", "var(--good)"] : frac >= 0.6 ? ["Developing", "var(--accent)"] : ["Beginning", "var(--bad)"];
+    let h = '<div class="score">' + run.correct + " / " + n + " (" + pct + '%)</div>' +
+      '<p><span class="level" style="color:' + lvl[1] + ";border:1px solid " + lvl[1] + '">' + lvl[0] + "</span> " +
+      (frac >= TARGET ? "You have reached the mastery target." : "Mastery target is 80%. Review the questions below and try again.") + "</p>";
+    if (run.missed.length) {
+      h += "<h3>Review what you missed</h3><ul class=\"missed\">" +
+        run.missed.map((q) => "<li><b>" + esc(q.q) + "</b><br>Answer: " + esc(q.o[0]) + "<br><i>" + esc(q.why) + "</i></li>").join("") + "</ul>";
+    }
+    h += '<button class="btn" id="again" type="button">Retake topic</button>';
+    if (run.missed.length) h += '<button class="btn alt" id="rev" type="button">Retry only missed</button>';
+    stage.innerHTML = h;
+    const missed = run.missed.slice();
+    $("#again").onclick = () => start(topic);
+    if ($("#rev")) $("#rev").onclick = () => start(topic, missed);
+  }
+
+  renderTabs(); home();
+})();
+</script>
+</body>
+</html>
