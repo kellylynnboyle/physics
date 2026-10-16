@@ -1,0 +1,30 @@
+:root{--bg:#f7f8fa;--fg:#1c2230;--card:#fff;--line:#d9dee7;--acc:#2a5bd7;--ok:#17803d;--bad:#b3261e;--mut:#5b6577}
+@media (prefers-color-scheme:dark){:root{--bg:#12151c;--fg:#e8ebf2;--card:#1b2030;--line:#2f3647;--acc:#7ea2ff;--ok:#56c27d;--bad:#ff8a80;--mut:#9aa4b8}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif}
+header,main,footer{max-width:900px;margin:0 auto;padding:12px 16px}
+h1{margin:8px 0 0}.sub{margin:0;color:var(--mut)}
+nav{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+button{font:inherit;cursor:pointer;border:1px solid var(--acc);background:var(--acc);color:#fff;border-radius:8px;padding:6px 12px}
+button.ghost,nav button{background:transparent;color:var(--acc)}
+nav button[aria-current=true]{background:var(--acc);color:#fff}
+button:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.tabs button{background:transparent;color:var(--acc)}.tabs button[aria-selected=true]{background:var(--acc);color:#fff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0}
+table{border-collapse:collapse;width:100%}th,td{border:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+.cornell{display:grid;grid-template-columns:1fr 2fr;gap:0;border:1px solid var(--line)}
+.cornell div{padding:8px;border-bottom:1px solid var(--line)}.cornell .cue{border-right:1px solid var(--line);font-weight:600}
+.cornell .sum{grid-column:1/-1;background:var(--bg)}
+.cornell textarea{width:100%;min-height:70px;font:inherit;background:var(--card);color:var(--fg);border:1px dashed var(--line);border-radius:6px;margin-top:6px}
+.choice{display:block;width:100%;text-align:left;margin:6px 0;background:var(--card);color:var(--fg);border-color:var(--line)}
+.choice.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 18%,var(--card))}
+.choice.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 18%,var(--card))}
+.fb{margin-top:8px;padding:8px;border-left:4px solid var(--acc);background:var(--bg)}
+.bar{height:10px;background:var(--line);border-radius:5px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ok)}
+.small,.mut{color:var(--mut);font-size:.9rem}
+.badge{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:0 8px;font-size:.8rem;color:var(--mut)}
+details{margin:6px 0}code{background:var(--bg);padding:1px 5px;border-radius:4px}
+label.chk{display:flex;gap:8px;align-items:flex-start;margin:6px 0}
+@media (max-width:600px){.cornell{grid-template-columns:1fr}.cornell .cue{border-right:0}}
+@media print{nav,.tabs,footer,button{display:none!important}.card{break-inside:avoid}}
