@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics Quizzes</title>
+<style>
+  :root { --bg:#f7f8fa; --card:#fff; --ink:#1c2430; --muted:#5b6675; --line:#d9dee5; --accent:#2457d6; --ok:#177a3c; --okbg:#e6f4ea; --bad:#b3261e; --badbg:#fce8e6; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#12161c; --card:#1b222b; --ink:#e8ecf1; --muted:#9aa6b5; --line:#2e3846; --accent:#7aa2ff; --ok:#6fd08c; --okbg:#16301f; --bad:#ff8a80; --badbg:#3a1a18; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; }
+  main { max-width:720px; margin:0 auto; padding:24px 16px 64px; }
+  h1 { font-size:1.6rem; margin:0 0 4px; }
+  p.sub { color:var(--muted); margin:0 0 20px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:12px; }
+  .unit { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+  .unit h2 { font-size:1.1rem; margin:0; }
+  .unit small { color:var(--muted); }
+  button { font:inherit; cursor:pointer; border-radius:8px; border:1px solid var(--accent); background:var(--accent); color:#fff; padding:8px 14px; }
+  button.ghost { background:transparent; color:var(--accent); }
+  button:disabled { opacity:.5; cursor:default; }
+  .choice { display:block; width:100%; text-align:left; margin:8px 0; background:var(--card); color:var(--ink); border:1px solid var(--line); }
+  .choice:hover:not(:disabled) { border-color:var(--accent); }
+  .choice.correct { background:var(--okbg); border-color:var(--ok); }
+  .choice.wrong { background:var(--badbg); border-color:var(--bad); }
+  .why { margin-top:12px; padding:12px; border-left:4px solid var(--accent); background:var(--bg); border-radius:4px; }
+  .why b { display:block; margin-bottom:4px; }
+  .bar { height:8px; background:var(--line); border-radius:4px; overflow:hidden; margin:8px 0 16px; }
+  .bar > i { display:block; height:100%; background:var(--accent); }
+  .tag { display:inline-block; font-size:.75rem; padding:2px 8px; border-radius:99px; border:1px solid var(--line); color:var(--muted); margin-right:6px; }
+  .mastered { color:var(--ok); font-weight:600; }
+  .row { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+  a { color:var(--accent); }
+  .hidden { display:none; }
+  :focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Physics Quizzes</h1>
+  <p class="sub">The most-missed questions in each first-semester unit. Read the explanation after every answer, even when you get it right.</p>
+  <div id="app"></div>
+</main>
+
+<script src="kinematics.js"></script>
+<script src="projectile.js"></script>
+<script src="newton.js"></script>
+<script src="momentum.js"></script>
+<script src="energy.js"></script>
+<script>
+const MASTERY = 0.8;          // 80% = "proficient" on the course rubric
+const STORE_KEY = "physics-quiz-progress-v1";
+const ORDER = ["kinematics", "projectile", "newton", "momentum", "energy"];
+const app = document.getElementById("app");
+
+function load() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+function save(p) { try { localStorage.setItem(STORE_KEY, JSON.stringify(p)); } catch (e) {} }
+function el(tag, props, ...kids) {
+  const n = document.createElement(tag);
+  Object.assign(n, props || {});
+  kids.flat().forEach(k => n.append(k));
+  return n;
+}
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+function home() {
+  const prog = load();
+  app.replaceChildren(...ORDER.map(id => {
+    const u = QUIZZES[id], p = prog[id];
+    const pct = p ? Math.round(100 * p.best / p.total) : null;
+    const status = p ? el("small", { className: pct >= MASTERY * 100 ? "mastered" : "" }, `Best: ${p.best}/${p.total} (${pct}%)` + (pct >= MASTERY * 100 ? " ✓ proficient" : "")) : el("small", {}, "Not attempted");
+    const go = el("button", { onclick: () => run(id) }, p ? "Retake" : "Start");
+    return el("div", { className: "card unit" },
+      el("div", {}, el("h2", {}, u.title), el("small", {}, u.standards.join(" · ")), el("br"), status),
+      go);
+  }));
+  const reset = el("button", { className: "ghost", onclick: () => { if (confirm("Clear all saved scores on this device?")) { save({}); home(); } } }, "Clear saved scores");
+  app.append(el("div", { className: "row" }, reset));
+}
+
+function run(id) {
+  const u = QUIZZES[id];
+  const qs = shuffle(u.questions).map(q => {
+    const order = shuffle(q.choices.map((c, i) => i));
+    return { ...q, choices: order.map(i => q.choices[i]), answer: order.indexOf(q.answer) };
+  });
+  const missed = [];
+  let i = 0, score = 0;
+
+  function show() {
+    const q = qs[i];
+    const bar = el("div", { className: "bar" }, el("i", { style: `width:${(i / qs.length) * 100}%` }));
+    const why = el("div", { className: "why hidden", role: "status" });
+    const next = el("button", { className: "hidden" }, i + 1 < qs.length ? "Next question" : "See results");
+    const buttons = q.choices.map((c, ci) => {
+      const b = el("button", { className: "choice" }, c);
+      b.onclick = () => {
+        buttons.forEach((x, xi) => { x.disabled = true; if (xi === q.answer) x.classList.add("correct"); });
+        if (ci === q.answer) score++; else { b.classList.add("wrong"); missed.push(q); }
+        why.replaceChildren(el("b", {}, ci === q.answer ? "Correct" : "Not quite"), q.why, el("br"), el("span", { className: "tag" }, "Common misconception"), q.misconception);
+        why.classList.remove("hidden"); next.classList.remove("hidden"); next.focus();
+      };
+      return b;
+    });
+    next.onclick = () => { i++; i < qs.length ? show() : finish(); };
+    app.replaceChildren(
+      el("div", { className: "card" },
+        el("small", {}, `${u.title} — question ${i + 1} of ${qs.length}`), bar,
+        el("p", {}, el("strong", {}, q.q)), ...buttons, why, el("div", { className: "row" }, next)));
+  }
+
+  function finish() {
+    const prog = load();
+    const prev = prog[id];
+    prog[id] = { best: Math.max(score, prev ? prev.best : 0), total: qs.length, last: score };
+    save(prog);
+    const pct = Math.round(100 * score / qs.length);
+    const review = missed.length
+      ? el("div", {}, el("h3", {}, "Review what you missed"), ...missed.map(q => el("div", { className: "card" }, el("strong", {}, q.q), el("div", { className: "why" }, `Answer: ${q.choices[q.answer]}. `, q.why))))
+      : el("p", {}, "You missed nothing. Try explaining each answer out loud to a partner.");
+    app.replaceChildren(
+      el("div", { className: "card" },
+        el("h2", {}, `${score} / ${qs.length} (${pct}%)`),
+        el("p", { className: pct >= MASTERY * 100 ? "mastered" : "" }, pct >= MASTERY * 100 ? "Proficient. Move on to the practice problems." : "Not yet proficient (80% goal). Reread your Cornell notes for the missed ideas, then retake."),
+        el("div", { className: "row" }, el("button", { onclick: () => run(id) }, "Retake"), el("button", { className: "ghost", onclick: home }, "All units"))),
+      review);
+  }
+  show();
+}
+home();
+</script>
+</body>
+</html>
