@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics Quizzes: Most-Missed Questions</title>
+<style>
+  :root {
+    --bg: #f7f8fa; --card: #ffffff; --ink: #1b2330; --muted: #5b6678; --line: #d9dee7;
+    --accent: #2457c5; --good: #1d7a46; --good-bg: #e4f4ea; --bad: #b3261e; --bad-bg: #fbe9e7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12161d; --card: #1b212b; --ink: #e8ecf2; --muted: #9aa5b8; --line: #2e3745;
+      --accent: #7ba2ff; --good: #6fd19a; --good-bg: #17301f; --bad: #ff8a80; --bad-bg: #3a1c19;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 24px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  .topics { display: grid; gap: 12px; }
+  .topic { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .topic h2 { font-size: 1.1rem; margin: 0; }
+  .topic small { color: var(--muted); }
+  button { font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); padding: 10px 14px; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  @media (prefers-color-scheme: dark) { button.primary { color: #10131a; } }
+  button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .choices { display: grid; gap: 10px; margin: 16px 0; }
+  .choice { text-align: left; width: 100%; }
+  .choice.correct { background: var(--good-bg); border-color: var(--good); }
+  .choice.wrong { background: var(--bad-bg); border-color: var(--bad); }
+  .progress { display: flex; justify-content: space-between; color: var(--muted); font-size: .9rem; margin-bottom: 8px; }
+  .bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin-bottom: 16px; }
+  .bar > div { height: 100%; background: var(--accent); }
+  .why { border-left: 4px solid var(--accent); padding: 8px 12px; margin: 12px 0; background: var(--bg); }
+  .tag { font-size: .85rem; color: var(--muted); }
+  .score { font-size: 2rem; font-weight: 700; }
+  .review li { margin-bottom: 12px; }
+  .hidden { display: none; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Physics Quizzes: Most-Missed Questions</h1>
+  <p class="sub">Ten questions per topic, built around the misconceptions students miss most. Use g = 9.8 m/s². Ignore air resistance unless told otherwise.</p>
+  <div id="app"></div>
+</main>
+
+<script src="questions.js"></script>
+<script>
+(function () {
+  var app = document.getElementById('app');
+  var store = {
+    get: function () { try { return JSON.parse(localStorage.getItem('physicsQuizBest') || '{}'); } catch (e) { return {}; } },
+    set: function (v) { try { localStorage.setItem('physicsQuizBest', JSON.stringify(v)); } catch (e) {} }
+  };
+  var state = null;
+
+  function el(tag, attrs, children) {
+    var n = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) {
+      if (k === 'class') n.className = attrs[k];
+      else if (k === 'onclick') n.addEventListener('click', attrs[k]);
+      else n.setAttribute(k, attrs[k]);
+    });
+    [].concat(children || []).forEach(function (c) {
+      n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+    });
+    return n;
+  }
+  function shuffle(a) {
+    a = a.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function render(node) { app.innerHTML = ''; app.appendChild(node); window.scrollTo(0, 0); }
+
+  function home() {
+    var best = store.get();
+    var list = el('div', { class: 'topics' });
+    window.QUIZ.forEach(function (t) {
+      var b = best[t.id];
+      list.appendChild(el('div', { class: 'card topic' }, [
+        el('div', {}, [
+          el('h2', {}, t.title),
+          el('small', {}, t.standards + ' · ' + t.questions.length + ' questions' + (b !== undefined ? ' · Best: ' + b + '/' + t.questions.length : ''))
+        ]),
+        el('button', { class: 'primary', onclick: function () { start(t); } }, b !== undefined ? 'Retake' : 'Start')
+      ]));
+    });
+    render(list);
+  }
+
+  function start(topic) {
+    // Shuffle question order and answer order; keep track of the correct choice.
+    var qs = shuffle(topic.questions).map(function (q) {
+      var order = shuffle(q.choices.map(function (_, i) { return i; }));
+      return { q: q, order: order, correctPos: order.indexOf(q.answer) };
+    });
+    state = { topic: topic, qs: qs, i: 0, score: 0, missed: [] };
+    question();
+  }
+
+  function question() {
+    var item = state.qs[state.i], q = item.q, answered = false;
+    var total = state.qs.length;
+    var box = el('div', { class: 'card' });
+    box.appendChild(el('div', { class: 'progress' }, [
+      el('span', {}, state.topic.title + ' · Question ' + (state.i + 1) + ' of ' + total),
+      el('span', {}, 'Score: ' + state.score)
+    ]));
+    var bar = el('div', { class: 'bar' }, [el('div', { style: 'width:' + (state.i / total * 100) + '%' })]);
+    box.appendChild(bar);
+    box.appendChild(el('p', {}, q.q));
+    var choices = el('div', { class: 'choices', role: 'group', 'aria-label': 'Answer choices' });
+    var feedback = el('div', { class: 'hidden', 'aria-live': 'polite' });
+    var next = el('button', { class: 'primary hidden', onclick: function () {
+      state.i++;
+      if (state.i < total) question(); else results();
+    } }, state.i + 1 < total ? 'Next question' : 'See results');
+    var btns = item.order.map(function (orig, pos) {
+      var b = el('button', { class: 'choice', onclick: function () {
+        if (answered) return;
+        answered = true;
+        var right = pos === item.correctPos;
+        if (right) state.score++; else state.missed.push({ q: q, chosen: q.choices[orig] });
+        btns.forEach(function (x, p) { x.disabled = true; if (p === item.correctPos) x.classList.add('correct'); });
+        if (!right) b.classList.add('wrong');
+        feedback.className = '';
+        feedback.innerHTML = '';
+        feedback.appendChild(el('strong', {}, right ? 'Correct.' : 'Not quite.'));
+        feedback.appendChild(el('div', { class: 'why' }, q.why));
+        feedback.appendChild(el('div', { class: 'tag' }, 'Common mistake: ' + q.miss));
+        next.classList.remove('hidden');
+        next.focus();
+      } }, String.fromCharCode(65 + pos) + '. ' + q.choices[orig]);
+      choices.appendChild(b);
+      return b;
+    });
+    box.appendChild(choices);
+    box.appendChild(feedback);
+    box.appendChild(el('div', { style: 'margin-top:12px' }, next));
+    render(box);
+  }
+
+  function results() {
+    var t = state.topic, total = state.qs.length;
+    var best = store.get();
+    if (best[t.id] === undefined || state.score > best[t.id]) { best[t.id] = state.score; store.set(best); }
+    var pct = Math.round(state.score / total * 100);
+    var level = pct >= 90 ? 'Advanced (4)' : pct >= 75 ? 'Proficient (3)' : pct >= 60 ? 'Developing (2)' : 'Beginning (1)';
+    var box = el('div', { class: 'card' }, [
+      el('div', { class: 'tag' }, t.title + ' results'),
+      el('div', { class: 'score' }, state.score + ' / ' + total + ' (' + pct + '%)'),
+      el('p', {}, 'Suggested level: ' + level + '. The quiz is a practice check; your teacher assesses mastery using the rubric in docs/assessment-and-progress.md.')
+    ]);
+    if (state.missed.length) {
+      box.appendChild(el('h2', {}, 'Review what you missed'));
+      var ol = el('ol', { class: 'review' });
+      state.missed.forEach(function (m) {
+        ol.appendChild(el('li', {}, [
+          el('div', {}, m.q.q),
+          el('div', { class: 'tag' }, 'You chose: ' + m.chosen),
+          el('div', {}, 'Answer: ' + m.q.choices[m.q.answer]),
+          el('div', { class: 'why' }, m.q.why)
+        ]));
+      });
+      box.appendChild(ol);
+    } else {
+      box.appendChild(el('p', {}, 'Perfect score. Try the practice problems in the topic file next.'));
+    }
+    box.appendChild(el('div', {}, [
+      el('button', { class: 'primary', onclick: function () { start(t); } }, 'Retake'),
+      document.createTextNode(' '),
+      el('button', { onclick: home }, 'All topics')
+    ]));
+    render(box);
+  }
+
+  home();
+})();
+</script>
+</body>
+</html>
