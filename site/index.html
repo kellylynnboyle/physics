@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Physics Learning Project</title>
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--ink:#1c2430;--mute:#5b6676;--line:#d9dee6;--acc:#2456c5;--ok:#1b7f3b;--bad:#b3261e;--okbg:#e6f4ea;--badbg:#fce8e6}
+@media (prefers-color-scheme:dark){:root{--bg:#12161c;--card:#1b212a;--ink:#e8ecf2;--mute:#9aa6b6;--line:#2c3542;--acc:#7aa2ff;--ok:#6fd08c;--bad:#ff8a80;--okbg:#17301f;--badbg:#3a1d1b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,sans-serif}
+header{padding:16px;border-bottom:1px solid var(--line);background:var(--card)}
+h1{font-size:1.25rem;margin:0}h2{font-size:1.15rem}h3{font-size:1rem}
+header p{margin:2px 0 0;color:var(--mute);font-size:.9rem}
+nav{display:flex;gap:6px;flex-wrap:wrap;padding:12px 16px}
+nav button,.tabs button,.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 12px;border-radius:8px;font:inherit;cursor:pointer}
+nav button[aria-pressed=true],.tabs button[aria-pressed=true],.btn.primary{background:var(--acc);color:#fff;border-color:var(--acc)}
+main{max-width:900px;margin:0 auto;padding:0 16px 48px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+table{width:100%;border-collapse:collapse}
+td,th{border:1px solid var(--line);padding:8px;vertical-align:top;text-align:left}
+td.cue{width:32%;font-weight:600;background:color-mix(in srgb,var(--acc) 8%,transparent)}
+.summary{border-top:3px solid var(--acc)}
+.choice{display:block;width:100%;text-align:left;margin:6px 0;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
+.choice:hover:not(:disabled){border-color:var(--acc)}
+.choice.right{background:var(--okbg);border-color:var(--ok)}
+.choice.wrong{background:var(--badbg);border-color:var(--bad)}
+.why{margin-top:8px;color:var(--mute)}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}.bar>i{display:block;height:100%;background:var(--ok)}
+label.chk{display:flex;gap:8px;align-items:flex-start;margin:6px 0}
+.muted{color:var(--mute);font-size:.9rem}
+details{margin:4px 0 8px 18px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+@media print{nav,.tabs,.btn{display:none}}
+</style>
+</head>
+<body>
+<header><h1>Physics Learning Project — Semester 1 Mechanics</h1>
+<p>Aligned to California NGSS (HS-PS2, HS-PS3). Progress is saved on this device only.</p></header>
+<nav id="units" aria-label="Units"></nav>
+<main>
+<div class="tabs" id="tabs" role="group" aria-label="Section"></div>
+<div id="view"></div>
+</main>
+<script src="data.js"></script>
+<script>
+const U = window.COURSE.units;
+const KEY = "physics-progress-v1";
+let st = {unit: 0, tab: "overview"};
+let prog = {};
+try { prog = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { prog = {}; }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(prog)); } catch (e) {} };
+const P = id => (prog[id] = prog[id] || {obj: {}, scores: []});
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const $ = id => document.getElementById(id);
+const TABS = [["overview","Overview"],["notes","Cornell Notes"],["quiz","Quiz"],["practice","Practice"],["resources","Resources & Real World"],["progress","My Progress"]];
+let quiz = null;
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function renderNav(){
+  $("units").innerHTML = U.map((u,i)=>`<button aria-pressed="${i===st.unit}" data-u="${i}">${u.num}. ${esc(u.title)}</button>`).join("");
+  $("units").querySelectorAll("button").forEach(b=>b.onclick=()=>{st.unit=+b.dataset.u;quiz=null;render();});
+  $("tabs").innerHTML = TABS.map(([k,l])=>`<button aria-pressed="${k===st.tab}" data-t="${k}">${l}</button>`).join("");
+  $("tabs").querySelectorAll("button").forEach(b=>b.onclick=()=>{st.tab=b.dataset.t;render();});
+}
+
+function overview(u){
+  const p=P(u.id);
+  return `<div class="card"><h2>${esc(u.title)}</h2><h3>NGSS learning goals</h3><ul>${u.standards.map(s=>`<li>${esc(s)}</li>`).join("")}</ul></div>
+  <div class="card"><h3>Learning objectives</h3>${u.objectives.map((o,i)=>`<label class="chk"><input type="checkbox" data-o="${i}" ${p.obj[i]?"checked":""}> <span>${esc(o)}</span></label>`).join("")}</div>
+  <div class="card"><h3>Key concepts</h3><ul>${u.concepts.map(c=>`<li>${esc(c)}</li>`).join("")}</ul></div>
+  <div class="card"><h3>Lab / investigation</h3><p>${esc(u.lab)}</p></div>`;
+}
+
+function notes(u){
+  const c=u.cornell;
+  return `<div class="card"><h2>Cornell Notes: ${esc(c.topic)}</h2>
+  <p class="muted">Cover the right column and use the cues to quiz yourself, then write the summary in your own words.</p>
+  <div class="row"><button class="btn" id="hide">Hide / show notes column</button></div>
+  <table><thead><tr><th>Cue / Question</th><th class="nt">Notes</th></tr></thead><tbody>
+  ${c.rows.map(r=>`<tr><td class="cue">${esc(r.cue)}</td><td class="nt">${esc(r.notes)}</td></tr>`).join("")}</tbody></table></div>
+  <div class="card summary"><h3>Summary</h3><p>${esc(c.summary)}</p></div>`;
+}
+
+function quizView(u){
+  const p=P(u.id);
+  if(!quiz||quiz.unit!==u.id){
+    const best=p.scores.length?Math.max(...p.scores):null;
+    return `<div class="card"><h2>Most-missed questions: ${esc(u.title)}</h2>
+    <p>${u.quiz.length} questions on the ideas students miss most. Answer choices are shuffled each attempt.</p>
+    <p class="muted">Best score: ${best===null?"none yet":best+"%"} · Mastery = 80%+ on two attempts</p>
+    <button class="btn primary" id="start">Start quiz</button></div>`;
+  }
+  if(quiz.i>=quiz.items.length){
+    const pct=Math.round(100*quiz.right/quiz.items.length);
+    const missed=quiz.missed.length;
+    return `<div class="card"><h2>Score: ${quiz.right}/${quiz.items.length} (${pct}%)</h2>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+    <p>${pct>=80?"Mastery level — repeat on another day to lock it in.":"Review the Cornell notes cues for the questions you missed, then try again."}</p>
+    ${missed?`<h3>Review missed</h3>${quiz.missed.map(m=>`<div class="card"><strong>${esc(m.q)}</strong><div class="why">Answer: ${esc(m.choices[m.answer])}. ${esc(m.why)}</div></div>`).join("")}`:""}
+    <div class="row"><button class="btn primary" id="start">New attempt</button>${missed?`<button class="btn" id="retry">Retry missed only</button>`:""}</div></div>`;
+  }
+  const it=quiz.items[quiz.i];
+  return `<div class="card"><div class="muted">Question ${quiz.i+1} of ${quiz.items.length}</div>
+  <div class="bar"><i style="width:${100*quiz.i/quiz.items.length}%"></i></div>
+  <h3>${esc(it.q)}</h3><div id="choices">${it.order.map(k=>`<button class="choice" data-k="${k}">${esc(it.choices[k])}</button>`).join("")}</div>
+  <div id="fb" aria-live="polite"></div></div>`;
+}
+
+function practice(u){
+  return `<div class="card"><h2>Practice problems</h2><p class="muted">Show setup, units, and sign convention before opening the answer.</p>
+  <ol>${u.practice.map(p=>`<li>${esc(p.q)}<details><summary>Answer</summary>${esc(p.a)}</details></li>`).join("")}</ol></div>`;
+}
+
+function resources(u){
+  return `<div class="card"><h2>Learning resources</h2><ul>${u.resources.map(r=>`<li>${esc(r)}</li>`).join("")}</ul></div>
+  <div class="card"><h2>Real-world connections</h2><ul>${u.realworld.map(r=>`<li>${esc(r)}</li>`).join("")}</ul></div>`;
+}
+
+function progress(){
+  const rows=U.map(u=>{
+    const p=P(u.id), done=Object.values(p.obj).filter(Boolean).length;
+    const sc=p.scores, best=sc.length?Math.max(...sc):null, hits=sc.filter(s=>s>=80).length;
+    const mastered=done===u.objectives.length&&hits>=2;
+    return `<tr><td>${u.num}. ${esc(u.title)}</td><td>${done}/${u.objectives.length}</td><td>${best===null?"—":best+"%"}</td><td>${sc.length}</td><td>${mastered?"✅ Mastered":hits?"In progress":"Not started"}</td></tr>`;
+  }).join("");
+  return `<div class="card"><h2>My progress</h2><table><thead><tr><th>Unit</th><th>Objectives</th><th>Best quiz</th><th>Attempts</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table>
+  <p class="muted">Mastered = all objectives checked and two quiz attempts at 80% or higher. Instructors can have students screenshot or print this page (Ctrl/Cmd+P).</p>
+  <button class="btn" id="reset">Reset my progress</button></div>`;
+}
+
+function startQuiz(u,items){
+  quiz={unit:u.id,i:0,right:0,missed:[],items:shuffle(items).map(q=>({...q,order:shuffle(q.choices.map((_,k)=>k))}))};
+  render();
+}
+
+function bind(u){
+  const v=$("view");
+  v.querySelectorAll("[data-o]").forEach(c=>c.onchange=()=>{P(u.id).obj[c.dataset.o]=c.checked;save();});
+  const h=$("hide"); if(h) h.onclick=()=>v.querySelectorAll(".nt").forEach(e=>e.style.visibility=e.style.visibility==="hidden"?"":"hidden");
+  const s=$("start"); if(s) s.onclick=()=>startQuiz(u,u.quiz);
+  const r=$("retry"); if(r) r.onclick=()=>startQuiz(u,quiz.missed.map(({order,...q})=>q));
+  const rs=$("reset"); if(rs) rs.onclick=()=>{if(confirm("Erase all saved progress on this device?")){prog={};save();render();}};
+  v.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{
+    const it=quiz.items[quiz.i], k=+b.dataset.k, ok=k===it.answer;
+    v.querySelectorAll(".choice").forEach(x=>{x.disabled=true;if(+x.dataset.k===it.answer)x.classList.add("right");});
+    if(!ok)b.classList.add("wrong");
+    if(ok)quiz.right++;else quiz.missed.push(it);
+    $("fb").innerHTML=`<p class="why"><strong>${ok?"Correct.":"Not quite."}</strong> ${esc(it.why)}</p><button class="btn primary" id="next">${quiz.i+1===quiz.items.length?"See score":"Next"}</button>`;
+    $("next").onclick=()=>{
+      quiz.i++;
+      if(quiz.i>=quiz.items.length&&!quiz.retry){
+        if(quiz.items.length===u.quiz.length){const p=P(u.id);p.scores.push(Math.round(100*quiz.right/quiz.items.length));save();}
+      }
+      render();
+    };
+    $("next").focus();
+  });
+}
+
+function render(){
+  renderNav();
+  const u=U[st.unit];
+  const f={overview,notes,quiz:quizView,practice,resources,progress:()=>progress()}[st.tab];
+  $("view").innerHTML=f(u);
+  bind(u);
+}
+render();
+</script>
+</body>
+</html>
