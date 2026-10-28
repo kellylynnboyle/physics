@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics Quizzes</title>
+<style>
+  :root { --bg:#f7f8fa; --card:#fff; --text:#1c2430; --muted:#5b6675; --line:#d9dee6; --accent:#2457c5; --ok:#1b7f3b; --okbg:#e6f4ea; --bad:#b3261e; --badbg:#fce8e6; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#14181f; --card:#1d232d; --text:#e8ecf2; --muted:#9aa6b6; --line:#323b49; --accent:#7aa2ff; --ok:#6fd48b; --okbg:#173323; --bad:#ff8a80; --badbg:#3a1d1b; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.5 system-ui, sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:16px; }
+  h1 { font-size:1.4rem; margin:8px 0 4px; }
+  .sub { color:var(--muted); margin:0 0 16px; }
+  .tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  button { font:inherit; cursor:pointer; }
+  .tab { padding:8px 12px; border:1px solid var(--line); background:var(--card); color:var(--text); border-radius:8px; }
+  .tab[aria-pressed="true"] { border-color:var(--accent); outline:2px solid var(--accent); }
+  .best { color:var(--muted); font-size:.8rem; display:block; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
+  .progress { color:var(--muted); font-size:.9rem; margin-bottom:8px; }
+  .q { font-size:1.1rem; margin:0 0 12px; }
+  .opt { display:block; width:100%; text-align:left; margin:8px 0; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:var(--card); color:var(--text); }
+  .opt:hover:not(:disabled) { border-color:var(--accent); }
+  .opt.ok { border-color:var(--ok); background:var(--okbg); }
+  .opt.bad { border-color:var(--bad); background:var(--badbg); }
+  .opt:disabled { cursor:default; }
+  .why { margin-top:12px; padding:10px 12px; border-left:4px solid var(--accent); background:var(--bg); border-radius:4px; }
+  .primary { margin-top:14px; padding:10px 16px; border:0; border-radius:8px; background:var(--accent); color:#fff; }
+  @media (prefers-color-scheme: dark) { .primary { color:#0b1220; } }
+  .score { font-size:2rem; font-weight:700; margin:0; }
+  ul.missed { padding-left:20px; }
+  ul.missed li { margin:10px 0; }
+  .tag { font-size:.8rem; color:var(--muted); }
+  :focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Physics Quizzes: Most-Missed Questions</h1>
+  <p class="sub">Pick a unit. Questions are shuffled each attempt. Mastery goal: 80% or higher. g = 9.8 m/s².</p>
+  <div class="tabs" id="tabs" role="group" aria-label="Units"></div>
+  <section class="card" id="stage" aria-live="polite"></section>
+</main>
+<script src="questions.js"></script>
+<script>
+(function () {
+  var units = window.QUIZ, tabs = document.getElementById("tabs"), stage = document.getElementById("stage");
+  var current = null, order = [], idx = 0, correct = 0, missed = [], answered = false;
+
+  function store(key, val) {
+    try { if (val === undefined) return JSON.parse(localStorage.getItem(key)); localStorage.setItem(key, JSON.stringify(val)); } catch (e) { return null; }
+  }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
+
+  function renderTabs() {
+    tabs.textContent = "";
+    units.forEach(function (u) {
+      var b = el("button", "tab"); b.type = "button";
+      b.setAttribute("aria-pressed", current && current.id === u.id ? "true" : "false");
+      b.appendChild(document.createTextNode(u.title));
+      var best = store("best-" + u.id);
+      b.appendChild(el("span", "best", best == null ? "not attempted" : "best: " + best + "%"));
+      b.addEventListener("click", function () { start(u); });
+      tabs.appendChild(b);
+    });
+  }
+
+  function start(u) {
+    current = u; order = shuffle(u.questions); idx = 0; correct = 0; missed = [];
+    renderTabs(); showQuestion();
+  }
+
+  function showQuestion() {
+    answered = false; stage.textContent = "";
+    var item = order[idx];
+    stage.appendChild(el("div", "progress", current.title + ": question " + (idx + 1) + " of " + order.length));
+    stage.appendChild(el("p", "q", item.q));
+    var perm = shuffle(item.options.map(function (t, i) { return { t: t, i: i }; }));
+    var btns = perm.map(function (o) {
+      var b = el("button", "opt", o.t); b.type = "button";
+      b.addEventListener("click", function () { choose(o.i, btns, perm, b); });
+      stage.appendChild(b); return b;
+    });
+  }
+
+  function choose(picked, btns, perm) {
+    if (answered) return; answered = true;
+    var item = order[idx], right = picked === item.answer;
+    if (right) correct++; else missed.push(item);
+    btns.forEach(function (b, k) {
+      b.disabled = true;
+      if (perm[k].i === item.answer) b.classList.add("ok");
+      else if (perm[k].i === picked) b.classList.add("bad");
+    });
+    stage.appendChild(el("div", "why", (right ? "Correct. " : "Not quite. ") + item.why));
+    var next = el("button", "primary", idx + 1 < order.length ? "Next question" : "See results"); next.type = "button";
+    next.addEventListener("click", function () { idx++; if (idx < order.length) showQuestion(); else showResults(); });
+    stage.appendChild(next); next.focus();
+  }
+
+  function showResults() {
+    var pct = Math.round(100 * correct / order.length), prev = store("best-" + current.id);
+    if (prev == null || pct > prev) store("best-" + current.id, pct);
+    renderTabs(); stage.textContent = "";
+    stage.appendChild(el("p", "score", pct + "%  (" + correct + " / " + order.length + ")"));
+    stage.appendChild(el("p", "", pct >= 80 ? "Mastery reached. Record it in your tracker." : "Below the 80% mastery goal. Review the objectives below in your Cornell notes, then retake."));
+    if (missed.length) {
+      stage.appendChild(el("h2", "", "Review what you missed"));
+      var ul = el("ul", "missed");
+      missed.forEach(function (m) {
+        var li = el("li"); li.appendChild(el("div", "", m.q));
+        li.appendChild(el("div", "tag", "Objective " + m.obj + ". Answer: " + m.options[m.answer]));
+        li.appendChild(el("div", "", m.why)); ul.appendChild(li);
+      });
+      stage.appendChild(ul);
+    }
+    var again = el("button", "primary", "Retake this quiz"); again.type = "button";
+    again.addEventListener("click", function () { start(current); });
+    stage.appendChild(again);
+  }
+
+  renderTabs();
+  stage.appendChild(el("p", "", "Choose a unit above to begin."));
+})();
+</script>
+</body>
+</html>
