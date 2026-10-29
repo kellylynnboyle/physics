@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics Quizzes: Most-Missed Questions</title>
+<style>
+  :root { --bg:#f6f8fc; --card:#fff; --ink:#1b2333; --muted:#5b6678; --navy:#1f3864; --line:#d5dcea;
+          --good:#1b7f3b; --goodbg:#e4f4e8; --bad:#b3261e; --badbg:#fbe9e7; --accent:#2f5fb3; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#10151f; --card:#1a2231; --ink:#e8edf6; --muted:#9aa6bb; --navy:#9db8ee; --line:#303b52;
+            --good:#7fd69a; --goodbg:#17301f; --bad:#ff9d94; --badbg:#3a1d1a; --accent:#7ea6ec; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:24px 16px 48px; }
+  h1 { color:var(--navy); font-size:1.6rem; margin:0 0 4px; }
+  p.sub { color:var(--muted); margin:0 0 20px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px; margin-bottom:16px; }
+  .grid { display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); }
+  button { font:inherit; cursor:pointer; color:inherit; }
+  .topic { text-align:left; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; }
+  .topic:hover, .topic:focus-visible { border-color:var(--accent); outline:2px solid var(--accent); outline-offset:1px; }
+  .topic b { display:block; color:var(--navy); }
+  .topic span { color:var(--muted); font-size:.9rem; }
+  .badge { display:inline-block; margin-top:6px; padding:1px 8px; border-radius:99px; font-size:.8rem; background:var(--goodbg); color:var(--good); }
+  .bar { height:8px; background:var(--line); border-radius:8px; overflow:hidden; margin:8px 0 18px; }
+  .bar > div { height:100%; background:var(--accent); width:0; transition:width .2s; }
+  .meta { color:var(--muted); font-size:.9rem; display:flex; justify-content:space-between; }
+  .q { font-size:1.1rem; font-weight:600; margin:6px 0 14px; }
+  .choice { display:block; width:100%; text-align:left; margin:8px 0; padding:12px 14px; background:var(--card);
+            border:1.5px solid var(--line); border-radius:10px; }
+  .choice:hover:not(:disabled) { border-color:var(--accent); }
+  .choice:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  .choice.correct { background:var(--goodbg); border-color:var(--good); }
+  .choice.wrong { background:var(--badbg); border-color:var(--bad); }
+  .choice:disabled { cursor:default; }
+  .fb { margin-top:12px; padding:12px 14px; border-radius:10px; background:var(--bg); border-left:4px solid var(--accent); }
+  .fb .tag { font-size:.85rem; color:var(--muted); margin-top:6px; }
+  .primary { background:var(--accent); color:#fff; border:0; border-radius:10px; padding:10px 18px; margin-top:14px; }
+  .ghost { background:transparent; border:1px solid var(--line); border-radius:10px; padding:8px 14px; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .score { font-size:2.4rem; font-weight:700; color:var(--navy); }
+  .miss { border-top:1px solid var(--line); padding:10px 0; }
+  .miss small { color:var(--muted); display:block; }
+  .hidden { display:none; }
+  footer { color:var(--muted); font-size:.85rem; margin-top:24px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Physics Quizzes: Most-Missed Questions</h1>
+  <p class="sub">Pick a unit. You get feedback after each answer. Score 80% or higher to mark a unit quiz-ready.</p>
+
+  <section id="home">
+    <div class="grid" id="topics"></div>
+    <div class="row" style="margin-top:16px">
+      <button class="ghost" id="all">Mixed review (all units)</button>
+      <button class="ghost" id="reset">Reset saved progress</button>
+    </div>
+  </section>
+
+  <section id="quiz" class="hidden">
+    <div class="meta"><span id="qtitle"></span><span id="qcount"></span></div>
+    <div class="bar"><div id="prog"></div></div>
+    <div class="card">
+      <div class="q" id="qtext"></div>
+      <div id="choices" role="group" aria-label="Answer choices"></div>
+      <div id="fb" class="fb hidden" role="status" aria-live="polite"></div>
+      <button class="primary hidden" id="next">Next</button>
+    </div>
+  </section>
+
+  <section id="done" class="hidden">
+    <div class="card">
+      <div class="score" id="pct"></div>
+      <p id="verdict"></p>
+      <div id="missed"></div>
+      <div class="row" style="margin-top:14px">
+        <button class="primary" id="again">Retake</button>
+        <button class="ghost" id="back">Back to units</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>Progress is saved only in this browser. Answers use g = 9.8 m/s².</footer>
+</main>
+
+<script src="questions.js"></script>
+<script>
+(function () {
+  var KEY = "physics-quiz-progress-v1";
+  var bank = window.QUIZ_BANK;
+  var $ = function (id) { return document.getElementById(id); };
+  var state = { topic: null, items: [], i: 0, right: 0, missed: [], locked: false };
+
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(p) { try { localStorage.setItem(KEY, JSON.stringify(p)); } catch (e) {} }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function show(id) { ["home", "quiz", "done"].forEach(function (s) { $(s).classList.toggle("hidden", s !== id); }); }
+
+  function renderHome() {
+    var p = load(), box = $("topics");
+    box.innerHTML = "";
+    bank.forEach(function (t) {
+      var b = document.createElement("button");
+      b.className = "topic";
+      var best = p[t.id];
+      b.innerHTML = "<b></b><span></span>";
+      b.querySelector("b").textContent = t.name;
+      b.querySelector("span").textContent = t.questions.length + " questions" + (best != null ? " · best " + best + "%" : "");
+      if (best >= 80) { var g = document.createElement("div"); g.className = "badge"; g.textContent = "Quiz-ready"; b.appendChild(g); }
+      b.onclick = function () { start(t.id); };
+      box.appendChild(b);
+    });
+    show("home");
+  }
+
+  function start(id) {
+    var items, title;
+    if (id === "all") {
+      title = "Mixed review";
+      items = [];
+      bank.forEach(function (t) { t.questions.forEach(function (q) { items.push(q); }); });
+      items = shuffle(items).slice(0, 15);
+    } else {
+      var t = bank.filter(function (x) { return x.id === id; })[0];
+      title = t.name; items = shuffle(t.questions);
+    }
+    state = { topic: id, title: title, items: items, i: 0, right: 0, missed: [], locked: false };
+    show("quiz"); ask();
+  }
+
+  function ask() {
+    var q = state.items[state.i];
+    state.locked = false;
+    $("qtitle").textContent = state.title;
+    $("qcount").textContent = "Question " + (state.i + 1) + " of " + state.items.length;
+    $("prog").style.width = (state.i / state.items.length * 100) + "%";
+    $("qtext").textContent = q.q;
+    $("fb").classList.add("hidden");
+    $("next").classList.add("hidden");
+    var box = $("choices"); box.innerHTML = "";
+    shuffle(q.choices.map(function (c, k) { return { text: c, ok: k === 0 }; })).forEach(function (c) {
+      var b = document.createElement("button");
+      b.className = "choice"; b.textContent = c.text; b.dataset.ok = c.ok ? "1" : "0";
+      b.onclick = function () { answer(b, q); };
+      box.appendChild(b);
+    });
+  }
+
+  function answer(btn, q) {
+    if (state.locked) return;
+    state.locked = true;
+    var ok = btn.dataset.ok === "1";
+    if (ok) state.right++; else state.missed.push(q);
+    Array.prototype.forEach.call($("choices").children, function (b) {
+      b.disabled = true;
+      if (b.dataset.ok === "1") b.classList.add("correct");
+      else if (b === btn) b.classList.add("wrong");
+    });
+    var fb = $("fb");
+    fb.innerHTML = "<b></b> <span></span><div class='tag'></div>";
+    fb.querySelector("b").textContent = ok ? "Correct." : "Not quite.";
+    fb.querySelector("span").textContent = q.why;
+    fb.querySelector(".tag").textContent = "Common mistake: " + q.miss;
+    fb.classList.remove("hidden");
+    var n = $("next"); n.textContent = state.i + 1 < state.items.length ? "Next" : "See results";
+    n.classList.remove("hidden"); n.focus();
+  }
+
+  $("next").onclick = function () {
+    state.i++;
+    if (state.i < state.items.length) ask(); else finish();
+  };
+
+  function finish() {
+    var pct = Math.round(state.right / state.items.length * 100);
+    $("pct").textContent = pct + "%  (" + state.right + "/" + state.items.length + ")";
+    $("verdict").textContent = pct >= 80 ? "Quiz-ready. Review any missed items below, then try the unit test."
+                                         : "Not yet at 80%. Re-read the Cornell cues for this unit, review the misses below, and retake.";
+    var m = $("missed"); m.innerHTML = "";
+    state.missed.forEach(function (q) {
+      var d = document.createElement("div"); d.className = "miss";
+      d.innerHTML = "<b></b><small></small>";
+      d.querySelector("b").textContent = q.q;
+      d.querySelector("small").textContent = q.why;
+      m.appendChild(d);
+    });
+    if (state.topic !== "all") {
+      var p = load(); if (p[state.topic] == null || pct > p[state.topic]) p[state.topic] = pct; save(p);
+    }
+    $("prog").style.width = "100%";
+    show("done");
+  }
+
+  $("again").onclick = function () { start(state.topic); };
+  $("back").onclick = renderHome;
+  $("all").onclick = function () { start("all"); };
+  $("reset").onclick = function () { if (confirm("Clear saved quiz scores on this device?")) { save({}); renderHome(); } };
+
+  renderHome();
+})();
+</script>
+</body>
+</html>
