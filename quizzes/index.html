@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics Quizzes – Most-Missed Questions</title>
+<style>
+  :root { --bg:#fff; --fg:#1b1f24; --muted:#5b6570; --card:#f3f6fb; --accent:#1f3864; --ok:#1a7f37; --bad:#c62828; --line:#cfd8e3; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#14181d; --fg:#e8ecf0; --muted:#9aa5b1; --card:#1f262e; --accent:#8fb3ff; --ok:#56d364; --bad:#ff7b72; --line:#33404d; }
+  }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.5 system-ui,sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:16px; }
+  h1 { color:var(--accent); font-size:1.5rem; }
+  nav { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+  button { font:inherit; padding:8px 14px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--fg); cursor:pointer; }
+  button.active, button.primary { background:var(--accent); color:var(--bg); border-color:var(--accent); }
+  .q { background:var(--card); border-radius:10px; padding:14px; margin:14px 0; }
+  .opt { display:block; width:100%; text-align:left; margin:6px 0; }
+  .opt.correct { border-color:var(--ok); border-width:2px; }
+  .opt.wrong { border-color:var(--bad); border-width:2px; }
+  .exp { margin-top:8px; color:var(--muted); }
+  .score { font-weight:600; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Physics Quizzes: Most-Missed Questions</h1>
+  <p>Pick a unit. Choose an answer to see feedback immediately. Missed questions can be retried.</p>
+  <nav id="tabs" aria-label="Units"></nav>
+  <p class="score" id="score" aria-live="polite"></p>
+  <div id="quiz"></div>
+  <p><button id="retry" class="primary" hidden>Retry missed questions</button> <button id="reset">Restart unit</button></p>
+</main>
+<script>
+// g = 9.8 m/s^2 throughout. `a` is the index of the correct option.
+const UNITS = {
+  "Kinematics": [
+    {q:"A car speeds up from 0 to 20 m/s in 5 s. What is its average acceleration?", o:["100 m/s²","4 m/s²","0.25 m/s²","20 m/s²"], a:1, e:"a = Δv/Δt = 20/5 = 4 m/s². Don't multiply velocity and time."},
+    {q:"A ball thrown straight up is at its highest point. What are its velocity and acceleration there?", o:["v = 0, a = 0","v = 0, a = 9.8 m/s² downward","v = 9.8 m/s, a = 0","v = 0, a = 9.8 m/s² upward"], a:1, e:"Gravity acts the whole flight. Velocity is momentarily zero, but acceleration stays 9.8 m/s² down."},
+    {q:"A runner completes one 400 m lap in 80 s and ends at the start. What is the average velocity?", o:["5 m/s","0 m/s","400 m/s","80 m/s"], a:1, e:"Displacement is zero, so average velocity is zero. The average speed is 400/80 = 5 m/s."},
+    {q:"On a velocity–time graph, what does the area under the curve represent?", o:["Acceleration","Displacement","Force","Average speed"], a:1, e:"Slope of v–t = acceleration; area = displacement (velocity × time)."},
+    {q:"An object is dropped from rest. How far does it fall in 2 s (ignore air)?", o:["9.8 m","19.6 m","39.2 m","4.9 m"], a:1, e:"d = ½gt² = ½(9.8)(2²) = 19.6 m. Remember the ½ and square the time."},
+    {q:"An object moves in the negative direction and its acceleration is also negative. What happens to its speed?", o:["It slows down","It speeds up","It stays constant","It must be zero"], a:1, e:"Velocity and acceleration point the same way, so speed increases. A negative sign is a direction, not 'slowing down'."}
+  ],
+  "Projectile Motion": [
+    {q:"One ball is dropped and another is fired horizontally from the same height at the same instant. Which lands first (no air resistance)?", o:["The dropped ball","The fired ball","They land together","Depends on the mass"], a:2, e:"Vertical motion is independent of horizontal motion. Both fall with the same acceleration from the same height."},
+    {q:"What is the horizontal acceleration of a projectile (no air resistance)?", o:["9.8 m/s²","Equal to the initial speed","Zero","It decreases over time"], a:2, e:"No horizontal force means a_x = 0, so horizontal velocity is constant."},
+    {q:"A ball is launched at 20 m/s at 30° above horizontal. What are its initial components?", o:["vₓ = 10 m/s, vᵧ = 17.3 m/s","vₓ = 17.3 m/s, vᵧ = 10 m/s","vₓ = 20 m/s, vᵧ = 0","vₓ = 14.1 m/s, vᵧ = 14.1 m/s"], a:1, e:"vₓ = 20 cos30° = 17.3 m/s; vᵧ = 20 sin30° = 10 m/s."},
+    {q:"Ignoring air resistance on level ground, which launch angle gives the greatest range?", o:["30°","45°","60°","90°"], a:1, e:"45° maximizes range. 30° and 60° give equal (shorter) ranges."},
+    {q:"A ball rolls off a 45 m cliff horizontally at 10 m/s. About how far from the base does it land?", o:["10 m","30 m","45 m","90 m"], a:1, e:"t = √(2h/g) = √(90/9.8) = 3.03 s; range = 10 × 3.03 ≈ 30 m."},
+    {q:"At the top of its path, a projectile launched at an angle has…", o:["zero velocity","zero speed but downward acceleration","horizontal velocity only, and acceleration 9.8 m/s² down","no acceleration"], a:2, e:"Only the vertical component is zero. Horizontal velocity remains and gravity still accelerates it downward."}
+  ],
+  "Newton's Laws": [
+    {q:"A book rests on a table. Which force is the third-law (action–reaction) pair of the book's weight (Earth pulling the book down)?", o:["The normal force of the table on the book","The book pulling up on the Earth","Friction from the table","The table pulling down on the floor"], a:1, e:"Third-law pairs are the same type of force acting on two different objects: Earth pulls book, book pulls Earth. The normal force just balances weight here."},
+    {q:"A 10 kg object has a net force of 30 N. What is its acceleration?", o:["300 m/s²","3 m/s²","0.33 m/s²","40 m/s²"], a:1, e:"a = F/m = 30/10 = 3 m/s²."},
+    {q:"An object moves at constant velocity. What can you conclude?", o:["No forces act on it","The net force is zero","A net force acts in the direction of motion","Its acceleration is 9.8 m/s²"], a:1, e:"Constant velocity means a = 0, so net force is zero. Forces may act, but they balance (e.g., push = friction)."},
+    {q:"A 5 kg object is taken to the Moon (g ≈ 1.6 m/s²). What changes?", o:["Mass and weight both","Weight only","Mass only","Neither"], a:1, e:"Mass (5 kg) is constant. Weight = mg changes from 49 N to about 8 N."},
+    {q:"A large truck hits a small car head-on. During the collision, the force on the…", o:["truck is larger","car is larger","truck and car are equal in magnitude","depends on speeds"], a:2, e:"Third law: equal and opposite forces. The car has the larger acceleration because its mass is smaller."},
+    {q:"A 60 kg person stands on a scale in an elevator accelerating upward at 2 m/s². What does the scale read?", o:["588 N","708 N","468 N","120 N"], a:1, e:"N = m(g + a) = 60(9.8 + 2) = 708 N. At rest it would read 588 N."}
+  ],
+  "Momentum": [
+    {q:"What is the momentum of a 1000 kg car moving at 20 m/s?", o:["50 kg·m/s","20,000 kg·m/s","200,000 kg·m/s","10,000 kg·m/s"], a:1, e:"p = mv = 1000 × 20 = 20,000 kg·m/s. (200,000 would be kinetic energy in joules; don't confuse them.)"},
+    {q:"A 0.5 kg ball hits a wall at +4 m/s and rebounds at −4 m/s. What is the magnitude of the impulse on the ball?", o:["0","2 N·s","4 N·s","8 N·s"], a:2, e:"Δp = 0.5(−4 − 4) = −4 kg·m/s. Direction matters: reversing velocity doubles the change."},
+    {q:"A 2 kg cart moving at 3 m/s hits a 1 kg cart at rest and they stick together. What is their final speed?", o:["3 m/s","2 m/s","1.5 m/s","6 m/s"], a:1, e:"Total p = 2×3 = 6 kg·m/s; v = 6/(2+1) = 2 m/s."},
+    {q:"Why does an airbag reduce injury in a crash?", o:["It reduces the change in momentum","It increases the time of the collision, reducing the average force","It increases the impulse","It makes the car heavier"], a:1, e:"Δp is the same, but F = Δp/Δt, so longer time gives smaller force."},
+    {q:"Two 1 kg carts move toward each other at 2 m/s each and stick together. What is their final velocity?", o:["4 m/s","2 m/s","0 m/s","1 m/s"], a:2, e:"Momentum is a vector: +2 and −2 cancel, total p = 0, so v_f = 0."},
+    {q:"Which statement about collisions is correct (isolated system)?", o:["Kinetic energy is always conserved","Momentum is conserved in every collision; kinetic energy only in elastic ones","Momentum is conserved only in elastic collisions","Neither is ever conserved"], a:1, e:"Momentum is conserved in all collisions when no net external force acts. Inelastic collisions lose kinetic energy to heat, sound and deformation."}
+  ],
+  "Work & Energy": [
+    {q:"A car's speed doubles. By what factor does its kinetic energy change?", o:["2","4","8","It stays the same"], a:1, e:"KE = ½mv², so doubling v multiplies KE by 2² = 4."},
+    {q:"How much gravitational potential energy does a 2 kg object gain when lifted 3 m?", o:["6 J","58.8 J","19.6 J","29.4 J"], a:1, e:"PE = mgh = 2 × 9.8 × 3 = 58.8 J."},
+    {q:"A 10 N force acts at 60° to the direction of motion over 5 m. How much work does it do?", o:["50 J","43.3 J","25 J","5 J"], a:2, e:"W = Fd cosθ = 10 × 5 × cos60° = 25 J."},
+    {q:"You carry a heavy box horizontally at constant velocity. How much work do you do on the box?", o:["Force × distance","Zero, since the force is perpendicular to the motion","Equal to its weight","Negative"], a:1, e:"Your upward force is perpendicular to the displacement (cos90° = 0), so no work is done on the box."},
+    {q:"A frictionless roller coaster starts from rest at 20 m height. What is its speed at the bottom?", o:["14 m/s","19.8 m/s","196 m/s","9.8 m/s"], a:1, e:"mgh = ½mv² → v = √(2gh) = √(392) = 19.8 m/s. Mass cancels."},
+    {q:"A machine does 600 J of work in 20 s. What is its power?", o:["12,000 W","30 W","620 W","0.033 W"], a:1, e:"P = W/t = 600/20 = 30 W."}
+  ]
+};
+
+const tabs = document.getElementById("tabs"), quiz = document.getElementById("quiz");
+const scoreEl = document.getElementById("score"), retryBtn = document.getElementById("retry");
+let unit = Object.keys(UNITS)[0], items = [], answered = {}, results = {};
+
+function load(name, subset) {
+  unit = name;
+  items = subset || UNITS[name].map((_, i) => i);
+  answered = {};
+  if (!subset) results = {};
+  [...tabs.children].forEach(b => b.classList.toggle("active", b.textContent === name));
+  render();
+}
+
+function render() {
+  quiz.innerHTML = "";
+  items.forEach((qi, n) => {
+    const d = UNITS[unit][qi], box = document.createElement("div");
+    box.className = "q";
+    box.innerHTML = `<strong>${n + 1}. ${d.q}</strong>`;
+    d.o.forEach((text, oi) => {
+      const b = document.createElement("button");
+      b.className = "opt"; b.textContent = text;
+      b.onclick = () => pick(qi, oi, box);
+      box.appendChild(b);
+    });
+    quiz.appendChild(box);
+  });
+  update();
+}
+
+function pick(qi, oi, box) {
+  if (answered[qi] !== undefined) return;
+  const d = UNITS[unit][qi];
+  answered[qi] = oi;
+  results[qi] = oi === d.a;
+  [...box.querySelectorAll(".opt")].forEach((b, i) => {
+    if (i === d.a) b.classList.add("correct");
+    else if (i === oi) b.classList.add("wrong");
+  });
+  const exp = document.createElement("div");
+  exp.className = "exp";
+  exp.textContent = (oi === d.a ? "Correct. " : "Not quite. ") + d.e;
+  box.appendChild(exp);
+  update();
+}
+
+function update() {
+  const done = Object.keys(answered).length;
+  const right = Object.values(results).filter(Boolean).length;
+  scoreEl.textContent = `${unit}: ${right} correct of ${done} answered (${items.length} questions)`
+    + (done === items.length && items.length === UNITS[unit].length ? ` –${Math.round(100 * right / UNITS[unit].length)}% ${right / UNITS[unit].length >= 0.8 ? "(proficient!)" : "(review the notes and retry)"}` : "");
+  retryBtn.hidden = !(done === items.length && Object.values(results).some(v => !v));
+}
+
+retryBtn.onclick = () => {
+  const missed = Object.keys(results).filter(k => !results[k]).map(Number);
+  answered = {}; results = {};
+  items = missed; render();
+};
+document.getElementById("reset").onclick = () => load(unit);
+
+Object.keys(UNITS).forEach(name => {
+  const b = document.createElement("button");
+  b.textContent = name; b.onclick = () => load(name);
+  tabs.appendChild(b);
+});
+load(unit);
+</script>
+</body>
+</html>
