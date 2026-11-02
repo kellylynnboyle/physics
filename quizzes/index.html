@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Physics Most-Missed Quizzes</title>
+<style>
+:root{--bg:#f7f8fb;--fg:#1b2333;--card:#fff;--line:#d5dbe7;--accent:#1f3864;--ok:#1e7a46;--bad:#b3261e;--okbg:#e4f4ea;--badbg:#fbe8e6}
+@media (prefers-color-scheme:dark){:root{--bg:#12161f;--fg:#e6e9f0;--card:#1b2130;--line:#34405a;--accent:#8fb0ee;--ok:#6fd69b;--bad:#ff8a80;--okbg:#17352a;--badbg:#3a1f1d}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif}
+main{max-width:720px;margin:0 auto;padding:16px}
+h1{font-size:1.4rem;color:var(--accent);margin:.5rem 0}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.tabs button{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:8px 12px;border-radius:8px;cursor:pointer;font:inherit}
+.tabs button[aria-pressed=true]{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--fg);font:inherit;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.ok{background:var(--okbg);border-color:var(--ok)}.opt.bad{background:var(--badbg);border-color:var(--bad)}
+.exp{margin-top:10px;padding:10px;border-left:4px solid var(--accent);background:var(--bg)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.nav{border:0;background:var(--accent);color:var(--bg);padding:8px 16px;border-radius:8px;cursor:pointer;font:inherit}
+.muted{color:var(--fg);opacity:.7;font-size:.9rem}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent)}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+</style></head><body><main>
+<h1>Most-Missed Physics Questions</h1>
+<p class="muted">Pick a unit. Answer, read the explanation, and retake until you score 80%+. Assume g = 9.8 m/s² and no air resistance.</p>
+<div class="tabs" id="tabs" role="group" aria-label="Units"></div>
+<div id="quiz"></div>
+<script>
+const Q={
+"Kinematics":[
+["A ball is thrown straight up. At the very top of its flight, its acceleration is…",["0 m/s²","9.8 m/s² downward","9.8 m/s² upward","It depends on the throw speed"],1,"Gravity still acts at the top. Velocity is momentarily 0, but acceleration is 9.8 m/s² down."],
+["A runner completes one full 400 m lap in 80 s. Her average velocity for the lap is…",["5 m/s","0 m/s","400 m/s","80 m/s"],1,"Displacement is 0 (back at the start), so average velocity is 0. Her average speed is 5 m/s."],
+["On a position-time graph, a straight line sloping downward means the object is…",["Speeding up","At rest","Moving at constant velocity in the negative direction","Accelerating backward"],2,"Slope = velocity. Constant negative slope = constant negative velocity."],
+["The area under a velocity-time graph gives…",["Acceleration","Displacement","Speed","Time"],1,"Area under v-t = displacement. Slope of v-t = acceleration."],
+["A car starts from rest and accelerates at 2 m/s² for 5 s. How far does it travel?",["10 m","25 m","50 m","5 m"],1,"Δx = ½at² = ½(2)(25) = 25 m. Many students forget the ½ and the square."],
+["An object has velocity −4 m/s and acceleration −2 m/s². The object is…",["Slowing down","Speeding up","Moving at constant speed","At rest"],1,"Same sign for v and a means speeding up. Negative acceleration does not always mean slowing."],
+["A car drives half the DISTANCE at 60 km/h and the other half at 30 km/h. Its average speed is…",["45 km/h","40 km/h","30 km/h","50 km/h"],1,"Take d each: time = d/60 + d/30 = d/20. Average = 2d / (d/20) = 40 km/h. Averaging speeds works only for equal TIMES."],
+["Dropped from rest, a rock falls for 3.0 s. Its speed just before landing is about…",["9.8 m/s","29 m/s","44 m/s","88 m/s"],1,"v = gt = 9.8 × 3 = 29.4 m/s. (44 m is the height fallen, not the speed.)"]],
+"Projectile Motion":[
+["One ball is dropped and another is fired horizontally from the same height at the same instant. Which lands first?",["The dropped ball","The fired ball","They land together","Depends on the fired speed"],2,"Vertical motion is identical (both start with v_y = 0). Horizontal speed does not change fall time."],
+["Ignoring air, the horizontal velocity of a projectile during flight…",["Increases","Decreases","Stays constant","Is zero at the top"],2,"No horizontal force, so no horizontal acceleration."],
+["At the peak of a projectile's path, which statement is correct?",["v_y = 0 and a = 0","v_y = 0 and a = 9.8 m/s² down","v_x = 0","v = 0"],1,"Only the vertical component is zero. v_x stays, and gravity still accelerates it."],
+["A ball rolls off a 19.6 m high table at 20 m/s. How far from the base does it land?",["20 m","40 m","80 m","19.6 m"],1,"t = √(2h/g) = √(4) = 2 s. Range = 20 × 2 = 40 m."],
+["For the same launch speed on level ground, which pair of angles give the same range?",["30° and 45°","30° and 60°","20° and 50°","45° and 90°"],1,"Complementary angles (adding to 90°) give equal range. 45° is the maximum."],
+["A ball is launched at 50 m/s at 37° (cos 37° ≈ 0.8, sin 37° ≈ 0.6). Its initial vertical velocity is…",["40 m/s","30 m/s","50 m/s","37 m/s"],1,"v_y = 50 sin37° = 30 m/s. v_x = 50 cos37° = 40 m/s. Mixing sin and cos is a top error."],
+["A ball is thrown up at 14.7 m/s and caught at the same height. Time in the air?",["1.5 s","3.0 s","6.0 s","0.75 s"],1,"Rise time = 14.7/9.8 = 1.5 s; total = 3.0 s. Students often stop at the rise time."],
+["Which force keeps a thrown ball moving forward after it leaves your hand (ignoring air)?",["Force from the hand","The force of its motion","No force: inertia","Gravity"],2,"Nothing pushes it forward. Inertia carries it. Gravity acts only downward."]],
+"Newton's Laws":[
+["A book rests on a table. The third-law partner of the book's weight (Earth pulls book down) is…",["The normal force from the table","The book pulling up on Earth","The table pushing on the floor","Friction"],1,"A third-law pair is the same type of force between the same two objects. Normal and weight act on the same object, so they are not a pair."],
+["A truck collides head-on with a fly. During the collision, the force on the truck is…",["Much greater than on the fly","Much less than on the fly","Equal in size to the force on the fly","Zero"],2,"Third law: equal magnitude, opposite direction. The fly just accelerates far more (a = F/m)."],
+["A crate slides across a floor at constant velocity. The net force on it is…",["In the direction of motion","Opposite the motion","Zero","Equal to its weight"],2,"Constant velocity means a = 0, so ΣF = 0. Pushing force balances friction."],
+["A 10 kg cart experiences a net force of 30 N. Its acceleration is…",["0.33 m/s²","3 m/s²","300 m/s²","30 m/s²"],1,"a = F/m = 30/10 = 3 m/s²."],
+["A 5 kg object is taken to the Moon. Its mass and weight there are…",["5 kg; same weight","5 kg; less weight","Less mass; less weight","Less mass; same weight"],1,"Mass stays the same. Weight = mg is smaller because Moon's g is smaller."],
+["You stand on a scale in an elevator that is accelerating UPWARD. The scale reads…",["Less than your weight","Exactly your weight","More than your weight","Zero"],2,"N − mg = ma, so N = m(g + a), which is greater than mg."],
+["A 50 kg crate is pushed at constant velocity by a 200 N horizontal force. The kinetic friction force is…",["490 N","200 N","0 N","Cannot be found"],1,"Constant velocity means net force 0, so friction = 200 N. No need for μ."],
+["The same net force is applied to a 2 kg mass and a 4 kg mass. The 4 kg mass has…",["Twice the acceleration","Half the acceleration","The same acceleration","Four times the acceleration"],1,"a = F/m. Double the mass, half the acceleration."]],
+"Momentum":[
+["A 2 kg cart at 3 m/s has momentum…",["1.5 kg·m/s","6 kg·m/s","9 kg·m/s","18 kg·m/s"],1,"p = mv = 2 × 3 = 6 kg·m/s."],
+["A 1000 kg car moving at 20 m/s stops in 4 s. The average braking force is…",["500 N","5000 N","20 000 N","80 000 N"],1,"F = Δp/Δt = 20 000 / 4 = 5000 N."],
+["An airbag reduces injury because it…",["Reduces the change in momentum","Increases the collision time, lowering the force","Increases the impulse","Makes the car stop faster"],1,"Δp is fixed. FΔt = Δp, so larger Δt gives smaller F."],
+["A 2 kg cart at 6 m/s hits a 4 kg cart at rest and they stick. Their speed afterward is…",["6 m/s","3 m/s","2 m/s","1 m/s"],2,"12 = (2+4)v', so v' = 2 m/s."],
+["Two identical carts moving toward each other at equal speeds collide and stick. They end up…",["Moving at double speed","Moving at the original speed","At rest","Moving backward"],2,"Momentum is a vector. +p and −p cancel, giving total 0."],
+["In an inelastic collision (no outside forces)…",["Momentum and KE are both conserved","Momentum is conserved, KE is not","KE is conserved, momentum is not","Neither is conserved"],1,"Momentum is conserved in all collisions of an isolated system. KE is lost to heat, sound, and deformation."],
+["A 0.5 kg ball hits a wall at 4 m/s and rebounds at 4 m/s. The impulse on the ball has magnitude…",["0","2 N·s","4 N·s","8 N·s"],2,"Δp = 0.5(−4) − 0.5(4) = −4. The sign flip doubles the change. Not zero."],
+["A 60 kg skater at rest throws a 3 kg ball forward at 10 m/s. The skater moves…",["10 m/s forward","0.5 m/s backward","5 m/s backward","Not at all"],1,"0 = 3(10) + 60v, so v = −0.5 m/s."]],
+"Work & Energy":[
+["A student carries a heavy box horizontally at constant velocity. The work done by the student on the box is…",["Large and positive","Large and negative","Zero","Equal to mgh"],2,"Force (up) is perpendicular to displacement (horizontal), so W = Fd cos90° = 0."],
+["If a car doubles its speed, its kinetic energy…",["Doubles","Triples","Quadruples","Stays the same"],2,"KE = ½mv². Doubling v multiplies KE by 4."],
+["How much work is needed to lift a 2 kg book 3 m at constant speed?",["6 J","19.6 J","58.8 J","5.9 J"],2,"W = mgh = 2 × 9.8 × 3 = 58.8 J."],
+["A machine does 600 J of work in 5 s. Its power is…",["3000 W","120 W","600 W","5 W"],1,"P = W/t = 600/5 = 120 W."],
+["A frictionless roller coaster car drops from rest from 20 m. Its speed at the bottom is about…",["14 m/s","20 m/s","196 m/s","10 m/s"],1,"mgh = ½mv², so v = √(2gh) = √392 ≈ 19.8 m/s. Mass cancels."],
+["Two frictionless carts, 1 kg and 3 kg, slide down the same hill from rest. At the bottom…",["The 1 kg is faster","The 3 kg is faster","Same speed","Cannot be determined"],2,"v = √(2gh), independent of mass."],
+["A spring is stretched twice as far. The stored energy becomes…",["2×","4×","Half","The same"],1,"PE = ½kx², so x doubled gives 4× the energy."],
+["It takes work W₁ to speed a car from 0 to 10 m/s and W₂ to speed it from 10 to 20 m/s. Then…",["W₂ = W₁","W₂ = 2W₁","W₂ = 3W₁","W₂ = 4W₁"],2,"ΔKE: ½m(100) vs ½m(400 − 100). The second is 3 times the first."]]
+};
+const tabs=document.getElementById("tabs"),quiz=document.getElementById("quiz");
+let unit=Object.keys(Q)[0],items=[],i=0,score=0,answered=false,missed=[];
+function load(){try{return JSON.parse(localStorage.getItem("physQuizBest")||"{}")}catch(e){return{}}}
+function save(u,p){try{const b=load();if(!(b[u]>=p)){b[u]=p;localStorage.setItem("physQuizBest",JSON.stringify(b))}}catch(e){}}
+function shuffle(a){a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a}
+function start(u,only){unit=u;const src=only||Q[u];items=shuffle(src).map(q=>{const idx=shuffle(q[1].map((t,n)=>n));return{t:q[0],o:idx.map(n=>q[1][n]),c:idx.indexOf(q[2]),e:q[3],raw:q}});i=0;score=0;missed=[];answered=false;drawTabs();draw()}
+function drawTabs(){const b=load();tabs.innerHTML="";Object.keys(Q).forEach(u=>{const x=document.createElement("button");x.textContent=u+(b[u]!=null?" ("+b[u]+"%)":"");x.setAttribute("aria-pressed",u===unit);x.onclick=()=>start(u);tabs.appendChild(x)})}
+function draw(){
+ quiz.innerHTML="";
+ if(i>=items.length){const p=Math.round(100*score/items.length);save(unit,p);drawTabs();
+  const c=el("div","card");c.innerHTML=`<h2>${unit}: ${score}/${items.length} (${p}%)</h2><p>${p>=80?"Proficient (Level 3+). Nice work.":"Below the 80% target. Review the explanations and retry."}</p>`;
+  if(missed.length){const b=el("button","nav");b.textContent="Retry missed questions only ("+missed.length+")";b.onclick=()=>start(unit,missed);c.appendChild(b);c.appendChild(document.createTextNode(" "))}
+  const r=el("button","nav");r.textContent="Retake all";r.onclick=()=>start(unit);c.appendChild(r);quiz.appendChild(c);return}
+ const q=items[i],c=el("div","card");
+ c.innerHTML=`<div class="row"><span class="muted">Question ${i+1} of ${items.length}</span><span class="muted">Score ${score}</span></div><div class="bar"><i style="width:${100*i/items.length}%"></i></div><h2 style="font-size:1.1rem"></h2>`;
+ c.querySelector("h2").textContent=q.t;
+ q.o.forEach((t,n)=>{const b=el("button","opt");b.textContent=String.fromCharCode(65+n)+". "+t;b.onclick=()=>pick(n,c);c.appendChild(b)});
+ quiz.appendChild(c)}
+function pick(n,c){if(answered)return;answered=true;const q=items[i];
+ [...c.querySelectorAll(".opt")].forEach((b,k)=>{b.disabled=true;if(k===q.c)b.classList.add("ok");else if(k===n)b.classList.add("bad")});
+ if(n===q.c)score++;else missed.push(q.raw);
+ const e=el("div","exp");e.setAttribute("role","status");e.textContent=(n===q.c?"Correct. ":"Not quite. ")+q.e;c.appendChild(e);
+ const nx=el("button","nav");nx.style.marginTop="12px";nx.textContent=i+1<items.length?"Next":"See results";nx.onclick=()=>{i++;answered=false;draw()};c.appendChild(nx);nx.focus()}
+function el(t,cl){const x=document.createElement(t);x.className=cl;return x}
+start(unit);
+</script></main></body></html>
