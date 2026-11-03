@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Physics Quizzes</title>
+<style>
+:root{--bg:#f6f8fc;--card:#fff;--ink:#1b2438;--navy:#1f3864;--ok:#1b7f3b;--bad:#b3261e;--line:#d0d7e5;--soft:#eef3fa}
+@media (prefers-color-scheme:dark){:root{--bg:#10151f;--card:#192131;--ink:#e8edf7;--navy:#9db8ef;--ok:#6fd08c;--bad:#ff8a80;--line:#2c3850;--soft:#222c40}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,Segoe UI,Calibri,sans-serif}
+main{max-width:720px;margin:0 auto;padding:20px 16px 60px}
+h1{color:var(--navy);margin:.2em 0}.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin:14px 0}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:var(--soft);color:var(--ink);padding:10px 14px}
+button:hover{border-color:var(--navy)}button.primary{background:var(--navy);color:var(--bg);border-color:var(--navy)}
+.grid{display:grid;gap:10px}.opt{width:100%;text-align:left}.opt.correct{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 18%,var(--card))}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 18%,var(--card))}
+.bar{height:8px;background:var(--soft);border-radius:4px;overflow:hidden}.bar>i{display:block;height:100%;background:var(--navy)}
+.why{margin-top:12px;padding:10px 12px;border-left:4px solid var(--navy);background:var(--soft);border-radius:6px}
+.muted{opacity:.75;font-size:.9em}.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+</style></head><body><main>
+<h1>Physics: Most-Missed Questions</h1>
+<p class="muted">Pick a unit. Get instant feedback with the reason behind each answer. Goal: 80%+ twice on different days. Scores are saved in this browser only.</p>
+<div id="app"></div>
+</main>
+<script src="questions.js"></script>
+<script>
+const app=document.getElementById('app'), KEY='physicsQuizBest';
+const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return {}}};
+const save=(id,pct)=>{try{const d=load();(d[id]=d[id]||[]).push({pct,date:new Date().toLocaleDateString()});localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}};
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function home(){
+  const hist=load();
+  app.innerHTML=window.QUIZ_BANK.map(u=>{
+    const h=hist[u.id]||[],best=h.length?Math.max(...h.map(x=>x.pct)):null;
+    return `<div class="card row"><div><b>${u.title}</b><div class="muted">${u.questions.length} questions${best!==null?` · best ${best}% · ${h.length} attempt(s)`:''}</div></div><button class="primary" data-u="${u.id}">Start</button></div>`}).join('');
+  app.querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>run(window.QUIZ_BANK.find(u=>u.id===b.dataset.u),null));
+}
+function run(unit,subset){
+  const qs=shuffle(subset||unit.questions).map(q=>{const idx=shuffle(q.o.map((_,i)=>i));return {...q,order:idx}});
+  let i=0,score=0,missed=[];
+  function show(){
+    const q=qs[i];
+    app.innerHTML=`<div class="card"><div class="row muted"><span>${unit.title}${subset?' · retry missed':''}</span><span>${i+1} / ${qs.length}</span></div>
+    <div class="bar"><i style="width:${i/qs.length*100}%"></i></div><h2>${esc(q.q)}</h2><div class="grid" id="opts"></div><div id="fb"></div></div>`;
+    const box=document.getElementById('opts');
+    q.order.forEach(oi=>{const b=document.createElement('button');b.className='opt';b.textContent=q.o[oi];b.onclick=()=>pick(oi,b);box.appendChild(b)});
+  }
+  function pick(oi,btn){
+    const q=qs[i],box=document.getElementById('opts'),ok=oi===q.a;
+    [...box.children].forEach(b=>b.disabled=true);
+    btn.classList.add(ok?'correct':'wrong');
+    [...box.children].forEach(b=>{if(b.textContent===q.o[q.a])b.classList.add('correct')});
+    if(ok)score++;else missed.push(qs[i]);
+    document.getElementById('fb').innerHTML=`<div class="why"><b>${ok?'Correct.':'Not quite.'}</b> ${esc(q.why)}</div><p><button class="primary" id="next">${i+1<qs.length?'Next':'See results'}</button></p>`;
+    document.getElementById('next').onclick=()=>{i++;i<qs.length?show():done()};
+  }
+  function done(){
+    const pct=Math.round(score/qs.length*100); if(!subset)save(unit.id,pct);
+    app.innerHTML=`<div class="card"><h2>${score} / ${qs.length} (${pct}%)</h2><p>${pct>=80?'Mastery range — repeat on another day to lock it in.':'Review the Cornell notes for this unit, then retry.'}</p>
+    <div class="row">${missed.length?'<button class="primary" id="retry">Retry missed ('+missed.length+')</button>':''}<button id="again">Retake all</button><button id="menu">All units</button></div></div>`;
+    if(missed.length)document.getElementById('retry').onclick=()=>run(unit,missed);
+    document.getElementById('again').onclick=()=>run(unit,null);document.getElementById('menu').onclick=home;
+  }
+  show();
+}
+home();
+</script></body></html>
