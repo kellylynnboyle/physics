@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Physics Quiz Practice</title>
+<style>
+:root{--bg:#fff;--fg:#1b2430;--card:#f3f6fb;--accent:#1f3864;--ok:#1d7a3c;--bad:#b3261e;--bd:#cbd5e3}
+@media(prefers-color-scheme:dark){:root{--bg:#12161c;--fg:#e8edf4;--card:#1c232d;--accent:#8db1ee;--ok:#5cd08a;--bad:#ff8b80;--bd:#3a4556}}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif}
+main{max-width:720px;margin:0 auto;padding:16px}
+h1{color:var(--accent);font-size:1.5rem}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+button{font:inherit;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:8px 12px;cursor:pointer;text-align:left}
+button.on{background:var(--accent);color:var(--bg)}
+.q{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin:14px 0}
+.q button{display:block;width:100%;margin:6px 0}
+.q button.right{border-color:var(--ok);outline:2px solid var(--ok)}
+.q button.wrong{border-color:var(--bad);outline:2px solid var(--bad)}
+.exp{margin-top:8px;font-size:.95rem}
+.bar{font-weight:600;margin:10px 0}
+</style></head><body><main>
+<h1>Physics Quiz Practice</h1>
+<p>Most-missed questions by unit. Pick an answer for instant feedback. Scores save in this browser.</p>
+<div class="tabs" id="tabs"></div><div class="bar" id="bar"></div><div id="qs"></div>
+<div><button id="retry">Retry missed questions</button> <button id="reset">Reset unit</button></div>
+</main>
+<script>
+const DATA=__DATA__;
+let unit=0,only=null,state={};
+const key="physics-quiz-v1";
+try{state=JSON.parse(localStorage.getItem(key)||"{}")}catch(e){}
+function save(){try{localStorage.setItem(key,JSON.stringify(state))}catch(e){}}
+function shuffle(n){const a=[...Array(n).keys()];for(let i=n-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function render(){
+  const u=DATA[unit];state[u.id]=state[u.id]||{};const S=state[u.id];
+  const tabs=document.getElementById("tabs");tabs.innerHTML="";
+  DATA.forEach((d,i)=>{const b=document.createElement("button");const s=state[d.id]||{};
+    const n=Object.values(s).filter(v=>v===1).length;b.textContent=d.title+" ("+n+"/"+d.questions.length+")";
+    if(i===unit)b.className="on";b.onclick=()=>{unit=i;only=null;render()};tabs.appendChild(b)});
+  const box=document.getElementById("qs");box.innerHTML="";
+  u.questions.forEach((q,qi)=>{
+    if(only&&!only.includes(qi))return;
+    const div=document.createElement("div");div.className="q";
+    const p=document.createElement("div");p.textContent=(qi+1)+". "+q.q;div.appendChild(p);
+    const ex=document.createElement("div");ex.className="exp";
+    const order=shuffle(q.c.length);const btns=[];
+    order.forEach(ci=>{const b=document.createElement("button");b.textContent=q.c[ci];btns.push([b,ci]);
+      b.onclick=()=>{if(div.dataset.done)return;div.dataset.done=1;
+        const ok=ci===q.a;S[qi]=ok?1:0;save();
+        btns.forEach(([bb,c])=>{if(c===q.a)bb.classList.add("right");else if(bb===b)bb.classList.add("wrong")});
+        ex.textContent=(ok?"Correct. ":"Not quite. ")+q.e;updateBar()};
+      div.appendChild(b)});
+    div.appendChild(ex);box.appendChild(div)});
+  updateBar();
+}
+function updateBar(){const u=DATA[unit],S=state[u.id]||{};
+  const done=Object.keys(S).length,ok=Object.values(S).filter(v=>v===1).length;
+  document.getElementById("bar").textContent=u.title+": "+ok+" correct of "+done+" answered ("+u.questions.length+" total)"+
+   (done===u.questions.length?" - "+Math.round(100*ok/u.questions.length)+"%":"")}
+document.getElementById("retry").onclick=()=>{const u=DATA[unit],S=state[u.id]||{};
+  const miss=u.questions.map((_,i)=>i).filter(i=>S[i]!==1);only=miss;miss.forEach(i=>delete S[i]);save();render()};
+document.getElementById("reset").onclick=()=>{state[DATA[unit].id]={};only=null;save();render()};
+render();
+</script></body></html>
