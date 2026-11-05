@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics Most-Missed Quizzes</title>
+<style>
+:root{--bg:#f7f9fc;--card:#fff;--ink:#1b2430;--muted:#5b6777;--navy:#1f3864;--ok:#1b7f3b;--okbg:#e3f4e8;--bad:#b3261e;--badbg:#fbe7e5;--line:#d5dce6;--accent:#2f5aa8}
+@media (prefers-color-scheme:dark){:root{--bg:#10151c;--card:#19212b;--ink:#e8edf3;--muted:#9aa7b7;--navy:#9db8ee;--ok:#6fd28b;--okbg:#17321f;--bad:#ff8a80;--badbg:#3a1b19;--line:#2d3947;--accent:#7aa2ec}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:760px;margin:0 auto;padding:16px}
+h1{color:var(--navy);font-size:1.5rem;margin:.5rem 0}
+.sub{color:var(--muted);margin-top:0}
+nav{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px}
+button:hover{border-color:var(--accent)}
+button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0}
+.prog{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:12px}
+.prog>div{height:100%;background:var(--accent);transition:width .2s}
+.q{font-weight:600;margin:0 0 12px}
+.opt{display:block;width:100%;text-align:left;margin:6px 0}
+.opt.ok{background:var(--okbg);border-color:var(--ok)}
+.opt.bad{background:var(--badbg);border-color:var(--bad)}
+.why{margin-top:12px;padding:10px 12px;border-left:4px solid var(--accent);background:var(--bg);border-radius:4px}
+.tag{font-size:.8rem;color:var(--muted)}
+.big{font-size:2rem;font-weight:700;color:var(--navy)}
+.best{color:var(--muted);font-size:.9rem}
+li{margin:6px 0}
+</style>
+</head>
+<body>
+<main>
+<h1>Physics: Most-Missed Questions</h1>
+<p class="sub">Grade 11 Physics &amp; Earth Science, Semester 1. Pick a unit. Aim for 80%+ on two different days.</p>
+<nav id="tabs" aria-label="Units"></nav>
+<div id="app"></div>
+</main>
+<script>
+const g = 9.8;
+const UNITS = [
+{id:"kin", name:"Kinematics", qs:[
+ {q:"A runner completes exactly one lap of a 400 m track in 80 s. What are the distance and displacement?",
+  c:["400 m and 400 m","400 m and 0 m","0 m and 400 m","0 m and 0 m"],a:1,
+  why:"Distance is the path length (400 m). Displacement is the straight-line change in position; start and end are the same place, so it is 0. Average velocity for the lap is also 0."},
+ {q:"On a position-time graph, an object moving at constant velocity appears as:",
+  c:["A horizontal line","A straight sloped line whose slope is the velocity","A parabola","A line whose area is the velocity"],a:1,
+  why:"Constant velocity means equal displacement in equal time, a straight line. The slope Δx/Δt is the velocity. A horizontal line means at rest."},
+ {q:"A ball is thrown straight up. At the very top of its path, which is true?",
+  c:["v = 0 and a = 0","v = 0 and a = 9.8 m/s² downward","v = 9.8 m/s and a = 0","v = 0 and a = 9.8 m/s² upward"],a:1,
+  why:"Gravity still acts at the top, so a stays 9.8 m/s² down. The velocity is passing through zero while changing from up to down. If a were 0 the ball would hover."},
+ {q:"A car moving at 20 m/s brakes uniformly to rest in 5.0 s. What is its acceleration and stopping distance?",
+  c:["−4 m/s² and 50 m","4 m/s² and 100 m","−4 m/s² and 100 m","−20 m/s² and 50 m"],a:0,
+  why:"a = (0 − 20)/5 = −4 m/s². Δx = ½(20 + 0)(5) = 50 m. The negative sign means the acceleration points opposite the motion."},
+ {q:"A velocity-time graph is a straight line from 0 m/s at t = 0 to 10 m/s at t = 5 s. What is the displacement?",
+  c:["2 m","10 m","25 m","50 m"],a:2,
+  why:"Displacement is the area under the v-t graph: ½ × 5 × 10 = 25 m. The slope (2 m/s²) is the acceleration, not the displacement."},
+ {q:"A cart moves in the negative direction and has a negative acceleration. The cart is:",
+  c:["Slowing down","Speeding up","Moving at constant speed","Impossible"],a:1,
+  why:"When velocity and acceleration have the same sign, speed increases. Negative does not automatically mean slowing."},
+ {q:"An object is dropped from rest and falls for 3.0 s (ignore air). How far has it fallen?",
+  c:["29.4 m","44.1 m","88.2 m","9.8 m"],a:1,
+  why:"Δx = ½gt² = ½(9.8)(9) = 44.1 m. The 29.4 is the speed (m/s) after 3 s, not a distance."},
+ {q:"You drive 60 km at 30 km/h, then another 60 km at 60 km/h. What is your average speed for the trip?",
+  c:["45 km/h","40 km/h","50 km/h","30 km/h"],a:1,
+  why:"Total distance 120 km. Times: 2 h + 1 h = 3 h. 120/3 = 40 km/h. You can't just average the two speeds because you spent more time at the slower speed."}
+]},
+{id:"proj", name:"Projectile Motion", qs:[
+ {q:"One ball rolls off a table horizontally while an identical ball is dropped from the same height at the same instant. Which hits the floor first (no air resistance)?",
+  c:["The dropped ball","The rolling ball","They hit at the same time","It depends on the mass"],a:2,
+  why:"Vertical motion is independent of horizontal motion. Both start with zero vertical velocity and fall the same height, so the fall time is the same."},
+ {q:"A projectile is at the peak of its flight. Which statement is correct?",
+  c:["Its velocity and acceleration are both zero","Its vertical velocity is zero but its horizontal velocity is not","Its horizontal velocity is zero","Its acceleration is horizontal"],a:1,
+  why:"At the peak v_y = 0 but vₓ is unchanged, and a = 9.8 m/s² down throughout. The speed at the peak is the minimum, not zero."},
+ {q:"Ignoring air resistance, what is the horizontal acceleration of a projectile in flight?",
+  c:["9.8 m/s²","Depends on the launch speed","Zero","Decreasing"],a:2,
+  why:"No horizontal force acts on it once it leaves your hand, so vₓ is constant. There is no 'force of the throw' continuing to act."},
+ {q:"A ball is launched at 20 m/s at 30° above the horizontal. What are vₓ and v_y initially?",
+  c:["vₓ = 10.0 m/s, v_y = 17.3 m/s","vₓ = 17.3 m/s, v_y = 10.0 m/s","vₓ = 20 m/s, v_y = 10 m/s","vₓ = 14.1 m/s, v_y = 14.1 m/s"],a:1,
+  why:"vₓ = 20 cos30° = 17.3 m/s and v_y = 20 sin30° = 10.0 m/s. Cos goes with the horizontal side next to the angle."},
+ {q:"For a launch and landing at the same height, which pair of angles gives the same range?",
+  c:["30° and 45°","30° and 60°","20° and 50°","45° and 90°"],a:1,
+  why:"Complementary angles (adding to 90°) give equal range. 45° gives the maximum. 60° stays up longer, 30° travels faster horizontally; the products match."},
+ {q:"A ball rolls horizontally at 10 m/s off a 20 m high cliff. About how far from the base does it land?",
+  c:["10 m","20 m","40 m","100 m"],a:1,
+  why:"t = √(2h/g) = √(40/9.8) = 2.02 s. Range = 10 × 2.02 = 20.2 m. Always get t from the vertical motion first."},
+ {q:"If you double the launch speed of a projectile (same angle, same height), the range becomes:",
+  c:["2 times","3 times","4 times","8 times"],a:2,
+  why:"R = v² sin2θ / g. Range depends on v², so doubling v multiplies range by 4."},
+ {q:"A projectile is launched with an initial upward velocity of 14.7 m/s and lands at the launch height. How long is it in the air?",
+  c:["1.5 s","3.0 s","6.0 s","1.0 s"],a:1,
+  why:"Rise time = 14.7/9.8 = 1.5 s. Fall time equals rise time, so the total is 3.0 s. 1.5 s is only the way up."}
+]},
+{id:"newton", name:"Newton's Laws", qs:[
+ {q:"A hockey puck slides across frictionless ice at a constant 5 m/s. What is the net force on it?",
+  c:["5 N forward","Zero","Equal to its weight","It depends on its mass"],a:1,
+  why:"Constant velocity means a = 0, so F_net = 0 (first law). A force is needed to change velocity, not to maintain it."},
+ {q:"A book rests on a table. Which force is the Newton's third-law partner of the book's weight (Earth pulling down on the book)?",
+  c:["The normal force of the table on the book","The book pulling up on the Earth","The table pulling down on the floor","Friction from the table"],a:1,
+  why:"Third-law pairs are the same type of force on different objects: Earth pulls book (gravity), book pulls Earth (gravity). The normal force balances weight (second law), but it is not its third-law partner."},
+ {q:"A large truck hits a small bug. Compared with the force of the truck on the bug, the force of the bug on the truck is:",
+  c:["Much smaller","Much larger","Exactly equal in size","Zero because the bug is so small"],a:2,
+  why:"Third law: equal in size, opposite in direction. The bug has a far greater acceleration because its mass is tiny (a = F/m)."},
+ {q:"A 5.0 kg object has a net force of 20 N applied. Its acceleration is:",
+  c:["0.25 m/s²","4 m/s²","100 m/s²","25 m/s²"],a:1,
+  why:"a = F/m = 20/5 = 4 m/s². Multiplying instead of dividing gives 100; check units: N/kg = m/s²."},
+ {q:"A 60 kg person goes to the Moon, where g ≈ 1.6 m/s². Which is true?",
+  c:["Mass is 60 kg and weight is about 96 N","Mass is 10 kg and weight is 96 N","Mass is 60 kg and weight is 588 N","Mass and weight are both smaller"],a:0,
+  why:"Mass (amount of matter) doesn't change. Weight = mg = 60 × 1.6 ≈ 96 N, versus 588 N on Earth."},
+ {q:"You stand on a scale in an elevator that is accelerating upward. The scale reading is:",
+  c:["Less than your weight","Equal to your weight","Greater than your weight","Zero"],a:2,
+  why:"N − mg = ma, so N = m(g + a) > mg. You feel heavier. Moving up at constant velocity would read the same as at rest."},
+ {q:"A box is pushed across a floor at constant velocity with a 50 N horizontal force. The friction force on the box is:",
+  c:["Less than 50 N","Greater than 50 N","50 N opposite the motion","Zero"],a:2,
+  why:"Constant velocity means a = 0, so the forces balance: friction = 50 N backward."},
+ {q:"A 10 kg box is pushed with 40 N. Friction is 15 N. What is the acceleration?",
+  c:["4.0 m/s²","5.5 m/s²","1.5 m/s²","2.5 m/s²"],a:3,
+  why:"F_net = 40 − 15 = 25 N, a = 25/10 = 2.5 m/s². Use the net force, not just the applied force."}
+]},
+{id:"mom", name:"Momentum", qs:[
+ {q:"What is the momentum of a 1000 kg car moving at 20 m/s east?",
+  c:["20,000 kg·m/s east","20,000 N east","10,000 kg·m/s east","200,000 J"],a:0,
+  why:"p = mv = 1000 × 20 = 20,000 kg·m/s, in the direction of the velocity. Momentum is a vector. Joules would be energy."},
+ {q:"A 0.15 kg ball moving at 40 m/s is caught and stopped in 0.010 s. What is the average force on the hand?",
+  c:["6 N","60 N","600 N","6000 N"],a:2,
+  why:"Δp = 0.15 × 40 = 6.0 kg·m/s. F = Δp/Δt = 6.0/0.010 = 600 N."},
+ {q:"Why does an airbag reduce injury in a crash?",
+  c:["It reduces the change in momentum","It increases the time of the collision, lowering the average force","It increases the impulse on the person","It makes the car stop faster"],a:1,
+  why:"The person's momentum change is fixed (to zero). FΔt = Δp, so a longer Δt gives a smaller average force. The impulse itself stays the same."},
+ {q:"A 2 kg cart moving at 3 m/s hits and sticks to a stationary 1 kg cart. What is their final speed?",
+  c:["1 m/s","1.5 m/s","2 m/s","3 m/s"],a:2,
+  why:"p before = 2(3) = 6. After: (3 kg)v = 6 → v = 2 m/s. Kinetic energy dropped from 9 J to 6 J, so this is inelastic."},
+ {q:"In which type of collision (isolated system) is momentum conserved?",
+  c:["Only elastic collisions","Only inelastic collisions","Only perfectly inelastic collisions","All collisions"],a:3,
+  why:"Momentum is conserved in every collision when no net external force acts. Kinetic energy is conserved only in elastic collisions."},
+ {q:"A ball hits a wall. In case A it sticks; in case B it bounces back with the same speed. Which wall impulse is larger?",
+  c:["A is larger","B is larger, about twice A","They are equal","Neither: the wall doesn't move"],a:1,
+  why:"A: Δp = 0 − mv, magnitude mv. B: Δp = −mv − mv, magnitude 2mv. A bounce reverses direction, so the momentum change is about doubled."},
+ {q:"A 1000 kg cannon fires a 10 kg ball at 100 m/s. What is the cannon's recoil speed (cannon free to move)?",
+  c:["0.1 m/s","1 m/s forward","1 m/s backward","100 m/s backward"],a:2,
+  why:"Initial total momentum is 0, so 0 = 10(100) + 1000v → v = −1.0 m/s. The equal and opposite momentum makes the heavy cannon move slowly."},
+ {q:"Two identical carts approach each other head-on at equal speeds. What is the total momentum of the system?",
+  c:["Twice one cart's momentum","One cart's momentum","Zero","It cannot be determined"],a:2,
+  why:"Momentum is a vector: +mv and −mv add to zero."}
+]},
+{id:"energy", name:"Work & Energy", qs:[
+ {q:"A student carries a heavy box at constant speed across a level room. How much work does the student's lifting force do on the box?",
+  c:["Force × distance, a large amount","Zero, because the force is perpendicular to the motion","Negative","It depends on the speed"],a:1,
+  why:"W = Fd cosθ. The upward force is at 90° to the horizontal displacement, so cos 90° = 0. Holding or carrying is tiring but does no work on the box."},
+ {q:"A 50 N force pulls a crate 10 m along the floor, with the force at 60° above the horizontal. How much work does it do?",
+  c:["500 J","433 J","250 J","50 J"],a:2,
+  why:"W = Fd cosθ = 50 × 10 × cos60° = 250 J. 500 J forgets the cosine."},
+ {q:"A car doubles its speed. Its kinetic energy:",
+  c:["Doubles","Triples","Quadruples","Stays the same"],a:2,
+  why:"KE = ½mv² depends on v², so 2× speed → 4× KE (and ~4× the braking distance)."},
+ {q:"A 2.0 kg object is dropped from 5.0 m. What is its speed just before hitting the ground (ignore air)?",
+  c:["5.0 m/s","7.0 m/s","9.9 m/s","98 m/s"],a:2,
+  why:"mgh = ½mv² → v = √(2gh) = √(98) = 9.9 m/s. 98 is the energy in joules, not the speed."},
+ {q:"A 1000 kg car traveling at 20 m/s brakes to rest with a constant 5000 N braking force. What is the stopping distance?",
+  c:["20 m","40 m","80 m","200 m"],a:1,
+  why:"KE = ½(1000)(20²) = 200,000 J. Work by brakes F·d = 200,000 → d = 40 m (work-energy theorem)."},
+ {q:"A 60 kg student climbs stairs 3.0 m high in 6.0 s. What is their average power output?",
+  c:["294 W","1764 W","30 W","98 W"],a:0,
+  why:"Work = mgh = 60(9.8)(3.0) = 1764 J. Power = W/t = 1764/6.0 = 294 W. 1764 is the work in joules."},
+ {q:"Two sleds of different mass start from rest at the top of the same frictionless hill. At the bottom:",
+  c:["The heavier sled is faster","The lighter sled is faster","They have the same speed","Cannot tell"],a:2,
+  why:"mgh = ½mv² → v = √(2gh). Mass cancels, so speed depends only on the height. The heavier sled has more KE, not more speed."},
+ {q:"A sliding block slows to a stop because of friction. What happened to its kinetic energy?",
+  c:["It was destroyed","It became thermal energy (and a little sound)","It became gravitational potential energy","It disappeared because the block stopped"],a:1,
+  why:"Energy is conserved. Friction transforms the block's KE into thermal energy in the block and surface, which is not easily recoverable as motion."}
+]}
+];
+
+const KEY="physicsQuizBest";
+let best={};
+try{best=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){best={}}
+function saveBest(id,pct){
+  if(!(best[id]>=pct)){best[id]=pct;try{localStorage.setItem(KEY,JSON.stringify(best))}catch(e){}}
+}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+const tabs=document.getElementById("tabs"), app=document.getElementById("app");
+let state=null;
+
+function renderTabs(){
+  tabs.innerHTML="";
+  UNITS.forEach(u=>{
+    const b=document.createElement("button");
+    b.textContent=u.name+(best[u.id]!=null?" ("+best[u.id]+"%)":"");
+    if(state&&state.unit.id===u.id)b.className="on";
+    b.onclick=()=>start(u,u.qs);
+    tabs.appendChild(b);
+  });
+}
+function start(unit,qs){
+  // shuffle question order and answer order; remember the correct text
+  const items=shuffle(qs).map(x=>{
+    const correct=x.c[x.a];
+    return {q:x.q,why:x.why,c:shuffle(x.c),correct,orig:x};
+  });
+  state={unit,items,i:0,answers:[],picked:null};
+  renderTabs();render();
+}
+function render(){
+  if(!state){app.innerHTML='<div class="card">Choose a unit above to begin. Each unit has 8 questions on the ideas students miss most.</div>';return}
+  if(state.i>=state.items.length)return results();
+  const it=state.items[state.i];
+  const answered=state.picked!==null;
+  let h='<div class="card"><div class="prog"><div style="width:'+(state.i/state.items.length*100)+'%"></div></div>';
+  h+='<div class="tag">'+state.unit.name+' · Question '+(state.i+1)+' of '+state.items.length+'</div>';
+  h+='<p class="q"></p><div id="opts"></div><div id="fb"></div></div>';
+  app.innerHTML=h;
+  app.querySelector(".q").textContent=it.q;
+  const opts=document.getElementById("opts");
+  it.c.forEach((txt,k)=>{
+    const b=document.createElement("button");b.className="opt";b.textContent=txt;
+    if(answered){
+      b.disabled=true;
+      if(txt===it.correct)b.classList.add("ok");
+      else if(k===state.picked)b.classList.add("bad");
+    }else b.onclick=()=>pick(k);
+    opts.appendChild(b);
+  });
+  if(answered){
+    const ok=it.c[state.picked]===it.correct;
+    const fb=document.getElementById("fb");
+    const w=document.createElement("div");w.className="why";
+    const s=document.createElement("strong");s.textContent=ok?"Correct. ":"Not quite. ";
+    w.appendChild(s);w.appendChild(document.createTextNode(it.why));
+    fb.appendChild(w);
+    const n=document.createElement("button");n.className="on";n.style.marginTop="12px";
+    n.textContent=state.i+1<state.items.length?"Next question":"See results";
+    n.onclick=()=>{state.i++;state.picked=null;render()};
+    fb.appendChild(n);
+  }
+}
+function pick(k){
+  const it=state.items[state.i];
+  state.picked=k;
+  state.answers.push({it,ok:it.c[k]===it.correct});
+  render();
+}
+function results(){
+  const n=state.answers.length, right=state.answers.filter(a=>a.ok).length;
+  const pct=Math.round(right/n*100);
+  const isRetry=state.retry;
+  if(!isRetry)saveBest(state.unit.id,pct);
+  renderTabs();
+  const missed=state.answers.filter(a=>!a.ok);
+  app.innerHTML='';
+  const card=document.createElement("div");card.className="card";
+  card.innerHTML='<div class="tag"></div><div class="big"></div><div class="best"></div>';
+  card.querySelector(".tag").textContent=state.unit.name+(isRetry?" (retry of missed)":"");
+  card.querySelector(".big").textContent=right+" / "+n+" ("+pct+"%)";
+  card.querySelector(".best").textContent=pct>=80?"Mastery level. Take it again on a different day to confirm.":"Below 80%. Review the Cornell notes for this unit, then retry the missed questions.";
+  if(missed.length){
+    const h=document.createElement("h3");h.textContent="Review what you missed";card.appendChild(h);
+    const ul=document.createElement("ul");
+    missed.forEach(m=>{const li=document.createElement("li");
+      const b=document.createElement("strong");b.textContent=m.it.q;li.appendChild(b);
+      li.appendChild(document.createElement("br"));
+      li.appendChild(document.createTextNode("Answer: "+m.it.correct+". "+m.it.why));
+      ul.appendChild(li)});
+    card.appendChild(ul);
+  }
+  const row=document.createElement("div");row.style.marginTop="12px";
+  if(missed.length){
+    const r=document.createElement("button");r.className="on";r.textContent="Retry missed ("+missed.length+")";
+    r.onclick=()=>{start(state.unit,missed.map(m=>m.it.orig));state.retry=true};
+    row.appendChild(r);row.appendChild(document.createTextNode(" "));
+  }
+  const a=document.createElement("button");a.textContent="Restart full quiz";a.onclick=()=>start(state.unit,state.unit.qs);
+  row.appendChild(a);card.appendChild(row);
+  app.appendChild(card);
+}
+renderTabs();render();
+</script>
+</body>
+</html>
