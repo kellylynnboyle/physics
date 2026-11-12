@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics Semester 1</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main>
+  <h1>Physics: Semester 1 Learning Project</h1>
+  <p class="sub">11th grade | Kinematics, Projectile Motion, Newton's Laws, Momentum, Work &amp; Energy | aligned to CA NGSS</p>
+
+  <div class="card">
+    <strong>How to use this project</strong>
+    <ol>
+      <li>Read the unit guide and fill in the Cornell notes during class.</li>
+      <li>Self-test: cover the Notes column and answer every cue question aloud.</li>
+      <li>Take the most-missed quiz. Retry the questions you missed until you score 80% or higher.</li>
+      <li>Work the practice problems, complete the lab, and finish the IXL skills.</li>
+      <li>Tick each checkpoint below. Progress is saved in this browser only.</li>
+    </ol>
+    <div>Overall progress: <strong id="overall">0%</strong></div>
+    <div class="bar"><span id="overallbar"></span></div>
+  </div>
+
+  <div class="grid" id="units"></div>
+
+  <p class="small">Instructors: see <a href="README.md">README.md</a> for the full project outline, and the <code>docs/</code> folder for the standards alignment and assessment criteria.</p>
+</main>
+<script src="data/01-kinematics.js"></script>
+<script src="data/02-projectile-motion.js"></script>
+<script src="data/03-newtons-laws.js"></script>
+<script src="data/04-momentum.js"></script>
+<script src="data/05-work-energy.js"></script>
+<script src="assets/app.js"></script>
+<script>
+const wrap = document.getElementById("units");
+function render() {
+  let done = 0, total = 0;
+  wrap.innerHTML = UNITS.map(u => {
+    const best = store.get("best:" + u.id, null);
+    const items = CHECKPOINTS.map(([k, label]) => {
+      const on = !!store.get("cp:" + u.id + ":" + k, false);
+      total++; if (on) done++;
+      return `<li><input type="checkbox" id="${u.id}-${k}" data-u="${u.id}" data-k="${k}" ${on ? "checked" : ""}><label for="${u.id}-${k}">${esc(label)}</label></li>`;
+    }).join("");
+    return `<div class="card unit">
+      <h3>Unit ${u.num}: ${esc(u.title)}</h3>
+      <div class="meta">${esc(u.pacing)} | ${esc(u.subtitle)}</div>
+      <div>${u.ngss.map(s => `<span class="pill">${esc(s)}</span>`).join("")}</div>
+      <ul class="check">${items}</ul>
+      <div class="small">Best quiz score: ${best === null ? "not taken yet" : best + "%"}</div>
+      <div class="btns">
+        <a class="btn" href="notes.html?unit=${u.id}">Cornell notes</a>
+        <a class="btn" href="quiz.html?unit=${u.id}">Quiz</a>
+        <a class="btn ghost" href="units/${String(u.num).padStart(2, "0")}-${u.id}/README.md">Unit guide</a>
+      </div>
+    </div>`;
+  }).join("");
+  const pct = total ? Math.round(100 * done / total) : 0;
+  document.getElementById("overall").textContent = pct + "% (" + done + " of " + total + " checkpoints)";
+  document.getElementById("overallbar").style.width = pct + "%";
+}
+wrap.addEventListener("change", e => {
+  const t = e.target;
+  if (t.matches("input[type=checkbox]")) { store.set("cp:" + t.dataset.u + ":" + t.dataset.k, t.checked); render(); }
+});
+render();
+</script>
+</body>
+</html>

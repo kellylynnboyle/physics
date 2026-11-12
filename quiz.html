@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Most-Missed Quiz</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main>
+  <nav class="top"><a href="index.html">← All units</a><span id="navlinks"></span></nav>
+  <div id="page"></div>
+</main>
+<script src="data/01-kinematics.js"></script>
+<script src="data/02-projectile-motion.js"></script>
+<script src="data/03-newtons-laws.js"></script>
+<script src="data/04-momentum.js"></script>
+<script src="data/05-work-energy.js"></script>
+<script src="assets/app.js"></script>
+<script>
+const u = unitFromUrl();
+const page = document.getElementById("page");
+
+function shuffle(a) {
+  a = a.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+
+if (!u) {
+  page.innerHTML = "<h1>Most-Missed Quizzes</h1><ul>" + UNITS.map(x => `<li><a href="quiz.html?unit=${x.id}">Unit ${x.num}: ${esc(x.title)}</a></li>`).join("") + "</ul>";
+} else {
+  document.title = u.title + " Quiz";
+  document.getElementById("navlinks").innerHTML = `<a href="notes.html?unit=${u.id}">${esc(u.title)} Cornell notes</a>`;
+  let set, i, missed, firstRound = true;
+
+  function start(indexes) {
+    // In the data, choices[0] is always the correct answer; shuffle for display.
+    set = shuffle(indexes).map(n => ({ n, item: u.quiz[n], order: shuffle([0, 1, 2, 3]) }));
+    i = 0; missed = [];
+    show();
+  }
+
+  function show() {
+    const { item, order } = set[i];
+    page.innerHTML = `
+      <h1>${esc(u.title)}: Most-Missed Quiz</h1>
+      <p class="small">Question ${i + 1} of ${set.length}${firstRound ? "" : " (retrying missed questions)"}</p>
+      <div class="bar"><span style="width:${100 * i / set.length}%"></span></div>
+      <div class="card">
+        <div class="q">${esc(item.q)}</div>
+        ${order.map(c => `<button class="choice" data-c="${c}">${esc(item.choices[c])}</button>`).join("")}
+        <div id="fb"></div>
+      </div>`;
+  }
+
+  page.addEventListener("click", e => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    if (b.classList.contains("choice")) {
+      const { n, item } = set[i];
+      const ok = b.dataset.c === "0";
+      if (!ok) missed.push(n);
+      page.querySelectorAll(".choice").forEach(x => {
+        x.disabled = true;
+        if (x.dataset.c === "0") x.classList.add("right");
+        else if (x === b) x.classList.add("wrong");
+      });
+      document.getElementById("fb").innerHTML = `
+        <div class="fb ${ok ? "right" : "wrong"}">
+          <b class="${ok ? "right" : "wrong"}">${ok ? "Correct." : "Not quite."}</b> ${esc(item.why)}
+          <div class="small">Common mistake: ${esc(item.trap)}</div>
+        </div>
+        <button id="next">${i + 1 < set.length ? "Next question" : "See results"}</button>`;
+      document.getElementById("next").focus();
+    } else if (b.id === "next") {
+      i++;
+      if (i < set.length) show(); else results();
+    } else if (b.id === "retry") {
+      firstRound = false; start(missed);
+    } else if (b.id === "again") {
+      firstRound = true; start(u.quiz.map((_, k) => k));
+    }
+  });
+
+  function results() {
+    const right = set.length - missed.length;
+    const pct = Math.round(100 * right / set.length);
+    let saved = "";
+    if (firstRound) {
+      const best = Math.max(pct, store.get("best:" + u.id, 0));
+      store.set("best:" + u.id, best);
+      if (best >= 80) store.set("cp:" + u.id + ":quiz", true);
+      saved = `<p class="small">Best full-quiz score saved in this browser: ${best}%. ${best >= 80 ? "Quiz checkpoint complete." : "Score 80% or higher on a full attempt to complete the quiz checkpoint."}</p>`;
+    }
+    const list = missed.length
+      ? `<h2>Review these</h2><ul>${missed.map(n => `<li><strong>${esc(u.quiz[n].q)}</strong><br>${esc(u.quiz[n].choices[0])}. ${esc(u.quiz[n].why)}</li>`).join("")}</ul>`
+      : "<p>Every question correct.</p>";
+    page.innerHTML = `
+      <h1>${esc(u.title)}: Results</h1>
+      <div class="card">
+        <div class="q">${right} of ${set.length} correct (${pct}%)</div>
+        ${saved}
+        ${list}
+        <div class="btns">
+          ${missed.length ? '<button id="retry">Retry missed questions</button>' : ""}
+          <button id="again" class="ghost">Restart full quiz</button>
+          <a class="btn ghost" href="notes.html?unit=${u.id}">Back to notes</a>
+          <a class="btn ghost" href="index.html">All units</a>
+        </div>
+      </div>`;
+  }
+
+  start(u.quiz.map((_, k) => k));
+}
+</script>
+</body>
+</html>

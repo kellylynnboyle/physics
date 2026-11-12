@@ -1,0 +1,67 @@
+:root {
+  --bg: #f6f8fc; --card: #ffffff; --ink: #1c2433; --muted: #5a667a; --line: #d5dceb;
+  --navy: #1f3864; --head: #d9e2f3; --cue: #eef3fa; --ixl: #ede4f5; --purple: #5b2c83;
+  --green: #e2efda; --yellow: #fff2cc; --good: #1d7a46; --bad: #b3261e; --accent: #2f5fb3;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121722; --card: #1b2230; --ink: #e6ebf5; --muted: #9aa7bd; --line: #33405a;
+    --navy: #a9c2f5; --head: #26344f; --cue: #1f2a3e; --ixl: #2e2440; --purple: #c9a6ea;
+    --green: #1f3324; --yellow: #3a3216; --good: #6fd39b; --bad: #ff8a80; --accent: #8fb2f5;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Calibri, sans-serif; }
+main { max-width: 980px; margin: 0 auto; padding: 16px 16px 64px; }
+a { color: var(--accent); }
+h1, h2, h3 { color: var(--navy); line-height: 1.25; }
+h1 { font-size: 1.7rem; margin: .4em 0 .2em; }
+h2 { font-size: 1.25rem; margin-top: 1.8em; border-bottom: 2px solid var(--navy); padding-bottom: 4px; }
+.sub { color: var(--muted); font-style: italic; margin: 0 0 1em; }
+nav.top { font-size: .92rem; margin-bottom: 8px; display: flex; gap: 14px; flex-wrap: wrap; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin: 14px 0; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 14px; }
+.unit h3 { margin: 0 0 2px; }
+.unit .meta { color: var(--muted); font-size: .88rem; margin-bottom: 8px; }
+.btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.btn, button { font: inherit; cursor: pointer; border: 1px solid var(--accent); background: var(--accent); color: #fff; border-radius: 8px; padding: 7px 14px; text-decoration: none; display: inline-block; }
+@media (prefers-color-scheme: dark) { .btn, button { color: #101623; } }
+.btn.ghost, button.ghost { background: transparent; color: var(--accent); }
+ul.check { list-style: none; padding: 0; margin: 6px 0; }
+ul.check li { padding: 3px 0; display: flex; gap: 8px; align-items: flex-start; }
+ul.check input { margin-top: 5px; flex: none; }
+.bar { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; margin: 6px 0; }
+.bar > span { display: block; height: 100%; background: var(--good); width: 0; }
+.pill { display: inline-block; font-size: .78rem; border: 1px solid var(--line); border-radius: 999px; padding: 1px 9px; margin: 2px 4px 2px 0; color: var(--muted); }
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid var(--line); padding: 8px 10px; vertical-align: top; text-align: left; }
+th { background: var(--head); color: var(--navy); }
+table.cornell td.cue { width: 29%; background: var(--cue); font-weight: 700; color: var(--navy); }
+table.cornell tr.section td { background: var(--head); color: var(--navy); font-weight: 700; font-size: 1.08rem; }
+table.cornell tr.ixl td { background: var(--ixl); }
+table.cornell tr.ixl .lab, .purple { color: var(--purple); font-weight: 700; }
+table.cornell tr.tricks td { background: var(--green); }
+table.cornell tr.summary td { background: var(--yellow); }
+table.cornell ul { margin: 0; padding-left: 1.1em; }
+table.cornell li { margin: 3px 0; }
+body.selftest table.cornell td.notes > * { visibility: hidden; }
+body.selftest table.cornell td.notes.show > * { visibility: visible; }
+body.selftest table.cornell td.notes { cursor: pointer; }
+.q { font-weight: 700; font-size: 1.1rem; margin: 6px 0 12px; }
+.choice { display: block; width: 100%; text-align: left; margin: 8px 0; background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; }
+.choice:hover:not(:disabled) { border-color: var(--accent); }
+.choice:disabled { cursor: default; opacity: 1; }
+.choice.right { border: 2px solid var(--good); }
+.choice.wrong { border: 2px solid var(--bad); }
+.fb { border-left: 4px solid var(--line); padding: 8px 12px; margin: 12px 0; }
+.fb.right { border-color: var(--good); } .fb.wrong { border-color: var(--bad); }
+.fb b.right { color: var(--good); } .fb b.wrong { color: var(--bad); }
+.small { font-size: .88rem; color: var(--muted); }
+@media print {
+  body { background: #fff; font-size: 10.5pt; }
+  nav.top, .noprint { display: none !important; }
+  main { max-width: none; padding: 0; }
+  tr { break-inside: avoid; }
+  body.selftest table.cornell td.notes > * { visibility: visible; }
+}

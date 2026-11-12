@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cornell Notes</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main>
+  <nav class="top"><a href="index.html">← All units</a><span id="navlinks"></span></nav>
+  <div id="page"></div>
+</main>
+<script src="data/01-kinematics.js"></script>
+<script src="data/02-projectile-motion.js"></script>
+<script src="data/03-newtons-laws.js"></script>
+<script src="data/04-momentum.js"></script>
+<script src="data/05-work-energy.js"></script>
+<script src="assets/app.js"></script>
+<script>
+const u = unitFromUrl();
+const page = document.getElementById("page");
+if (!u) {
+  page.innerHTML = "<h1>Cornell Notes</h1><ul>" + UNITS.map(x => `<li><a href="notes.html?unit=${x.id}">Unit ${x.num}: ${esc(x.title)}</a></li>`).join("") + "</ul>";
+} else {
+  document.title = "Cornell Notes: " + u.title;
+  document.getElementById("navlinks").innerHTML = `<a href="quiz.html?unit=${u.id}">Take the ${esc(u.title)} quiz →</a>`;
+  let rows = "";
+  for (const s of u.notes) {
+    rows += `<tr class="section"><td colspan="2">${esc(s.section)}</td></tr>`;
+    for (const [cue, lines] of s.rows) {
+      rows += `<tr><td class="cue">${esc(cue)}</td><td class="notes"><ul>${lines.map(l => `<li>${fmt(l)}</li>`).join("")}</ul></td></tr>`;
+    }
+    const ixl = s.ixl.map(([c, n]) => `<li><strong>${esc(c)}</strong> ${esc(n)}</li>`).join("");
+    rows += `<tr class="ixl"><td colspan="2"><span class="lab">IXL PRACTICE (goal: SmartScore 80+)</span>${ixl ? `<ul>${ixl}</ul>` : ""}${s.ixlNote ? `<div>${esc(s.ixlNote)}</div>` : ""}</td></tr>`;
+  }
+  rows += `<tr class="tricks"><td colspan="2"><strong>MEMORY TRICKS</strong><ul>${u.tricks.map(([t, w]) => `<li><strong>${esc(t)}:</strong> ${esc(w)}</li>`).join("")}</ul></td></tr>`;
+  rows += `<tr class="summary"><td colspan="2"><strong>SUMMARY</strong><div>${esc(u.summary)}</div></td></tr>`;
+  page.innerHTML = `
+    <h1>Cornell Notes: ${esc(u.title)}</h1>
+    <p class="sub">Physics | Unit ${u.num} | ${esc(u.subtitle)}</p>
+    <p>Name: ______________________ &nbsp; Period: ______ &nbsp; Date: ____________</p>
+    <p><strong>Essential question:</strong> ${esc(u.essentialQuestion)}</p>
+    <p><strong>Learning targets:</strong></p>
+    <ul>${u.objectives.map(([id, t]) => `<li><strong>${id}</strong> ${esc(t)}</li>`).join("")}</ul>
+    <div class="btns noprint">
+      <button id="st">Self-test mode: hide the Notes column</button>
+      <button class="ghost" onclick="print()">Print</button>
+    </div>
+    <p class="small noprint" id="sthint" hidden>Answer each cue aloud, then click its Notes cell to check yourself.</p>
+    <div class="tablewrap"><table class="cornell">
+      <thead><tr><th>CUES / QUESTIONS</th><th>NOTES</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>
+    <p><em><strong>Self-test tip:</strong> cover the Notes column, answer every cue aloud, mark the ones you miss, and redo each worked example on paper. Repeat the next day and again a few days later.</em></p>`;
+  const st = document.getElementById("st");
+  st.addEventListener("click", () => {
+    const on = document.body.classList.toggle("selftest");
+    st.textContent = on ? "Show all notes" : "Self-test mode: hide the Notes column";
+    document.getElementById("sthint").hidden = !on;
+    document.querySelectorAll("td.notes.show").forEach(td => td.classList.remove("show"));
+  });
+  page.addEventListener("click", e => {
+    const td = e.target.closest("td.notes");
+    if (td && document.body.classList.contains("selftest")) td.classList.toggle("show");
+  });
+}
+</script>
+</body>
+</html>
