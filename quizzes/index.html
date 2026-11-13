@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics Most-Missed Quizzes</title>
+<style>
+  :root {
+    --bg: #f5f7fb; --card: #ffffff; --ink: #1c2333; --muted: #5b6478;
+    --navy: #1f3864; --line: #d5dbe8; --tint: #eef3fa;
+    --good: #1e7a46; --good-bg: #e2efda; --bad: #a3271f; --bad-bg: #fbe4e1;
+    --warn-bg: #fff2cc;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12151c; --card: #1b202b; --ink: #e8ecf4; --muted: #a2abbd;
+      --navy: #9db8ee; --line: #323a4b; --tint: #232a38;
+      --good: #7fd6a2; --good-bg: #173524; --bad: #f2a199; --bad-bg: #40201d;
+      --warn-bg: #3b3317;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { color: var(--navy); font-size: 1.6rem; margin: 0 0 4px; }
+  h2 { color: var(--navy); font-size: 1.25rem; margin: 0 0 12px; }
+  p.sub { color: var(--muted); margin: 0 0 20px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 18px; margin-bottom: 14px; }
+  .units { display: grid; gap: 12px; }
+  .unit { display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    width: 100%; text-align: left; font: inherit; color: inherit; cursor: pointer;
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; }
+  .unit:hover, .unit:focus-visible { border-color: var(--navy); outline: none; }
+  .unit strong { color: var(--navy); font-size: 1.05rem; }
+  .unit small { display: block; color: var(--muted); }
+  .badge { flex: none; border-radius: 999px; padding: 4px 12px; font-size: .85rem;
+    background: var(--tint); color: var(--muted); white-space: nowrap; }
+  .badge.pass { background: var(--good-bg); color: var(--good); font-weight: 600; }
+  .badge.retry { background: var(--warn-bg); color: var(--ink); }
+  .bar { height: 8px; background: var(--tint); border-radius: 4px; overflow: hidden; margin: 10px 0 16px; }
+  .bar > div { height: 100%; background: var(--navy); transition: width .2s; }
+  .meta { display: flex; justify-content: space-between; color: var(--muted); font-size: .9rem; }
+  .q { font-size: 1.1rem; font-weight: 600; margin: 0 0 14px; }
+  .choice { display: block; width: 100%; text-align: left; font: inherit; color: inherit; cursor: pointer;
+    background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+    padding: 12px 14px; margin-bottom: 8px; }
+  .choice:hover:not(:disabled), .choice:focus-visible { border-color: var(--navy); outline: none; }
+  .choice:disabled { cursor: default; opacity: .75; }
+  .choice.correct { background: var(--good-bg); border-color: var(--good); opacity: 1; font-weight: 600; }
+  .choice.wrong { background: var(--bad-bg); border-color: var(--bad); opacity: 1; }
+  .feedback { border-radius: 8px; padding: 12px 14px; margin: 12px 0; background: var(--tint); }
+  .feedback .verdict { font-weight: 700; }
+  .feedback .verdict.ok { color: var(--good); }
+  .feedback .verdict.no { color: var(--bad); }
+  .feedback p { margin: 6px 0 0; }
+  .trap { color: var(--muted); font-size: .92rem; }
+  .btn { font: inherit; cursor: pointer; border-radius: 8px; padding: 10px 18px;
+    border: 1px solid var(--navy); background: var(--navy); color: var(--card); font-weight: 600; }
+  .btn.ghost { background: transparent; color: var(--navy); }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+  .score { font-size: 2rem; font-weight: 700; color: var(--navy); }
+  ul.missed { padding-left: 20px; margin: 8px 0 0; }
+  ul.missed li { margin-bottom: 12px; }
+  .note { color: var(--muted); font-size: .9rem; }
+  a { color: var(--navy); }
+</style>
+</head>
+<body>
+<main id="app"></main>
+
+<script src="questions.js"></script>
+<script>
+(function () {
+  "use strict";
+  var MASTERY = 0.8;               // 80% or better counts as mastered
+  var STORE_KEY = "physics-s1-quiz-progress";
+  var app = document.getElementById("app");
+  var state = null;                // the quiz in progress
+
+  // ---- progress (kept only in this browser) ----
+  function loadProgress() {
+    try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; }
+  }
+  function saveProgress(p) {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(p)); } catch (e) { /* private mode: skip */ }
+  }
+
+  // ---- small helpers ----
+  function el(tag, attrs, children) {
+    var node = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) {
+      if (k === "class") node.className = attrs[k];
+      else if (k === "text") node.textContent = attrs[k];
+      else if (k.slice(0, 2) === "on") node.addEventListener(k.slice(2), attrs[k]);
+      else node.setAttribute(k, attrs[k]);
+    });
+    (children || []).forEach(function (c) { if (c) node.appendChild(c); });
+    return node;
+  }
+  function shuffle(list) {
+    var a = list.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function show(nodes) {
+    app.replaceChildren.apply(app, nodes);
+    window.scrollTo(0, 0);
+  }
+
+  // ---- home screen ----
+  function home() {
+    state = null;
+    var progress = loadProgress();
+    var buttons = QUIZ.map(function (unit, i) {
+      var rec = progress[unit.id];
+      var badge = el("span", { class: "badge", text: "Not started" });
+      if (rec) {
+        var pct = Math.round(100 * rec.best / rec.total);
+        var passed = rec.best / rec.total >= MASTERY;
+        badge = el("span", {
+          class: "badge " + (passed ? "pass" : "retry"),
+          text: (passed ? "Mastered · " : "Best ") + rec.best + "/" + rec.total + " (" + pct + "%)"
+        });
+      }
+      return el("button", { class: "unit", type: "button", onclick: function () { start(unit); } }, [
+        el("span", {}, [
+          el("strong", { text: "Unit " + (i + 1) + ": " + unit.title }),
+          el("small", { text: unit.questions.length + " questions · attempts: " + (rec ? rec.attempts : 0) })
+        ]),
+        badge
+      ]);
+    });
+    show([
+      el("h1", { text: "Physics Most-Missed Quizzes" }),
+      el("p", { class: "sub", text: "Semester 1 · Each question targets a common physics misconception. Score 80% or better to master a unit." }),
+      el("div", { class: "units" }, buttons),
+      el("p", { class: "note", text: "Your scores are saved in this browser only. Write your best score for each unit in your progress tracker." }),
+      el("div", { class: "row" }, [
+        el("button", { class: "btn ghost", type: "button", text: "Reset my scores", onclick: function () {
+          if (confirm("Erase all saved quiz scores in this browser?")) { saveProgress({}); home(); }
+        } })
+      ])
+    ]);
+  }
+
+  // ---- quiz flow ----
+  function start(unit, onlyThese) {
+    var pool = onlyThese || unit.questions;
+    state = {
+      unit: unit,
+      retry: Boolean(onlyThese),
+      index: 0,
+      correct: 0,
+      missed: [],
+      items: shuffle(pool).map(function (q) {
+        var order = shuffle(q.choices.map(function (_, i) { return i; }));
+        return { q: q, order: order };
+      })
+    };
+    ask();
+  }
+
+  function ask() {
+    var item = state.items[state.index];
+    var total = state.items.length;
+    var feedback = el("div", { "aria-live": "polite" });
+    var buttons = item.order.map(function (choiceIndex) {
+      return el("button", {
+        class: "choice", type: "button", text: item.q.choices[choiceIndex],
+        onclick: function () { answer(item, choiceIndex, buttons, feedback); }
+      });
+    });
+    show([
+      el("div", { class: "meta" }, [
+        el("span", { text: state.unit.title + (state.retry ? " · retry missed" : "") }),
+        el("span", { text: "Question " + (state.index + 1) + " of " + total })
+      ]),
+      el("div", { class: "bar" }, [el("div", { style: "width:" + (100 * state.index / total) + "%" })]),
+      el("div", { class: "card" }, [el("p", { class: "q", text: item.q.q })].concat(buttons, [feedback])),
+      el("div", { class: "row" }, [el("button", { class: "btn ghost", type: "button", text: "Quit to unit list", onclick: home })])
+    ]);
+  }
+
+  function answer(item, chosen, buttons, feedback) {
+    var right = chosen === item.q.answer;
+    buttons.forEach(function (b, i) {
+      b.disabled = true;
+      if (item.order[i] === item.q.answer) b.classList.add("correct");
+      else if (item.order[i] === chosen) b.classList.add("wrong");
+    });
+    if (right) state.correct++; else state.missed.push(item.q);
+    var last = state.index === state.items.length - 1;
+    var next = el("button", {
+      class: "btn", type: "button", text: last ? "See results" : "Next question",
+      onclick: function () { state.index++; if (last) results(); else ask(); }
+    });
+    feedback.replaceChildren(
+      el("div", { class: "feedback" }, [
+        el("div", { class: "verdict " + (right ? "ok" : "no"), text: right ? "Correct" : "Not quite" }),
+        el("p", { text: item.q.why }),
+        el("p", { class: "trap", text: "Common trap: " + item.q.trap + "  (Objective " + item.q.obj + ")" })
+      ]),
+      next
+    );
+    next.focus();
+  }
+
+  function results() {
+    var unit = state.unit, total = state.items.length, correct = state.correct, missed = state.missed;
+    var pct = Math.round(100 * correct / total);
+    // Only full-unit attempts count toward the saved score, not "retry missed" rounds.
+    if (!state.retry) {
+      var progress = loadProgress();
+      var rec = progress[unit.id] || { best: 0, total: total, attempts: 0 };
+      rec.best = Math.max(rec.best, correct);
+      rec.total = total;
+      rec.attempts += 1;
+      rec.last = correct;
+      progress[unit.id] = rec;
+      saveProgress(progress);
+    }
+    var passed = correct / total >= MASTERY;
+    var verdict = state.retry
+      ? (missed.length ? "Keep going: retry the ones you missed again." : "You fixed every missed question. Now retake the full quiz.")
+      : (passed ? "Mastered. Record this score in your progress tracker."
+                : "Not yet at 80%. Review the notes for the objectives below, then try again.");
+    var nodes = [
+      el("h2", { text: unit.title + (state.retry ? " · retry results" : " · results") }),
+      el("div", { class: "card" }, [
+        el("div", { class: "score", text: correct + " / " + total + "  (" + pct + "%)" }),
+        el("p", { text: verdict })
+      ])
+    ];
+    if (missed.length) {
+      nodes.push(el("div", { class: "card" }, [
+        el("h2", { text: "Review what you missed" }),
+        el("ul", { class: "missed" }, missed.map(function (q) {
+          return el("li", {}, [
+            el("strong", { text: q.q }),
+            el("p", { text: "Answer: " + q.choices[q.answer] }),
+            el("p", { text: q.why }),
+            el("p", { class: "trap", text: "Objective " + q.obj + " · Common trap: " + q.trap })
+          ]);
+        })),
+        el("p", { class: "note" }, [
+          document.createTextNode("Restudy these objectives in the "),
+          el("a", { href: "../" + unit.folder + "/cornell-notes.md", text: unit.title + " Cornell notes" }),
+          document.createTextNode(".")
+        ])
+      ]));
+    }
+    var actions = [];
+    if (missed.length) actions.push(el("button", { class: "btn", type: "button", text: "Retry missed questions", onclick: function () { start(unit, missed); } }));
+    actions.push(el("button", { class: "btn" + (missed.length ? " ghost" : ""), type: "button", text: "Retake full quiz", onclick: function () { start(unit); } }));
+    actions.push(el("button", { class: "btn ghost", type: "button", text: "Back to unit list", onclick: home }));
+    nodes.push(el("div", { class: "row" }, actions));
+    show(nodes);
+  }
+
+  home();
+})();
+</script>
+</body>
+</html>
