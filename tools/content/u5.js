@@ -1,0 +1,213 @@
+module.exports = {
+  id: '05-work-and-energy',
+  num: 5,
+  title: 'Work & Energy',
+  subtitle: 'Physics (Grade 11) | Semester 1, Unit 5 | Work, kinetic and potential energy, conservation of energy, power',
+  weeks: 'Weeks 15–18',
+  overview: 'Energy gives a second way to solve motion problems, often a shorter one. Students calculate work, kinetic and potential energy, track energy through a system with bar charts, and design a device that converts energy from one form to another.',
+  ngss: [
+    ['HS-PS3-1', 'Create a computational model to calculate the change in the energy of one component in a system when the change in energy of the other component(s) and energy flows in and out of the system are known.'],
+    ['HS-PS3-2', 'Develop and use models to illustrate that energy at the macroscopic scale can be accounted for as a combination of energy associated with the motions of particles (objects) and energy associated with the relative positions of particles (objects).'],
+    ['HS-PS3-3', 'Design, build, and refine a device that works within given constraints to convert one form of energy into another form of energy.'],
+  ],
+  targets: [
+    'I can calculate the work done by a force and say when work is zero or negative.',
+    'I can calculate kinetic energy and use the work-energy theorem.',
+    'I can calculate gravitational and elastic potential energy.',
+    'I can use conservation of energy to find a speed or height, with and without friction.',
+    'I can calculate power and efficiency.',
+    'I can model energy transfers with a bar chart or spreadsheet.',
+  ],
+  eq: 'Where does energy come from, where does it go, and how can tracking it predict motion?',
+  concepts: [
+    '**Work** – energy transferred by a force acting through a distance: W = Fd cos θ, in joules.',
+    '**Kinetic energy** – energy of motion: KE = ½mv².',
+    '**Work-energy theorem** – net work equals the change in kinetic energy.',
+    '**Potential energy** – stored energy of position: gravitational (mgh) and elastic (½kx²).',
+    '**Conservation of energy** – energy is never created or destroyed, only transferred or transformed.',
+    '**Mechanical energy and friction** – friction turns mechanical energy into thermal energy.',
+    '**Power and efficiency** – rate of doing work (P = W/t); useful output divided by total input.',
+  ],
+  objectives: [
+    ['Calculate work, including zero and negative work.', 'Quiz Q1, Q7; Practice 1; IXL Physics H.1'],
+    ['Calculate kinetic energy and apply the work-energy theorem.', 'Quiz Q2, Q10; Practice 2, 7'],
+    ['Calculate gravitational and elastic potential energy.', 'Practice 3, 5'],
+    ['Apply conservation of energy with and without friction (HS-PS3-1, HS-PS3-2).', 'Quiz Q3–Q6, Q9; Practice 3–5, 7; IXL Physics H.2'],
+    ['Calculate power and efficiency.', 'Quiz Q8; Practice 6, 8'],
+    ['Design, build and refine an energy-conversion device (HS-PS3-3).', 'Design project rubric'],
+  ],
+  sections: [
+    {
+      title: '1. Work',
+      ixlShort: 'IXL: Physics H.1, H (new skill), Grade 8 KK.6',
+      ixl: [['Grade 8 KK.6', 'Abbreviate force, energy, and electricity units'], ['Physics H.1', 'Calculate work'], ['Physics H (new, not yet numbered)', 'Calculate work from force-displacement graphs']],
+      rows: [
+        ['When does a force do work?', [
+          'When the object moves and the force has a part along the direction of motion: **W = Fd cos θ**, where θ is the angle between force and displacement.',
+          'Unit: **joule (J)** = 1 N·m. Work is a scalar.',
+          'Worked: a sled is pulled 10 m by a 50 N rope angled 30° above the ground. W = 50 × 10 × cos 30° = **433 J**.',
+        ]],
+        ['When is the work zero or negative?', [
+          '**Zero** when there is no displacement (pushing on a wall, holding a barbell still) or when the force is perpendicular to the motion (carrying a box across a level floor; the normal force on a sliding box).',
+          '**Negative** when the force opposes the motion. Friction does negative work and removes kinetic energy.',
+          'Feeling tired is not the test. Work in physics needs force and displacement in the same line.',
+        ]],
+        ['How do you find work from a force-distance graph?', [
+          'Work = **area** under the force-distance graph.',
+          'Constant 20 N over 5.0 m: rectangle, W = 100 J. Force rising steadily from 0 to 20 N over 5.0 m: triangle, W = ½ × 5.0 × 20 = **50 J**.',
+        ]],
+      ],
+    },
+    {
+      title: '2. Kinetic Energy and the Work-Energy Theorem',
+      ixlShort: 'IXL: Grade 8 J.2',
+      ixl: [['Grade 8 J.2', 'Use tables and graphs to identify patterns about kinetic energy']],
+      rows: [
+        ['What is kinetic energy, and how does it depend on speed?', [
+          '**KE = ½mv²**, in joules. It is the energy an object has because it is moving.',
+          'Speed is squared: **double the speed, four times the kinetic energy**. Double the mass only doubles it.',
+          'Worked: a 1000 kg car at 20 m/s has KE = ½(1000)(20)² = **200 000 J**.',
+        ]],
+        ['What does the work-energy theorem say?', [
+          '**Net work = change in kinetic energy**: Wnet = ΔKE.',
+          'Worked: brakes apply 8000 N to that car. Stopping distance d = 200 000 ÷ 8000 = **25 m**.',
+          'At 40 m/s the kinetic energy is 800 000 J, so the stopping distance is **100 m**: four times as far for twice the speed.',
+        ]],
+      ],
+    },
+    {
+      title: '3. Potential Energy',
+      ixlShort: 'IXL: Grade 8 J.1',
+      ixl: [['Grade 8 J.1', 'Identify changes in gravitational potential energy']],
+      rows: [
+        ['What is gravitational potential energy?', [
+          '**PEgrav = mgh**: energy stored because of height above a chosen **reference level** (where h = 0).',
+          'Worked: a 2.0 kg book on a 1.5 m shelf. PE = 2.0 × 9.8 × 1.5 = **29.4 J** relative to the floor.',
+          'Only **changes** in height matter, so choose the reference level that makes the problem easiest (usually the lowest point).',
+        ]],
+        ['What is elastic potential energy?', [
+          '**PEelastic = ½kx²**: energy stored in a stretched or compressed spring. k is the spring constant (N/m) and x is the stretch or compression (m).',
+          'Worked: a spring with k = 200 N/m compressed 0.10 m stores ½(200)(0.10)² = **1.0 J**.',
+        ]],
+      ],
+    },
+    {
+      title: '4. Conservation of Energy',
+      ixlShort: 'IXL: Physics H.2, Grade 8 J.3–4',
+      ixl: [['Grade 8 J.3', 'Explore energy transformations: roller coaster ride'], ['Grade 8 J.4', 'Explore energy transformations: bike ride'], ['Physics H.2', 'Conservation of mechanical energy']],
+      rows: [
+        ['When is mechanical energy conserved?', [
+          '**Mechanical energy** = KE + PE. It stays constant when only gravity and springs do work: no friction, no air resistance.',
+          'Then **KE + PE at the start = KE + PE at the end**.',
+          'A pendulum has maximum PE and zero KE at the top of its swing, and maximum KE and minimum PE at the bottom.',
+        ]],
+        ['How fast is a roller coaster at the bottom of a hill?', [
+          'Worked: a car starts from rest at the top of a 20 m frictionless hill. mgh = ½mv², so v = √(2gh) = √(2 × 9.8 × 20) = **19.8 m/s**.',
+          'Mass cancels: every car, heavy or light, arrives at the same speed.',
+          'The shape of the track does not matter either. Only the change in height does.',
+        ]],
+        ['Where does the energy go when there is friction?', [
+          'Into **thermal energy** (the surfaces warm up). Total energy is still conserved; mechanical energy is not.',
+          'Worked: a 50 kg child starts from rest at the top of a 3.0 m slide and reaches the bottom at 6.0 m/s. PE at top = 50 × 9.8 × 3.0 = 1470 J. KE at bottom = ½(50)(6.0)² = 900 J. Thermal energy = 1470 − 900 = **570 J**.',
+        ]],
+        ['How does an energy bar chart show conservation?', [
+          'Draw one bar for each type of energy (KE, PEgrav, PEelastic, thermal) at the start and at the end.',
+          'The **total height of the bars is the same** before and after, unless work is done on the system from outside.',
+        ]],
+      ],
+    },
+    {
+      title: '5. Power and Efficiency',
+      ixlShort: 'No IXL skill: use Concept Builders',
+      ixl: [],
+      note: 'No IXL skill covers power or efficiency. Use the physicsclassroom.com Concept Builders for Work and Energy.',
+      rows: [
+        ['What is power?', [
+          '**Power** is the rate of doing work: **P = W/t**. Unit: **watt (W)** = 1 J/s. Also P = Fv for a steady force and speed.',
+          'Doing the same work in less time takes more power, but the same energy.',
+          'Worked: a 60 kg student climbs 3.0 m of stairs in 4.0 s. W = mgh = 60 × 9.8 × 3.0 = 1764 J. P = 1764 ÷ 4.0 = **441 W**.',
+        ]],
+        ['What is efficiency?', [
+          '**Efficiency** = useful energy out ÷ total energy in × 100%.',
+          'It is always below 100% because some energy becomes thermal energy.',
+          'Worked: a motor takes in 500 J and delivers 350 J of useful work. Efficiency = 350 ÷ 500 = **70%**.',
+        ]],
+      ],
+    },
+    {
+      title: '6. Labs and Measurement',
+      lab: true,
+      ixlShort: 'IXL: Physics A.2, B.3–4',
+      ixl: [['Physics A.2', 'Identify independent and dependent variables'], ['Physics B.3', 'Multiply and divide with significant figures'], ['Physics B.4', 'Calculations with significant figures']],
+      rows: [
+        ['What are the variables in the cart-on-a-ramp energy lab?', [
+          '**Independent variable**: release height.',
+          '**Dependent variable**: speed at the bottom (photogate or motion sensor).',
+          'Compare mgh at the top with ½mv² at the bottom. The difference is the energy that friction turned into thermal energy.',
+        ]],
+        ['How do you measure your own power?', [
+          'Stair-climb lab: measure your mass, the vertical height of the stairs, and your time.',
+          'P = mgh ÷ t. Use the **vertical** height, not the length of the staircase.',
+        ]],
+      ],
+    },
+  ],
+  tricks: [
+    ['Work needs force and motion along the same line; perpendicular force does zero work', 'Carrying, holding and circular-motion questions.'],
+    ['Double the speed, four times the kinetic energy', 'Stopping-distance and crash-energy comparisons.'],
+    ['Energy at the start = energy at the end (plus thermal if there is friction)', 'Any problem asking for a speed or height.'],
+    ['Draw energy bar charts for the start and the end', 'Setting up a conservation of energy equation and deciding which terms are zero.'],
+    ['A watt is a joule per second', 'Power questions; keeps power and energy from being mixed up.'],
+  ],
+  summary: 'Work is energy transferred by a force acting through a distance. Net work changes kinetic energy (½mv²), and work done against gravity or a spring is stored as potential energy (mgh or ½kx²). In a system with no friction, kinetic plus potential energy stays constant, which lets you find a speed from a height without knowing the path. When friction acts, the missing mechanical energy becomes thermal energy, and the total is still conserved. Power is how fast energy is transferred.',
+  visuals: [
+    ['u5a.png', 'Only the part of the pull that points along the motion does work on the sled.', 'W = Fd cos θ'],
+    ['u5b.png', 'On a force-distance graph the shaded area is the work done.', 'W = area under F–d graph'],
+    ['u5c.png', 'On a frictionless hill, potential energy changes into kinetic energy while the total stays the same.', 'mgh + ½mv² = constant'],
+    ['u5d.png', 'With friction, the starting potential energy ends up as kinetic energy plus thermal energy.', 'PE(top) = KE(bottom) + thermal'],
+  ],
+  noIxl: 'Power, efficiency, elastic potential energy and energy bar charts have no matching IXL skill in the sections used here. Use the physicsclassroom.com Concept Builders for Work and Energy.',
+  quiz: [
+    { q: 'A waiter carries a heavy tray across a level floor at constant velocity. How much work does the upward force of the waiter\'s hand do on the tray?', c: ['A large amount, because the tray is heavy', 'Zero, because the force is perpendicular to the motion', 'An amount equal to the tray\'s weight times the distance', 'Negative work'], a: 1, why: 'Work = Fd cos θ. The supporting force is vertical and the displacement is horizontal, so θ = 90° and cos 90° = 0.', trap: 'Equating effort or tiredness with work.' },
+    { q: 'A car\'s speed doubles. Its kinetic energy becomes…', c: ['twice as large', 'three times as large', 'four times as large', 'eight times as large'], a: 2, why: 'KE = ½mv². Speed is squared, so doubling v multiplies KE by 2² = 4.', trap: 'Assuming kinetic energy is directly proportional to speed.' },
+    { q: 'A light ball and a heavy ball start from rest at the same height and roll down frictionless ramps of different shapes. At the bottom…', c: ['the heavy ball is faster', 'the ball on the steeper ramp is faster', 'they have the same speed', 'the light ball is faster'], a: 2, why: 'mgh = ½mv² gives v = √(2gh). Mass cancels and the path does not appear, so only the height matters.', trap: 'Thinking mass or ramp steepness changes the final speed.' },
+    { q: 'At the lowest point of a pendulum\'s swing, the bob has…', c: ['maximum potential energy and zero kinetic energy', 'maximum kinetic energy and minimum potential energy', 'equal kinetic and potential energy', 'zero total energy'], a: 1, why: 'The bob is at its lowest height (least PE) and moving fastest (most KE). The energy stored at the top of the swing has become kinetic energy.', trap: 'Reversing where the bob is fastest.' },
+    { q: 'A ball is thrown straight up. Ignoring air resistance, its total mechanical energy at the top of its path is…', c: ['zero, because it has stopped', 'less than at launch', 'the same as at launch', 'greater than at launch'], a: 2, why: 'Kinetic energy has been converted to gravitational potential energy, but the total is unchanged. Only the form of the energy is different.', trap: 'Thinking energy disappears when the object stops moving.' },
+    { q: 'A box slides across a rough floor and comes to rest. What happened to its kinetic energy?', c: ['It was destroyed', 'It became gravitational potential energy', 'It was transformed into thermal energy', 'It is stored in the box as kinetic energy'], a: 2, why: 'Friction transforms kinetic energy into thermal energy; the box and floor warm slightly. Energy is never destroyed.', trap: 'Saying energy is "lost" or "used up".' },
+    { q: 'A weightlifter holds a 100 kg barbell motionless above their head for 5 seconds. How much work is done on the barbell during those 5 seconds?', c: ['4900 J', '980 J', '500 J', '0 J'], a: 3, why: 'There is no displacement, so W = Fd = 0. The lifter\'s muscles use chemical energy, but no work is done on the barbell.', trap: 'Counting force alone, without displacement, as work.' },
+    { q: 'Two students lift identical boxes to the same shelf. Alex takes 2 s and Blake takes 4 s. Compared with Blake, Alex…', c: ['does more work and uses more power', 'does the same work with more power', 'does the same work with the same power', 'does less work with more power'], a: 1, why: 'Work = mgh is the same for both. Power = work ÷ time, so finishing in half the time takes twice the power.', trap: 'Mixing up power and work.' },
+    { q: 'A 2.0 kg ball is dropped from a height of 5.0 m. Ignoring air resistance, how fast is it moving just before it hits the ground? (g = 9.8 m/s²)', c: ['4.9 m/s', '9.9 m/s', '49 m/s', '98 m/s'], a: 1, why: 'mgh = ½mv², so v = √(2gh) = √(2 × 9.8 × 5.0) = √98 = 9.9 m/s. The mass cancels.', trap: 'Forgetting the square root, or stopping at mgh = 98 J.' },
+    { q: 'A car travelling at 30 m/s needs 60 m to brake to a stop. With the same braking force, how far does it need at 60 m/s?', c: ['60 m', '120 m', '180 m', '240 m'], a: 3, why: 'Braking work = F × d must remove all the kinetic energy. Doubling the speed gives four times the kinetic energy, so four times the distance: 240 m.', trap: 'Doubling the distance because the speed doubled.' },
+  ],
+  resources: [
+    ['The Physics Classroom: Work, Energy and Power tutorial', 'https://www.physicsclassroom.com/class/energy', 'Reading on work, energy forms and energy bar charts.'],
+    ['The Physics Classroom: Concept Builders', 'https://www.physicsclassroom.com/Concept-Builders', 'Open the Work and Energy set.'],
+    ['PhET simulation: Energy Skate Park: Basics', 'https://phet.colorado.edu/en/simulations/energy-skate-park-basics', 'Live energy bar charts for a skater on a track, with and without friction.'],
+    ['OpenStax Physics (high school), Chapter 9', 'https://openstax.org/details/books/physics', 'Free textbook: Work, Energy, and Simple Machines.'],
+    ['Khan Academy Physics', 'https://www.khanacademy.org/science/physics', "Videos and practice; browse or search the library for work and energy. Unit names on the site change from time to time."],
+    ['IXL Physics, section H; Grade 8 science, section J', 'https://www.ixl.com/science/physics', 'Skill practice; goal SmartScore 80+.'],
+  ],
+  practice: [
+    ['A 40 N force pushes a box 6.0 m in the direction of the force. How much work is done?', 'W = 40 × 6.0 = **240 J**'],
+    ['What is the kinetic energy of a 0.145 kg baseball moving at 40 m/s?', 'KE = ½(0.145)(40)² = **116 J**'],
+    ['A 55 kg diver stands on a 10 m platform. Find the potential energy relative to the water and the speed on entering the water.', 'PE = 55 × 9.8 × 10 = **5390 J**. v = √(2 × 9.8 × 10) = **14 m/s**'],
+    ['A pendulum bob is released from 0.45 m above its lowest point. How fast is it moving at the bottom?', 'v = √(2 × 9.8 × 0.45) = **2.97 m/s**'],
+    ['A spring (k = 400 N/m) is compressed 0.050 m and launches a 0.020 kg ball. Find the stored energy and the launch speed.', 'PE = ½(400)(0.050)² = **0.50 J**. v = √(2 × 0.50 ÷ 0.020) = **7.1 m/s**'],
+    ['A motor lifts a 200 kg load 15 m in 10 s. Find the work done and the power.', 'W = 200 × 9.8 × 15 = **29 400 J**. P = 29 400 ÷ 10 = **2940 W**'],
+    ['A 1200 kg car moving at 15 m/s skids to a stop in 22.5 m. Find the kinetic energy removed and the friction force.', 'KE = ½(1200)(15)² = **135 000 J**. F = 135 000 ÷ 22.5 = **6000 N**'],
+    ['A machine takes in 500 J and delivers 350 J of useful work. What is its efficiency, and where did the rest go?', 'Efficiency = 350 ÷ 500 = **70%**. The other 150 J became thermal energy (and sound).'],
+  ],
+  apps: [
+    '**Roller coasters**: the first hill is the tallest because no energy is added afterward and friction removes some.',
+    '**Hydroelectric dams**: gravitational potential energy of water becomes kinetic, then electrical energy.',
+    '**Regenerative braking**: electric cars recover kinetic energy instead of turning it all into thermal energy.',
+    '**Pole vault and trampolines**: kinetic energy to elastic potential to gravitational potential.',
+    '**Earth science link**: elastic energy stored in strained rock is released as seismic waves in an earthquake; a preview of Semester 2.',
+  ],
+  labs: [
+    '**Energy on a ramp**: compare mgh at release with ½mv² at the bottom and account for the difference.',
+    '**Stair-climb power**: measure your own power output.',
+    '**Energy Skate Park (HS-PS3-1)**: build a spreadsheet model that calculates KE, PE and thermal energy at several points on a track.',
+    '**Energy-conversion device (HS-PS3-3)**: design, build and refine a device such as a rubber-band car or small wind turbine within given constraints; measure its efficiency.',
+  ],
+};

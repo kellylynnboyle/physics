@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 2 Projectile Motion Quiz</title>
+<style>
+:root {
+  --bg: #f6f7fb; --card: #ffffff; --ink: #1b2233; --muted: #5d667a; --line: #d5dae6;
+  --accent: #1f3864; --accent-ink: #ffffff; --good: #1e7a3c; --good-bg: #e4f3e8;
+  --bad: #b3261e; --bad-bg: #fbe9e7; --trap-bg: #fff5d6;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12151c; --card: #1b202b; --ink: #e8ebf2; --muted: #a2abbd; --line: #343b4a;
+    --accent: #9db8ee; --accent-ink: #12151c; --good: #7fd69a; --good-bg: #173322;
+    --bad: #ff9c92; --bad-bg: #3a1c1a; --trap-bg: #3a3216;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 720px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { font-size: 1.6rem; line-height: 1.2; margin: 8px 0; text-wrap: balance; }
+h2 { font-size: 1.15rem; margin: 0 0 12px; }
+a { color: var(--accent); }
+.crumb, .lede, .meta { color: var(--muted); }
+.crumb { font-size: .9rem; margin: 0; }
+.lede { margin: 0 0 20px; }
+.bar { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; margin: 8px 0 16px; }
+.bar > div { height: 100%; background: var(--accent); transition: width .2s; }
+.meta { display: flex; justify-content: space-between; font-size: .9rem; font-variant-numeric: tabular-nums; }
+.q { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+.q p.stem { font-size: 1.1rem; font-weight: 600; margin: 0 0 16px; }
+.choices { display: grid; gap: 10px; }
+button { font: inherit; color: inherit; cursor: pointer; }
+.choice { text-align: left; background: var(--card); border: 1.5px solid var(--line); border-radius: 10px; padding: 12px 14px; min-height: 48px; }
+.choice:hover:not(:disabled) { border-color: var(--accent); }
+.choice:focus-visible, .btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.choice:disabled { cursor: default; }
+.choice.right { border-color: var(--good); background: var(--good-bg); }
+.choice.wrong { border-color: var(--bad); background: var(--bad-bg); }
+.choice .tag { font-weight: 700; margin-right: 6px; }
+.fb { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 14px; }
+.fb .verdict { font-weight: 700; margin: 0 0 6px; }
+.fb .verdict.ok { color: var(--good); }
+.fb .verdict.no { color: var(--bad); }
+.fb p { margin: 0 0 10px; }
+.trap { background: var(--trap-bg); border-radius: 8px; padding: 10px 12px; font-size: .95rem; }
+.btn { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 10px; padding: 12px 20px; font-weight: 600; min-height: 48px; }
+.btn.ghost { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.score { font-size: 2.4rem; font-weight: 700; margin: 0; font-variant-numeric: tabular-nums; }
+.missed { padding-left: 20px; }
+.missed li { margin-bottom: 10px; }
+.cards { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.card { display: grid; gap: 4px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; text-decoration: none; color: var(--ink); }
+.card:hover { border-color: var(--accent); }
+.card .n, .card span { color: var(--muted); font-size: .9rem; }
+.card strong { font-size: 1.15rem; }
+</style>
+</head>
+<body>
+<main>
+  <p class="crumb"><a href="../../index.html">All quizzes</a> · Unit 2</p>
+  <h1>Projectile Motion: most-missed questions</h1>
+  <p class="lede">10 questions built on the ideas students most often get wrong. Pick an answer to see why it is right or wrong. Aim for 80% or higher.</p>
+  <div id="app"></div>
+  <noscript>This quiz needs JavaScript. The same questions are listed in this unit's README.</noscript>
+</main>
+<script>
+const QUIZ = {"id":"02-projectile-motion","title":"Projectile Motion","num":2,"questions":[{"q":"A bullet is fired horizontally from a rifle. At the same instant, an identical bullet is dropped from the same height. Ignoring air resistance, which hits level ground first?","c":["The dropped bullet","The fired bullet","They hit at the same time","It depends on the muzzle speed"],"a":2,"why":"Both start with zero vertical velocity and both accelerate downward at 9.8 m/s². Horizontal speed has no effect on vertical motion, so they fall together.","trap":"Thinking forward speed keeps an object up longer."},{"q":"A soccer ball is kicked at an angle. At the highest point of its path, its velocity is…","c":["zero","horizontal, equal to its horizontal launch component","vertical, pointing down","equal to its launch velocity"],"a":1,"why":"Only the vertical part of the velocity reaches zero at the top. The horizontal part never changes, so the ball is still moving sideways at vx.","trap":"Saying the velocity is zero at the top of an arc."},{"q":"At the highest point of a projectile's path, its acceleration is…","c":["zero","9.8 m/s² downward","9.8 m/s² upward","horizontal"],"a":1,"why":"Gravity is the only force for the whole flight, so the acceleration is 9.8 m/s² downward at every point, including the top.","trap":"Confusing zero vertical velocity with zero acceleration."},{"q":"A ball rolls off a table and lands on the floor. If it rolls off twice as fast, the time it spends in the air…","c":["doubles","is cut in half","stays the same","is four times as long"],"a":2,"why":"Time in the air depends only on the height: t = √(2h/g). The faster ball lands twice as far away, but after the same time.","trap":"Linking horizontal speed to time of fall."},{"q":"During a projectile's flight (no air resistance), its horizontal velocity…","c":["decreases steadily","increases steadily","stays constant","is zero at the top"],"a":2,"why":"There is no horizontal force, so there is no horizontal acceleration. The horizontal velocity stays what it was at launch.","trap":"Believing a projectile \"runs out of\" forward motion."},{"q":"A plane flying level at constant velocity releases a supply crate. Ignoring air resistance, where is the crate when it hits the ground?","c":["Far behind the plane","Directly below the plane","Ahead of the plane","Directly below the release point"],"a":1,"why":"The crate keeps the plane's horizontal velocity, so it stays directly underneath the plane while it falls. Seen from the ground, its path is a parabola.","trap":"Thinking the crate drops straight down or is left behind."},{"q":"On level ground with no air resistance, which launch angle gives the greatest range for a given launch speed?","c":["30°","45°","60°","90°"],"a":1,"why":"45° is the best balance between time in the air (vertical component) and forward speed (horizontal component).","trap":"Choosing a steep angle because it keeps the ball in the air longest."},{"q":"Two balls are launched at the same speed, one at 30° and one at 60°. Compared with the 30° ball, the 60° ball…","c":["lands farther away","lands closer","lands at the same distance but stays in the air longer","lands at the same distance in the same time"],"a":2,"why":"Complementary angles give the same range. The 60° ball has a larger vertical component, so it goes higher and stays up longer, but its smaller horizontal speed cancels that out.","trap":"Assuming higher and longer in the air means farther."},{"q":"After a baseball leaves the bat (ignoring air resistance), which forces act on it?","c":["Gravity and the force of the hit","Gravity only","Gravity and a forward force of motion","No forces at all"],"a":1,"why":"The bat's force ends when contact ends. The ball keeps moving forward because of inertia, not because a force is still pushing it.","trap":"Inventing a \"force of motion\" that travels with the ball."},{"q":"A stone is thrown horizontally at 10 m/s from the top of a 20 m cliff. About how far from the base of the cliff does it land? (g = 9.8 m/s²)","c":["10 m","20 m","40 m","200 m"],"a":1,"why":"Vertical: t = √(2 × 20 ÷ 9.8) = 2.02 s. Horizontal: x = 10 × 2.02 = 20.2 m, about 20 m.","trap":"Multiplying speed by height, or skipping the step of finding time from the vertical motion."}]};
+(function () {
+  var app = document.getElementById('app');
+  var KEY = 'physics-quiz-best-' + QUIZ.id;
+  var order, pos, right, missed, answered;
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function best() { try { return Number(localStorage.getItem(KEY)) || 0; } catch (e) { return 0; } }
+  function saveBest(p) { try { if (p > best()) localStorage.setItem(KEY, String(p)); } catch (e) { /* storage unavailable */ } }
+
+  function start(indices) {
+    order = shuffle(indices.slice());
+    pos = 0; right = 0; missed = [];
+    show();
+  }
+
+  function show() {
+    answered = false;
+    var qi = order[pos], q = QUIZ.questions[qi];
+    app.innerHTML = '';
+    var meta = el('div', 'meta');
+    meta.appendChild(el('span', '', 'Question ' + (pos + 1) + ' of ' + order.length));
+    meta.appendChild(el('span', '', 'Correct so far: ' + right));
+    app.appendChild(meta);
+    var bar = el('div', 'bar'), fill = el('div');
+    fill.style.width = (100 * pos / order.length) + '%';
+    bar.appendChild(fill); app.appendChild(bar);
+
+    var card = el('section', 'q');
+    card.appendChild(el('p', 'stem', q.q));
+    var list = el('div', 'choices');
+    var opts = shuffle(q.c.map(function (text, i) { return { text: text, ok: i === q.a }; }));
+    var fb = el('div', 'fb'); fb.hidden = true; fb.setAttribute('aria-live', 'polite');
+    opts.forEach(function (o, i) {
+      var b = el('button', 'choice');
+      b.type = 'button';
+      b.appendChild(el('span', 'tag', String.fromCharCode(65 + i) + '.'));
+      b.appendChild(document.createTextNode(o.text));
+      b.addEventListener('click', function () {
+        if (answered) return;
+        answered = true;
+        Array.prototype.forEach.call(list.children, function (c, k) {
+          c.disabled = true;
+          if (opts[k].ok) c.classList.add('right');
+        });
+        if (o.ok) { right++; } else { b.classList.add('wrong'); missed.push(qi); }
+        fb.hidden = false;
+        fb.appendChild(el('p', 'verdict ' + (o.ok ? 'ok' : 'no'), o.ok ? 'Correct.' : 'Not quite.'));
+        fb.appendChild(el('p', '', q.why));
+        var trap = el('p', 'trap');
+        trap.appendChild(el('strong', '', 'Common mistake: '));
+        trap.appendChild(document.createTextNode(q.trap));
+        fb.appendChild(trap);
+        var next = el('button', 'btn', pos + 1 < order.length ? 'Next question' : 'See results');
+        next.type = 'button';
+        next.addEventListener('click', function () { pos++; if (pos < order.length) show(); else results(); });
+        var act = el('div', 'actions'); act.appendChild(next); fb.appendChild(act);
+        next.focus();
+      });
+      list.appendChild(b);
+    });
+    card.appendChild(list); card.appendChild(fb); app.appendChild(card);
+  }
+
+  function results() {
+    var pct = Math.round(100 * right / order.length);
+    var full = order.length === QUIZ.questions.length;
+    if (full) saveBest(pct);
+    app.innerHTML = '';
+    var card = el('section', 'q');
+    card.appendChild(el('h2', '', full ? 'Your result' : 'Retry result'));
+    card.appendChild(el('p', 'score', right + ' / ' + order.length + ' (' + pct + '%)'));
+    var msg = pct >= 80 ? 'At or above the 80% goal. Explain each answer aloud to make it stick.'
+      : pct >= 60 ? 'Getting there. Reread the notes sections for the questions below, then retry them.'
+      : 'These ideas trip up most students at first. Go back through the Cornell notes cue questions, then retry.';
+    card.appendChild(el('p', '', msg));
+    if (full && best()) card.appendChild(el('p', 'meta', 'Best full-quiz score on this device: ' + best() + '%'));
+    if (missed.length) {
+      card.appendChild(el('h2', '', 'Review these'));
+      var ul = el('ol', 'missed');
+      missed.forEach(function (qi) {
+        var q = QUIZ.questions[qi], li = el('li');
+        li.appendChild(el('strong', '', q.q));
+        li.appendChild(el('div', '', 'Answer: ' + q.c[q.a]));
+        li.appendChild(el('div', 'meta', q.why));
+        ul.appendChild(li);
+      });
+      card.appendChild(ul);
+    }
+    var act = el('div', 'actions');
+    if (missed.length) {
+      var r = el('button', 'btn', 'Retry missed questions (' + missed.length + ')');
+      r.type = 'button'; var m = missed.slice();
+      r.addEventListener('click', function () { start(m); });
+      act.appendChild(r);
+    }
+    var again = el('button', 'btn ghost', 'Start over');
+    again.type = 'button';
+    again.addEventListener('click', function () { start(QUIZ.questions.map(function (_, i) { return i; })); });
+    act.appendChild(again);
+    card.appendChild(act); app.appendChild(card);
+  }
+
+  start(QUIZ.questions.map(function (_, i) { return i; }));
+})();
+</script>
+</body>
+</html>
