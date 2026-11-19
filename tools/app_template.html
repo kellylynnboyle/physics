@@ -1,0 +1,280 @@
+<title>Physics Semester 1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: one centered column on graph paper; a unit list at home, and per-unit tabs (quiz, self-test, practice, overview). */
+:root {
+  --bg: #f4f6fb; --surface: #ffffff; --ink: #14213d; --muted: #55627f; --line: #d3dbea;
+  --accent: #1f3864; --accent-ink: #ffffff; --soft: #e6ecf7; --hl: #8a5a00; --hl-bg: #fdf1d3;
+  --good: #1b6e45; --good-bg: #e2f3e9; --bad: #a8332a; --bad-bg: #fbe8e5; --grid: rgba(31, 56, 100, .07);
+  --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --body: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1524; --surface: #172136; --ink: #e7ecf6; --muted: #9ba8c3; --line: #2a3853;
+    --accent: #9dbbf2; --accent-ink: #0e1524; --soft: #1f2c47; --hl: #f3c35a; --hl-bg: #382c10;
+    --good: #74d3a0; --good-bg: #143124; --bad: #f29488; --bad-bg: #3b1c19; --grid: rgba(157, 187, 242, .07);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1524; --surface: #172136; --ink: #e7ecf6; --muted: #9ba8c3; --line: #2a3853;
+  --accent: #9dbbf2; --accent-ink: #0e1524; --soft: #1f2c47; --hl: #f3c35a; --hl-bg: #382c10;
+  --good: #74d3a0; --good-bg: #143124; --bad: #f29488; --bad-bg: #3b1c19; --grid: rgba(157, 187, 242, .07);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 var(--body);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.wrap {
+  max-width: 780px; margin: 0 auto; padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 24px;
+}
+h1, h2, h3 { font-family: var(--display); line-height: 1.15; margin: 0; text-wrap: balance; }
+h1 { font-size: 2rem; font-weight: 700; letter-spacing: -.01em; }
+h2 { font-size: 1.25rem; font-weight: 700; }
+h3 { font-size: 1rem; font-weight: 500; }
+p { margin: 0; }
+a { color: var(--accent); }
+.eyebrow { font-size: .75rem; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.lede { color: var(--muted); max-width: 62ch; }
+.stack { display: flex; flex-direction: column; gap: 12px; }
+.stack-lg { display: flex; flex-direction: column; gap: 20px; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* home */
+.units { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.unit-row {
+  display: grid; grid-template-columns: 2.6rem minmax(0, 1fr) auto; gap: 14px; align-items: center;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px;
+  text-decoration: none; color: inherit;
+}
+.unit-row:hover { border-color: var(--accent); }
+.unit-num { font: 700 1.6rem/1 var(--display); color: var(--accent); font-variant-numeric: tabular-nums; }
+.unit-meta { font-size: .875rem; color: var(--muted); }
+.unit-stats { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; font-size: .8125rem; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pill { display: inline-block; padding: 2px 9px; border-radius: 999px; background: var(--soft); color: var(--ink); font-weight: 600; font-size: .8125rem; }
+.pill.good { background: var(--good-bg); color: var(--good); }
+.howto { margin: 0; padding-left: 1.2rem; color: var(--muted); display: flex; flex-direction: column; gap: 4px; max-width: 65ch; }
+
+/* unit */
+.back { font-size: .875rem; text-decoration: none; }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; border-bottom: 1px solid var(--line); }
+.tab { background: none; border: 0; border-bottom: 3px solid transparent; padding: 8px 12px; font-weight: 600; color: var(--muted); }
+.tab[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 20px; }
+.progress { height: 6px; background: var(--soft); border-radius: 3px; overflow: hidden; }
+.progress > i { display: block; height: 100%; background: var(--accent); transition: width .2s; }
+.qmeta { display: flex; justify-content: space-between; gap: 12px; font-size: .8125rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.question { font: 500 1.125rem/1.4 var(--display); }
+.choices { display: flex; flex-direction: column; gap: 8px; }
+.choice { text-align: left; background: var(--surface); border: 1.5px solid var(--line); border-radius: 6px; padding: 11px 14px; min-width: 0; }
+.choice:hover:not(:disabled) { border-color: var(--accent); }
+.choice:disabled { cursor: default; }
+.choice.right { border-color: var(--good); background: var(--good-bg); color: var(--good); font-weight: 600; }
+.choice.wrong { border-color: var(--bad); background: var(--bad-bg); color: var(--bad); }
+.feedback { border-left: 4px solid var(--line); padding: 4px 0 4px 14px; display: flex; flex-direction: column; gap: 6px; }
+.feedback.ok { border-color: var(--good); } .feedback.no { border-color: var(--bad); }
+.verdict { font-weight: 600; } .ok .verdict { color: var(--good); } .no .verdict { color: var(--bad); }
+.trap { align-self: flex-start; background: var(--hl-bg); color: var(--hl); font-size: .8125rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+.btn { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 6px; padding: 10px 18px; font-weight: 600; }
+.btn.ghost { background: none; color: var(--accent); border: 1.5px solid var(--accent); }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.score { font: 700 2.5rem/1 var(--display); font-variant-numeric: tabular-nums; }
+.missed { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: 6px; }
+details { border-top: 1px solid var(--line); padding: 10px 0; }
+details:first-of-type { border-top: 0; }
+summary { cursor: pointer; font-weight: 600; }
+details > .ans { margin-top: 8px; color: var(--ink); }
+.ans ul { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: 4px; }
+.sec-label { margin-top: 10px; }
+.check { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; }
+.check input { width: 1.1rem; height: 1.1rem; margin-top: .25rem; accent-color: var(--accent); }
+dl { margin: 0; display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: 8px 16px; }
+dt { font-weight: 600; } dd { margin: 0; color: var(--muted); }
+ul.plain { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: 4px; }
+.note { font-size: .875rem; color: var(--muted); }
+@media (max-width: 560px) {
+  h1 { font-size: 1.6rem; }
+  .unit-row { grid-template-columns: 2rem minmax(0, 1fr); }
+  .unit-stats { grid-column: 2; flex-direction: row; align-items: center; gap: 10px; }
+  dl { grid-template-columns: minmax(0, 1fr); gap: 2px; } dd { margin-bottom: 8px; }
+  .panel { padding: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .progress > i { transition: none; } }
+</style>
+
+<div class="wrap" id="app"></div>
+
+<script>
+const UNITS = /*__DATA__*/null;
+const app = document.getElementById("app");
+const store = {
+  get(k, d) { try { const v = localStorage.getItem("phys1:" + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem("phys1:" + k, JSON.stringify(v)); } catch (e) {} },
+};
+function el(tag, attrs, ...kids) {
+  const n = document.createElement(tag);
+  for (const k in attrs || {}) {
+    if (k === "class") n.className = attrs[k];
+    else if (k.startsWith("on")) n.addEventListener(k.slice(2), attrs[k]);
+    else if (attrs[k] !== false && attrs[k] != null) n.setAttribute(k, attrs[k]);
+  }
+  for (const c of kids.flat()) if (c != null && c !== false) n.append(c.nodeType ? c : document.createTextNode(c));
+  return n;
+}
+function rich(text) { // **bold** only
+  const span = document.createElement("span");
+  text.split("**").forEach((part, i) => span.append(i % 2 ? el("strong", null, part) : part));
+  return span;
+}
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function targetsDone(u) { const t = store.get("targets:" + u.slug, []); return u.targets.filter((_, i) => t[i]).length; }
+
+// ---------- home ----------
+function home() {
+  document.title = "Physics Semester 1";
+  app.replaceChildren(
+    el("header", { class: "stack" },
+      el("div", { class: "eyebrow" }, "11th grade physics · Semester 1 · CA NGSS"),
+      el("h1", null, "Kinematics to energy, one unit at a time"),
+      el("p", { class: "lede" }, "Five units. Each has learning targets, Cornell-notes cue questions to test yourself, a 10-question quiz on the questions students miss most, and practice problems with worked answers.")),
+    el("ul", { class: "units" }, UNITS.map(u => {
+      const best = store.get("best:" + u.slug, null), done = targetsDone(u);
+      return el("li", null, el("a", { class: "unit-row", href: "#" + u.slug },
+        el("span", { class: "unit-num" }, "0" + u.num),
+        el("span", { class: "stack", style: "gap:2px" }, el("h2", null, u.title), el("span", { class: "unit-meta" }, u.subtitle + " · " + u.pacing)),
+        el("span", { class: "unit-stats" },
+          el("span", { class: "pill" + (best !== null && best >= 8 ? " good" : "") }, best === null ? "Quiz not taken" : "Best " + best + "/10"),
+          el("span", null, done + "/" + u.targets.length + " targets checked"))));
+    })),
+    el("section", { class: "stack" },
+      el("h2", null, "How to study a unit"),
+      el("ol", { class: "howto" },
+        el("li", null, "Read the notes, then open Self-test and answer each cue question aloud before you reveal it."),
+        el("li", null, "Take the quiz. Aim for 8 out of 10. Read the explanation for every miss, then retry the missed questions."),
+        el("li", null, "Work the practice problems on paper with givens, equation, and units before checking the answer."),
+        el("li", null, "Come back the next day and again a few days later. Recall spread over days sticks better than rereading.")),
+      el("p", { class: "note" }, "Scores and checkmarks are saved in this browser only. They are not sent to your teacher.")));
+}
+
+// ---------- unit ----------
+let tab = "quiz";
+function unitView(u) {
+  document.title = u.title + " · Physics Semester 1";
+  const tabs = [["quiz", "Quiz"], ["selftest", "Self-test"], ["practice", "Practice"], ["overview", "Overview"]];
+  const body = el("div");
+  const tabBar = el("div", { class: "tabs", role: "tablist" }, tabs.map(([id, name]) =>
+    el("button", { class: "tab", role: "tab", id: "tab-" + id, "aria-selected": String(tab === id), onclick: () => { tab = id; unitView(u); } }, name)));
+  app.replaceChildren(
+    el("header", { class: "stack" },
+      el("a", { class: "back", href: "#home" }, "← All units"),
+      el("div", { class: "eyebrow" }, "Unit " + u.num + " · " + u.pacing + (u.ngss.length ? " · " + u.ngss.join(", ") : "")),
+      el("h1", null, u.title),
+      el("p", { class: "lede" }, u.eq)),
+    tabBar, body);
+  ({ quiz: quizTab, selftest: selfTab, practice: practiceTab, overview: overviewTab })[tab](u, body);
+}
+
+function quizTab(u, root) {
+  let order, i, score, missed, session = "all";
+  function start(only) {
+    session = only ? "missed" : "all";
+    order = shuffle((only || u.quiz.map((_, k) => k))); i = 0; score = 0; missed = [];
+    show();
+  }
+  function show() {
+    if (i >= order.length) return finish();
+    const q = u.quiz[order[i]];
+    const opts = shuffle(q.c.map((text, k) => ({ text, right: k === q.a })));
+    const fb = el("div", { "aria-live": "polite" });
+    const buttons = opts.map(o => el("button", { class: "choice", onclick: e => pick(o, e.currentTarget) }, o.text));
+    function pick(o, btn) {
+      buttons.forEach((b, k) => { b.disabled = true; if (opts[k].right) b.classList.add("right"); });
+      if (o.right) score++; else { btn.classList.add("wrong"); missed.push(order[i]); }
+      fb.replaceChildren(el("div", { class: "feedback " + (o.right ? "ok" : "no") },
+        el("span", { class: "verdict" }, o.right ? "Correct." : "Not quite."),
+        el("span", { class: "trap" }, "Common mistake: " + q.trap),
+        el("p", null, q.why)),
+        el("div", { class: "row", style: "margin-top:14px" },
+          el("button", { class: "btn", id: "next-btn", onclick: () => { i++; show(); } }, i + 1 < order.length ? "Next question" : "See results")));
+      document.getElementById("next-btn").focus();
+    }
+    root.replaceChildren(el("div", { class: "panel stack-lg" },
+      el("div", { class: "stack", style: "gap:6px" },
+        el("div", { class: "qmeta" }, el("span", null, "Question " + (i + 1) + " of " + order.length), el("span", null, "Score " + score)),
+        el("div", { class: "progress" }, el("i", { style: "width:" + (100 * i / order.length) + "%" }))),
+      el("p", { class: "question" }, q.q),
+      el("div", { class: "choices" }, buttons), fb));
+  }
+  function finish() {
+    if (session === "all") {
+      const best = store.get("best:" + u.slug, null);
+      if (best === null || score > best) store.set("best:" + u.slug, score);
+    }
+    store.set("missed:" + u.slug, missed);
+    const total = order.length, pass = session === "all" && score >= 8;
+    root.replaceChildren(el("div", { class: "panel stack-lg" },
+      el("div", { class: "stack", style: "gap:4px" },
+        el("div", { class: "eyebrow" }, session === "all" ? "Result" : "Missed questions, second try"),
+        el("div", { class: "score" }, score + " / " + total),
+        el("p", { class: "lede" }, missed.length === 0 ? "Every question right. Come back in a few days and check that it stuck."
+          : pass ? "That meets the 8 out of 10 goal. Review the ideas below anyway."
+          : session === "all" ? "The goal is 8 out of 10. Review the ideas below, then retry the ones you missed." : "Review these ideas in Self-test, then try them again.")),
+      missed.length ? el("div", { class: "stack" }, el("h3", null, "Ideas to review"),
+        el("ul", { class: "missed" }, missed.map(k => el("li", null, el("strong", null, u.quiz[k].trap + ". "), u.quiz[k].why)))) : null,
+      el("div", { class: "row" },
+        missed.length ? el("button", { class: "btn", onclick: () => start(missed.slice()) }, "Retry missed (" + missed.length + ")") : null,
+        el("button", { class: "btn" + (missed.length ? " ghost" : ""), onclick: () => start() }, "Start over"))));
+  }
+  start();
+}
+
+function selfTab(u, root) {
+  const kids = [el("p", { class: "note" }, "Say your answer aloud, then open the cue to check. These are the cue questions from the unit's Cornell notes.")];
+  let sec = null;
+  u.cues.forEach(c => {
+    if (c.section !== sec) { sec = c.section; kids.push(el("div", { class: "eyebrow sec-label" }, sec)); }
+    kids.push(el("details", null, el("summary", null, c.q), el("div", { class: "ans" }, el("ul", null, c.notes.map(n => el("li", null, rich(n)))))));
+  });
+  root.replaceChildren(el("div", { class: "panel" }, kids));
+}
+
+function practiceTab(u, root) {
+  root.replaceChildren(el("div", { class: "panel" },
+    el("p", { class: "note" }, "Use g = 9.8 m/s². Work each one on paper first: givens, equation, substitution, units."),
+    u.practice.map(([q, a], k) => el("details", null, el("summary", null, (k + 1) + ". " + q), el("div", { class: "ans" }, a)))));
+}
+
+function overviewTab(u, root) {
+  const saved = store.get("targets:" + u.slug, []);
+  root.replaceChildren(el("div", { class: "stack-lg" },
+    el("section", { class: "panel stack" }, el("h2", null, "Learning targets"),
+      el("p", { class: "note" }, "Check a target when you can do it without notes."),
+      u.targets.map((t, k) => el("label", { class: "check" },
+        el("input", { type: "checkbox", id: "t-" + u.slug + "-" + k, checked: saved[k] ? "" : null,
+          onchange: e => { const s = store.get("targets:" + u.slug, []); s[k] = e.target.checked; store.set("targets:" + u.slug, s); } }),
+        el("span", null, t)))),
+    el("section", { class: "panel stack" }, el("h2", null, "Key concepts"),
+      el("dl", null, u.concepts.map(([k, v]) => [el("dt", null, k), el("dd", null, v)]))),
+    el("section", { class: "panel stack" }, el("h2", null, "Learning resources"),
+      el("ul", { class: "plain" }, u.resources.map(([n, url, d]) => el("li", null, el("a", { href: url, target: "_blank", rel: "noopener" }, n), ". " + d)))),
+    el("section", { class: "panel stack" }, el("h2", null, "Where you see it"),
+      el("ul", { class: "plain" }, u.apps.map(a => el("li", null, a))))));
+}
+
+function route() {
+  const slug = location.hash.replace(/^#/, "");
+  const u = UNITS.find(x => x.slug === slug);
+  if (u) { tab = "quiz"; unitView(u); } else home();
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
+route();
+</script>
