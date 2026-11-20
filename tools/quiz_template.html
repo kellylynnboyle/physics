@@ -1,0 +1,115 @@
+<title>Physics Missed-Question Quizzes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: one centered column on a graph-paper ground; unit picker first, then one question at a time. */
+:root {
+  --bg: #f4f6fb; --surface: #ffffff; --ink: #16223a; --muted: #56627c; --line: #d5dbe9; --grid: #e3e8f3;
+  --accent: #2447b8; --accent-ink: #ffffff; --good: #1b7446; --good-bg: #e3f4ea; --bad: #ad3327; --bad-bg: #fbe9e6;
+  --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif; --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1522; --surface: #18202f; --ink: #e6ebf5; --muted: #9ba7be; --line: #2b3549; --grid: #171f2e;
+  --accent: #93abff; --accent-ink: #0f1522; --good: #63d294; --good-bg: #16301f; --bad: #ff8d7d; --bad-bg: #3a1c18; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0f1522; --surface: #18202f; --ink: #e6ebf5; --muted: #9ba7be; --line: #2b3549; --grid: #171f2e;
+  --accent: #93abff; --accent-ink: #0f1522; --good: #63d294; --good-bg: #16301f; --bad: #ff8d7d; --bad-bg: #3a1c18; color-scheme: dark }
+* { box-sizing: border-box }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 var(--body);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 24px 24px }
+.wrap { max-width: 720px; margin: 0 auto; padding-block: 28px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 20px }
+h1, h2 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.2 }
+h1 { font-size: 1.75rem } h2 { font-size: 1.3rem }
+p { margin: 0 } .muted { color: var(--muted) } .small { font-size: .875rem }
+.eyebrow { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600 }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 14px }
+.units { display: flex; flex-direction: column; gap: 10px }
+button { font: inherit; color: inherit; cursor: pointer }
+button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px }
+.unit { display: flex; align-items: center; gap: 14px; text-align: left; width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px }
+.unit:hover { border-color: var(--accent) }
+.unit .n { font-family: var(--display); font-weight: 700; font-size: 1.25rem; color: var(--accent); width: 1.6em; flex: none }
+.unit .t { flex: 1; min-width: 0 } .unit .t b { display: block; font-family: var(--display); font-size: 1.05rem }
+.badge { flex: none; font-size: .8rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); font-variant-numeric: tabular-nums }
+.badge.pass { background: var(--good-bg); color: var(--good); border-color: transparent }
+.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap }
+.link { background: none; border: 0; padding: 4px 0; color: var(--accent); font-weight: 600 }
+.dots { display: flex; gap: 6px; flex-wrap: wrap }
+.dot { width: 22px; height: 6px; border-radius: 3px; background: var(--line) }
+.dot.now { background: var(--accent) } .dot.ok { background: var(--good) } .dot.no { background: var(--bad) }
+.q { font-size: 1.1rem; font-weight: 500 }
+.choices { display: flex; flex-direction: column; gap: 8px }
+.choice { display: flex; gap: 12px; align-items: baseline; text-align: left; width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px }
+.choice:not(:disabled):hover { border-color: var(--accent) }
+.choice .k { font-family: var(--display); font-weight: 700; color: var(--muted); flex: none }
+.choice:disabled { cursor: default; color: var(--ink); opacity: 1 }
+.choice.right { background: var(--good-bg); border-color: var(--good) } .choice.right .k { color: var(--good) }
+.choice.wrong { background: var(--bad-bg); border-color: var(--bad) } .choice.wrong .k { color: var(--bad) }
+.fb { border-top: 1px solid var(--line); padding-top: 14px; display: flex; flex-direction: column; gap: 8px }
+.verdict { font-family: var(--display); font-weight: 700 } .verdict.ok { color: var(--good) } .verdict.no { color: var(--bad) }
+.primary { align-self: flex-start; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px; padding: 10px 18px; font-weight: 600 }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center }
+.ghost { background: none; border: 1px solid var(--line); border-radius: 8px; padding: 10px 18px; font-weight: 600 }
+.score { font-family: var(--display); font-size: 2.5rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1 }
+.missed { display: flex; flex-direction: column; gap: 12px; padding: 0; margin: 0; list-style: none }
+.missed li { border-left: 3px solid var(--bad); padding-left: 12px; display: flex; flex-direction: column; gap: 4px }
+sub { font-size: .72em }
+</style>
+<div class="wrap" id="app"></div>
+<script>
+const UNITS = /*DATA*/;
+const PASS = 0.8, KEY = 'physics-quiz-best-v1';
+const app = document.getElementById('app');
+const fmt = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/_\{([^}]*)\}/g, '<sub>$1</sub>');
+let best = {};
+try { best = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { best = {}; }
+const saveBest = () => { try { localStorage.setItem(KEY, JSON.stringify(best)); } catch (e) {} };
+let S = null; // { unit, order: [question indexes], i, answers: {qIndex: choice}, picked }
+
+function home() {
+  S = null;
+  app.innerHTML = `<header><p class="eyebrow">Physics · Semester 1</p><h1>Missed-Question Quizzes</h1></header>
+    <p>Eight questions per unit, each built on a mistake students commonly make on that topic. You get the explanation right after each answer. Aim for ${PASS * 100}% or better, then retry only the ones you missed.</p>
+    <div class="units">${UNITS.map(u => { const b = best[u.id]; return `<button class="unit" data-u="${u.id}"><span class="n">${u.num}</span><span class="t"><b>${u.title}</b><span class="muted small">${u.quiz.length} questions</span></span><span class="badge ${b != null && b / u.quiz.length >= PASS ? 'pass' : ''}">${b == null ? 'Not started' : 'Best ' + b + '/' + u.quiz.length}</span></button>`; }).join('')}</div>
+    <p class="muted small">Your best scores are saved in this browser only. Your teacher cannot see them, so record your score on your unit checklist.</p>`;
+  app.querySelectorAll('.unit').forEach(b => b.onclick = () => { location.hash = b.dataset.u; });
+}
+
+function start(u, only) {
+  S = { unit: u, order: only || u.quiz.map((_, i) => i), i: 0, answers: {}, picked: null, retry: !!only };
+  question();
+}
+
+function question() {
+  const u = S.unit, qi = S.order[S.i], q = u.quiz[qi], done = S.picked != null;
+  const dots = S.order.map((x, k) => `<span class="dot ${k === S.i ? 'now' : (S.answers[x] == null ? '' : S.answers[x] === u.quiz[x].a ? 'ok' : 'no')}"></span>`).join('');
+  app.innerHTML = `<div class="top"><button class="link" id="back">← All units</button><span class="muted small">Unit ${u.num} · ${u.title}${S.retry ? ' · retry' : ''}</span></div>
+    <div class="panel"><div class="top"><span class="eyebrow">Question ${S.i + 1} of ${S.order.length}</span><span class="dots" aria-hidden="true">${dots}</span></div>
+    <p class="q">${fmt(q.q)}</p>
+    <div class="choices">${q.c.map((c, k) => `<button class="choice ${done ? (k === q.a ? 'right' : k === S.picked ? 'wrong' : '') : ''}" data-k="${k}" ${done ? 'disabled' : ''}><span class="k">${'ABCD'[k]}</span><span>${fmt(c)}</span></button>`).join('')}</div>
+    ${done ? `<div class="fb" role="status"><p class="verdict ${S.picked === q.a ? 'ok' : 'no'}">${S.picked === q.a ? 'Correct' : 'Not quite. The answer is ' + 'ABCD'[q.a] + '.'}</p><p>${fmt(q.why)}</p><p class="muted small"><b>Common mistake:</b> ${fmt(q.trap)}</p>
+      <button class="primary" id="next">${S.i + 1 < S.order.length ? 'Next question' : 'See results'}</button></div>` : ''}</div>`;
+  document.getElementById('back').onclick = () => { location.hash = ''; home(); };
+  app.querySelectorAll('.choice').forEach(b => b.onclick = () => { S.picked = +b.dataset.k; S.answers[qi] = S.picked; question(); });
+  const n = document.getElementById('next');
+  if (n) { n.onclick = () => { S.picked = null; if (++S.i < S.order.length) question(); else results(); }; n.focus(); }
+}
+
+function results() {
+  const u = S.unit, missed = S.order.filter(x => S.answers[x] !== u.quiz[x].a), right = S.order.length - missed.length;
+  if (!S.retry && (best[u.id] == null || right > best[u.id])) { best[u.id] = right; saveBest(); }
+  const pass = right / S.order.length >= PASS;
+  app.innerHTML = `<div class="top"><button class="link" id="back">← All units</button><span class="muted small">Unit ${u.num} · ${u.title}</span></div>
+    <div class="panel"><span class="eyebrow">${S.retry ? 'Retry result' : 'Result'}</span><p class="score">${right}/${S.order.length}</p>
+    <p>${missed.length === 0 ? 'Every question correct.' : pass ? 'You reached the 80% goal. Review the ones you missed below.' : 'Below the 80% goal. Read the explanations below, go back to those cue questions in your Cornell notes, then retry.'}</p>
+    ${missed.length ? `<ul class="missed">${missed.map(x => `<li><b>${fmt(u.quiz[x].q)}</b><span>${fmt(u.quiz[x].why)}</span><span class="muted small"><b>Common mistake:</b> ${fmt(u.quiz[x].trap)}</span></li>`).join('')}</ul>` : ''}
+    <div class="row">${missed.length ? '<button class="primary" id="retry">Retry missed questions</button>' : ''}<button class="ghost" id="again">Restart unit</button></div></div>`;
+  document.getElementById('back').onclick = () => { location.hash = ''; home(); };
+  document.getElementById('again').onclick = () => start(u);
+  const r = document.getElementById('retry'); if (r) r.onclick = () => start(u, missed);
+}
+
+function route() { const u = UNITS.find(x => x.id === location.hash.slice(1)); if (u) start(u); else home(); }
+window.addEventListener('hashchange', route);
+route();
+</script>
