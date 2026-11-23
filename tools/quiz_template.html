@@ -1,0 +1,137 @@
+<title>Most-Missed Physics Questions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+  /* Layout: one centered column; unit tabs on top, a score bar with the 80% mastery mark, then question cards. */
+  :root {
+    --bg: #F4F6FA; --surface: #FFFFFF; --ink: #16233F; --muted: #56627E; --line: #D3DAE8;
+    --accent: #2450B8; --accent-soft: #E4EBFA; --good: #17693F; --good-soft: #E1F2E8; --bad: #A93226; --bad-soft: #FAE6E3;
+    --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif; --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #0F1524; --surface: #182036; --ink: #E8ECF6; --muted: #A3ADC6; --line: #2F3A57;
+    --accent: #8FB0FF; --accent-soft: #223158; --good: #6FD39C; --good-soft: #173527; --bad: #FF9A8C; --bad-soft: #44201C; color-scheme: dark } }
+  :root[data-theme="dark"] {
+    --bg: #0F1524; --surface: #182036; --ink: #E8ECF6; --muted: #A3ADC6; --line: #2F3A57;
+    --accent: #8FB0FF; --accent-soft: #223158; --good: #6FD39C; --good-soft: #173527; --bad: #FF9A8C; --bad-soft: #44201C; color-scheme: dark }
+  body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+  .wrap { max-width: 46rem; margin: 0 auto; padding-block: 1.75rem 3rem; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 1.25rem; }
+  h1 { font-family: var(--display); font-size: 1.75rem; line-height: 1.15; margin: 0; text-wrap: balance; }
+  h2 { font-family: var(--display); font-size: 1.2rem; margin: 0; text-wrap: balance; }
+  p { margin: 0; }
+  .lede { color: var(--muted); max-width: 65ch; }
+  .tabs { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .tab { font: 500 .9rem var(--body); color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: .45rem .85rem; cursor: pointer; display: inline-flex; gap: .45rem; align-items: center; }
+  .tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+  .tab .n { font-variant-numeric: tabular-nums; opacity: .75; font-size: .8rem; }
+  button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .score { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; display: flex; flex-direction: column; gap: .6rem; }
+  .score-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 1rem; align-items: baseline; }
+  .score-num { font-family: var(--display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+  .status { font-size: .9rem; color: var(--muted); }
+  .status.pass { color: var(--good); font-weight: 600; }
+  .bar { position: relative; height: 10px; background: var(--accent-soft); border-radius: 5px; margin-bottom: 1.1rem; }
+  .bar i { position: absolute; inset: 0 auto 0 0; background: var(--accent); border-radius: 5px; transition: width .25s; }
+  .bar i.pass { background: var(--good); }
+  .bar b { position: absolute; left: 80%; top: -3px; bottom: -3px; width: 2px; background: var(--ink); }
+  .bar span { position: absolute; left: 80%; top: 14px; transform: translateX(-50%); font-size: .7rem; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+  .actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .btn { font: 500 .9rem var(--body); border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 8px; padding: .5rem .9rem; cursor: pointer; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+  .btn:disabled { opacity: .45; cursor: default; }
+  ol.qs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1rem; }
+  .q { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; display: flex; flex-direction: column; gap: .75rem; min-width: 0; }
+  .q-head { display: flex; gap: .6rem; align-items: baseline; }
+  .q-n { font-family: var(--display); color: var(--muted); font-variant-numeric: tabular-nums; flex: none; }
+  .q-text { font-weight: 500; }
+  .choices { display: flex; flex-direction: column; gap: .45rem; }
+  .choice { text-align: left; font: 400 .95rem/1.4 var(--body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: .6rem .8rem; cursor: pointer; }
+  .choice:hover:not(:disabled) { border-color: var(--accent); }
+  .choice:disabled { cursor: default; color: var(--muted); }
+  .choice.right { background: var(--good-soft); border-color: var(--good); color: var(--ink); font-weight: 500; }
+  .choice.wrong { background: var(--bad-soft); border-color: var(--bad); color: var(--ink); }
+  .fb { border-top: 1px solid var(--line); padding-top: .75rem; display: flex; flex-direction: column; gap: .35rem; font-size: .95rem; }
+  .verdict { font-weight: 600; }
+  .verdict.ok { color: var(--good); } .verdict.no { color: var(--bad); }
+  .trap { font-size: .8rem; letter-spacing: .03em; color: var(--muted); }
+  .trap strong { color: var(--ink); font-weight: 600; }
+  .review { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; display: flex; flex-direction: column; gap: .6rem; }
+  .review ul { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .25rem; }
+  footer { color: var(--muted); font-size: .85rem; max-width: 65ch; }
+  @media (prefers-reduced-motion: reduce) { .bar i { transition: none; } }
+</style>
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:.5rem">
+    <h1>Most-Missed Physics Questions</h1>
+    <p class="lede">Ten questions per unit, each built on a mistake physics students make again and again. Pick an answer to see why it is right or wrong. Aim for 8 out of 10 before the unit test.</p>
+  </header>
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Units"></nav>
+  <section class="score" aria-live="polite">
+    <div class="score-row"><h2 id="unit-title"></h2><span class="score-num" id="score-num"></span></div>
+    <div class="bar"><i id="bar-fill"></i><b></b><span>mastery 80%</span></div>
+    <div class="score-row"><span class="status" id="status"></span>
+      <div class="actions"><button class="btn primary" id="retry" type="button">Retry missed questions</button><button class="btn" id="reset" type="button">Start unit over</button></div></div>
+  </section>
+  <ol class="qs" id="qs"></ol>
+  <section class="review" id="review" hidden></section>
+  <footer>Questions target misconceptions documented in physics education research, such as those probed by the Force Concept Inventory. Your answers are saved in this browser only. Use g = 9.8 m/s² and ignore air resistance unless a question says otherwise.</footer>
+</div>
+<script>
+const UNITS = /*DATA*/;
+const KEY = 'physics-most-missed-v1';
+let state = {};
+try { state = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { state = {}; }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
+const order = {};  // shuffled choice order per unit, fixed for this visit
+function shuffled(n) { const a = [...Array(n).keys()]; for (let i = n - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+let current = UNITS[0];
+function tally(u) { const a = state[u.id] || {}; let done = 0, right = 0; u.quiz.forEach((q, i) => { if (a[i] != null) { done++; if (a[i] === q.a) right++; } }); return { done, right, total: u.quiz.length }; }
+
+function renderTabs() {
+  const tabs = document.getElementById('tabs'); tabs.textContent = '';
+  UNITS.forEach(u => { const t = tally(u); const b = el('button', 'tab'); b.type = 'button'; b.id = 'tab-' + u.slug; b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', String(u === current));
+    b.append(el('span', null, u.title), el('span', 'n', t.right + '/' + t.total)); b.onclick = () => { location.hash = u.slug; show(u); }; tabs.append(b); });
+}
+function renderScore() {
+  const t = tally(current); const pass = t.right / t.total >= 0.8;
+  document.getElementById('unit-title').textContent = 'Unit ' + current.n + ': ' + current.title;
+  document.getElementById('score-num').textContent = t.right + ' / ' + t.total + ' correct';
+  const fill = document.getElementById('bar-fill'); fill.style.width = (100 * t.right / t.total) + '%'; fill.className = pass ? 'pass' : '';
+  const s = document.getElementById('status'); s.className = 'status' + (pass ? ' pass' : '');
+  s.textContent = pass ? 'Mastery reached. ' + (t.done < t.total ? 'Finish the rest to be sure.' : 'Explain each answer aloud to lock it in.')
+    : t.done === 0 ? 'Not started. ' + t.total + ' questions.' : t.done < t.total ? (t.total - t.done) + ' left to answer.' : 'Below 80%. Reread the explanations, then retry the ones you missed.';
+  document.getElementById('retry').disabled = t.done === t.right; document.getElementById('reset').disabled = t.done === 0;
+}
+function renderReview() {
+  const box = document.getElementById('review'); const a = state[current.id] || {}; const t = tally(current);
+  const missed = current.quiz.filter((q, i) => a[i] != null && a[i] !== q.a);
+  box.hidden = !(t.done === t.total && missed.length); box.textContent = '';
+  if (box.hidden) return;
+  box.append(el('h2', null, 'What to review'), el('p', 'lede', 'You missed questions built on these ideas. Find them in the Cornell notes, cover the Notes column, and answer the cue aloud.'));
+  const ul = el('ul'); missed.forEach(q => ul.append(el('li', null, q.m))); box.append(ul);
+}
+function renderQuestions() {
+  const list = document.getElementById('qs'); list.textContent = ''; const a = state[current.id] || {};
+  order[current.id] = order[current.id] || current.quiz.map(q => shuffled(q.c.length));
+  current.quiz.forEach((q, i) => {
+    const li = el('li', 'q'); const head = el('div', 'q-head'); head.append(el('span', 'q-n', String(i + 1).padStart(2, '0')), el('span', 'q-text', q.q)); li.append(head);
+    const box = el('div', 'choices'); const picked = a[i];
+    order[current.id][i].forEach(ci => { const b = el('button', 'choice', q.c[ci]); b.type = 'button'; b.id = `c-${current.slug}-${i}-${ci}`;
+      if (picked != null) { b.disabled = true; if (ci === q.a) b.classList.add('right'); else if (ci === picked) b.classList.add('wrong'); }
+      b.onclick = () => { (state[current.id] = state[current.id] || {})[i] = ci; save(); render(); };
+      box.append(b); });
+    li.append(box);
+    if (picked != null) { const fb = el('div', 'fb'); const ok = picked === q.a;
+      fb.append(el('span', 'verdict ' + (ok ? 'ok' : 'no'), ok ? 'Correct' : 'Not quite. The answer is: ' + q.c[q.a]), el('span', null, q.why));
+      const trap = el('span', 'trap'); trap.append('Common mistake: ', el('strong', null, q.m)); fb.append(trap); li.append(fb); }
+    list.append(li);
+  });
+}
+function render() { renderTabs(); renderScore(); renderQuestions(); renderReview(); }
+function show(u) { current = u; render(); }
+document.getElementById('retry').onclick = () => { const a = state[current.id] || {}; current.quiz.forEach((q, i) => { if (a[i] != null && a[i] !== q.a) delete a[i]; }); delete order[current.id]; save(); render(); };
+document.getElementById('reset').onclick = () => { delete state[current.id]; delete order[current.id]; save(); render(); };
+function fromHash() { const u = UNITS.find(u => '#' + u.slug === location.hash); show(u || current); }
+window.addEventListener('hashchange', fromHash); fromHash();
+</script>
