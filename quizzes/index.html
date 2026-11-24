@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--ARTIFACT-START-->
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Physics Missed-Question Quizzes</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: one reading column, lab-notebook header on graph paper, unit tabs, one question at a time. */
+:root {
+  --bg: #f4f7fb; --surface: #ffffff; --ink: #14213d; --muted: #55627b; --line: #d3dbe9;
+  --accent: #0b6e99; --accent-ink: #ffffff; --grid: rgba(11, 110, 153, 0.10);
+  --ok: #19704c; --ok-bg: #e3f4ec; --bad: #a8332b; --bad-bg: #fbe9e7;
+  --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --body: "Inter", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1622; --surface: #172133; --ink: #e6ecf7; --muted: #9ba9c1; --line: #2b3852;
+    --accent: #5cc0ea; --accent-ink: #0b1420; --grid: rgba(92, 192, 234, 0.09);
+    --ok: #66d3a0; --ok-bg: #143427; --bad: #f29488; --bad-bg: #3b1b18; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1622; --surface: #172133; --ink: #e6ecf7; --muted: #9ba9c1; --line: #2b3852;
+  --accent: #5cc0ea; --accent-ink: #0b1420; --grid: rgba(92, 192, 234, 0.09);
+  --ok: #66d3a0; --ok-bg: #143427; --bad: #f29488; --bad-bg: #3b1b18; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 var(--body); }
+.wrap { max-width: 720px; margin: 0 auto; padding-block: 28px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 22px; }
+header { border: 1px solid var(--line); border-radius: 6px; padding: 20px;
+  background-color: var(--surface);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 16px 16px; }
+.eyebrow { font: 600 12px/1.2 var(--body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 0 0 6px; }
+h1 { font: 700 28px/1.15 var(--display); margin: 0 0 8px; text-wrap: balance; }
+header p { margin: 0; color: var(--muted); max-width: 60ch; }
+nav { display: flex; flex-wrap: wrap; gap: 8px; }
+.tab { font: 500 14px/1.2 var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-radius: 999px; padding: 8px 14px; cursor: pointer; display: inline-flex; gap: 8px; align-items: center; }
+.tab[aria-current="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.tab .best { font-variant-numeric: tabular-nums; font-size: 12px; opacity: 0.8; }
+button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.meta { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; color: var(--muted); font-size: 14px; }
+.meta strong { font: 700 18px/1.2 var(--display); color: var(--ink); }
+.bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--accent); transition: width 0.25s; }
+@media (prefers-reduced-motion: reduce) { .bar i { transition: none; } }
+main { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+h2 { font: 500 20px/1.35 var(--display); margin: 0; text-wrap: balance; }
+.opts { display: flex; flex-direction: column; gap: 10px; }
+.opt { text-align: left; font: 400 16px/1.4 var(--body); color: var(--ink); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; cursor: pointer; }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt:disabled { cursor: default; opacity: 0.75; }
+.opt.right { background: var(--ok-bg); border-color: var(--ok); opacity: 1; }
+.opt.wrong { background: var(--bad-bg); border-color: var(--bad); opacity: 1; }
+.opt .tag { display: block; font: 600 12px/1.3 var(--body); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 2px; }
+.opt.right .tag { color: var(--ok); } .opt.wrong .tag { color: var(--bad); }
+.fb { border-top: 1px solid var(--line); padding-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+.fb p { margin: 0; max-width: 65ch; }
+.fb .label { font: 600 12px/1.3 var(--body); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); display: block; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn { font: 600 15px/1.2 var(--body); border-radius: 6px; padding: 11px 18px; cursor: pointer;
+  background: var(--accent); color: var(--accent-ink); border: 1px solid var(--accent); }
+.btn.ghost { background: transparent; color: var(--accent); }
+.score { font: 700 44px/1 var(--display); font-variant-numeric: tabular-nums; margin: 0; }
+.verdict { margin: 0; font-weight: 600; } .verdict.pass { color: var(--ok); } .verdict.retry { color: var(--bad); }
+.missed { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.missed li { border-left: 3px solid var(--bad); padding-left: 12px; display: flex; flex-direction: column; gap: 4px; }
+.missed .q { font-weight: 600; } .missed .ans { color: var(--ok); font-weight: 500; }
+.missed .why, footer { color: var(--muted); font-size: 14px; }
+footer { border-top: 1px solid var(--line); padding-top: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">11th Grade Physics · Semester 1</p>
+    <h1>Missed-Question Quizzes</h1>
+    <p>Eight questions per unit, chosen because students most often get them wrong. Pick an answer to see why it is right and which mistake leads to the wrong one. Score 7 of 8 or better to show mastery. Number problems use g = 10 m/s².</p>
+  </header>
+  <nav id="tabs" aria-label="Units"></nav>
+  <main id="main" aria-live="polite"></main>
+  <footer>Best scores are saved in this browser only. Review the Cornell notes for a unit before retrying it.</footer>
+</div>
+<script src="questions.js"></script>
+<script>
+(function () {
+  var tabs = document.getElementById("tabs"), main = document.getElementById("main");
+  var PASS = 7, KEY = "physics-quiz-best";
+  var best = {};
+  try { best = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { best = {}; }
+  var s = null; // { unit, items:[{q, order}], i, picks:[], chosen }
+
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+
+  function start(unit, subset) {
+    var qs = subset || unit.questions;
+    s = { unit: unit, full: !subset, i: 0, picks: [], chosen: null,
+      items: qs.map(function (q) { return { q: q, order: shuffle(q.o.map(function (_, k) { return k; })) }; }) };
+    drawTabs(); draw();
+  }
+
+  function drawTabs() {
+    tabs.textContent = "";
+    QUIZ.forEach(function (u) {
+      var b = el("button", "tab"); b.type = "button"; b.id = "tab-" + u.id;
+      b.appendChild(el("span", "", u.title));
+      if (best[u.id] != null) b.appendChild(el("span", "best", best[u.id] + "/" + u.questions.length));
+      if (s && s.unit === u) b.setAttribute("aria-current", "true");
+      b.addEventListener("click", function () { try { location.hash = u.id; } catch (e) {} start(u); });
+      tabs.appendChild(b);
+    });
+  }
+
+  function draw() {
+    main.textContent = "";
+    if (s.i >= s.items.length) return drawResults();
+    var it = s.items[s.i], q = it.q, answered = s.chosen != null;
+    var meta = el("div", "meta");
+    meta.appendChild(el("strong", "", s.unit.title + (s.full ? "" : " · missed questions")));
+    meta.appendChild(el("span", "", "Question " + (s.i + 1) + " of " + s.items.length));
+    main.appendChild(meta);
+    var bar = el("div", "bar"), fill = el("i"); fill.style.width = (100 * (s.i + (answered ? 1 : 0)) / s.items.length) + "%"; bar.appendChild(fill); main.appendChild(bar);
+    main.appendChild(el("h2", "", q.q));
+    var opts = el("div", "opts");
+    it.order.forEach(function (k, pos) {
+      var b = el("button", "opt"); b.type = "button"; b.id = "opt-" + pos;
+      if (answered) {
+        b.disabled = true;
+        if (k === q.a) { b.classList.add("right"); b.appendChild(el("span", "tag", k === s.chosen ? "Correct" : "Correct answer")); }
+        else if (k === s.chosen) { b.classList.add("wrong"); b.appendChild(el("span", "tag", "Your answer")); }
+      }
+      b.appendChild(document.createTextNode(q.o[k]));
+      b.addEventListener("click", function () { s.chosen = k; s.picks[s.i] = k; draw(); });
+      opts.appendChild(b);
+    });
+    main.appendChild(opts);
+    if (answered) {
+      var fb = el("div", "fb");
+      var p1 = el("p"); p1.appendChild(el("span", "label", "Why")); p1.appendChild(document.createTextNode(q.why)); fb.appendChild(p1);
+      var p2 = el("p"); p2.appendChild(el("span", "label", "Common mistake")); p2.appendChild(document.createTextNode(q.trap)); fb.appendChild(p2);
+      var act = el("div", "actions"), next = el("button", "btn", s.i + 1 < s.items.length ? "Next question" : "See results");
+      next.type = "button"; next.id = "next";
+      next.addEventListener("click", function () { s.i++; s.chosen = null; draw(); window.scrollTo(0, 0); });
+      act.appendChild(next); fb.appendChild(act); main.appendChild(fb);
+      next.focus({ preventScroll: true });
+    }
+  }
+
+  function drawResults() {
+    var missed = s.items.filter(function (it, i) { return s.picks[i] !== it.q.a; });
+    var right = s.items.length - missed.length;
+    if (s.full) {
+      if (best[s.unit.id] == null || right > best[s.unit.id]) { best[s.unit.id] = right; try { localStorage.setItem(KEY, JSON.stringify(best)); } catch (e) {} }
+      drawTabs();
+    }
+    var meta = el("div", "meta"); meta.appendChild(el("strong", "", s.unit.title + " results")); main.appendChild(meta);
+    main.appendChild(el("p", "score", right + " / " + s.items.length));
+    if (s.full) {
+      var pass = right >= PASS;
+      main.appendChild(el("p", "verdict " + (pass ? "pass" : "retry"), pass ? "Mastery shown. Record this score in your progress tracker." : "Not yet at 7 of 8. Review the notes on the questions below, then try again."));
+    }
+    if (missed.length) {
+      main.appendChild(el("h2", "", "Questions to review"));
+      var ul = el("ul", "missed");
+      missed.forEach(function (it) {
+        var li = el("li");
+        li.appendChild(el("span", "q", it.q.q));
+        li.appendChild(el("span", "ans", "Answer: " + it.q.o[it.q.a]));
+        li.appendChild(el("span", "why", it.q.why));
+        ul.appendChild(li);
+      });
+      main.appendChild(ul);
+    }
+    var act = el("div", "actions");
+    if (missed.length) { var r = el("button", "btn", "Retry missed questions"); r.type = "button"; r.id = "retry-missed"; r.addEventListener("click", function () { start(s.unit, missed.map(function (it) { return it.q; })); }); act.appendChild(r); }
+    var again = el("button", "btn" + (missed.length ? " ghost" : ""), "Restart this unit"); again.type = "button"; again.id = "restart";
+    again.addEventListener("click", function () { start(s.unit); }); act.appendChild(again);
+    var nx = QUIZ[(QUIZ.indexOf(s.unit) + 1) % QUIZ.length];
+    var nb = el("button", "btn ghost", "Go to " + nx.title); nb.type = "button"; nb.id = "next-unit";
+    nb.addEventListener("click", function () { try { location.hash = nx.id; } catch (e) {} start(nx); }); act.appendChild(nb);
+    main.appendChild(act);
+  }
+
+  function fromHash() { var id = (location.hash || "").slice(1); return QUIZ.filter(function (u) { return u.id === id; })[0] || QUIZ[0]; }
+  window.addEventListener("hashchange", function () { var u = fromHash(); if (!s || s.unit !== u) start(u); });
+  start(fromHash());
+})();
+</script>
+<!--ARTIFACT-END-->
+</body>
+</html>
