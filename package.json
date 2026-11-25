@@ -1,0 +1,7 @@
+{
+  "name": "physics-semester-1",
+  "private": true,
+  "description": "Grade 11 physics learning project: Cornell notes, quizzes, and unit outlines",
+  "scripts": { "figures": "python3 tools/figures.py", "build": "node tools/build.js" },
+  "dependencies": { "docx": "^9.7.1" }
+}

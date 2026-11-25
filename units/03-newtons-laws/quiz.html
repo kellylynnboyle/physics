@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Newton's Laws Quiz</title>
+<style>
+  :root { --bg:#f6f7fb; --card:#ffffff; --ink:#1b2333; --muted:#5b6475; --line:#d5dae6; --navy:#1f3864; --accent:#2f5bd0;
+          --good:#1b7a3d; --goodbg:#e4f4e9; --bad:#b3261e; --badbg:#fbe9e7; --tip:#6b4a00; --tipbg:#fff4d6; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#12151c; --card:#1b202b; --ink:#e8ebf2; --muted:#a3acbd; --line:#343b4b; --navy:#a9c0f5; --accent:#8fb0ff;
+            --good:#7ddc9c; --goodbg:#16311f; --bad:#ff9d94; --badbg:#3a1b19; --tip:#ffd98a; --tipbg:#3a2f12; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; color: var(--navy); }
+  .sub { color: var(--muted); margin: 0 0 16px; }
+  .bar { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; margin: 12px 0 20px; }
+  .bar > div { height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+  .count { color: var(--muted); font-size: .875rem; margin: 0 0 8px; display:flex; justify-content:space-between; gap:12px; }
+  .q { font-size: 1.125rem; font-weight: 600; margin: 0 0 16px; }
+  .choice { display:block; width:100%; text-align:left; padding:12px 14px; margin: 0 0 10px; font: inherit; color: inherit;
+            background: transparent; border: 1.5px solid var(--line); border-radius: 10px; cursor: pointer; }
+  .choice:hover:not(:disabled), .choice:focus-visible { border-color: var(--accent); outline: none; }
+  .choice:disabled { cursor: default; }
+  .choice.right { border-color: var(--good); background: var(--goodbg); }
+  .choice.wrong { border-color: var(--bad); background: var(--badbg); }
+  .fb { margin-top: 14px; padding: 12px 14px; border-radius: 10px; }
+  .fb.ok { background: var(--goodbg); } .fb.no { background: var(--badbg); }
+  .fb strong.ok { color: var(--good); } .fb strong.no { color: var(--bad); }
+  .tip { margin-top: 10px; padding: 10px 14px; border-radius: 10px; background: var(--tipbg); color: var(--tip); font-size: .9375rem; }
+  .btn { margin-top: 16px; padding: 10px 18px; font: inherit; font-weight: 600; color: #fff; background: var(--accent); border: 0; border-radius: 10px; cursor: pointer; }
+  @media (prefers-color-scheme: dark) { .btn { color:#0f1320; } }
+  .btn.alt { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); margin-left: 8px; }
+  .score { font-size: 2rem; font-weight: 700; margin: 0; color: var(--navy); }
+  ul.missed { padding-left: 20px; } ul.missed li { margin-bottom: 10px; }
+  .muted { color: var(--muted); } a { color: var(--accent); }
+  footer { margin-top: 20px; font-size: .875rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Newton's Laws: Most-Missed Questions</h1>
+  <p class="sub">10 questions built around the mistakes students make most often. Goal: 8 or more correct. Answer order is shuffled every time.</p>
+  <div class="bar" aria-hidden="true"><div id="bar"></div></div>
+  <div class="card" id="card"></div>
+  <footer><span id="best"></span> <a href="README.md">Back to the unit page</a> · <a href="../../index.html">All quizzes</a></footer>
+</main>
+<script>
+const UNIT = "03-newtons-laws";
+const ALL = [{"q":"A hockey puck slides across frictionless ice at constant velocity. What is the net force on the puck?","choices":["Zero","A constant force in the direction of motion","A force that slowly decreases","A force equal to the puck's weight"],"a":0,"why":"Constant velocity means zero acceleration, and zero acceleration means zero net force. No force is needed to keep an object moving.","miss":"The belief that motion requires a force in the direction of motion."},{"q":"A large truck collides head-on with a small car. During the collision, how do the forces compare?","choices":["The force on the car equals the force on the truck","The truck exerts a larger force on the car","The car exerts a larger force on the truck","The truck exerts a force, but the car does not"],"a":0,"why":"Third-law forces are always equal in size. The car is damaged more because the same force gives its smaller mass a much larger acceleration.","miss":"Assuming the bigger, faster, or \"more active\" object pushes harder."},{"q":"A book rests on a table. Earth pulls down on the book. What is the third-law partner of that force?","choices":["The book pulls up on Earth","The table pushes up on the book","The book pushes down on the table","Friction between book and table"],"a":0,"why":"Swap the objects: \"Earth pulls book\" pairs with \"book pulls Earth.\" The table's normal force acts on the same object (the book) and is a different kind of force, so it is not the partner.","miss":"Picking the normal force because it is equal and opposite to the weight here."},{"q":"An elevator moves upward at constant speed. How does the tension in the cable compare with the elevator's weight?","choices":["The tension equals the weight","The tension is greater than the weight","The tension is less than the weight","The tension is zero"],"a":0,"why":"Constant speed in a straight line means zero acceleration, so the forces are balanced. Tension is greater than weight only while the elevator is speeding up upward.","miss":"Thinking upward motion needs a net upward force."},{"q":"The net force on a cart is doubled and its mass is also doubled. What happens to its acceleration?","choices":["It stays the same","It doubles","It is four times as large","It is cut in half"],"a":0,"why":"a = F_net/m. Doubling both gives 2F/2m = F/m, the same acceleration.","miss":"Considering only one of the two changes."},{"q":"A ball has been thrown straight up and is still rising. Ignoring air resistance, which forces act on it?","choices":["Only gravity, downward","Gravity down and the force of the throw up","Only the force of the throw, upward","No forces until it reaches the top"],"a":0,"why":"The hand stopped pushing when the ball left it. The ball rises because of its inertia and slows because gravity is the only force.","miss":"Drawing a \"force of the throw\" that travels with the ball."},{"q":"An astronaut travels from Earth to the Moon. What happens to the astronaut's mass and weight?","choices":["Mass stays the same; weight decreases","Both decrease","Mass decreases; weight stays the same","Both stay the same"],"a":0,"why":"Mass is the amount of matter and does not depend on location. Weight is mg, and g is smaller on the Moon.","miss":"Using \"mass\" and \"weight\" as the same word."},{"q":"You push horizontally on a heavy crate with 50 N and it does not move. What is the friction force on the crate?","choices":["50 N","More than 50 N","Less than 50 N","Zero"],"a":0,"why":"The crate is not accelerating, so the forces are balanced. Static friction adjusts to match the push exactly, up to its maximum.","miss":"Thinking friction must be larger than the push to \"win.\""},{"q":"A net force of 10 N acts on a 2.0 kg object. What is its acceleration?","choices":["5.0 m/s²","20 m/s²","0.20 m/s²","12 m/s²"],"a":0,"why":"a = F_net/m = 10/2.0 = 5.0 m/s².","miss":"Multiplying force by mass instead of dividing."},{"q":"A skydiver is falling at terminal velocity. Which statement is true?","choices":["Air resistance equals the skydiver's weight, so the net force is zero","Air resistance is greater than the weight","Gravity is no longer acting","The skydiver is accelerating at 9.8 m/s²"],"a":0,"why":"Terminal velocity is a constant velocity, so the forces are balanced. If air resistance were larger, the skydiver would slow down.","miss":"Thinking that falling always means accelerating."}];
+const GOAL = 8;
+let queue = [], pos = 0, right = 0, missed = [];
+const $ = (id) => document.getElementById(id);
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function getBest() { try { return Number(localStorage.getItem("best-" + UNIT)) || 0; } catch (e) { return 0; } }
+function setBest(n) { try { if (n > getBest()) localStorage.setItem("best-" + UNIT, String(n)); } catch (e) {} }
+function showBest() { const b = getBest(); $("best").textContent = b ? "Your best on this device: " + b + "/" + ALL.length + "." : ""; }
+
+function start(items) { queue = shuffle(items); pos = 0; right = 0; missed = []; render(); }
+
+function render() {
+  $("bar").style.width = (100 * pos / queue.length) + "%";
+  if (pos >= queue.length) return finish();
+  const item = queue[pos];
+  const order = shuffle(item.choices.map((text, i) => ({ text, correct: i === item.a })));
+  let html = '<p class="count"><span>Question ' + (pos + 1) + " of " + queue.length + "</span><span>" + right + " correct so far</span></p>";
+  html += '<p class="q">' + esc(item.q) + "</p>";
+  order.forEach((c, i) => { html += '<button class="choice" data-i="' + i + '">' + esc(c.text) + "</button>"; });
+  html += '<div id="after" aria-live="polite"></div>';
+  $("card").innerHTML = html;
+  document.querySelectorAll(".choice").forEach((btn) => btn.addEventListener("click", () => answer(item, order, Number(btn.dataset.i))));
+}
+
+function answer(item, order, picked) {
+  const ok = order[picked].correct;
+  document.querySelectorAll(".choice").forEach((btn, i) => {
+    btn.disabled = true;
+    if (order[i].correct) btn.classList.add("right");
+    else if (i === picked) btn.classList.add("wrong");
+  });
+  if (ok) right++; else missed.push(item);
+  const last = pos + 1 >= queue.length;
+  $("after").innerHTML =
+    '<div class="fb ' + (ok ? "ok" : "no") + '"><strong class="' + (ok ? "ok" : "no") + '">' + (ok ? "Correct." : "Not quite.") + "</strong> " + esc(item.why) + "</div>" +
+    '<div class="tip"><strong>Why this one gets missed:</strong> ' + esc(item.miss) + "</div>" +
+    '<button class="btn" id="next">' + (last ? "See results" : "Next question") + "</button>";
+  $("next").addEventListener("click", () => { pos++; render(); });
+  $("next").focus();
+}
+
+function finish() {
+  const full = queue.length === ALL.length;
+  if (full) setBest(right);
+  showBest();
+  let html = '<p class="score">' + right + " / " + queue.length + "</p>";
+  if (full) html += "<p>" + (right >= GOAL ? "You met the goal of " + GOAL + ". Mark this quiz done on your unit checklist." : "The goal is " + GOAL + ". Review the notes for the questions below, then try again.") + "</p>";
+  else html += '<p class="muted">Review round. Take the full quiz again to record a score.</p>';
+  if (missed.length) {
+    html += "<h2>Review these</h2><ul class='missed'>";
+    missed.forEach((m) => { html += "<li><strong>" + esc(m.q) + "</strong><br>Answer: " + esc(m.choices[m.a]) + "<br><span class='muted'>" + esc(m.why) + "</span></li>"; });
+    html += "</ul><button class='btn' id='retry'>Retry missed questions</button>";
+  }
+  html += "<button class='btn" + (missed.length ? " alt" : "") + "' id='again'>Start over</button>";
+  $("card").innerHTML = html;
+  if (missed.length) { const m = missed.slice(); $("retry").addEventListener("click", () => start(m)); }
+  $("again").addEventListener("click", () => start(ALL));
+}
+
+showBest();
+start(ALL);
+</script>
+</body>
+</html>

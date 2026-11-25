@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projectile Motion Quiz</title>
+<style>
+  :root { --bg:#f6f7fb; --card:#ffffff; --ink:#1b2333; --muted:#5b6475; --line:#d5dae6; --navy:#1f3864; --accent:#2f5bd0;
+          --good:#1b7a3d; --goodbg:#e4f4e9; --bad:#b3261e; --badbg:#fbe9e7; --tip:#6b4a00; --tipbg:#fff4d6; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#12151c; --card:#1b202b; --ink:#e8ebf2; --muted:#a3acbd; --line:#343b4b; --navy:#a9c0f5; --accent:#8fb0ff;
+            --good:#7ddc9c; --goodbg:#16311f; --bad:#ff9d94; --badbg:#3a1b19; --tip:#ffd98a; --tipbg:#3a2f12; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; color: var(--navy); }
+  .sub { color: var(--muted); margin: 0 0 16px; }
+  .bar { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; margin: 12px 0 20px; }
+  .bar > div { height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+  .count { color: var(--muted); font-size: .875rem; margin: 0 0 8px; display:flex; justify-content:space-between; gap:12px; }
+  .q { font-size: 1.125rem; font-weight: 600; margin: 0 0 16px; }
+  .choice { display:block; width:100%; text-align:left; padding:12px 14px; margin: 0 0 10px; font: inherit; color: inherit;
+            background: transparent; border: 1.5px solid var(--line); border-radius: 10px; cursor: pointer; }
+  .choice:hover:not(:disabled), .choice:focus-visible { border-color: var(--accent); outline: none; }
+  .choice:disabled { cursor: default; }
+  .choice.right { border-color: var(--good); background: var(--goodbg); }
+  .choice.wrong { border-color: var(--bad); background: var(--badbg); }
+  .fb { margin-top: 14px; padding: 12px 14px; border-radius: 10px; }
+  .fb.ok { background: var(--goodbg); } .fb.no { background: var(--badbg); }
+  .fb strong.ok { color: var(--good); } .fb strong.no { color: var(--bad); }
+  .tip { margin-top: 10px; padding: 10px 14px; border-radius: 10px; background: var(--tipbg); color: var(--tip); font-size: .9375rem; }
+  .btn { margin-top: 16px; padding: 10px 18px; font: inherit; font-weight: 600; color: #fff; background: var(--accent); border: 0; border-radius: 10px; cursor: pointer; }
+  @media (prefers-color-scheme: dark) { .btn { color:#0f1320; } }
+  .btn.alt { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); margin-left: 8px; }
+  .score { font-size: 2rem; font-weight: 700; margin: 0; color: var(--navy); }
+  ul.missed { padding-left: 20px; } ul.missed li { margin-bottom: 10px; }
+  .muted { color: var(--muted); } a { color: var(--accent); }
+  footer { margin-top: 20px; font-size: .875rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Projectile Motion: Most-Missed Questions</h1>
+  <p class="sub">10 questions built around the mistakes students make most often. Goal: 8 or more correct. Answer order is shuffled every time.</p>
+  <div class="bar" aria-hidden="true"><div id="bar"></div></div>
+  <div class="card" id="card"></div>
+  <footer><span id="best"></span> <a href="README.md">Back to the unit page</a> · <a href="../../index.html">All quizzes</a></footer>
+</main>
+<script>
+const UNIT = "02-projectile-motion";
+const ALL = [{"q":"A bullet is fired horizontally from a rifle at the same instant an identical bullet is dropped from the same height. Ignoring air resistance, which hits the level ground first?","choices":["They hit at the same time","The dropped bullet","The fired bullet","It depends on the speed of the fired bullet"],"a":0,"why":"Both start with zero vertical velocity and both accelerate downward at 9.8 m/s². Horizontal speed has no effect on fall time.","miss":"Believing that fast sideways motion keeps an object up longer."},{"q":"A ball is launched at an angle. At the very top of its path, what is its velocity?","choices":["Horizontal, equal to its horizontal launch component","Zero","Straight down at 9.8 m/s","Equal to its launch velocity"],"a":0,"why":"Only the vertical component reaches zero at the top. The horizontal component never changes, so the ball is still moving sideways.","miss":"Carrying over \"velocity is zero at the top\" from a straight-up throw."},{"q":"What is the acceleration of a projectile at the top of its path? (Ignore air resistance.)","choices":["9.8 m/s² downward","Zero","9.8 m/s² upward","9.8 m/s² in the direction of motion"],"a":0,"why":"Gravity is the only force the whole flight, so the acceleration is 9.8 m/s² downward at every point, including the top.","miss":"Thinking acceleration is zero wherever the vertical velocity is zero."},{"q":"What happens to the horizontal velocity of a projectile during its flight? (Ignore air resistance.)","choices":["It stays constant","It decreases steadily","It increases as the projectile falls","It is zero at the top"],"a":0,"why":"No horizontal force acts, so there is no horizontal acceleration. Inertia keeps the horizontal velocity the same.","miss":"Believing a \"force of the throw\" is used up during the flight."},{"q":"A ball rolls off a table at 2 m/s. An identical ball rolls off the same table at 4 m/s. How do their times in the air compare?","choices":["The times are the same","The faster ball is in the air twice as long","The faster ball is in the air half as long","The faster ball is in the air four times as long"],"a":0,"why":"Fall time depends only on the height and g. The faster ball lands twice as far away, but in the same time.","miss":"Linking horizontal speed to time in the air."},{"q":"On level ground with no air resistance, which launch angle gives the greatest range for a given speed?","choices":["45°","30°","60°","90°"],"a":0,"why":"45° is the best balance between time in the air (which needs vertical velocity) and horizontal speed.","miss":"Choosing a low angle for \"more forward speed\" or a high angle for \"more air time.\""},{"q":"Two balls are launched at the same speed, one at 30° and one at 60°. Ignoring air resistance, which statement is true?","choices":["They have the same range, and the 60° ball is in the air longer","The 30° ball goes farther","The 60° ball goes farther","They have the same range and the same time in the air"],"a":0,"why":"Angles that add to 90° give the same range. The 60° ball has more vertical velocity, so it goes higher and stays up longer.","miss":"Assuming a different angle must give a different range."},{"q":"A plane flying level at constant velocity drops a package. Ignoring air resistance, where is the plane when the package lands?","choices":["Directly above the package","Far ahead of the package","Behind the package","It depends on the mass of the package"],"a":0,"why":"The package keeps the plane's horizontal velocity, so it moves forward at the same rate as the plane while it falls.","miss":"Picturing the package falling straight down or being \"left behind.\""},{"q":"A projectile is launched at 20 m/s at 30° above the horizontal. What is its initial vertical velocity?","choices":["10 m/s","17.3 m/s","20 m/s","9.8 m/s"],"a":0,"why":"vy = v sin θ = 20 sin 30° = 10 m/s. The 17.3 m/s value is the horizontal component, v cos θ.","miss":"Swapping sine and cosine."},{"q":"A soccer ball has been kicked and is in the air. Ignoring air resistance, which forces act on it?","choices":["Only gravity","Gravity and the force of the kick","Gravity and a forward force of motion","No forces until it starts to come down"],"a":0,"why":"The kick ended when the foot lost contact. A force needs an object doing the pushing, and only Earth is still pulling.","miss":"Believing a moving object carries a force with it."}];
+const GOAL = 8;
+let queue = [], pos = 0, right = 0, missed = [];
+const $ = (id) => document.getElementById(id);
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function getBest() { try { return Number(localStorage.getItem("best-" + UNIT)) || 0; } catch (e) { return 0; } }
+function setBest(n) { try { if (n > getBest()) localStorage.setItem("best-" + UNIT, String(n)); } catch (e) {} }
+function showBest() { const b = getBest(); $("best").textContent = b ? "Your best on this device: " + b + "/" + ALL.length + "." : ""; }
+
+function start(items) { queue = shuffle(items); pos = 0; right = 0; missed = []; render(); }
+
+function render() {
+  $("bar").style.width = (100 * pos / queue.length) + "%";
+  if (pos >= queue.length) return finish();
+  const item = queue[pos];
+  const order = shuffle(item.choices.map((text, i) => ({ text, correct: i === item.a })));
+  let html = '<p class="count"><span>Question ' + (pos + 1) + " of " + queue.length + "</span><span>" + right + " correct so far</span></p>";
+  html += '<p class="q">' + esc(item.q) + "</p>";
+  order.forEach((c, i) => { html += '<button class="choice" data-i="' + i + '">' + esc(c.text) + "</button>"; });
+  html += '<div id="after" aria-live="polite"></div>';
+  $("card").innerHTML = html;
+  document.querySelectorAll(".choice").forEach((btn) => btn.addEventListener("click", () => answer(item, order, Number(btn.dataset.i))));
+}
+
+function answer(item, order, picked) {
+  const ok = order[picked].correct;
+  document.querySelectorAll(".choice").forEach((btn, i) => {
+    btn.disabled = true;
+    if (order[i].correct) btn.classList.add("right");
+    else if (i === picked) btn.classList.add("wrong");
+  });
+  if (ok) right++; else missed.push(item);
+  const last = pos + 1 >= queue.length;
+  $("after").innerHTML =
+    '<div class="fb ' + (ok ? "ok" : "no") + '"><strong class="' + (ok ? "ok" : "no") + '">' + (ok ? "Correct." : "Not quite.") + "</strong> " + esc(item.why) + "</div>" +
+    '<div class="tip"><strong>Why this one gets missed:</strong> ' + esc(item.miss) + "</div>" +
+    '<button class="btn" id="next">' + (last ? "See results" : "Next question") + "</button>";
+  $("next").addEventListener("click", () => { pos++; render(); });
+  $("next").focus();
+}
+
+function finish() {
+  const full = queue.length === ALL.length;
+  if (full) setBest(right);
+  showBest();
+  let html = '<p class="score">' + right + " / " + queue.length + "</p>";
+  if (full) html += "<p>" + (right >= GOAL ? "You met the goal of " + GOAL + ". Mark this quiz done on your unit checklist." : "The goal is " + GOAL + ". Review the notes for the questions below, then try again.") + "</p>";
+  else html += '<p class="muted">Review round. Take the full quiz again to record a score.</p>';
+  if (missed.length) {
+    html += "<h2>Review these</h2><ul class='missed'>";
+    missed.forEach((m) => { html += "<li><strong>" + esc(m.q) + "</strong><br>Answer: " + esc(m.choices[m.a]) + "<br><span class='muted'>" + esc(m.why) + "</span></li>"; });
+    html += "</ul><button class='btn' id='retry'>Retry missed questions</button>";
+  }
+  html += "<button class='btn" + (missed.length ? " alt" : "") + "' id='again'>Start over</button>";
+  $("card").innerHTML = html;
+  if (missed.length) { const m = missed.slice(); $("retry").addEventListener("click", () => start(m)); }
+  $("again").addEventListener("click", () => start(ALL));
+}
+
+showBest();
+start(ALL);
+</script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kinematics Quiz</title>
+<style>
+  :root { --bg:#f6f7fb; --card:#ffffff; --ink:#1b2333; --muted:#5b6475; --line:#d5dae6; --navy:#1f3864; --accent:#2f5bd0;
+          --good:#1b7a3d; --goodbg:#e4f4e9; --bad:#b3261e; --badbg:#fbe9e7; --tip:#6b4a00; --tipbg:#fff4d6; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#12151c; --card:#1b202b; --ink:#e8ebf2; --muted:#a3acbd; --line:#343b4b; --navy:#a9c0f5; --accent:#8fb0ff;
+            --good:#7ddc9c; --goodbg:#16311f; --bad:#ff9d94; --badbg:#3a1b19; --tip:#ffd98a; --tipbg:#3a2f12; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; color: var(--navy); }
+  .sub { color: var(--muted); margin: 0 0 16px; }
+  .bar { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; margin: 12px 0 20px; }
+  .bar > div { height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+  .count { color: var(--muted); font-size: .875rem; margin: 0 0 8px; display:flex; justify-content:space-between; gap:12px; }
+  .q { font-size: 1.125rem; font-weight: 600; margin: 0 0 16px; }
+  .choice { display:block; width:100%; text-align:left; padding:12px 14px; margin: 0 0 10px; font: inherit; color: inherit;
+            background: transparent; border: 1.5px solid var(--line); border-radius: 10px; cursor: pointer; }
+  .choice:hover:not(:disabled), .choice:focus-visible { border-color: var(--accent); outline: none; }
+  .choice:disabled { cursor: default; }
+  .choice.right { border-color: var(--good); background: var(--goodbg); }
+  .choice.wrong { border-color: var(--bad); background: var(--badbg); }
+  .fb { margin-top: 14px; padding: 12px 14px; border-radius: 10px; }
+  .fb.ok { background: var(--goodbg); } .fb.no { background: var(--badbg); }
+  .fb strong.ok { color: var(--good); } .fb strong.no { color: var(--bad); }
+  .tip { margin-top: 10px; padding: 10px 14px; border-radius: 10px; background: var(--tipbg); color: var(--tip); font-size: .9375rem; }
+  .btn { margin-top: 16px; padding: 10px 18px; font: inherit; font-weight: 600; color: #fff; background: var(--accent); border: 0; border-radius: 10px; cursor: pointer; }
+  @media (prefers-color-scheme: dark) { .btn { color:#0f1320; } }
+  .btn.alt { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); margin-left: 8px; }
+  .score { font-size: 2rem; font-weight: 700; margin: 0; color: var(--navy); }
+  ul.missed { padding-left: 20px; } ul.missed li { margin-bottom: 10px; }
+  .muted { color: var(--muted); } a { color: var(--accent); }
+  footer { margin-top: 20px; font-size: .875rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Kinematics: Most-Missed Questions</h1>
+  <p class="sub">10 questions built around the mistakes students make most often. Goal: 8 or more correct. Answer order is shuffled every time.</p>
+  <div class="bar" aria-hidden="true"><div id="bar"></div></div>
+  <div class="card" id="card"></div>
+  <footer><span id="best"></span> <a href="README.md">Back to the unit page</a> · <a href="../../index.html">All quizzes</a></footer>
+</main>
+<script>
+const UNIT = "01-kinematics";
+const ALL = [{"q":"A ball is thrown straight up. At the very top of its path, what is its acceleration? (Ignore air resistance.)","choices":["9.8 m/s² downward","Zero","9.8 m/s² upward","It depends on how hard it was thrown"],"a":0,"why":"Gravity never switches off. The velocity is zero for an instant, but it is still changing at 9.8 m/s every second, downward.","miss":"Students mix up velocity and acceleration: \"it stopped, so everything is zero.\""},{"q":"A runner completes one full lap of a 400 m track in 80 s. What is the runner's average velocity?","choices":["0 m/s","5.0 m/s","0.2 m/s","10 m/s"],"a":0,"why":"Average velocity = displacement ÷ time. The runner ends where they started, so displacement is 0. The average speed is 5.0 m/s.","miss":"Treating velocity and speed as the same thing."},{"q":"An object has a negative acceleration. Which statement must be true?","choices":["Its velocity is changing in the negative direction","It is slowing down","It is moving in the negative direction","It will eventually stop"],"a":0,"why":"The sign of acceleration is its direction. An object moving in the negative direction with negative acceleration is speeding up.","miss":"Believing \"negative acceleration\" always means \"slowing down.\""},{"q":"A position-time graph is a straight line sloping downward. What is the object doing?","choices":["Moving at constant velocity in the negative direction","Slowing down","Moving downhill","Accelerating in the negative direction"],"a":0,"why":"A straight line has a constant slope, and slope on a position-time graph is velocity. A negative slope is a constant negative velocity.","miss":"Reading the graph as a picture of the path, or reading a falling line as \"slowing down.\""},{"q":"A 1 kg ball and a 5 kg ball are dropped from the same height at the same time. With no air resistance, which lands first?","choices":["They land at the same time","The 5 kg ball","The 1 kg ball","The 5 kg ball lands in one-fifth the time"],"a":0,"why":"In free fall every object accelerates at 9.8 m/s². The heavier ball has more gravity force but also more inertia, and the two effects cancel exactly.","miss":"The everyday idea that heavier things fall faster."},{"q":"A velocity-time graph shows a horizontal line at +4 m/s. What is the object doing?","choices":["Moving at a constant 4 m/s","Sitting at rest","Speeding up steadily","Sitting 4 m from the origin"],"a":0,"why":"The height of a velocity-time graph is the velocity. A flat line means it is not changing, so acceleration is zero and the object moves at a steady 4 m/s.","miss":"Reading a velocity-time graph as if it were a position-time graph, where flat means at rest."},{"q":"A car starts from rest with constant acceleration and travels 4 m in the first 2 s. How far has it traveled in total after 4 s?","choices":["16 m","8 m","12 m","6 m"],"a":0,"why":"From rest, Δx = ½at², so distance depends on t². Doubling the time gives four times the distance: 4 × 4 m = 16 m.","miss":"Assuming distance doubles when time doubles, which is only true at constant velocity."},{"q":"A ball is thrown straight up at 20 m/s and caught at the same height. Ignoring air resistance, how fast is it moving when caught?","choices":["20 m/s","Less than 20 m/s","More than 20 m/s","9.8 m/s"],"a":0,"why":"The motion is symmetric. Gravity removes 9.8 m/s each second on the way up and gives back 9.8 m/s each second on the way down.","miss":"Thinking gravity \"adds extra\" speed on the way down, or that the ball \"runs out\" of speed."},{"q":"A car traveling east at 25 m/s slows to 15 m/s in 5.0 s. What is its acceleration?","choices":["2.0 m/s² west","2.0 m/s² east","8.0 m/s² west","5.0 m/s² west"],"a":0,"why":"a = (15 − 25)/5.0 = −2.0 m/s². The car moves east and slows, so the acceleration points west.","miss":"Subtracting in the wrong order, or giving the acceleration the same direction as the motion."},{"q":"On a velocity-time graph, how do you find the displacement?","choices":["Find the area between the line and the time axis","Find the slope of the line","Read the value on the vertical axis","Read the y-intercept"],"a":0,"why":"Displacement = velocity × time, which is the area under a velocity-time graph. The slope gives acceleration.","miss":"Mixing up what slope and area mean on the two kinds of graph."}];
+const GOAL = 8;
+let queue = [], pos = 0, right = 0, missed = [];
+const $ = (id) => document.getElementById(id);
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function getBest() { try { return Number(localStorage.getItem("best-" + UNIT)) || 0; } catch (e) { return 0; } }
+function setBest(n) { try { if (n > getBest()) localStorage.setItem("best-" + UNIT, String(n)); } catch (e) {} }
+function showBest() { const b = getBest(); $("best").textContent = b ? "Your best on this device: " + b + "/" + ALL.length + "." : ""; }
+
+function start(items) { queue = shuffle(items); pos = 0; right = 0; missed = []; render(); }
+
+function render() {
+  $("bar").style.width = (100 * pos / queue.length) + "%";
+  if (pos >= queue.length) return finish();
+  const item = queue[pos];
+  const order = shuffle(item.choices.map((text, i) => ({ text, correct: i === item.a })));
+  let html = '<p class="count"><span>Question ' + (pos + 1) + " of " + queue.length + "</span><span>" + right + " correct so far</span></p>";
+  html += '<p class="q">' + esc(item.q) + "</p>";
+  order.forEach((c, i) => { html += '<button class="choice" data-i="' + i + '">' + esc(c.text) + "</button>"; });
+  html += '<div id="after" aria-live="polite"></div>';
+  $("card").innerHTML = html;
+  document.querySelectorAll(".choice").forEach((btn) => btn.addEventListener("click", () => answer(item, order, Number(btn.dataset.i))));
+}
+
+function answer(item, order, picked) {
+  const ok = order[picked].correct;
+  document.querySelectorAll(".choice").forEach((btn, i) => {
+    btn.disabled = true;
+    if (order[i].correct) btn.classList.add("right");
+    else if (i === picked) btn.classList.add("wrong");
+  });
+  if (ok) right++; else missed.push(item);
+  const last = pos + 1 >= queue.length;
+  $("after").innerHTML =
+    '<div class="fb ' + (ok ? "ok" : "no") + '"><strong class="' + (ok ? "ok" : "no") + '">' + (ok ? "Correct." : "Not quite.") + "</strong> " + esc(item.why) + "</div>" +
+    '<div class="tip"><strong>Why this one gets missed:</strong> ' + esc(item.miss) + "</div>" +
+    '<button class="btn" id="next">' + (last ? "See results" : "Next question") + "</button>";
+  $("next").addEventListener("click", () => { pos++; render(); });
+  $("next").focus();
+}
+
+function finish() {
+  const full = queue.length === ALL.length;
+  if (full) setBest(right);
+  showBest();
+  let html = '<p class="score">' + right + " / " + queue.length + "</p>";
+  if (full) html += "<p>" + (right >= GOAL ? "You met the goal of " + GOAL + ". Mark this quiz done on your unit checklist." : "The goal is " + GOAL + ". Review the notes for the questions below, then try again.") + "</p>";
+  else html += '<p class="muted">Review round. Take the full quiz again to record a score.</p>';
+  if (missed.length) {
+    html += "<h2>Review these</h2><ul class='missed'>";
+    missed.forEach((m) => { html += "<li><strong>" + esc(m.q) + "</strong><br>Answer: " + esc(m.choices[m.a]) + "<br><span class='muted'>" + esc(m.why) + "</span></li>"; });
+    html += "</ul><button class='btn' id='retry'>Retry missed questions</button>";
+  }
+  html += "<button class='btn" + (missed.length ? " alt" : "") + "' id='again'>Start over</button>";
+  $("card").innerHTML = html;
+  if (missed.length) { const m = missed.slice(); $("retry").addEventListener("click", () => start(m)); }
+  $("again").addEventListener("click", () => start(ALL));
+}
+
+showBest();
+start(ALL);
+</script>
+</body>
+</html>
