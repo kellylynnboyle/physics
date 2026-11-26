@@ -1,0 +1,220 @@
+<title>Physics Most-Missed Quiz</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+  /* Layout: a lab-notebook page. Graph-paper header, unit tabs, one column of question cards. */
+  :root {
+    --paper: #f5f7fb; --card: #ffffff; --ink: #14233f; --muted: #55627a; --line: #cfd8e6;
+    --accent: #1b5fd0; --accent-ink: #ffffff; --grid: #dfe6f1;
+    --good: #17714a; --good-bg: #e3f4ea; --bad: #b3261e; --bad-bg: #fbe9e7;
+    --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+    --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0f1626; --card: #172033; --ink: #e7edf8; --muted: #a3b0c7; --line: #2c3a55;
+      --accent: #7fb0ff; --accent-ink: #0b1220; --grid: #1a2438;
+      --good: #6fd6a2; --good-bg: #12352a; --bad: #ff9c92; --bad-bg: #3d1a1a; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0f1626; --card: #172033; --ink: #e7edf8; --muted: #a3b0c7; --line: #2c3a55;
+    --accent: #7fb0ff; --accent-ink: #0b1220; --grid: #1a2438;
+    --good: #6fd6a2; --good-bg: #12352a; --bad: #ff9c92; --bad-bg: #3d1a1a; color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 1rem; line-height: 1.55; }
+  .wrap { max-width: 46rem; margin: 0 auto; padding-block: 0 3rem;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  header.top { background-color: var(--paper);
+    background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 20px 20px; border-bottom: 2px solid var(--ink);
+    margin-top: calc(-1 * env(safe-area-inset-top, 0px)); padding-top: calc(env(safe-area-inset-top, 0px) + 2rem); }
+  header.top .wrap { padding-block: 0 1.25rem; }
+  .eyebrow { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin: 0 0 .4rem; }
+  h1 { font-family: var(--display); font-size: clamp(1.7rem, 5vw, 2.4rem); line-height: 1.1; margin: 0 0 .6rem; text-wrap: balance; }
+  .lede { margin: 0; max-width: 38rem; color: var(--muted); }
+  nav.tabs { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1.25rem 0 0; }
+  .tab { font: 600 .9rem var(--body); color: var(--ink); background: var(--card); border: 1.5px solid var(--line); border-radius: 6px;
+    padding: .45rem .7rem; cursor: pointer; display: flex; align-items: center; gap: .45rem; }
+  .tab[aria-selected="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .tab .best { font-size: .75rem; font-weight: 500; font-variant-numeric: tabular-nums; opacity: .8; }
+  .tab .best.pass { color: var(--good); opacity: 1; }
+  .tab[aria-selected="true"] .best.pass { color: inherit; }
+  button:focus-visible, .tab:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .status { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; margin: 1.5rem 0 1rem; }
+  .status h2 { font-family: var(--display); font-size: 1.3rem; margin: 0; }
+  .status p { margin: 0; color: var(--muted); font-size: .9rem; }
+  .score { font-family: var(--display); font-weight: 700; font-size: 1.1rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin-bottom: 1.25rem; }
+  .bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+  @media (prefers-reduced-motion: reduce) { .bar i { transition: none; } }
+  ol.qs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1rem; }
+  .q { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 1rem 1.1rem 1.1rem; min-width: 0; }
+  .q .n { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin: 0 0 .3rem; }
+  .q .stem { font-weight: 600; margin: 0 0 .8rem; }
+  .choices { display: flex; flex-direction: column; gap: .5rem; }
+  .choice { font: inherit; color: var(--ink); text-align: left; background: transparent; border: 1.5px solid var(--line); border-radius: 6px;
+    padding: .55rem .75rem; cursor: pointer; display: flex; gap: .6rem; align-items: baseline; }
+  .choice:hover:not(:disabled) { border-color: var(--accent); }
+  .choice .k { font-family: var(--display); font-weight: 700; color: var(--muted); }
+  .choice:disabled { cursor: default; opacity: .75; }
+  .choice.right { border-color: var(--good); background: var(--good-bg); opacity: 1; }
+  .choice.wrong { border-color: var(--bad); background: var(--bad-bg); opacity: 1; }
+  .fb { margin-top: .8rem; padding-top: .8rem; border-top: 1px dashed var(--line); font-size: .95rem; }
+  .fb .verdict { font-weight: 700; margin: 0 0 .25rem; }
+  .fb .verdict.ok { color: var(--good); } .fb .verdict.no { color: var(--bad); }
+  .fb p { margin: 0 0 .4rem; }
+  .fb .miss { color: var(--muted); font-size: .85rem; margin: 0; }
+  .done { margin-top: 1.5rem; padding: 1rem 1.1rem; border: 2px solid var(--ink); border-radius: 8px; background: var(--card); }
+  .done h3 { font-family: var(--display); margin: 0 0 .3rem; font-size: 1.15rem; }
+  .done p { margin: 0 0 .8rem; color: var(--muted); }
+  .actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .btn { font: 600 .9rem var(--body); border-radius: 6px; padding: .5rem .85rem; cursor: pointer; border: 1.5px solid var(--ink); background: var(--ink); color: var(--paper); }
+  .btn.ghost { background: transparent; color: var(--ink); }
+  footer { margin-top: 2rem; color: var(--muted); font-size: .85rem; }
+  sub { font-size: .72em; }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Physics · Semester 1 · g = 9.8 m/s²</p>
+    <h1>Most-Missed Questions</h1>
+    <p class="lede">Eight questions per unit on the ideas students most often get wrong. Pick an answer to see why it is right or wrong. Aim for 7 of 8 before the unit test.</p>
+    <nav class="tabs" id="tabs" role="tablist" aria-label="Units"></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="status">
+    <div><h2 id="unit-title"></h2><p id="unit-sub"></p></div>
+    <div class="score" id="score" aria-live="polite"></div>
+  </div>
+  <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+  <ol class="qs" id="qs"></ol>
+  <section class="done" id="done" hidden>
+    <h3 id="done-title"></h3>
+    <p id="done-text"></p>
+    <div class="actions">
+      <button class="btn" id="retry-missed" type="button">Retry missed questions</button>
+      <button class="btn ghost" id="restart" type="button">Start this unit over</button>
+    </div>
+  </section>
+  <footer>Questions target well-documented physics misconceptions, not results from any one class. Best scores are saved in this browser only.</footer>
+</main>
+
+<script>
+const UNITS = /*QUIZ_DATA*/[];
+const PASS = 0.8;
+const KEY = "physics-quiz-best-v1";
+const $ = (id) => document.getElementById(id);
+
+function fmt(s) {
+  const esc = s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  return esc.replace(/([A-Za-zΔ]+)_([A-Za-z0-9]+)/g, "$1<sub>$2</sub>");
+}
+function loadBest() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+function saveBest(b) { try { localStorage.setItem(KEY, JSON.stringify(b)); } catch (e) {} }
+function shuffle(n) {
+  const a = Array.from({ length: n }, (_, i) => i);
+  for (let i = n - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+
+let best = loadBest();
+let unit = null;      // current unit object
+let state = [];       // per question: { order: [choice indexes], picked: null | choice index }
+let firstTry = {};    // question index -> true/false on the first attempt this run
+
+function scoreNow() { return state.filter((s, i) => s.picked === unit.questions[i].answer).length; }
+
+function renderTabs() {
+  $("tabs").innerHTML = "";
+  UNITS.forEach((u) => {
+    const b = document.createElement("button");
+    b.className = "tab"; b.type = "button"; b.id = "tab-" + u.id; b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", String(unit && u.id === unit.id));
+    const sc = best[u.id];
+    const pass = sc != null && sc / u.questions.length >= PASS;
+    b.innerHTML = `<span>${u.num}. ${fmt(u.title)}</span>` + (sc != null ? `<span class="best${pass ? " pass" : ""}">best ${sc}/${u.questions.length}${pass ? " ✓" : ""}</span>` : "");
+    b.addEventListener("click", () => { location.hash = u.id; openUnit(u.id); });
+    $("tabs").appendChild(b);
+  });
+}
+
+function openUnit(id, keep) {
+  unit = UNITS.find((u) => u.id === id) || UNITS[0];
+  if (!keep) { state = unit.questions.map((q) => ({ order: shuffle(q.choices.length), picked: null })); firstTry = {}; }
+  $("unit-title").textContent = `Unit ${unit.num}: ${unit.title}`;
+  $("unit-sub").textContent = unit.short;
+  renderTabs(); renderQuestions(); renderStatus();
+}
+
+function renderQuestions() {
+  const ol = $("qs"); ol.innerHTML = "";
+  unit.questions.forEach((q, qi) => {
+    const s = state[qi];
+    const li = document.createElement("li"); li.className = "q"; li.id = "q-" + qi;
+    li.innerHTML = `<p class="n">Question ${qi + 1} of ${unit.questions.length}</p><p class="stem">${fmt(q.q)}</p>`;
+    const box = document.createElement("div"); box.className = "choices";
+    s.order.forEach((ci, pos) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "choice"; b.id = `c-${qi}-${pos}`;
+      b.innerHTML = `<span class="k">${"ABCD"[pos]}</span><span>${fmt(q.choices[ci])}</span>`;
+      if (s.picked != null) {
+        b.disabled = true;
+        if (ci === q.answer) b.classList.add("right");
+        else if (ci === s.picked) b.classList.add("wrong");
+      }
+      b.addEventListener("click", () => pick(qi, ci));
+      box.appendChild(b);
+    });
+    li.appendChild(box);
+    if (s.picked != null) {
+      const ok = s.picked === q.answer;
+      const fb = document.createElement("div"); fb.className = "fb";
+      fb.innerHTML = `<p class="verdict ${ok ? "ok" : "no"}">${ok ? "Correct." : "Not quite."}</p><p>${fmt(q.why)}</p><p class="miss">Common mistake: ${fmt(q.miss)}.</p>`;
+      li.appendChild(fb);
+    }
+    ol.appendChild(li);
+  });
+}
+
+function pick(qi, ci) {
+  if (state[qi].picked != null) return;
+  state[qi].picked = ci;
+  if (!(qi in firstTry)) firstTry[qi] = ci === unit.questions[qi].answer;
+  renderQuestions(); renderStatus();
+}
+
+function renderStatus() {
+  const total = unit.questions.length;
+  const answered = state.filter((s) => s.picked != null).length;
+  const right = scoreNow();
+  $("score").textContent = `${right} / ${total} correct`;
+  $("bar").style.width = (100 * answered / total) + "%";
+  const done = answered === total;
+  $("done").hidden = !done;
+  if (!done) return;
+  const first = Object.values(firstTry).filter(Boolean).length;
+  if (best[unit.id] == null || first > best[unit.id]) { best[unit.id] = first; saveBest(best); renderTabs(); }
+  const pass = first / total >= PASS;
+  const missed = total - right;
+  $("done-title").textContent = pass ? `${first} of ${total} on the first try. Target met.` : `${first} of ${total} on the first try. Target is ${Math.ceil(total * PASS)}.`;
+  $("done-text").textContent = missed
+    ? `You still have ${missed} to fix. Reread the explanations, then retry those questions.`
+    : "Every question is now correct. Come back in a few days and see if it sticks.";
+  $("retry-missed").hidden = missed === 0;
+}
+
+$("retry-missed").addEventListener("click", () => {
+  state.forEach((s, i) => { if (s.picked !== unit.questions[i].answer) { s.picked = null; s.order = shuffle(s.order.length); } });
+  renderQuestions(); renderStatus();
+  const first = state.findIndex((s) => s.picked == null);
+  if (first >= 0) $("q-" + first).scrollIntoView({ block: "start" });
+});
+$("restart").addEventListener("click", () => { openUnit(unit.id); window.scrollTo(0, 0); });
+window.addEventListener("hashchange", () => { const id = location.hash.slice(1); if (unit && id !== unit.id && UNITS.some((u) => u.id === id)) openUnit(id); });
+
+openUnit(location.hash.slice(1));
+</script>
