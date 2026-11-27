@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics Misconception Quizzes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+  /* Layout: lab-notebook sheet. A graph-paper band holds the unit picker; one question card sits below it. */
+  :root {
+    --paper: #f5f7fb;
+    --sheet: #ffffff;
+    --ink: #14233f;
+    --ink-soft: #55627a;
+    --line: #d5dceb;
+    --grid: #e3e9f5;
+    --accent: #2456d6;
+    --accent-ink: #ffffff;
+    --accent-wash: #e8eefc;
+    --good: #1b7a43;
+    --good-wash: #e3f4ea;
+    --bad: #b3261e;
+    --bad-wash: #fbe9e7;
+    --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+    --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0e1524; --sheet: #172135; --ink: #e8edf7; --ink-soft: #a3b0c8; --line: #2c3a56; --grid: #1a2538;
+      --accent: #7da2ff; --accent-ink: #0b1220; --accent-wash: #1f2e52;
+      --good: #6fd39a; --good-wash: #15352a; --bad: #ff9a90; --bad-wash: #40201f;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0e1524; --sheet: #172135; --ink: #e8edf7; --ink-soft: #a3b0c8; --line: #2c3a56; --grid: #1a2538;
+    --accent: #7da2ff; --accent-ink: #0b1220; --accent-wash: #1f2e52;
+    --good: #6fd39a; --good-wash: #15352a; --bad: #ff9a90; --bad-wash: #40201f;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.55; margin: 0; }
+  .band {
+    background-color: var(--paper);
+    background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 22px 22px;
+    border-bottom: 1px solid var(--line);
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .band .wrap { padding-block: 28px 20px; display: flex; flex-direction: column; gap: 16px; }
+  main.wrap { padding-block: 24px 48px; display: flex; flex-direction: column; gap: 20px; }
+  h1 { font-family: var(--font-display); font-weight: 700; font-size: 1.75rem; line-height: 1.15; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+  .lede { margin: 0; color: var(--ink-soft); max-width: 60ch; }
+  .units { display: flex; flex-wrap: wrap; gap: 8px; }
+  .unit {
+    font: 500 0.92rem var(--font-body); color: var(--ink); background: var(--sheet); border: 1px solid var(--line);
+    border-radius: 6px; padding: 8px 12px; cursor: pointer; display: flex; gap: 8px; align-items: baseline;
+  }
+  .unit[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .unit .best { font-size: 0.78rem; font-variant-numeric: tabular-nums; opacity: 0.8; }
+  .card { background: var(--sheet); border: 1px solid var(--line); border-radius: 10px; padding: 24px; display: flex; flex-direction: column; gap: 18px; }
+  .meta { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+  .bar { height: 4px; background: var(--line); border-radius: 2px; overflow: hidden; }
+  .bar > span { display: block; height: 100%; background: var(--accent); transition: width 0.25s ease; }
+  .question { font-family: var(--font-display); font-weight: 500; font-size: 1.25rem; line-height: 1.35; margin: 0; text-wrap: balance; }
+  .choices { display: flex; flex-direction: column; gap: 10px; }
+  .choice {
+    font: 400 1rem var(--font-body); color: var(--ink); text-align: left; background: var(--sheet); border: 1.5px solid var(--line);
+    border-radius: 8px; padding: 12px 14px; cursor: pointer; display: flex; gap: 12px; align-items: flex-start; min-width: 0;
+  }
+  .choice .key { font-weight: 600; color: var(--ink-soft); flex: none; width: 1.2em; }
+  .choice:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-wash); }
+  .choice:disabled { cursor: default; }
+  .choice.right { border-color: var(--good); background: var(--good-wash); }
+  .choice.wrong { border-color: var(--bad); background: var(--bad-wash); }
+  .choice .tag { margin-left: auto; flex: none; font-size: 0.8rem; font-weight: 600; }
+  .choice.right .tag { color: var(--good); }
+  .choice.wrong .tag { color: var(--bad); }
+  .feedback { border-top: 1px solid var(--line); padding-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .feedback p { margin: 0; max-width: 65ch; }
+  .verdict { font-family: var(--font-display); font-weight: 700; }
+  .verdict.right { color: var(--good); }
+  .verdict.wrong { color: var(--bad); }
+  .label { font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); display: block; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn { font: 600 0.95rem var(--font-body); border-radius: 6px; padding: 10px 18px; cursor: pointer; border: 1.5px solid var(--accent); background: var(--accent); color: var(--accent-ink); }
+  .btn.ghost { background: transparent; color: var(--accent); }
+  button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .score { font-family: var(--font-display); font-weight: 700; font-size: 2.6rem; line-height: 1; font-variant-numeric: tabular-nums; }
+  .score small { font-size: 1rem; font-weight: 500; color: var(--ink-soft); margin-left: 8px; }
+  .missed { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+  .missed li { border-left: 3px solid var(--bad); padding-left: 14px; display: flex; flex-direction: column; gap: 4px; }
+  .missed .mq { font-weight: 600; }
+  .note { color: var(--ink-soft); font-size: 0.9rem; margin: 0; max-width: 65ch; }
+  @media (max-width: 480px) { .card { padding: 18px; } h1 { font-size: 1.45rem; } .question { font-size: 1.12rem; } }
+  @media (prefers-reduced-motion: reduce) { .bar > span { transition: none; } }
+</style>
+
+<header class="band">
+  <div class="wrap">
+    <h1>Physics Misconception Quizzes</h1>
+    <p class="lede">Semester 1 physics. Each question targets a mistake students commonly make. Pick a unit, answer, and read why. A score of 80% or higher counts as mastery.</p>
+    <nav class="units" id="units" aria-label="Choose a unit"></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="card" id="card" aria-live="polite"></section>
+  <p class="note">Use g = 9.8 m/s² and ignore air resistance unless a question says otherwise. Answer choices are shuffled on every attempt. Your best score for each unit is remembered on this device only.</p>
+</main>
+
+<script>
+const UNITS = [{"id":"kinematics","num":1,"title":"Kinematics","questions":[{"q":"A ball is tossed straight up. At the very top of its path, what is its acceleration?","choices":["Zero, because it has stopped","9.8 m/s² upward","9.8 m/s² downward","It depends on the mass of the ball"],"answer":2,"why":"Velocity is zero for an instant, but gravity keeps changing the velocity at 9.8 m/s² downward the whole time. If acceleration were zero, the ball would stay at the top.","trap":"Zero velocity means zero acceleration."},{"q":"A car goes around a curve with its speedometer steady at 20 m/s. Is the car accelerating?","choices":["No, its speed is constant","Yes, because its direction is changing","Only if the driver presses the gas","No, acceleration only means speeding up"],"answer":1,"why":"Acceleration is a change in velocity, and velocity includes direction. A changing direction is a changing velocity, even at constant speed.","trap":"Acceleration only means a change in speed."},{"q":"On a position-time graph, a straight line slopes downward to the right. What is the object doing?","choices":["Slowing down","Moving at constant velocity in the negative direction","Rolling down a hill","Speeding up in the negative direction"],"answer":1,"why":"The slope of a position-time graph is velocity. A straight line has a constant slope, so the velocity is constant; the slope is negative, so the motion is in the negative direction.","trap":"Reading a graph as a picture of the path, or reading a downward slope as slowing down."},{"q":"An object has a negative acceleration. Which statement must be true?","choices":["It is slowing down","It is moving in the negative direction","Its velocity is becoming more negative (or less positive)","It is at rest"],"answer":2,"why":"The sign of acceleration is a direction. If the object is moving in the positive direction it slows down; if it is moving in the negative direction it speeds up.","trap":"Negative acceleration always means slowing down."},{"q":"A runner completes exactly one lap of a 400 m track in 80 s. What is the runner's average velocity?","choices":["5 m/s","0 m/s","0.2 m/s","10 m/s"],"answer":1,"why":"Average velocity = displacement ÷ time. The runner ends where they started, so displacement is 0 and average velocity is 0 m/s. The average speed is 5 m/s.","trap":"Average velocity is the same as average speed."},{"q":"A bowling ball and a tennis ball are dropped from the same height at the same time. Ignoring air resistance, which lands first?","choices":["The bowling ball, because it is heavier","The tennis ball, because it is lighter","They land at the same time","It depends on the height"],"answer":2,"why":"In free fall every object has the same acceleration, 9.8 m/s² downward, whatever its mass.","trap":"Heavier objects fall faster."},{"q":"A cart starts from rest with constant acceleration and travels 4 m in the first 2 s. How far has it traveled after 4 s?","choices":["8 m","12 m","16 m","32 m"],"answer":2,"why":"From rest, d = ½·a·t², so distance grows with the square of time. Twice the time gives four times the distance: 4 × 4 m = 16 m.","trap":"Distance doubles when time doubles."},{"q":"A velocity-time graph shows a flat horizontal line at +5 m/s. What is the object doing?","choices":["It is at rest","It is moving at a constant 5 m/s","It is speeding up","It is 5 m from the start"],"answer":1,"why":"A flat line on a velocity-time graph means the velocity is not changing. Since the value is 5 m/s, the object moves at a constant 5 m/s. At rest would be a line at v = 0.","trap":"A flat line always means at rest."}]},{"id":"projectile","num":2,"title":"Projectile Motion","questions":[{"q":"A ball is dropped from a table at the same instant another ball is launched horizontally from the same height. Ignoring air resistance, which hits the floor first?","choices":["The dropped ball","The launched ball","They hit at the same time","It depends on the launch speed"],"answer":2,"why":"Both start with zero vertical velocity and both accelerate downward at 9.8 m/s². Horizontal motion has no effect on the vertical motion.","trap":"Moving forward makes an object fall more slowly."},{"q":"A ball is thrown at an angle. At the highest point of its path, what is its velocity?","choices":["Zero","Equal to its horizontal velocity, pointing horizontally","9.8 m/s downward","Equal to its launch velocity"],"answer":1,"why":"Only the vertical part of the velocity is zero at the top. The horizontal part never changes, so the ball is still moving sideways.","trap":"The projectile stops at the top."},{"q":"For the same thrown ball, what is its acceleration at the highest point?","choices":["Zero","9.8 m/s² downward","9.8 m/s² upward","It points along the path"],"answer":1,"why":"Gravity is the only force during the whole flight, so the acceleration is 9.8 m/s² downward at every point, including the top.","trap":"Acceleration is zero where vertical velocity is zero."},{"q":"Ignoring air resistance, what happens to a projectile's horizontal velocity during its flight?","choices":["It decreases steadily","It increases as the object falls","It stays constant","It becomes zero at the top"],"answer":2,"why":"No horizontal force acts on a projectile, so by Newton's first law the horizontal velocity does not change.","trap":"A forward force runs out, so the object slows down horizontally."},{"q":"A ball leaves a 4.9 m high ledge moving horizontally at 3 m/s. How far from the base of the ledge does it land?","choices":["1.5 m","3.0 m","4.9 m","14.7 m"],"answer":1,"why":"Vertical: 4.9 = ½(9.8)t², so t = 1.0 s. Horizontal: x = 3 m/s × 1.0 s = 3.0 m.","trap":"Using the height as a horizontal distance, or mixing x and y values."},{"q":"A ball rolls off a cliff. If it is launched twice as fast horizontally, what changes?","choices":["It stays in the air twice as long","It lands twice as far away, in the same time","It lands at the same spot, sooner","Both time and range double"],"answer":1,"why":"Time in the air depends only on the height. With the same time and double the horizontal speed, the range doubles.","trap":"A faster launch keeps the object in the air longer."},{"q":"On level ground with the same launch speed, which pair of angles gives the same range?","choices":["30° and 45°","30° and 60°","45° and 60°","No two angles give the same range"],"answer":1,"why":"Angles that add to 90° give the same range. 45° gives the maximum.","trap":"A steeper angle always sends the object farther (or always shorter)."},{"q":"A plane flying level at constant velocity drops a package. Ignoring air resistance, where is the plane when the package lands?","choices":["Far ahead of the package","Directly above the package","Behind the package","It depends on the mass of the package"],"answer":1,"why":"The package keeps the plane's horizontal velocity while it falls, so it stays directly below the plane.","trap":"A dropped object falls straight down and is left behind."},{"q":"A ball is kicked at 20 m/s at 30° above the ground. What is its initial vertical velocity?","choices":["20 m/s","17.3 m/s","10 m/s","0 m/s"],"answer":2,"why":"v_y = v·sin θ = 20 × sin 30° = 10 m/s. The 17.3 m/s value is the horizontal component.","trap":"Swapping sine and cosine, or using the full speed for the vertical motion."}]},{"id":"newton","num":3,"title":"Newton's Laws","questions":[{"q":"A hockey puck slides across frictionless ice at constant velocity. What is the net force on the puck?","choices":["A forward force that keeps it moving","Zero","Its weight","A small force that slowly decreases"],"answer":1,"why":"Constant velocity means zero acceleration, so the net force is zero. No force is needed to keep an object moving; force is needed to change its motion.","trap":"Motion requires a force."},{"q":"A heavy truck collides head-on with a small car. Compared with the force the truck exerts on the car, the force the car exerts on the truck is:","choices":["Smaller","Larger","The same size","Zero, because the car is lighter"],"answer":2,"why":"Newton's third law: the two forces are equal in size and opposite in direction. The car is damaged more because the same force gives its smaller mass a larger acceleration.","trap":"The bigger or faster object exerts the bigger force."},{"q":"A book rests on a table. Earth pulls down on the book. What is the third-law reaction force?","choices":["The table pushing up on the book","The book pushing down on the table","The book pulling up on Earth","Friction between the book and the table"],"answer":2,"why":"Swap the objects: Earth pulls book ↔ book pulls Earth. The normal force also acts on the book, so it cannot be the reaction partner of the book's weight.","trap":"The normal force is the reaction to weight."},{"q":"An elevator moves upward at constant speed. Compared with the weight of the elevator, the tension in the cable is:","choices":["Greater","Equal","Less","Zero"],"answer":1,"why":"Constant velocity means the net force is zero, so the upward tension equals the downward weight. Tension is greater only while the elevator accelerates upward.","trap":"The force in the direction of motion must be larger."},{"q":"An astronaut travels from Earth to the Moon. What happens to the astronaut's mass and weight?","choices":["Both decrease","Mass decreases, weight stays the same","Mass stays the same, weight decreases","Both stay the same"],"answer":2,"why":"Mass is the amount of matter and does not change. Weight is m·g, and g on the Moon is about one sixth of Earth's.","trap":"Mass and weight are the same thing."},{"q":"A net force of 10 N gives a cart an acceleration of 5 m/s². If the cart's mass is doubled and the net force stays 10 N, what is the acceleration?","choices":["10 m/s²","5 m/s²","2.5 m/s²","1.25 m/s²"],"answer":2,"why":"a = F_net ÷ m. Doubling the mass with the same force halves the acceleration: 2.5 m/s².","trap":"Acceleration depends only on the force."},{"q":"A ball is thrown straight up. After it leaves the hand and while it is still rising, what forces act on it? Ignore air resistance.","choices":["Gravity down and the force of the throw up","Only the force of the throw","Only gravity, downward","No forces until it starts to fall"],"answer":2,"why":"A force needs contact with the hand (or a field such as gravity). Once the ball leaves the hand, only gravity acts. The ball keeps rising because of its inertia.","trap":"The force of a throw stays with the object."},{"q":"You push horizontally on a heavy crate with 100 N and it does not move. How large is the friction force on the crate?","choices":["Greater than 100 N","Exactly 100 N","Less than 100 N","Zero"],"answer":1,"why":"The crate is at rest, so the net force is zero. Static friction matches the push exactly: 100 N.","trap":"Friction must be bigger than the push to stop motion."},{"q":"A skydiver has reached terminal velocity. Which statement is correct?","choices":["Gravity is no longer acting","Air resistance equals the skydiver's weight","Air resistance is greater than the weight","The skydiver is still speeding up slowly"],"answer":1,"why":"At terminal velocity the speed is constant, so the net force is zero: upward air resistance equals downward weight.","trap":"Falling at speed means gravity is winning."},{"q":"You push a crate across a floor at constant velocity using 80 N. How large is the friction force?","choices":["Less than 80 N","80 N","More than 80 N","Zero"],"answer":1,"why":"Constant velocity means balanced forces. Friction is exactly 80 N. A push larger than friction would make the crate speed up.","trap":"The push must exceed friction for the object to keep moving."}]},{"id":"momentum","num":4,"title":"Momentum","questions":[{"q":"An egg is dropped from the same height onto a pillow and onto a tile floor. Why does it survive the pillow?","choices":["The pillow gives it a smaller change in momentum","The pillow gives it a smaller impulse","The pillow makes the stop take longer, so the force is smaller","The pillow absorbs the egg's mass"],"answer":2,"why":"The egg arrives with the same momentum and stops both times, so the change in momentum (and the impulse) is the same. The pillow lengthens the stopping time, which lowers the force.","trap":"Soft surfaces reduce the impulse or momentum change."},{"q":"A rubber ball and a lump of clay with the same mass hit a wall at the same speed. The ball bounces back; the clay sticks. Which has the greater change in momentum?","choices":["The clay","The ball","They are equal","Neither changes momentum"],"answer":1,"why":"The clay's momentum goes from m·v to 0. The ball's goes from +m·v to nearly −m·v, a change of almost 2·m·v.","trap":"Stopping completely is the biggest possible change."},{"q":"A 2 kg cart moving at 3 m/s collides with a 1 kg cart at rest, and they stick together. What is their speed afterward?","choices":["1 m/s","1.5 m/s","2 m/s","3 m/s"],"answer":2,"why":"Momentum before = 2 × 3 = 6 kg·m/s. After, 3 kg moves together: 6 = 3v, so v = 2 m/s.","trap":"The speed is shared equally or stays the same."},{"q":"A bug hits the windshield of a moving bus. Compared with the bus, the bug experiences:","choices":["A larger force and a larger momentum change","The same size force and the same size momentum change","A larger force but the same momentum change","A smaller force but a larger acceleration"],"answer":1,"why":"Third law: equal and opposite forces for the same time, so equal and opposite momentum changes. The bug's acceleration is much greater because its mass is tiny.","trap":"The smaller object feels the larger force."},{"q":"Two carts collide and stick together. Which statement is true?","choices":["Momentum and kinetic energy are both conserved","Momentum is conserved; kinetic energy is not","Kinetic energy is conserved; momentum is not","Neither is conserved"],"answer":1,"why":"Momentum is conserved in every collision with no outside net force. In an inelastic collision some kinetic energy becomes heat, sound, and deformation.","trap":"If momentum is conserved, kinetic energy must be too."},{"q":"A 60 kg skater and a 40 kg skater stand at rest on ice and push apart. The 60 kg skater moves away at 2 m/s. How fast does the 40 kg skater move?","choices":["1.3 m/s","2 m/s","3 m/s","5 m/s"],"answer":2,"why":"Total momentum starts at zero and stays zero: 60 × 2 = 40 × v, so v = 3 m/s in the opposite direction.","trap":"Both move away at the same speed."},{"q":"Two identical carts roll toward each other at the same speed. What is the total momentum of the two-cart system?","choices":["Twice the momentum of one cart","Equal to the momentum of one cart","Zero","It cannot be determined"],"answer":2,"why":"Momentum is a vector. Equal sizes in opposite directions add to zero.","trap":"Momentum is added like a scalar."},{"q":"A 50 N force acts for 0.2 s on a 0.5 kg ball at rest. What is the ball's speed afterward?","choices":["5 m/s","10 m/s","20 m/s","50 m/s"],"answer":2,"why":"Impulse = 50 × 0.2 = 10 N·s = change in momentum. Δv = 10 ÷ 0.5 = 20 m/s.","trap":"Impulse equals the final speed, or the time is ignored."},{"q":"Which has more momentum: a loaded truck parked at a light, or a skateboard rolling down the street?","choices":["The truck, because it has more mass","The skateboard","They are equal","Neither has momentum"],"answer":1,"why":"p = m·v. The truck's velocity is zero, so its momentum is zero. Anything that is moving has more.","trap":"Momentum is the same as mass or weight."}]},{"id":"energy","num":5,"title":"Work & Energy","questions":[{"q":"You carry a heavy box across a level room at constant velocity. How much work does your upward lifting force do on the box?","choices":["A lot, because the box is heavy","Zero","It depends on how far you walk","A negative amount"],"answer":1,"why":"Your force is upward and the displacement is horizontal. A force perpendicular to the displacement does zero work (cos 90° = 0).","trap":"Any effort or tiredness counts as work."},{"q":"A car's speed doubles. What happens to its kinetic energy?","choices":["It doubles","It triples","It becomes four times as large","It stays the same"],"answer":2,"why":"KE = ½·m·v². Doubling v multiplies v² by four.","trap":"Kinetic energy is proportional to speed."},{"q":"You push as hard as you can on a brick wall for one minute and it does not move. How much work did you do on the wall?","choices":["Zero","Force × time","Force × your height","It depends on how tired you are"],"answer":0,"why":"Work needs a displacement. With d = 0, W = 0, no matter how large the force.","trap":"Force alone is work."},{"q":"Two frictionless ramps have the same height. One is steep and one is gentle. A cart is released from rest at the top of each. Compare their speeds at the bottom.","choices":["The steep ramp gives a greater speed","The gentle ramp gives a greater speed","The speeds are the same","It depends on the cart's mass"],"answer":2,"why":"Both carts lose the same potential energy, m·g·h, so both gain the same kinetic energy. The steep ramp is quicker but not faster at the bottom.","trap":"A steeper ramp gives a faster final speed."},{"q":"A ball is dropped from a height of 5 m. Ignoring air resistance, about how fast is it moving just before it lands?","choices":["5 m/s","9.9 m/s","49 m/s","It depends on the ball's mass"],"answer":1,"why":"m·g·h = ½·m·v², so v = √(2·g·h) = √(2 × 9.8 × 5) = 9.9 m/s. The mass cancels.","trap":"Heavier objects arrive faster, or speed is proportional to height."},{"q":"A pendulum swings back and forth. Where is its kinetic energy greatest?","choices":["At the highest points of the swing","At the lowest point","Halfway up","It is the same everywhere"],"answer":1,"why":"At the lowest point the potential energy is smallest, so the kinetic energy (and speed) is greatest. At the highest points the bob is momentarily at rest.","trap":"Energy is greatest where the object is highest."},{"q":"A box slides across a rough floor and stops. What happened to its kinetic energy?","choices":["It was destroyed","It became thermal energy in the box and floor","It became potential energy","It is still kinetic energy"],"answer":1,"why":"Energy is conserved. Friction transformed the kinetic energy into thermal energy; the surfaces are slightly warmer.","trap":"Energy is used up or disappears."},{"q":"Two students with the same mass climb the same staircase. Ana takes 4 s and Ben takes 8 s. Which statement is correct?","choices":["Ana does more work","Ben does more work","They do the same work, and Ana has more power","They do the same work and have the same power"],"answer":2,"why":"Work = m·g·h is the same for both. Power = work ÷ time, so Ana, with half the time, has twice the power.","trap":"Doing something faster means doing more work."},{"q":"A car's speed doubles. If the braking force is the same, what happens to its stopping distance?","choices":["It doubles","It becomes four times as long","It stays the same","It is halved"],"answer":1,"why":"The brakes must remove all the kinetic energy: F·d = ½·m·v². Four times the kinetic energy needs four times the distance.","trap":"Stopping distance is proportional to speed."},{"q":"A 100 N force pulls a sled 10 m along level ground. The rope is angled 60° above horizontal. How much work is done?","choices":["1000 J","866 J","500 J","0 J"],"answer":2,"why":"W = F·d·cos θ = 100 × 10 × cos 60° = 500 J. Only the horizontal part of the pull does work.","trap":"Work is always force × distance, whatever the angle."}]}];
+const MASTERY = 80;
+const KEYS = "ABCD";
+const $ = (id) => document.getElementById(id);
+const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+
+function loadBest() { try { return JSON.parse(localStorage.getItem("physics-quiz-best") || "{}"); } catch (e) { return {}; } }
+function saveBest(b) { try { localStorage.setItem("physics-quiz-best", JSON.stringify(b)); } catch (e) {} }
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+let best = loadBest();
+let state = null;
+
+function start(unitId, onlyThese) {
+  const unit = UNITS.find((u) => u.id === unitId) || UNITS[0];
+  const pool = onlyThese || unit.questions.map((_, i) => i);
+  state = {
+    unit, retry: !!onlyThese, i: 0, picked: null, missed: [], correct: 0,
+    order: shuffle(pool).map((qi) => ({ qi, choices: shuffle(unit.questions[qi].choices.map((_, ci) => ci)) })),
+  };
+  renderUnits();
+  renderQuestion();
+}
+
+function renderUnits() {
+  const nav = $("units");
+  nav.replaceChildren();
+  for (const u of UNITS) {
+    const b = el("button", "unit");
+    b.type = "button";
+    b.id = "unit-" + u.id;
+    b.setAttribute("aria-pressed", String(u.id === state.unit.id));
+    b.append(el("span", null, u.num + ". " + u.title));
+    if (best[u.id] != null) b.append(el("span", "best", "best " + best[u.id] + "%"));
+    b.addEventListener("click", () => { try { location.hash = u.id; } catch (e) {} start(u.id); });
+    nav.append(b);
+  }
+}
+
+function renderQuestion() {
+  const { unit, order, i } = state;
+  const item = order[i];
+  const q = unit.questions[item.qi];
+  const card = $("card");
+  card.replaceChildren();
+
+  const meta = el("div", "meta");
+  meta.append(el("span", null, unit.title + (state.retry ? " · missed questions" : "")), el("span", null, "Question " + (i + 1) + " of " + order.length));
+  const bar = el("div", "bar"); const fill = el("span"); fill.style.width = (i / order.length * 100) + "%"; bar.append(fill);
+  card.append(meta, bar, el("h2", "question", q.q));
+
+  const list = el("div", "choices");
+  item.choices.forEach((ci, pos) => {
+    const b = el("button", "choice");
+    b.type = "button";
+    b.id = "choice-" + pos;
+    b.append(el("span", "key", KEYS[pos]), el("span", null, q.choices[ci]));
+    b.addEventListener("click", () => answer(ci));
+    list.append(b);
+  });
+  card.append(list);
+}
+
+function answer(ci) {
+  if (state.picked != null) return;
+  state.picked = ci;
+  const { unit, order, i } = state;
+  const item = order[i];
+  const q = unit.questions[item.qi];
+  const ok = ci === q.answer;
+  if (ok) state.correct++; else state.missed.push(item.qi);
+
+  const card = $("card");
+  card.querySelectorAll(".choice").forEach((b, pos) => {
+    b.disabled = true;
+    const id = item.choices[pos];
+    if (id === q.answer) { b.classList.add("right"); b.append(el("span", "tag", "Correct answer")); }
+    else if (id === ci) { b.classList.add("wrong"); b.append(el("span", "tag", "Your answer")); }
+  });
+  card.querySelector(".bar > span").style.width = ((i + 1) / order.length * 100) + "%";
+
+  const fb = el("div", "feedback");
+  fb.append(el("p", "verdict " + (ok ? "right" : "wrong"), ok ? "Correct." : "Not quite."));
+  const why = el("p"); why.append(el("span", "label", "Why"), document.createTextNode(q.why)); fb.append(why);
+  const trap = el("p"); trap.append(el("span", "label", "The common mistake"), document.createTextNode(q.trap)); fb.append(trap);
+  const actions = el("div", "actions");
+  const last = i === order.length - 1;
+  const next = el("button", "btn", last ? "See results" : "Next question");
+  next.type = "button"; next.id = "next";
+  next.addEventListener("click", () => { state.i++; state.picked = null; last ? renderResults() : renderQuestion(); });
+  actions.append(next); fb.append(actions);
+  card.append(fb);
+  next.focus();
+}
+
+function renderResults() {
+  const { unit, order, correct, missed, retry } = state;
+  const pct = Math.round(correct / order.length * 100);
+  if (!retry && (best[unit.id] == null || pct > best[unit.id])) { best[unit.id] = pct; saveBest(best); renderUnits(); }
+  const card = $("card");
+  card.replaceChildren();
+  const meta = el("div", "meta");
+  meta.append(el("span", null, unit.title + (retry ? " · missed questions" : "")), el("span", null, "Results"));
+  card.append(meta);
+  const score = el("div", "score", correct + " / " + order.length);
+  score.append(el("small", null, pct + "%"));
+  card.append(score);
+  const msg = retry
+    ? (missed.length ? "Some of these still need work. Read the explanations below, then try again." : "You cleared every question you missed. Take the full quiz again to record a new score.")
+    : (pct >= MASTERY ? "Mastery reached. Tick this unit off in your progress tracker." : "Mastery is " + MASTERY + "%. Review the explanations below, reread that part of your Cornell notes, then retry.");
+  card.append(el("p", null, msg));
+
+  if (missed.length) {
+    card.append(el("span", "label", "Questions to review"));
+    const ul = el("ul", "missed");
+    for (const qi of missed) {
+      const q = unit.questions[qi];
+      const li = el("li");
+      li.append(el("span", "mq", q.q), el("span", null, "Answer: " + q.choices[q.answer]), el("span", "note", q.why));
+      ul.append(li);
+    }
+    card.append(ul);
+  }
+  const actions = el("div", "actions");
+  if (missed.length) {
+    const r = el("button", "btn", "Retry missed questions"); r.type = "button"; r.id = "retry-missed";
+    r.addEventListener("click", () => start(unit.id, missed.slice())); actions.append(r);
+  }
+  const again = el("button", "btn" + (missed.length ? " ghost" : ""), "Restart this unit"); again.type = "button"; again.id = "restart";
+  again.addEventListener("click", () => start(unit.id)); actions.append(again);
+  const idx = UNITS.indexOf(unit);
+  if (!missed.length && UNITS[idx + 1]) {
+    const nx = el("button", "btn ghost", "Go to " + UNITS[idx + 1].title); nx.type = "button"; nx.id = "next-unit";
+    nx.addEventListener("click", () => { try { location.hash = UNITS[idx + 1].id; } catch (e) {} start(UNITS[idx + 1].id); }); actions.append(nx);
+  }
+  card.append(actions);
+}
+
+function fromHash() { let h = ""; try { h = location.hash.slice(1); } catch (e) {} return UNITS.some((u) => u.id === h) ? h : UNITS[0].id; }
+window.addEventListener("hashchange", () => { const h = fromHash(); if (!state || state.unit.id !== h) start(h); });
+start(fromHash());
+</script>
+</html>
